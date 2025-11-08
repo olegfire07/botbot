@@ -1,0 +1,185 @@
+/* dark_style.css */
+
+/* Основные стили */
+body {
+    font-family: sans-serif;
+    color: #eee;
+    background-color: #343a40;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #f8f9fa;
+}
+
+.stApp {
+    max-width: 100%;
+    padding: 2rem;
+}
+
+/* Стили для вкладок */
+div[data-baseweb="tab-list"] > div {
+    background-color: #495057;
+    padding: 0.5rem;
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+
+div[data-baseweb="tab-list"] > div button {
+    border-bottom: 2px solid transparent;
+}
+
+div[data-baseweb="tab-list"] > div button[aria-selected="true"] {
+    border-bottom: 2px solid #6cb2eb;
+    color: #6cb2eb;
+}
+
+
+/* Стили для метрик */
+div[data-testid="metric-container"] {
+    background-color: #495057;
+    border: 1px solid #6c757d;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease-in-out;
+     color: #ffffff;
+}
+
+div[data-testid="metric-container"]:hover {
+    transform: translateY(-3px);
+     box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+}
+
+
+/* Стили для графиков */
+.plotly {
+    border: 1px solid #6c757d;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+/* Стили для таблиц */
+.streamlit-dataframe {
+  border: 1px solid #6c757d;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+
+}
+
+/* Стили для кнопок */
+div.stButton > button {
+    background-color: #6cb2eb;
+    color: black;
+    border: none;
+    border-radius: 0.3rem;
+    padding: 0.75rem 1.2rem;
+    transition: all 0.3s ease-in-out;
+}
+
+div.stButton > button:hover {
+    background-color: #397397;
+    transform: scale(1.05);
+}
+
+div.stButton > button:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(108, 178, 235, 0.5);
+}
+/* Стили для слайдеров */
+div[data-testid="stSlider"] div[role="slider"]{
+   background-color: #6cb2eb;
+}
+
+
+div[data-testid="stSlider"] [data-baseweb="slider-thumb"]{
+  background-color: #fff;
+  border: 2px solid #6cb2eb;
+}
+/* Стили для полей ввода */
+div[data-testid="stNumberInput"] input {
+     background-color: #495057;
+    border: 1px solid #6c757d;
+    border-radius: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+     color: #ffffff;
+}
+
+div[data-testid="stNumberInput"] input:focus {
+    border-color: #6cb2eb;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(108, 178, 235, 0.25);
+}
+
+/* Стили для selectbox */
+div[data-testid="stSelectbox"] > div > div > div {
+     background-color: #495057;
+      border: 1px solid #6c757d;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+     color: #ffffff;
+}
+div[data-testid="stSelectbox"] > div > div > div:focus-within {
+        border-color: #6cb2eb;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(108, 178, 235, 0.25);
+}
+
+
+/* Стили для загрузчика файлов */
+div[data-testid="stFileUploader"] div button {
+    background-color: #28a745;
+     border-color: #28a745;
+    color: white;
+}
+
+div[data-testid="stFileUploader"] div button:hover {
+    background-color: #218838;
+     border-color: #218838;
+}
+
+/* Стили для multiselect */
+div[data-testid="stMultiSelect"] > div > div > div {
+     background-color: #495057;
+    border: 1px solid #6c757d;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+     color: #ffffff;
+}
+div[data-testid="stMultiSelect"] > div > div > div:focus-within {
+        border-color: #6cb2eb;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(108, 178, 235, 0.25);
+}
+/* Анимация для загрузчиков и сохранений */
+
+div[data-testid="stFileUploader"] > div > div > div > label:hover,
+div[data-testid="stDownloadButton"] > div > button:hover {
+    transform: scale(1.02);
+    transition: all 0.2s ease-in-out;
+}
+
+/* Стили для сообщений об успехе и ошибках */
+div.stAlert.success {
+    background-color: #51b47d;
+    border-color: #51b47d;
+    color: #ffffff;
+}
+
+div.stAlert.error {
+    background-color: #e2747f;
+    border-color: #e2747f;
+    color: #ffffff;
+}
+
+div.stAlert.info {
+    background-color: #6a97c5;
+    border-color: #6a97c5;
+     color: #ffffff;
+}
+
+div.stAlert.warning {
+     background-color: #e6cc6e;
+    border-color: #e6cc6e;
+    color: #343a40;
+}

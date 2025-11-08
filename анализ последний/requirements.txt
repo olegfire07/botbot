@@ -1,0 +1,11 @@
+dash
+dash-bootstrap-components
+dash-auth
+dash-ag-grid
+pandas
+plotly
+numpy
+scikit-learn
+prophet
+flask-caching
+scipy

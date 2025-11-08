@@ -1,0 +1,197 @@
+/* style.css */
+
+/* Основные стили */
+body {
+    font-family: sans-serif;
+    color: #333;
+    background-color: #f8f9fa;
+    margin: 0; /* Убираем стандартные отступы */
+    padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #2c3e50;
+}
+
+.stApp {
+    max-width: 100%;
+    padding: 1rem; /* Уменьшаем общий padding */
+}
+
+/* Стили для вкладок */
+div[data-baseweb="tab-list"] > div {
+    background-color: #e9ecef;
+    padding: 0.5rem;
+    border-radius: 0.5rem 0.5rem 0 0;
+    transition: background-color 0.3s ease; /* Анимация при переключении */
+}
+
+div[data-baseweb="tab-list"] > div button {
+    border-bottom: 2px solid transparent;
+    transition: color 0.3s ease, border-bottom 0.3s ease; /* Анимация при переключении */
+}
+
+div[data-baseweb="tab-list"] > div button[aria-selected="true"] {
+    border-bottom: 2px solid #007bff;
+    color: #007bff;
+}
+
+
+/* Стили для метрик */
+div[data-testid="metric-container"] {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 0.5rem;
+    padding: 0.8rem; /* Уменьшаем padding внутри метрик */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+div[data-testid="metric-container"]:hover {
+    transform: translateY(-3px);
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Стили для графиков */
+.plotly {
+    border: 1px solid #e0e0e0;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Стили для таблиц */
+.streamlit-dataframe {
+  border: 1px solid #e0e0e0;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+}
+
+/* Стили для кнопок */
+div.stButton > button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 0.3rem;
+    padding: 0.6rem 1rem; /* Уменьшаем padding для кнопок */
+    transition: all 0.3s ease-in-out;
+}
+
+div.stButton > button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+div.stButton > button:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+}
+
+/* Стили для слайдеров */
+div[data-testid="stSlider"] div[role="slider"]{
+   background-color: #007bff;
+}
+
+
+div[data-testid="stSlider"] [data-baseweb="slider-thumb"]{
+  background-color: #fff;
+  border: 2px solid #007bff;
+}
+
+/* Стили для полей ввода */
+div[data-testid="stNumberInput"] input {
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    padding: 0.4rem 0.6rem; /* Уменьшаем padding для полей */
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+div[data-testid="stNumberInput"] input:focus {
+    border-color: #007bff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Стили для selectbox */
+div[data-testid="stSelectbox"] > div > div > div {
+        border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+div[data-testid="stSelectbox"] > div > div > div:focus-within {
+        border-color: #007bff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Стили для загрузчика файлов */
+div[data-testid="stFileUploader"] div button {
+    background-color: #28a745;
+     border-color: #28a745;
+    color: white;
+}
+
+div[data-testid="stFileUploader"] div button:hover {
+    background-color: #218838;
+     border-color: #218838;
+}
+/* Стили для multiselect */
+div[data-testid="stMultiSelect"] > div > div > div {
+  border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+div[data-testid="stMultiSelect"] > div > div > div:focus-within {
+        border-color: #007bff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+/* Анимация для загрузчиков и сохранений */
+
+div[data-testid="stFileUploader"] > div > div > div > label:hover,
+div[data-testid="stDownloadButton"] > div > button:hover {
+    transform: scale(1.02);
+    transition: all 0.2s ease-in-out;
+}
+
+/* Стили для сообщений об успехе и ошибках */
+div.stAlert.success {
+    background-color: #e6f9e8;
+    border-color: #b9e9be;
+    color: #155724;
+}
+
+div.stAlert.error {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+div.stAlert.info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+}
+
+div.stAlert.warning {
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+    color: #856404;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .stApp {
+        padding: 0.5rem; /* Уменьшаем padding на маленьких экранах */
+    }
+    div[data-testid="metric-container"] {
+     padding: 0.5rem; /* Уменьшаем padding внутри метрик */
+     }
+   div.stButton > button {
+      padding: 0.5rem 0.8rem; /* Уменьшаем padding для кнопок */
+     }
+    div[data-testid="stNumberInput"] input {
+        padding: 0.3rem 0.4rem;
+    }
+}
