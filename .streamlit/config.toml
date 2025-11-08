@@ -1,2 +1,7 @@
 [server]
-maxUploadSize = 1000 # Укажите размер в МБ
+maxUploadSize = 200            # МБ, поставь больше если надо
+enableXsrfProtection = true
+headless = true
+
+[theme]
+base = "light"

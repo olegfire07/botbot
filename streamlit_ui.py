@@ -24,7 +24,7 @@ class MetricDisplay:
         self.label = label
 
     def display(self, col, value):
-        col.metric(self.label, f"{value:,.2f}")
+        col.metric(self.label, f"{value:,.{st.session_state.get('selected_decimal','2')}f}" if st.session_state.get("selected_format") == "С разделителями" else f"{value:.{st.session_state.get('selected_decimal','2')}f}")
 
 
 class ChartDisplay:
@@ -53,7 +53,7 @@ class ChartDisplay:
             color_discrete_map=self.color_map,
             **kwargs
         )
-        fig.update_traces(textposition="outside")
+        fig.update_traces(textposition="outside", hovertemplate="%{y:.2f}")  # Add hover template
         fig.update_layout(yaxis_title=self.y_title, xaxis_title=self.x_title)
         st.plotly_chart(fig, use_container_width=True)
 
@@ -66,11 +66,8 @@ class ChartDisplay:
         )
         if y_range:
             fig.update_layout(yaxis={"range": y_range})
-        fig.update_layout(
-            xaxis_title=self.x_title,
-            yaxis_title=self.y_title
-        )
-        st.plotly_chart(fig, use_container_width=True)
+        self._extracted_from_display_interactive_line_10(fig)
+
 
     def display_interactive_line(self, df, x, y, color=None, **kwargs):
         """
@@ -79,7 +76,17 @@ class ChartDisplay:
         fig = px.line(
             df, x=x, y=y, title=self.title, color=color, **kwargs
         )
-        fig.update_layout(xaxis_title=self.x_title, yaxis_title=self.y_title)
+        self._extracted_from_display_interactive_line_10(fig)
+    
+
+    def _extracted_from_display_interactive_line_10(self, fig):
+        fig.update_layout(
+            xaxis_title=self.x_title,
+            yaxis_title=self.y_title,
+            hovermode="x unified",
+            xaxis=dict(rangeslider=dict(visible=True), type="-"),
+        )
+        fig.update_traces(hovertemplate="%{y:.2f}")
         st.plotly_chart(fig, use_container_width=True)
 
     def display_heatmap(self, df, x_title="", y_title="", **kwargs):
@@ -101,7 +108,7 @@ class TableDisplay:
     Класс для отображения таблиц.
     """
     def display(self, df):
-        st.dataframe(df)
+        st.dataframe(df, key = "df_table") # Исправлено, убрали .style.format и .apply
 
 
 def display_tab1_header(tab, main_color="#007bff"):
@@ -243,9 +250,9 @@ def display_tab1(
 
         st.write("---")
         st.subheader("Дополнительная информация")
-        with open("help.md", "r") as f:
+        with open("help.md", "r", encoding='utf-8') as f:
             help_text = f.read()
-            st.markdown(help_text)
+            st.markdown(help_text, unsafe_allow_html=True)
 
 
 def display_tab2_header(tab):
@@ -284,15 +291,15 @@ def display_tab2_basic_forecast(tab, base_financials, params):
         chart.display_line(df_long, "Месяц", "Значение", color="Показатель")
 
 
-def _extracted_from_display_tab2_ml_forecast_39(df_for_ml, ml_model, params, base_financials):
+def _extracted_from_display_tab2_ml_forecast_39(df_for_ml, ml_model, params, base_financials, features=None, auto_feature_selection=False):
     from ml_models import prepare_ml_data
     df_prepared = prepare_ml_data(df_for_ml, target_column="Доходы")
     predictions, intervals = predict_with_model(
         ml_model,
         df_prepared,
         list(range(1, params.time_horizon + 1)),
-        features=params.features,
-        auto_feature_selection=params.auto_feature_selection
+        features=features,
+        auto_feature_selection=auto_feature_selection
     )
     df_ml = pd.DataFrame({"Месяц": range(1, params.time_horizon + 1), "Прогноз Доходы": predictions})
     if intervals is not None:
@@ -327,16 +334,15 @@ def _extracted_from_display_tab2_ml_forecast_39(df_for_ml, ml_model, params, bas
     from ml_models import calculate_metrics
     try:
         if params.auto_feature_selection and params.features is not None and len(params.features) > 1:
-            from sklearn.feature_selection import SelectKBest, f_regression
-            selector = SelectKBest(score_func=f_regression, k=min(3, len(params.features)))
-            X = df_prepared[params.features].values
-            selector.fit(X, df_prepared["Доходы"].values)
-            selected_features = [params.features[i] for i in selector.get_support(indices=True)]
-            y_pred = ml_model.predict(df_prepared[selected_features].values)
+             from sklearn.feature_selection import SelectKBest, f_regression
+             selector = SelectKBest(score_func=f_regression, k=min(3, len(params.features)))
+             X = df_prepared[params.features].values
+             selector.fit(X, df_prepared["Доходы"].values)
+             selected_features = [features[i] for i in selector.get_support(indices=True)]
+             y_pred = ml_model.predict(df_prepared[selected_features].values)
         else:
             X = df_prepared[params.features].values
             y_pred = ml_model.predict(X)
-
         y_true = df_prepared["Доходы"].values
         rmse, r2, mae = calculate_metrics(y_true, y_pred)
         st.write(f"Показатели качества (ML-модель): RMSE={rmse:.2f}, R²={r2:.2f}, MAE={mae:.2f}")
@@ -362,18 +368,19 @@ def display_tab2_ml_forecast(
             if st.button("Обучить модель", key="train_model_btn"):
                 if df_for_ml is not None:
                     try:
-                        new_model = ml_models.train_ml_model(
-                            df_for_ml,
-                            target_column="Доходы",
-                            model_type=params.forecast_method,
-                            poly_degree=params.poly_degree,
-                            n_estimators=params.n_estimators,
-                            features=params.features,
-                            param_search_method=params.param_search_method,
-                            auto_feature_selection=params.auto_feature_selection
-                        )
-                        st.session_state["ml_model"] = new_model
-                        st.success("Модель успешно обучена! Прогноз отображён ниже.")
+                         with st.spinner("Обучение модели..."):
+                            new_model = ml_models.train_ml_model(
+                                df_for_ml,
+                                target_column="Доходы",
+                                model_type=params.forecast_method,
+                                poly_degree=params.poly_degree,
+                                n_estimators=params.n_estimators,
+                                features=params.features,
+                                param_search_method=params.param_search_method,
+                                auto_feature_selection=params.auto_feature_selection
+                            )
+                            st.session_state["ml_model"] = new_model
+                            st.success("Модель успешно обучена! Прогноз отображён ниже.")
                     except Exception as e:
                         st.error(f"Ошибка при обучении: {e}")
                 else:
@@ -382,7 +389,7 @@ def display_tab2_ml_forecast(
             if ml_model is not None and df_for_ml is not None:
                 with st.spinner("Выполняется прогноз..."):
                     _extracted_from_display_tab2_ml_forecast_39(
-                        df_for_ml, ml_model, params, base_financials
+                        df_for_ml, ml_model, params, base_financials, features=params.features, auto_feature_selection = params.auto_feature_selection
                     )
             else:
                 st.info("Модель не обучена или отсутствуют данные.")
@@ -624,14 +631,16 @@ def display_tab3_sensitivity(tab, params, disable_extended=False, help_texts=Non
                     f"Минимум для {ru_label}",
                     value=base_val * 0.5 if base_val > 0 else 0.0,
                     format="%.2f",
-                    key=f"min_{key}"
+                    key=f"min_{key}",
+                     help=help_texts.get(key, ""),
                 )
             with col2:
                 max_val = st.number_input(
                     f"Максимум для {ru_label}",
                     value=base_val * 1.5 if base_val > 0 else 1.0,
                     format="%.2f",
-                    key=f"max_{key}"
+                    key=f"max_{key}",
+                    help=help_texts.get(key, "")
                 )
 
             df_sens = build_bep_df(params, key, base_val, min_val, max_val)
@@ -685,14 +694,16 @@ def display_tab3_sensitivity(tab, params, disable_extended=False, help_texts=Non
                         f"Мин. для {ru_label}",
                         value=base_val * 0.8 if base_val > 0 else 0.0,
                         format="%.2f",
-                        key=f"multidim_min_{key}"
+                        key=f"multidim_min_{key}",
+                        help=help_texts.get(key, ""),
                     )
                 with col2:
                     max_val = st.number_input(
                         f"Макс. для {ru_label}",
                         value=base_val * 1.2 if base_val > 0 else 1.0,
                         format="%.2f",
-                        key=f"multidim_max_{key}"
+                        key=f"multidim_max_{key}",
+                        help=help_texts.get(key, ""),
                     )
                 param_ranges[key] = np.linspace(min_val, max_val, 3)
 
@@ -802,7 +813,9 @@ def display_tab4_storage_table(tab, params, base_financials):
             ],
         })
         TableDisplay().display(
-            df_storage.style.format({
+            df_storage.copy()
+            .style
+            .format({
                 "Площадь (м²)": "{:,.2f}",
                 "Доход (руб.)": "{:,.2f}"
             })
@@ -1029,7 +1042,7 @@ def compare_params(tab, current_params, selected_param):
         "loan_grace_period": "Льготный период (мес.)",
         "monthly_income_growth": "Рост доходов (%/мес.)",
         "monthly_expenses_growth": "Рост расходов (%/мес.)",
-        "forecast_method": "Метод прогнозирования",
+         "forecast_method": "Метод прогнозирования",
         "monte_carlo_simulations": "Симуляций Монте-Карло",
         "monte_carlo_deviation": "Отклонения (0.1 = ±10%)",
         "monte_carlo_seed": "Seed",
@@ -1064,3 +1077,86 @@ def compare_params(tab, current_params, selected_param):
                     st.write(f"**Сохранённое:** {saved_value:,.2f} | **Текущее:** {current_value:,.2f}")
                 else:
                     st.write(f"**{ru_label}:** Сохранённое: {saved_value} | Текущее: {current_value}")
+
+
+def display_tab5_header(tab):
+    with tab:
+         st.header("Дашборд")
+         st.info(
+            "Здесь вы можете увидеть ключевые показатели и графики в одном месте."
+        )
+
+def display_tab5_dashboard(tab, base_financials, params, help_texts):
+    with tab:
+        col1, col2, col3 = st.columns(3)
+        MetricDisplay("Общий доход (руб.)").display(col1, base_financials["total_income"])
+        MetricDisplay("Общие расходы (руб.)").display(col2, base_financials["total_expenses"])
+        MetricDisplay("Прибыль (руб.)").display(col3, base_financials["profit"])
+        
+        col4, col5 = st.columns(2)
+        pm, pr = calculate_additional_metrics(
+            base_financials["total_income"],
+            base_financials["total_expenses"],
+            base_financials["profit"]
+        )
+        roi = calculate_roi(base_financials["total_income"], base_financials["total_expenses"])
+        MetricDisplay("Маржа прибыли (%)").display(col4, pm)
+        MetricDisplay("Рентабельность (%)").display(col5, pr)
+        
+        col6, col7 = st.columns(2)
+        if roi is not None:
+            MetricDisplay("ROI (%)").display(col6, roi)
+        else:
+            col6.metric("ROI (%)", "Невозможно рассчитать")
+
+        irr_val = calculate_irr(
+            [
+                -params.one_time_setup_cost - params.one_time_equipment_cost
+                - params.one_time_other_costs - params.one_time_legal_cost
+                - params.one_time_logistics_cost
+            ]
+            + [base_financials["profit"]] * params.time_horizon
+        )
+        col7.metric("IRR (%)", f"{irr_val:.2f}%")
+
+        st.write("---")
+        st.subheader("Графики")
+
+        df_plot = pd.DataFrame({
+            "Категория": ["Доход", "Расход"],
+            "Значение": [
+                base_financials["total_income"],
+                base_financials["total_expenses"]
+            ]
+        })
+        chart_display = ChartDisplay(
+            "Доходы и расходы",
+            color_map={"Доход": "green", "Расход": "red"}
+        )
+        chart_display.display_bar(df_plot, "Категория", "Значение")
+        
+        
+        df_storage = pd.DataFrame({
+            "Тип хранения": ["Стандартное", "VIP", "Краткосрочное", "Займы"],
+            "Площадь (м²)": [
+                params.storage_area,
+                params.vip_area,
+                params.short_term_area,
+                params.loan_area
+            ],
+            "Доход (руб.)": [
+                base_financials["storage_income"],
+                base_financials["vip_income"],
+                base_financials["short_term_income"],
+                base_financials["loan_income_after_realization"],
+            ],
+        })
+        ChartDisplay("Доходы по типам хранения", x_title = "Тип хранения", y_title="Рубли").display_bar(
+                df_storage, x="Тип хранения", y="Доход (руб.)"
+        )
+        
+        monthly_bep_df = calculate_monthly_bep(base_financials, params)
+        ChartDisplay("Помесячная BEP", x_title="Месяц", y_title="Рубли").display_line(
+            monthly_bep_df, "Месяц", "Необходимый доход для BEP",
+            color="Необходимый доход для BEP", markers=True
+        )

@@ -17,7 +17,7 @@ def generate_download_link(df: pd.DataFrame, filename="results.csv", link_text="
     # Иначе прежнее поведение:
     import base64
     b64 = base64.b64encode(csv_data.encode()).decode()
-    return f'<a href="data:file/csv;base64,{b64}" download="{filename}">{link_text}</a>'
+    return f'<a href="data:file/csv;base64,{b64}" download="{filename}">{link_text}</a>' # Переведен link_text
 
 def generate_excel_download(df: pd.DataFrame, filename="results.xlsx", link_text="Скачать Excel", return_raw=False):
     """Создаёт либо ссылку, либо возвращает Excel-данные (bytes)."""
@@ -31,7 +31,7 @@ def generate_excel_download(df: pd.DataFrame, filename="results.xlsx", link_text
         return excel_data
     # Иначе прежнее поведение:
     b64 = base64.b64encode(excel_data).decode()
-    return f'<a href="data:application/octet-stream;base64,{b64}" download="{filename}">{link_text}</a>'
+    return f'<a href="data:application/octet-stream;base64,{b64}" download="{filename}">{link_text}</a>'  # Переведен link_text
 
 
 
@@ -64,7 +64,7 @@ def perform_sensitivity_analysis(params, param_key, param_values, disable_extend
 def safe_display_irr(irr_value):
     """Безопасное отображение IRR в интерфейсе."""
     if irr_value is None:
-        st.metric("IRR (%)", "Невозможно рассчитать")
+        st.metric("IRR (%)", "Невозможно рассчитать")  # Переведен текст
     else:
         st.metric("IRR (%)", f"{irr_value:.2f}%")
 
@@ -85,7 +85,8 @@ def load_params_from_file(file_path):
             else:
                 raise ValueError("Неподдерживаемый формат файла")
     except Exception as e:
-        st.error(f"Ошибка при загрузке параметров: {e}")
+        st.error(f"Ошибка при загрузке параметров: {e}") # Переведен текст
+
         return None
 
 
@@ -99,5 +100,5 @@ def save_params_to_file(params, filename, file_format):
         else:
             raise ValueError("Неподдерживаемый формат файла")
     except Exception as e:
-        st.error(f"Ошибка при сохранении параметров: {e}")
+        st.error(f"Ошибка при сохранении параметров: {e}") # Переведен текст
         return None

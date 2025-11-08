@@ -15,16 +15,51 @@ from calculations import (
     calculate_roi,
     monte_carlo_simulation,
     min_loan_amount_for_bep,
-    calculate_monthly_projection,  # Если у вас есть новая функция
+    calculate_monthly_projection,
+    calculate_multidimensional_sensitivity
 )
 from data_model import WarehouseParams
+import streamlit as st
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.svm import SVR
+from ml_models import (
+    train_ml_model,
+    predict_with_model,
+    prepare_ml_data,
+    calculate_metrics,
+    load_ml_model,
+    get_param_grid,
+    get_param_dist,
+)
+import os
+import joblib
 
 
 class TestCalculations(unittest.TestCase):
+    """
+    Тесты для проверки корректности вычислений в модуле calculations.py.
+    Каждый тест проверяет отдельную функцию с различными входными параметрами и ожидаемыми результатами.
+    """
+
+    def setUp(self):
+        """
+        Очищаем кэш Streamlit перед запуском каждого теста.
+        Создаем простой DataFrame с синтетическими данными.
+        """
+        st.cache_resource.clear()
+        self.df = pd.DataFrame({
+            "Месяц": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            "Доходы": [100, 120, 150, 180, 220, 250, 280, 300, 320, 350]
+        })
 
     def test_calculate_items(self):
         """
-        Проверяем базовую функцию calculate_items(area, shelves, density, fill_rate).
+        Тестирует функцию calculate_items(area, shelves, density, fill_rate).
+         Проверяет базовые случаи: валидные значения, нули, дробные значения.
+         Ожидается точный расчет количества вещей при разных входных данных.
         """
         self.assertEqual(calculate_items(10, 3, 5, 1), 150)
         self.assertEqual(calculate_items(0, 3, 5, 1), 0)
@@ -34,8 +69,10 @@ class TestCalculations(unittest.TestCase):
 
     def test_calculate_total_bep(self):
         """
-        Проверяем функцию calculate_total_bep: 
+        Тестирует функцию calculate_total_bep:
         BEP = total_expenses + (one_time_expenses / time_horizon).
+         Проверяет корректность расчета при наличии единовременных расходов, с учетом времени горизонта.
+         Ожидается, что общая точка безубыточности будет равна сумме ежемесячных расходов и амортизированных единовременных расходов.
         """
         params = WarehouseParams(
             total_area=100,
@@ -119,7 +156,8 @@ class TestCalculations(unittest.TestCase):
 
     def test_validate_inputs(self):
         """
-        Проверяем валидацию входных данных validate_inputs(params).
+        Тестирует валидацию входных данных validate_inputs(params).
+         Проверяет различные невалидные сценарии, включая некорректные значения площади, срока займа и степени полинома.
         """
         from data_model import validate_inputs
 
@@ -225,7 +263,8 @@ class TestCalculations(unittest.TestCase):
 
     def test_calculate_irr(self):
         """
-        Проверяем IRR — сравниваем с npf.irr.
+        Тестирует calculate_irr. Сравнивает результат с npf.irr.
+        Проверяет корректность расчета IRR для заданного набора денежных потоков.
         """
         cash_flows = [-100000, 30000, 40000, 50000]
         irr = calculate_irr(cash_flows)
@@ -234,9 +273,10 @@ class TestCalculations(unittest.TestCase):
 
     def test_calculate_monthly_bep(self):
         """
-        Проверяем calculate_monthly_bep. 
-        Обратите внимание, что функция возвращает DataFrame 
-        с колонкой "Необходимый доход для BEP" (или другой, если поменяли).
+        Тестирует calculate_monthly_bep.
+        Проверяет, что возвращается DataFrame с необходимыми столбцами и что
+        значения корректно рассчитываются при отсутствии роста.
+         Ожидается, что все месячные значения будут одинаковыми при отсутствии роста.
         """
         params = WarehouseParams(
             total_area=100,
@@ -339,7 +379,8 @@ class TestCalculations(unittest.TestCase):
 
     def test_calculate_areas(self):
         """
-        Проверяем корректность распределения площадей.
+        Тестирует корректность распределения площадей.
+          Проверяет, что площади рассчитаны правильно в ручном режиме, с учетом usable_area.
         """
         params = WarehouseParams(
             total_area=100,
@@ -420,7 +461,9 @@ class TestCalculations(unittest.TestCase):
 
     def test_calculate_financials(self):
         """
-        Проверяем общий расчёт calculate_financials за 1 месяц (доходы, расходы, прибыль).
+        Тестирует общий расчёт calculate_financials за 1 месяц (доходы, расходы, прибыль).
+        Проверяет корректность расчета доходов, расходов и прибыли по разным статьям, с учетом различных параметров.
+         Также проверяет единовременные
         """
         params = WarehouseParams(
             total_area=100,
@@ -503,7 +546,7 @@ class TestCalculations(unittest.TestCase):
         expected_vip_income = params.vip_area * (params.storage_fee + params.vip_extra_fee)
         expected_short_term_income = params.short_term_area * params.short_term_daily_rate * 30
 
-        # Займы 
+        # Займы
         from calculations import calculate_items
         loan_items = calculate_items(
             params.loan_area,
@@ -614,7 +657,7 @@ class TestCalculations(unittest.TestCase):
         )
         self.assertAlmostEqual(fin_onetime["profit"], expected_profit, places=2)
 
-        # Зануляем единовременные 
+        # Зануляем единовременные
         params.one_time_setup_cost = 0
         params.one_time_equipment_cost = 0
         params.one_time_other_costs = 0
@@ -641,7 +684,8 @@ class TestCalculations(unittest.TestCase):
 
     def test_calculate_additional_metrics(self):
         """
-        Проверяем calculate_additional_metrics (маржа, рентабельность).
+        Тестирует calculate_additional_metrics (маржа, рентабельность).
+        Проверяет корректность расчета маржи прибыли и рентабельности при заданных значениях.
         """
         pm, pr = calculate_additional_metrics(100000, 80000, 20000)
         # pm = (profit / total_income) * 100 => (20000 / 100000)*100 = 20
@@ -651,14 +695,17 @@ class TestCalculations(unittest.TestCase):
 
     def test_calculate_roi(self):
         """
-        Проверяем ROI.
+        Тестирует ROI. Проверяет расчет при валидных и нулевых расходах.
+        Ожидается 25% ROI при заданных значениях и None при нулевых расходах.
         """
         self.assertAlmostEqual(calculate_roi(100000, 80000), 25.0)
         self.assertIsNone(calculate_roi(100000, 0))
 
+
     def test_monte_carlo_simulation(self):
         """
-        Проверяем монте-карло симуляцию доходов/расходов.
+        Тестирует монте-карло симуляцию доходов/расходов.
+        Проверяет, что возвращается DataFrame, и что значения в нем находятся в ожидаемом диапазоне.
         """
         base_income = 100000
         base_expenses = 80000
@@ -699,8 +746,8 @@ class TestCalculations(unittest.TestCase):
 
     def test_min_loan_amount_for_bep(self):
         """
-        Проверяем min_loan_amount_for_bep: 
-        сколько нужно на одну вещь, чтобы покрыть расходы?
+        Тестирует min_loan_amount_for_bep:
+        Проверяет, что возвращается значение >= 0, а так же при заданных параметрах.
         """
         params = WarehouseParams(
             total_area=100,
@@ -785,8 +832,9 @@ class TestCalculations(unittest.TestCase):
     # ----------------------------------------
     def test_calculate_monthly_projection(self):
         """
-        Если у вас есть функция calculate_monthly_projection 
+        Если у вас есть функция calculate_monthly_projection
         (помесячный расчёт доходов/расходов), проверяем её.
+         Проверяем структуру DataFrame и корректность расчета.
         """
         # Проверим, что функция не падает и даёт DataFrame
         try:
@@ -877,7 +925,6 @@ class TestCalculations(unittest.TestCase):
         except Exception as e:
             self.fail(f"calculate_monthly_projection вызвало исключение: {e}")
 
-    # TODO Rename this here and in `test_calculate_monthly_projection`
     def _extracted_from_test_calculate_monthly_projection_89(self, calculate_monthly_projection, params, base_fin):
         df_proj = calculate_monthly_projection(params, base_fin)
         self.assertIsInstance(df_proj, pd.DataFrame)
@@ -887,10 +934,94 @@ class TestCalculations(unittest.TestCase):
         self.assertIn("Прибыль", df_proj.columns)
         self.assertEqual(len(df_proj), params.time_horizon)
 
+    def test_calculate_multidimensional_sensitivity(self):
+        """
+        Тестирует функцию calculate_multidimensional_sensitivity.
+         Проверяет, что возвращается DataFrame и что результат расчета не None.
+        """
+        params = WarehouseParams(
+            total_area=100,
+            rental_cost_per_m2=10,
+            useful_area_ratio=0.5,
+            mode="Ручной",
+            storage_share=0.25,
+            loan_share=0.25,
+            vip_share=0.25,
+            short_term_share=0.25,
+            storage_area_manual=10.0,
+            loan_area_manual=10.0,
+            vip_area_manual=10.0,
+            short_term_area_manual=10.0,
+            storage_fee=15,
+            shelves_per_m2=3,
+            short_term_daily_rate=6,
+            vip_extra_fee=10,
+            item_evaluation=0.8,
+            item_realization_markup=20.0,
+            average_item_value=15000,
+            loan_interest_rate=0.317,
+            loan_term_days=30,
+            realization_share_storage=0.5,
+            realization_share_loan=0.5,
+            realization_share_vip=0.5,
+            realization_share_short_term=0.5,
+            storage_items_density=5,
+            loan_items_density=1,
+            vip_items_density=2,
+            short_term_items_density=4,
+            storage_fill_rate=1.0,
+            loan_fill_rate=1.0,
+            vip_fill_rate=1.0,
+            short_term_fill_rate=1.0,
+            storage_monthly_churn=0.01,
+            loan_monthly_churn=0.02,
+            vip_monthly_churn=0.005,
+            short_term_monthly_churn=0.03,
+            salary_expense=240000,
+            miscellaneous_expenses=50000,
+            depreciation_expense=20000,
+            marketing_expenses=30000,
+            insurance_expenses=10000,
+            taxes=50000,
+            utilities_expenses=20000,
+            maintenance_expenses=15000,
+            one_time_setup_cost=100000,
+            one_time_equipment_cost=200000,
+            one_time_other_costs=50000,
+            one_time_legal_cost=20000,
+            one_time_logistics_cost=30000,
+            time_horizon=6,
+            monthly_rent_growth=0.01,
+            default_probability=0.05,
+            liquidity_factor=1.0,
+            safety_factor=1.2,
+            loan_grace_period=0,
+            monthly_income_growth=0.0,
+            monthly_expenses_growth=0.0,
+            forecast_method="Базовый",
+            monte_carlo_simulations=100,
+            monte_carlo_deviation=0.1,
+            monte_carlo_seed=42,
+            enable_ml_settings=False,
+            electricity_cost_per_m2=100,
+            monthly_inflation_rate=0.005,
+            monthly_salary_growth=0.005,
+            monthly_other_expenses_growth=0.005,
+            poly_degree=2,
+        )
+        areas = calculate_areas(params)
+        for k, v in areas.items():
+            setattr(params, k, v)
+        df = calculate_multidimensional_sensitivity(params, ["storage_fee", "loan_interest_rate"],
+                                                     {"storage_fee": [10,20], "loan_interest_rate": [0.2, 0.3]}, disable_extended=False)
+        self.assertIsInstance(df, pd.DataFrame)
+        self.assertIsNotNone(df)
+
 
     def test_calculate_additional_metrics(self):
         """
-        Проверяем calculate_additional_metrics (маржа, рентабельность).
+        Тестирует calculate_additional_metrics (маржа, рентабельность).
+        Проверяет корректность расчета маржи прибыли и рентабельности при заданных значениях.
         """
         pm, pr = calculate_additional_metrics(100000, 80000, 20000)
         # pm = (profit / total_income) * 100 => (20000 / 100000)*100 = 20
@@ -900,10 +1031,175 @@ class TestCalculations(unittest.TestCase):
 
     def test_calculate_roi(self):
         """
-        Проверяем ROI.
+        Тестирует ROI. Проверяет расчет при валидных и нулевых расходах.
+        Ожидается 25% ROI при заданных значениях и None при нулевых расходах.
         """
         self.assertAlmostEqual(calculate_roi(100000, 80000), 25.0)
         self.assertIsNone(calculate_roi(100000, 0))
+        
+    def test_ml_models_train_predict(self):
+      """
+      Тестирует функции train_ml_model, predict_with_model, prepare_ml_data, calculate_metrics.
+      """
+
+      # Prepare data
+      df = pd.DataFrame({"Месяц": [1, 2, 3, 4, 5], "Доходы": [100, 120, 150, 180, 220]})
+      df_prepared = prepare_ml_data(df, target_column="Доходы")
+
+      # Train model
+      model = train_ml_model(df_prepared, "Доходы", model_type="ML (линейная регрессия)")
+      self.assertIsInstance(model, LinearRegression)
+
+       # Train model polynomial regression
+      model_poly = train_ml_model(df_prepared, "Доходы", model_type="ML (полиномиальная регрессия)")
+      self.assertIsInstance(model_poly, type(make_pipeline(PolynomialFeatures(), LinearRegression())))
+      
+       # Train model random forest
+      model_rf = train_ml_model(df_prepared, "Доходы", model_type="ML (случайный лес)")
+      self.assertIsInstance(model_rf, RandomForestRegressor)
+
+      # Train model svr
+      model_svr = train_ml_model(df_prepared, "Доходы", model_type="ML (SVR)")
+      self.assertIsInstance(model_svr, SVR)
+
+      # Make predictions
+      predictions, _ = predict_with_model(model, df_prepared, future_months=[6, 7, 8], features=["Месяц"])
+      self.assertIsInstance(predictions, np.ndarray)
+      self.assertEqual(len(predictions), 3)
+
+      # Calculate metrics
+      y_true = np.array([10, 20, 30, 40, 50])
+      y_pred = np.array([11, 19, 31, 39, 52])
+      rmse, r2, mae = calculate_metrics(y_true, y_pred)
+      self.assertIsNotNone(rmse)
+      self.assertIsNotNone(r2)
+      self.assertIsNotNone(mae)
+
+
+    def test_load_ml_model(self):
+        """
+         Тестирует функцию load_ml_model.
+          Проверяет, что модель загружается или обучается, и сохраняется в файл.
+        """
+        params = WarehouseParams(
+            total_area=100,
+            rental_cost_per_m2=10,
+            useful_area_ratio=0.7,
+            mode="Ручной",
+            storage_share=0.25,
+            loan_share=0.25,
+            vip_share=0.25,
+            short_term_share=0.25,
+            storage_area_manual=20.0,
+            loan_area_manual=15.0,
+            vip_area_manual=10.0,
+            short_term_area_manual=5.0,
+            storage_fee=15,
+            shelves_per_m2=3,
+            short_term_daily_rate=6,
+            vip_extra_fee=10,
+            item_evaluation=0.8,
+            item_realization_markup=20.0,
+            average_item_value=15000,
+            loan_interest_rate=0.317,
+            loan_term_days=30,
+            realization_share_storage=0.5,
+            realization_share_loan=0.5,
+            realization_share_vip=0.5,
+            realization_share_short_term=0.5,
+            storage_items_density=5,
+            loan_items_density=1,
+            vip_items_density=2,
+            short_term_items_density=4,
+            storage_fill_rate=1.0,
+            loan_fill_rate=1.0,
+            vip_fill_rate=1.0,
+            short_term_fill_rate=1.0,
+            storage_monthly_churn=0.01,
+            loan_monthly_churn=0.02,
+            vip_monthly_churn=0.005,
+            short_term_monthly_churn=0.03,
+            salary_expense=240000,
+            miscellaneous_expenses=50000,
+            depreciation_expense=20000,
+            marketing_expenses=30000,
+            insurance_expenses=10000,
+            taxes=50000,
+            utilities_expenses=20000,
+            maintenance_expenses=15000,
+            one_time_setup_cost=100000,
+            one_time_equipment_cost=200000,
+            one_time_other_costs=50000,
+            one_time_legal_cost=20000,
+            one_time_logistics_cost=30000,
+            time_horizon=6,
+            monthly_rent_growth=0.01,
+            default_probability=0.05,
+            liquidity_factor=1.0,
+            safety_factor=1.2,
+            loan_grace_period=0,
+            monthly_income_growth=0.0,
+            monthly_expenses_growth=0.0,
+            forecast_method="Базовый",
+            monte_carlo_simulations=100,
+            monte_carlo_deviation=0.1,
+            monte_carlo_seed=42,
+            enable_ml_settings=False,
+            electricity_cost_per_m2=100,
+            monthly_inflation_rate=0.005,
+            monthly_salary_growth=0.005,
+            monthly_other_expenses_growth=0.005,
+            poly_degree=2,
+        )
+        
+        
+        df = pd.DataFrame({"Месяц": [1, 2, 3, 4, 5], "Доходы": [100, 120, 150, 180, 220]})
+        model_filename = "test_ml_model.pkl"
+        model = train_ml_model(df, target_column="Доходы", model_type="ML (линейная регрессия)", poly_degree=params.poly_degree, features=["Месяц"])
+        joblib.dump(model, model_filename)
+
+        loaded_model = load_ml_model(
+            df,
+            target_column="Доходы",
+            model_type="ML (линейная регрессия)",
+            uploaded_model_file=model_filename,
+            poly_degree=params.poly_degree,
+            features = ["Месяц"]
+        )
+        self.assertIsInstance(loaded_model, LinearRegression)
+        os.remove(model_filename) # Убираем тестовый файл
+    
+    def test_get_param_grid(self):
+        """
+          Тестирует функцию get_param_grid.
+          Проверяет, что возвращаются словари для заданных типов.
+        """
+        self._extracted_from_test_get_param_grid_6(
+            "ML (случайный лес)", 'n_estimators'
+        )
+        self._extracted_from_test_get_param_grid_6("ML (SVR)", 'C')
+
+    # TODO Rename this here and in `test_get_param_grid`
+    def _extracted_from_test_get_param_grid_6(self, arg0, arg1):
+        grid_rf = get_param_grid(arg0)
+        self.assertIsInstance(grid_rf, dict)
+        self.assertIn(arg1, grid_rf)
+
+    def test_get_param_dist(self):
+        """
+        Тестирует функцию get_param_dist.
+        Проверяет, что возвращаются словари для заданных типов моделей.
+        """
+        self._extracted_from_test_get_param_dist_6(
+            "ML (случайный лес)", 'n_estimators'
+        )
+        self._extracted_from_test_get_param_dist_6("ML (SVR)", 'C')
+
+    # TODO Rename this here and in `test_get_param_dist`
+    def _extracted_from_test_get_param_dist_6(self, arg0, arg1):
+        dist_rf = get_param_dist(arg0)
+        self.assertIsInstance(dist_rf, dict)
+        self.assertIn(arg1, dist_rf)
 
 
 if __name__ == "__main__":

@@ -54,6 +54,8 @@ from streamlit_ui import (
     display_tab4_profit_table,
     display_tab4_results,
     compare_params,
+    display_tab5_header,
+    display_tab5_dashboard
 )
 from ml_models import prepare_ml_data, load_ml_model, train_ml_model
 from app_state import AppState
@@ -141,21 +143,46 @@ with st.sidebar:
     st.markdown("## Ввод параметров")
     if st.button("🔄 Сбросить параметры"):
         reset_params()
-
-    with st.sidebar.expander("### Настройка темы", expanded=False):
+    
+    with st.sidebar.expander("### Настройки отображения", expanded=False):
+        # Добавлен селектбокс для выбора формата чисел
+        format_options = ["Без разделителей", "С разделителями"]
+        current_format = app_state.get("selected_format") or "С разделителями"
+        format_index = format_options.index(current_format) if current_format in format_options else 1
+        selected_format = st.selectbox(
+            "Формат чисел",
+            format_options,
+            index=format_index,
+            help = "Выберите формат отображения чисел: с разделителем тысяч или без.",
+        )
+        app_state.set("selected_format", selected_format)
+         
+        decimal_places_options = ["0", "1", "2", "3", "4"]
+        current_decimal = app_state.get("selected_decimal") or "2"
+        decimal_index = decimal_places_options.index(current_decimal) if current_decimal in decimal_places_options else 2
+        selected_decimal = st.selectbox(
+            "Знаков после запятой",
+            decimal_places_options,
+            index=decimal_index,
+            help = "Выберите количество знаков после запятой.",
+        )
+        app_state.set("selected_decimal", selected_decimal)
+        
         theme_options = ["Стандартная", "Темная"]
         current_theme = app_state.get("selected_theme") or "Стандартная"
         theme_index = theme_options.index(current_theme) if current_theme in theme_options else 0
         selected_theme = st.selectbox(
             "Тема интерфейса",
             theme_options,
-            index=theme_index
+            index=theme_index,
+            help=help_texts.get("theme", "")
         )
         app_state.set("selected_theme", selected_theme)
 
         main_color = st.color_picker(
             "Основной цвет интерфейса",
-            value=app_state.get("main_color") or "#007bff"
+            value=app_state.get("main_color") or "#007bff",
+            help=help_texts.get("main_color", "")
         )
         app_state.set("main_color", main_color)
 
@@ -163,7 +190,8 @@ with st.sidebar:
             load_css("dark_style.css")
         else:
             load_css("style.css")
-
+    
+    
     with st.sidebar.expander("### Основные параметры", expanded=False):
         total_area = st.number_input(
             "Общая площадь (м²)",
@@ -171,7 +199,7 @@ with st.sidebar:
             step=10,
             min_value=1,
             format="%i",
-            help=help_texts.get("total_area", ""),
+            help=help_texts.get("total_area", "Общая арендуемая площадь склада в квадратных метрах."),
         )
         app_state.set("total_area", total_area)
         if total_area <= 0:
@@ -183,7 +211,7 @@ with st.sidebar:
             step=50,
             min_value=1,
             format="%i",
-            help=help_texts.get("rental_cost_per_m2", ""),
+            help=help_texts.get("rental_cost_per_m2", "Ежемесячная аренда за один квадратный метр."),
         )
         app_state.set("rental_cost_per_m2", rental_cost_per_m2)
         if rental_cost_per_m2 <= 0:
@@ -195,7 +223,7 @@ with st.sidebar:
             80,
             int(app_state.get("useful_area_ratio") * 100),
             5,
-            help=help_texts.get("useful_area_ratio", ""),
+             help=help_texts.get("useful_area_ratio", "Процент полезной площади от общей площади склада.")
         )
         useful_area_ratio = useful_area_ratio_slider / 100.0
         app_state.set("useful_area_ratio", useful_area_ratio)
@@ -205,7 +233,7 @@ with st.sidebar:
             "Режим распределения",
             ["Ручной", "Автоматический"],
             index=0,
-            help=help_texts.get("mode", ""),
+            help=help_texts.get("mode", "Выберите режим распределения площадей: ручной или автоматический"),
         )
         app_state.set("mode", mode)
 
@@ -220,7 +248,7 @@ with st.sidebar:
                 step=10.0,
                 min_value=0.0,
                 format="%.2f",
-                help=help_texts.get("storage_area_manual", ""),
+                help=help_texts.get("storage_area_manual", "Площадь под простое хранение."),
             )
             app_state.set("storage_area_manual", storage_area_manual)
 
@@ -230,7 +258,7 @@ with st.sidebar:
                 step=10.0,
                 min_value=0.0,
                 format="%.2f",
-                help=help_texts.get("loan_area_manual", ""),
+                help=help_texts.get("loan_area_manual", "Площадь под займы."),
             )
             app_state.set("loan_area_manual", loan_area_manual)
 
@@ -241,7 +269,7 @@ with st.sidebar:
                 step=10.0,
                 min_value=0.0,
                 format="%.2f",
-                help=help_texts.get("vip_area_manual", ""),
+                 help=help_texts.get("vip_area_manual", "Площадь под VIP-хранение.")
             )
             app_state.set("vip_area_manual", vip_area_manual)
 
@@ -251,7 +279,7 @@ with st.sidebar:
                 step=10.0,
                 min_value=0.0,
                 format="%.2f",
-                help=help_texts.get("short_term_area_manual", ""),
+                help=help_texts.get("short_term_area_manual", "Площадь под краткосрочное хранение."),
             )
             app_state.set("short_term_area_manual", short_term_area_manual)
 
@@ -273,7 +301,7 @@ with st.sidebar:
             step=100,
             min_value=0,
             format="%i",
-            help=help_texts.get("storage_fee", ""),
+            help=help_texts.get("storage_fee", "Ежемесячный тариф за простой склад (руб./м²)."),
         )
         app_state.set("storage_fee", storage_fee)
 
@@ -285,7 +313,7 @@ with st.sidebar:
             min_value=1,
             max_value=100,
             format="%i",
-            help=help_texts.get("shelves_per_m2", ""),
+            help=help_texts.get("shelves_per_m2", "Количество полок на 1 м²."),
         )
         app_state.set("shelves_per_m2", shelves_per_m2)
 
@@ -295,7 +323,7 @@ with st.sidebar:
             step=10.0,
             min_value=0.0,
             format="%.2f",
-            help=help_texts.get("short_term_daily_rate", ""),
+            help=help_texts.get("short_term_daily_rate", "Тариф за 1 м² краткосрочного хранения в день."),
         )
         app_state.set("short_term_daily_rate", short_term_daily_rate)
 
@@ -305,7 +333,7 @@ with st.sidebar:
             step=50.0,
             min_value=0.0,
             format="%.2f",
-            help=help_texts.get("vip_extra_fee", ""),
+            help=help_texts.get("vip_extra_fee", "Дополнительная наценка для VIP-хранения (руб./м²)."),
         )
         app_state.set("vip_extra_fee", vip_extra_fee)
 
@@ -316,7 +344,7 @@ with st.sidebar:
             100,
             int(app_state.get("item_evaluation") * 100),
             5,
-            help=help_texts.get("item_evaluation", ""),
+            help=help_texts.get("item_evaluation", "Процент оценки стоимости вещи, которую можно взять под залог."),
         )
         item_evaluation = item_evaluation_slider / 100.0
         app_state.set("item_evaluation", item_evaluation)
@@ -328,7 +356,7 @@ with st.sidebar:
             min_value=0.0,
             max_value=100.0,
             format="%.1f",
-            help=help_texts.get("item_realization_markup", ""),
+            help=help_texts.get("item_realization_markup", "Наценка, применяемая при продаже невостребованных вещей."),
         )
         app_state.set("item_realization_markup", item_realization_markup)
 
@@ -338,7 +366,7 @@ with st.sidebar:
             step=500,
             min_value=0,
             format="%i",
-            help=help_texts.get("average_item_value", ""),
+            help=help_texts.get("average_item_value", "Средняя стоимость одной вещи (руб.)."),
         )
         app_state.set("average_item_value", average_item_value)
 
@@ -348,7 +376,7 @@ with st.sidebar:
             step=0.01,
             min_value=0.0,
             format="%.3f",
-            help=help_texts.get("loan_interest_rate", ""),
+           help=help_texts.get("loan_interest_rate", "Дневная процентная ставка для займов."),
         )
         app_state.set("loan_interest_rate", loan_interest_rate)
 
@@ -358,7 +386,7 @@ with st.sidebar:
             step=1,
             min_value=1,
             format="%i",
-            help=help_texts.get("loan_term_days", ""),
+             help=help_texts.get("loan_term_days", "Средний срок займа в днях."),
         )
         app_state.set("loan_term_days", loan_term_days)
 
@@ -369,7 +397,7 @@ with st.sidebar:
             100,
             int(app_state.get("realization_share_storage") * 100),
             5,
-            help=help_texts.get("realization_share_storage", ""),
+            help=help_texts.get("realization_share_storage", "Процент вещей из простого хранения, идущих на реализацию."),
         )
         realization_share_storage = realization_share_storage_slider / 100.0
         app_state.set("realization_share_storage", realization_share_storage)
@@ -380,7 +408,7 @@ with st.sidebar:
             100,
             int(app_state.get("realization_share_loan") * 100),
             5,
-            help=help_texts.get("realization_share_loan", ""),
+            help=help_texts.get("realization_share_loan", "Процент вещей из займов, идущих на реализацию."),
         )
         realization_share_loan = realization_share_loan_slider / 100.0
         app_state.set("realization_share_loan", realization_share_loan)
@@ -391,7 +419,7 @@ with st.sidebar:
             100,
             int(app_state.get("realization_share_vip") * 100),
             5,
-            help=help_texts.get("realization_share_vip", ""),
+             help=help_texts.get("realization_share_vip", "Процент вещей из VIP-хранения, идущих на реализацию."),
         )
         realization_share_vip = realization_share_vip_slider / 100.0
         app_state.set("realization_share_vip", realization_share_vip)
@@ -402,7 +430,7 @@ with st.sidebar:
             100,
             int(app_state.get("realization_share_short_term") * 100),
             5,
-            help=help_texts.get("realization_share_short_term", ""),
+            help=help_texts.get("realization_share_short_term", "Процент вещей из краткосрочного хранения на реализацию."),
         )
         realization_share_short_term = realization_share_short_term_slider / 100.0
         app_state.set("realization_share_short_term", realization_share_short_term)
@@ -414,7 +442,7 @@ with st.sidebar:
             100,
             int(app_state.get("storage_fill_rate") * 100),
             5,
-            help=help_texts.get("storage_fill_rate", ""),
+           help=help_texts.get("storage_fill_rate", "Процент заполнения площади простого хранения."),
         )
         storage_fill_rate = storage_fill_rate_slider / 100.0
         app_state.set("storage_fill_rate", storage_fill_rate)
@@ -425,7 +453,7 @@ with st.sidebar:
             100,
             int(app_state.get("loan_fill_rate") * 100),
             5,
-            help=help_texts.get("loan_fill_rate", ""),
+            help=help_texts.get("loan_fill_rate", "Процент заполнения площади займов."),
         )
         loan_fill_rate = loan_fill_rate_slider / 100.0
         app_state.set("loan_fill_rate", loan_fill_rate)
@@ -436,7 +464,7 @@ with st.sidebar:
             100,
             int(app_state.get("vip_fill_rate") * 100),
             5,
-            help=help_texts.get("vip_fill_rate", ""),
+            help=help_texts.get("vip_fill_rate", "Процент заполнения VIP-секции."),
         )
         vip_fill_rate = vip_fill_rate_slider / 100.0
         app_state.set("vip_fill_rate", vip_fill_rate)
@@ -447,7 +475,7 @@ with st.sidebar:
             100,
             int(app_state.get("short_term_fill_rate") * 100),
             5,
-            help=help_texts.get("short_term_fill_rate", ""),
+             help=help_texts.get("short_term_fill_rate", "Процент заполнения краткосрочного хранения."),
         )
         short_term_fill_rate = short_term_fill_rate_slider / 100.0
         app_state.set("short_term_fill_rate", short_term_fill_rate)
@@ -459,7 +487,7 @@ with st.sidebar:
             step=1,
             min_value=1,
             format="%i",
-            help=help_texts.get("storage_items_density", ""),
+             help=help_texts.get("storage_items_density", "Плотность хранения (вещей на м²) для простого хранения."),
         )
         app_state.set("storage_items_density", storage_items_density)
 
@@ -469,7 +497,7 @@ with st.sidebar:
             step=1,
             min_value=1,
             format="%i",
-            help=help_texts.get("loan_items_density", ""),
+             help=help_texts.get("loan_items_density", "Плотность хранения для займов (вещи/м²)."),
         )
         app_state.set("loan_items_density", loan_items_density)
 
@@ -479,7 +507,7 @@ with st.sidebar:
             step=1,
             min_value=1,
             format="%i",
-            help=help_texts.get("vip_items_density", ""),
+             help=help_texts.get("vip_items_density", "Плотность хранения для VIP (вещи/м²)."),
         )
         app_state.set("vip_items_density", vip_items_density)
 
@@ -489,7 +517,7 @@ with st.sidebar:
             step=1,
             min_value=1,
             format="%i",
-            help=help_texts.get("short_term_items_density", ""),
+            help=help_texts.get("short_term_items_density", "Плотность хранения для краткосрочного (вещи/м²)."),
         )
         app_state.set("short_term_items_density", short_term_items_density)
 
@@ -501,7 +529,7 @@ with st.sidebar:
             min_value=0.0,
             max_value=100.0,
             format="%.1f",
-            help=help_texts.get("storage_monthly_churn", ""),
+            help=help_texts.get("storage_monthly_churn", "Ежемесячный отток клиентов из простого хранения."),
         )
         storage_monthly_churn = storage_monthly_churn_num / 100.0
         app_state.set("storage_monthly_churn", storage_monthly_churn)
@@ -513,7 +541,7 @@ with st.sidebar:
             min_value=0.0,
             max_value=100.0,
             format="%.1f",
-            help=help_texts.get("loan_monthly_churn", ""),
+            help=help_texts.get("loan_monthly_churn", "Ежемесячный отток по займам."),
         )
         loan_monthly_churn = loan_monthly_churn_num / 100.0
         app_state.set("loan_monthly_churn", loan_monthly_churn)
@@ -525,7 +553,7 @@ with st.sidebar:
             min_value=0.0,
             max_value=100.0,
             format="%.1f",
-            help=help_texts.get("vip_monthly_churn", ""),
+             help=help_texts.get("vip_monthly_churn", "Ежемесячный отток клиентов из VIP-секции."),
         )
         vip_monthly_churn = vip_monthly_churn_num / 100.0
         app_state.set("vip_monthly_churn", vip_monthly_churn)
@@ -537,7 +565,7 @@ with st.sidebar:
             min_value=0.0,
             max_value=100.0,
             format="%.1f",
-            help=help_texts.get("short_term_monthly_churn", ""),
+             help=help_texts.get("short_term_monthly_churn", "Ежемесячный отток клиентов по краткосрочному хранению."),
         )
         short_term_monthly_churn = short_term_monthly_churn_num / 100.0
         app_state.set("short_term_monthly_churn", short_term_monthly_churn)
@@ -549,7 +577,7 @@ with st.sidebar:
             step=10000,
             min_value=0,
             format="%i",
-            help=help_texts.get("salary_expense", ""),
+            help=help_texts.get("salary_expense", "Общие затраты на зарплату (руб./мес.)."),
         )
         app_state.set("salary_expense", salary_expense)
 
@@ -559,7 +587,7 @@ with st.sidebar:
             step=5000,
             min_value=0,
             format="%i",
-            help=help_texts.get("miscellaneous_expenses", ""),
+            help=help_texts.get("miscellaneous_expenses", "Прочие ежемесячные расходы."),
         )
         app_state.set("miscellaneous_expenses", miscellaneous_expenses)
 
@@ -569,7 +597,7 @@ with st.sidebar:
             step=5000,
             min_value=0,
             format="%i",
-            help=help_texts.get("depreciation_expense", ""),
+            help=help_texts.get("depreciation_expense", "Ежемесячная амортизация."),
         )
         app_state.set("depreciation_expense", depreciation_expense)
 
@@ -579,7 +607,7 @@ with st.sidebar:
             step=5000,
             min_value=0,
             format="%i",
-            help=help_texts.get("marketing_expenses", ""),
+             help=help_texts.get("marketing_expenses", "Затраты на маркетинг."),
         )
         app_state.set("marketing_expenses", marketing_expenses)
 
@@ -589,7 +617,7 @@ with st.sidebar:
             step=1000,
             min_value=0,
             format="%i",
-            help=help_texts.get("insurance_expenses", ""),
+            help=help_texts.get("insurance_expenses", "Ежемесячная страховка."),
         )
         app_state.set("insurance_expenses", insurance_expenses)
 
@@ -599,7 +627,7 @@ with st.sidebar:
             step=5000,
             min_value=0,
             format="%i",
-            help=help_texts.get("taxes", ""),
+            help=help_texts.get("taxes", "Налоговые отчисления (руб./мес.)."),
         )
         app_state.set("taxes", taxes)
 
@@ -609,7 +637,7 @@ with st.sidebar:
             step=5000,
             min_value=0,
             format="%i",
-            help=help_texts.get("utilities_expenses", ""),
+             help=help_texts.get("utilities_expenses", "Коммунальные услуги (руб./мес.)."),
         )
         app_state.set("utilities_expenses", utilities_expenses)
 
@@ -619,7 +647,7 @@ with st.sidebar:
             step=5000,
             min_value=0,
             format="%i",
-            help=help_texts.get("maintenance_expenses", ""),
+            help=help_texts.get("maintenance_expenses", "Обслуживание склада (руб./мес)."),
         )
         app_state.set("maintenance_expenses", maintenance_expenses)
 
@@ -630,7 +658,7 @@ with st.sidebar:
             step=5000,
             min_value=0,
             format="%i",
-            help=help_texts.get("one_time_setup_cost", ""),
+            help=help_texts.get("one_time_setup_cost", "Единовременные затраты на настройку склада."),
         )
         app_state.set("one_time_setup_cost", one_time_setup_cost)
 
@@ -640,7 +668,7 @@ with st.sidebar:
             step=5000,
             min_value=0,
             format="%i",
-            help=help_texts.get("one_time_equipment_cost", ""),
+             help=help_texts.get("one_time_equipment_cost", "Единовременные затраты на оборудование."),
         )
         app_state.set("one_time_equipment_cost", one_time_equipment_cost)
 
@@ -650,7 +678,7 @@ with st.sidebar:
             step=5000,
             min_value=0,
             format="%i",
-            help=help_texts.get("one_time_other_costs", ""),
+            help=help_texts.get("one_time_other_costs", "Прочие единовременные расходы."),
         )
         app_state.set("one_time_other_costs", one_time_other_costs)
 
@@ -660,7 +688,7 @@ with st.sidebar:
             step=5000,
             min_value=0,
             format="%i",
-            help=help_texts.get("one_time_legal_cost", ""),
+             help=help_texts.get("one_time_legal_cost", "Единовременные юридические расходы."),
         )
         app_state.set("one_time_legal_cost", one_time_legal_cost)
 
@@ -670,7 +698,7 @@ with st.sidebar:
             step=5000,
             min_value=0,
             format="%i",
-            help=help_texts.get("one_time_logistics_cost", ""),
+            help=help_texts.get("one_time_logistics_cost", "Единовременные логистические расходы."),
         )
         app_state.set("one_time_logistics_cost", one_time_logistics_cost)
 
@@ -681,7 +709,7 @@ with st.sidebar:
             step=5.0,
             min_value=0.0,
             format="%.2f",
-            help=help_texts.get("packaging_cost_per_m2", ""),
+            help=help_texts.get("packaging_cost_per_m2", "Стоимость упаковки на 1 м² площади."),
         )
         app_state.set("packaging_cost_per_m2", packaging_cost_per_m2)
 
@@ -691,7 +719,7 @@ with st.sidebar:
             step=10.0,
             min_value=0.0,
             format="%.1f",
-            help=help_texts.get("electricity_cost_per_m2", ""),
+            help=help_texts.get("electricity_cost_per_m2", "Стоимость электроэнергии на 1 м²."),
         )
         app_state.set("electricity_cost_per_m2", electricity_cost_per_m2)
 
@@ -702,7 +730,7 @@ with st.sidebar:
             step=0.1,
             min_value=0.0,
             format="%.1f",
-            help=help_texts.get("monthly_inflation_rate", ""),
+             help=help_texts.get("monthly_inflation_rate", "Ежемесячная инфляция (%)."),
         )
         monthly_inflation_rate = monthly_inflation_rate_val / 100.0
         app_state.set("monthly_inflation_rate", monthly_inflation_rate)
@@ -713,7 +741,7 @@ with st.sidebar:
             step=0.5,
             min_value=0.0,
             format="%.1f",
-            help=help_texts.get("monthly_rent_growth", ""),
+            help=help_texts.get("monthly_rent_growth", "Рост аренды в месяц (%)."),
         )
         monthly_rent_growth = monthly_rent_growth_val / 100.0
         app_state.set("monthly_rent_growth", monthly_rent_growth)
@@ -724,7 +752,7 @@ with st.sidebar:
             step=0.1,
             min_value=0.0,
             format="%.1f",
-            help=help_texts.get("monthly_salary_growth", ""),
+           help=help_texts.get("monthly_salary_growth", "Ежемесячный рост зарплаты (%)."),
         )
         monthly_salary_growth = monthly_salary_growth_val / 100.0
         app_state.set("monthly_salary_growth", monthly_salary_growth)
@@ -735,7 +763,7 @@ with st.sidebar:
             step=0.1,
             min_value=0.0,
             format="%.1f",
-            help=help_texts.get("monthly_other_expenses_growth", ""),
+            help=help_texts.get("monthly_other_expenses_growth", "Ежемесячный рост прочих расходов (%)."),
         )
         monthly_other_expenses_growth = monthly_other_expenses_growth_val / 100.0
         app_state.set("monthly_other_expenses_growth", monthly_other_expenses_growth)
@@ -743,13 +771,15 @@ with st.sidebar:
     with st.sidebar.expander("### Расширенные параметры и прогнозирование", expanded=False):
         disable_extended = st.checkbox(
             "Отключить расширенные параметры",
-            value=app_state.get("disable_extended")
+            value=app_state.get("disable_extended"),
+            help=help_texts.get("disable_extended", "Если включено, расширенные параметры не учитываются.")
         )
         app_state.set("disable_extended", disable_extended)
-        
+
         amortize_one_time_expenses = st.checkbox(
             "Амортизировать единовременные расходы",
-            value=app_state.get("amortize_one_time_expenses")
+            value=app_state.get("amortize_one_time_expenses"),
+            help=help_texts.get("amortize_one_time_expenses", "Если включено, единовременные расходы распределяются по всему горизонту прогноза.")
         )
         app_state.set("amortize_one_time_expenses", amortize_one_time_expenses)
 
@@ -759,7 +789,7 @@ with st.sidebar:
                 1,
                 24,
                 value=app_state.get("time_horizon"),
-                help=help_texts.get("time_horizon", ""),
+                help=help_texts.get("time_horizon", "Сколько месяцев прогнозируем."),
             )
             app_state.set("time_horizon", time_horizon_val)
 
@@ -770,7 +800,7 @@ with st.sidebar:
                 min_value=0.0,
                 max_value=100.0,
                 format="%.1f",
-                help=help_texts.get("default_probability", ""),
+                help=help_texts.get("default_probability", "Вероятность невозврата (для займов)."),
             )
             default_probability = default_probability_val / 100.0
             app_state.set("default_probability", default_probability)
@@ -781,7 +811,7 @@ with st.sidebar:
                 step=0.1,
                 min_value=0.1,
                 format="%.1f",
-                help=help_texts.get("liquidity_factor", ""),
+               help=help_texts.get("liquidity_factor", "Коэффициент ликвидности."),
             )
             app_state.set("liquidity_factor", liquidity_factor_val)
 
@@ -791,7 +821,7 @@ with st.sidebar:
                 step=0.1,
                 min_value=0.1,
                 format="%.1f",
-                help=help_texts.get("safety_factor", ""),
+                help=help_texts.get("safety_factor", "Коэффициент запаса для устойчивости."),
             )
             app_state.set("safety_factor", safety_factor_val)
 
@@ -801,7 +831,7 @@ with st.sidebar:
                 step=1,
                 min_value=0,
                 format="%i",
-                help=help_texts.get("loan_grace_period", ""),
+                help=help_texts.get("loan_grace_period", "Льготный период по займам (мес)."),
             )
             app_state.set("loan_grace_period", loan_grace_period_val)
 
@@ -810,7 +840,7 @@ with st.sidebar:
                 value=app_state.get("monthly_income_growth") * 100,
                 step=0.5,
                 format="%.1f",
-                help=help_texts.get("monthly_income_growth", ""),
+               help=help_texts.get("monthly_income_growth", "Предполагаемый рост доходов в месяц."),
             )
             monthly_income_growth = monthly_income_growth_val / 100.0
             app_state.set("monthly_income_growth", monthly_income_growth)
@@ -820,7 +850,7 @@ with st.sidebar:
                 value=app_state.get("monthly_expenses_growth") * 100,
                 step=0.5,
                 format="%.1f",
-                help=help_texts.get("monthly_expenses_growth", ""),
+               help=help_texts.get("monthly_expenses_growth", "Предполагаемый рост расходов в месяц."),
             )
             monthly_expenses_growth = monthly_expenses_growth_val / 100.0
             app_state.set("monthly_expenses_growth", monthly_expenses_growth)
@@ -847,7 +877,7 @@ with st.sidebar:
             "Метод прогнозирования",
             fm_options,
             index=fm_index,
-            help=help_texts.get("forecast_method", ""),
+            help=help_texts.get("forecast_method", "Метод, используемый для построения прогноза."),
         )
         app_state.set("forecast_method", forecast_method_sel)
 
@@ -858,7 +888,7 @@ with st.sidebar:
                 step=10,
                 min_value=10,
                 format="%i",
-                help=help_texts.get("monte_carlo_simulations", ""),
+                help=help_texts.get("monte_carlo_simulations", "Число симуляций в Монте-Карло."),
             )
             app_state.set("monte_carlo_simulations", monte_carlo_simulations_val)
 
@@ -868,7 +898,7 @@ with st.sidebar:
                 step=0.01,
                 min_value=0.01,
                 format="%.2f",
-                help=help_texts.get("monte_carlo_deviation", ""),
+                help=help_texts.get("monte_carlo_deviation", "Отклонения для Монте-Карло (0.1 = ±10%)."),
             )
             app_state.set("monte_carlo_deviation", monte_carlo_deviation_val)
 
@@ -877,7 +907,7 @@ with st.sidebar:
                 value=app_state.get("monte_carlo_seed"),
                 step=1,
                 format="%i",
-                help=help_texts.get("monte_carlo_seed", ""),
+                 help=help_texts.get("monte_carlo_seed", "Зерно случайности (Монте-Карло)."),
             )
             app_state.set("monte_carlo_seed", monte_carlo_seed_val)
 
@@ -888,7 +918,7 @@ with st.sidebar:
                 "Тип распределения",
                 mc_dist_options,
                 index=mc_dist_index,
-                help=help_texts.get("monte_carlo_distribution", ""),
+                help=help_texts.get("monte_carlo_distribution", "Тип распределения для симуляции Монте-Карло."),
             )
             app_state.set("monte_carlo_distribution", monte_carlo_distribution_sel)
 
@@ -898,7 +928,7 @@ with st.sidebar:
                     value=app_state.get("monte_carlo_normal_mean") or 0.0,
                     step=0.1,
                     format="%.1f",
-                    help=help_texts.get("monte_carlo_normal_mean", ""),
+                     help=help_texts.get("monte_carlo_normal_mean", "Среднее для нормального распределения."),
                 )
                 app_state.set("monte_carlo_normal_mean", mc_normal_mean_val)
 
@@ -908,7 +938,7 @@ with st.sidebar:
                     step=0.01,
                     min_value=0.01,
                     format="%.2f",
-                    help=help_texts.get("monte_carlo_normal_std", ""),
+                    help=help_texts.get("monte_carlo_normal_std", "Ст. отклонение для нормального распределения."),
                 )
                 app_state.set("monte_carlo_normal_std", mc_normal_std_val)
 
@@ -918,7 +948,7 @@ with st.sidebar:
                     value=app_state.get("monte_carlo_triang_left") or 0.0,
                     step=0.1,
                     format="%.1f",
-                    help=help_texts.get("monte_carlo_triang_left", ""),
+                     help=help_texts.get("monte_carlo_triang_left", "Мин. значение для треугольного распределения."),
                 )
                 app_state.set("monte_carlo_triang_left", mc_triang_left_val)
 
@@ -927,7 +957,7 @@ with st.sidebar:
                     value=app_state.get("monte_carlo_triang_mode") or 1.0,
                     step=0.1,
                     format="%.1f",
-                    help=help_texts.get("monte_carlo_triang_mode", ""),
+                    help=help_texts.get("monte_carlo_triang_mode", "Мода для треугольного распределения."),
                 )
                 app_state.set("monte_carlo_triang_mode", mc_triang_mode_val)
 
@@ -936,13 +966,14 @@ with st.sidebar:
                     value=app_state.get("monte_carlo_triang_right") or 2.0,
                     step=0.1,
                     format="%.1f",
-                    help=help_texts.get("monte_carlo_triang_right", ""),
+                    help=help_texts.get("monte_carlo_triang_right", "Макс. значение для треугольного распределения."),
                 )
                 app_state.set("monte_carlo_triang_right", mc_triang_right_val)
 
         enable_ml_settings_val = st.checkbox(
             "Включить расширенный ML-прогноз",
-            value=app_state.get("enable_ml_settings")
+            value=app_state.get("enable_ml_settings"),
+            help=help_texts.get("enable_ml_settings", "Включает дополнительные настройки для ML-прогноза.")
         )
         app_state.set("enable_ml_settings", enable_ml_settings_val)
 
@@ -954,7 +985,7 @@ with st.sidebar:
                 value=app_state.get("poly_degree") or 2,
                 step=1,
                 format="%i",
-                help=help_texts.get("poly_degree", ""),
+                help=help_texts.get("poly_degree", "Степень полинома для полиномиальной регрессии."),
             )
             app_state.set("poly_degree", poly_degree_val)
         else:
@@ -968,7 +999,7 @@ with st.sidebar:
                 value=app_state.get("n_estimators") or 100,
                 step=10,
                 format="%i",
-                help=help_texts.get("n_estimators", ""),
+                help=help_texts.get("n_estimators", "Количество деревьев в RF."),
             )
             app_state.set("n_estimators", n_estimators_val)
 
@@ -977,7 +1008,7 @@ with st.sidebar:
                 "Признаки для обучения",
                 options=features_options,
                 default=features_options,
-                help=help_texts.get("features", ""),
+                help=help_texts.get("features", "Признаки для обучения ML модели."),
             )
             app_state.set("features", selected_features)
         elif forecast_method_sel == "ML (SVR)" and enable_ml_settings_val:
@@ -986,7 +1017,7 @@ with st.sidebar:
                 "Признаки для обучения",
                 options=features_options,
                 default=features_options,
-                help=help_texts.get("features", ""),
+                help=help_texts.get("features", "Признаки для обучения ML модели."),
             )
             app_state.set("features", selected_features)
         else:
@@ -999,13 +1030,14 @@ with st.sidebar:
                 "Поиск параметров ML",
                 param_search_options,
                 index=0,
-                help=help_texts.get("param_search_method", ""),
+                 help=help_texts.get("param_search_method", "Метод поиска параметров ML."),
             )
             app_state.set("param_search_method", param_search_method)
 
             auto_feature_selection_val = st.checkbox(
                 "Автоматический выбор признаков",
-                value=app_state.get("auto_feature_selection")
+                value=app_state.get("auto_feature_selection"),
+                 help=help_texts.get("auto_feature_selection", "Включить автоматический выбор признаков.")
             )
             app_state.set("auto_feature_selection", auto_feature_selection_val)
         else:
@@ -1020,14 +1052,15 @@ with st.sidebar:
         if uploaded_file is not None:
             file_extension = os.path.splitext(uploaded_file.name)[1]
             try:
-                if file_extension == ".csv":
-                    df_for_ml = pd.read_csv(uploaded_file)
-                elif file_extension == ".xlsx":
-                    df_for_ml = pd.read_excel(uploaded_file)
-                else:
-                    raise ValueError("Формат файла не поддерживается.")
-                st.success("Файл с данными для ML успешно загружен.")
-                app_state.set("df_for_ml", df_for_ml)
+                 with st.spinner("Чтение данных..."):
+                    if file_extension == ".csv":
+                        df_for_ml = pd.read_csv(uploaded_file)
+                    elif file_extension == ".xlsx":
+                        df_for_ml = pd.read_excel(uploaded_file)
+                    else:
+                        raise ValueError("Формат файла не поддерживается.")
+                    st.success("Файл с данными для ML успешно загружен.")
+                    app_state.set("df_for_ml", df_for_ml)
             except Exception as e:
                 st.error(f"Ошибка чтения файла: {e}")
                 app_state.set("df_for_ml", None)
@@ -1049,12 +1082,29 @@ with st.sidebar:
         if "saved_params" not in st.session_state:
             st.session_state.saved_params = {}
         param_name = f"Сохраненные параметры {len(st.session_state.saved_params) + 1}"
-
+        
         params_to_save = {k: app_state.get(k) for k in default_params.keys()}
         params_to_save["shares"] = dict(app_state.shares)
-
+        
         st.session_state.saved_params[param_name] = params_to_save
         st.success(f"Параметры сохранены: {param_name}")
+    
+    
+    if "saved_params" in st.session_state and st.session_state.saved_params:
+      selected_param = st.selectbox(
+            "Сравнить с ранее сохранёнными:",
+            options=list(st.session_state.saved_params.keys()),
+            index=0,
+              )
+      if st.button("Переименовать", key="rename_saved_params_button"):
+          new_name = st.text_input("Новое имя:", key="rename_param_input")
+          if new_name:
+             st.session_state.saved_params[new_name] = st.session_state.saved_params.pop(selected_param)
+             st.success(f"Параметры переименованы на {new_name}")
+             st.rerun()
+
+    else:
+        selected_param = None
 
     uploaded_file_sess = st.sidebar.file_uploader(
         "Загрузить сохранённые параметры (JSON или YAML)",
@@ -1062,30 +1112,22 @@ with st.sidebar:
     )
     if uploaded_file_sess:
         try:
-            if uploaded_file_sess.name.endswith(".json"):
-                loaded_params = json.load(uploaded_file_sess)
-            elif uploaded_file_sess.name.endswith((".yaml", ".yml")):
-                loaded_params = yaml.safe_load(uploaded_file_sess)
-            else:
-                raise ValueError("Поддерживается только JSON или YAML.")
-            for key, value in loaded_params.items():
-                if key in default_params:
-                    app_state.set(key, value)
-            if "shares" in loaded_params:
-                app_state.shares.update(loaded_params["shares"])
-            st.success("Параметры успешно загружены.")
-            st.rerun()
+             with st.spinner("Чтение параметров..."):
+                if uploaded_file_sess.name.endswith(".json"):
+                    loaded_params = json.load(uploaded_file_sess)
+                elif uploaded_file_sess.name.endswith((".yaml", ".yml")):
+                    loaded_params = yaml.safe_load(uploaded_file_sess)
+                else:
+                    raise ValueError("Поддерживается только JSON или YAML.")
+                for key, value in loaded_params.items():
+                    if key in default_params:
+                        app_state.set(key, value)
+                if "shares" in loaded_params:
+                    app_state.shares.update(loaded_params["shares"])
+                st.success("Параметры успешно загружены.")
+                st.rerun()
         except Exception as e:
             st.error(f"Ошибка загрузки: {e}")
-
-    if "saved_params" in st.session_state and st.session_state.saved_params:
-        selected_param = st.selectbox(
-            "Сравнить с ранее сохранёнными:",
-            options=list(st.session_state.saved_params.keys()),
-            index=0
-        )
-    else:
-        selected_param = None
 
     if st.sidebar.button("Сохранить в файл"):
         try:
@@ -1146,7 +1188,12 @@ with st.sidebar:
         difference = one_time_sum2 - monthly_sum2
         st.sidebar.write("## Углублённый отчёт")
         st.sidebar.write(f"Единовременные vs. ежемесячные, разница: {difference:,.2f} руб.")
-
+    
+    if enable_ml_settings_val and forecast_method_sel.startswith("ML"):
+       if st.session_state.get("uploaded_model") is not None:
+             st.sidebar.write(f"Загруженная модель: {st.session_state.get('uploaded_model').name}")
+       if st.session_state.get("df_for_ml") is not None:
+             st.sidebar.write(f"Загруженный датасет: {st.session_state.get('df_for_ml').name if hasattr(st.session_state.get('df_for_ml'),'name') else 'неизвестно'}")
 forecast_method = app_state.get("forecast_method") or "Базовый"
 params = WarehouseParams(
     total_area=app_state.get("total_area"),
@@ -1248,8 +1295,10 @@ else:
         "Прогнозирование",
         "Точка безубыточности",
         "Детализация",
-         "Сценарный анализ", 
+         "Сценарный анализ",
          "Диагностика",
+         "Документация",
+         "Дашборд"
     ]
     chosen = st.radio(
         "Вкладки:",
@@ -1263,8 +1312,8 @@ else:
         base_financials = calculate_financials(params, disable_extended=False, amortize_one_time_expenses=amortize_one_time_expenses)
         irr_val = calculate_irr(
             [
-                -params.one_time_setup_cost - params.one_time_equipment_cost 
-                - params.one_time_other_costs - params.one_time_legal_cost 
+                -params.one_time_setup_cost - params.one_time_equipment_cost
+                - params.one_time_other_costs - params.one_time_legal_cost
                 - params.one_time_logistics_cost
             ]
             + [base_financials["profit"]] * params.time_horizon
@@ -1277,8 +1326,8 @@ else:
         roi_val = calculate_roi(base_financials["total_income"], base_financials["total_expenses"])
         npv_val = calculate_npv(
             [
-                -params.one_time_setup_cost - params.one_time_equipment_cost 
-                - params.one_time_other_costs - params.one_time_legal_cost 
+                -params.one_time_setup_cost - params.one_time_equipment_cost
+                - params.one_time_other_costs - params.one_time_legal_cost
                 - params.one_time_logistics_cost
             ]
             + [base_financials["profit"]] * params.time_horizon,
@@ -1310,18 +1359,19 @@ else:
             if st.button("Обучить модель"):
                 if df_for_ml is not None:
                     try:
-                        new_model = train_ml_model(
-                            df_for_ml,
-                            target_column="Доходы",
-                            model_type=params.forecast_method,
-                            poly_degree=params.poly_degree,
-                            n_estimators=params.n_estimators,
-                            features=params.features,
-                            param_search_method=params.param_search_method,
-                            auto_feature_selection=params.auto_feature_selection
-                        )
-                        st.session_state["ml_model"] = new_model
-                        st.success("Модель обучена!")
+                        with st.spinner("Обучение модели..."):
+                            new_model = train_ml_model(
+                                df_for_ml,
+                                target_column="Доходы",
+                                model_type=params.forecast_method,
+                                poly_degree=params.poly_degree,
+                                n_estimators=params.n_estimators,
+                                features=params.features,
+                                param_search_method=params.param_search_method,
+                                auto_feature_selection=params.auto_feature_selection
+                            )
+                            st.session_state["ml_model"] = new_model
+                            st.success("Модель обучена!")
                     except Exception as e:
                         st.error(f"Ошибка обучения: {e}")
                 else:
@@ -1358,8 +1408,8 @@ else:
         base_financials = calculate_financials(params, disable_extended=False, amortize_one_time_expenses=amortize_one_time_expenses)
         irr_val = calculate_irr(
             [
-                -params.one_time_setup_cost - params.one_time_equipment_cost 
-                - params.one_time_other_costs - params.one_time_legal_cost 
+                -params.one_time_setup_cost - params.one_time_equipment_cost
+                - params.one_time_other_costs - params.one_time_legal_cost
                 - params.one_time_logistics_cost
             ]
             + [base_financials["profit"]] * params.time_horizon
@@ -1470,7 +1520,7 @@ else:
 
         st.info("Пользователь сам выбирает процентные изменения для каждого сценария.")
 
-    else:
+    elif chosen == "Диагностика":
         st.header("Диагностика и отладка")
 
         base_fin = calculate_financials(params, disable_extended=False, amortize_one_time_expenses=amortize_one_time_expenses)
@@ -1514,3 +1564,87 @@ else:
             "Эти данные помогают разобраться, на каком этапе могут возникать несостыковки "
             "и проверить корректность введённых параметров."
         )
+    
+    elif chosen == "Документация":
+        st.header("Документация")
+        
+        with open("help.md", "r", encoding="utf-8") as f:
+            help_text = f.read()
+
+        # Поиск по документации
+        search_term = st.text_input("Поиск в документации", "")
+        if search_term:
+                search_results = [line for line in help_text.splitlines() if search_term.lower() in line.lower()]
+                if search_results:
+                    for result in search_results:
+                        st.markdown(result, unsafe_allow_html=True)
+                else:
+                    st.info("По вашему запросу ничего не найдено.")
+        else:
+             st.markdown(help_text, unsafe_allow_html=True)
+        
+        with st.expander("Часто задаваемые вопросы (FAQ)"):
+             st.markdown("""
+                **Q: Что такое точка безубыточности (BEP)?**
+                A: Точка безубыточности — это уровень дохода, при котором общая прибыль становится равной общим расходам.
+
+                **Q: Как интерпретировать отрицательное значение NPV?**
+                A: Отрицательное значение NPV говорит о том, что текущая стоимость будущих денежных потоков не покрывает текущие инвестиции и проект может быть невыгоден.
+
+                **Q: Как использовать режим автоматического распределения площади?**
+                A: Укажите доли для каждого типа хранения (простое, займы, VIP, краткосрочное) , а остальное приложение рассчитает само.
+
+                **Q: Какой тип распределения выбрать в методе Монте-Карло?**
+                A: Выбор распределения зависит от ваших предположений о природе данных. Если у вас нет предпочтений, то используйте равномерное распределение. Нормальное распределение подходит для тех случаев, где ожидается, что большинство отклонений будут близки к среднему значению. Треугольное подойдет, когда есть минимальное, модальное (наиболее вероятное), и максимальное значения.
+
+                **Q: Что такое RMSE, R² и MAE в ML-прогнозировании?**
+                  A: RMSE - корень среднеквадратичной ошибки, оценивает среднеквадратическое отклонение прогноза от фактических значений. R² - коэффициент детерминации, показывает, как хорошо модель описывает данные. MAE - средняя абсолютная ошибка, оценивает среднее отклонение прогноза от фактических значений по модулю.
+
+                **Q: Что делать, если ML-модель выдает плохие прогнозы?**
+                A: Проверьте качество и достаточность данных, которые вы загрузили для обучения ML-модели. Попробуйте использовать другие признаки, или другой метод прогнозирования.
+
+                **Q: Можно ли использовать приложение для разных видов складов?**
+                A: Да, но нужно вводить параметры, которые соответствуют вашему типу склада, а не брать их "из воздуха".
+
+                 **Q: Как влияют коэффициенты ликвидности и запаса на точку безубыточности?**
+                A: Коэффициент ликвидности корректирует BEP на основе ликвидности активов, делая расчёт более консервативным, если активы могут быть быстро превращены в денежные средства. Коэффициент запаса — увеличивает расходы для обеспечения безопасности, создавая резерв.
+
+                **Q: Почему важно амортизировать единовременные расходы?**
+                A: Амортизация позволяет более равномерно распределить единовременные расходы по всему периоду прогноза, что дает более точную картину прибыльности в каждый месяц, и сглаживает колебания прибыльности.
+
+                **Q: Как работают различные методы прогнозирования?**
+                  A: Базовый метод предполагает линейный рост доходов и расходов. Модели ML пытаются уловить зависимость в данных. Монте-Карло моделирует различные сценарии случайных отклонений.
+
+                **Q: Как использовать функцию сравнения параметров?**
+                  A: Вы можете сохранить текущие настройки (кнопка "Сохранить параметры") и затем сравнить их с другими, ранее сохранёнными, что бы понять, какие именно параметры вы изменили, и как это влияет на результат. Это позволяет проследить динамику изменения параметров.
+
+                **Q: Что такое "параметрический поиск" в ML моделях?**
+                A: Это метод автоматического подбора оптимальных значений параметров (гиперпараметров) для ML-модели с помощью GridSearchCV или RandomizedSearchCV. Это повышает качество прогноза. GridSearchCV — это полный перебор, RandomizedSearchCV — случайный перебор, который позволяет найти хорошие параметры за меньшее время.
+
+                 **Q: Что такое "автоматический выбор признаков" в ML моделях?**
+                A: Это процесс, когда модель автоматически выбирает наиболее важные признаки для обучения, игнорируя менее значимые. Используется для того, чтобы упростить модель и повысить точность прогноза. Признаки (фичи) генерируются автоматически из данных, которые вы загрузили.
+
+                 **Q: Как работает коэффициент дисконтирования в NPV?**
+                 A: Коэффициент дисконтирования в NPV отражает стоимость денег во времени. Будущие денежные потоки дисконтируются (т.е. их текущая стоимость уменьшается) на величину, соответствующую ставке дисконтирования.
+
+                 **Q: Как можно интерпретировать значения в таблице чувствительности?**
+                  A: Таблица чувствительности показывает, как изменение одного или нескольких параметров влияют на общую прибыль. По таблице видно, какие параметры оказывают наибольшее влияние на финансовый результат.
+
+                 **Q: Что такое "горизонт прогнозирования"?**
+                 A: Горизонт прогнозирования – это период времени в месяцах, на который вы делаете прогноз. Чем больше горизонт, тем больше неопределенности в прогнозе.
+
+                 **Q: Как часто нужно обновлять данные в приложении?**
+                A: Рекомендуется обновлять данные в приложении не реже раза в месяц, или если произошли существенные изменения в параметрах работы склада, тарифах или экономике.
+
+                 **Q: Зачем нужно "зерно случайности" в Монте-Карло?**
+                 A: Значение "seed" позволяет зафиксировать состояние генератора случайных чисел для того, чтобы воспроизводить одни и те же результаты при моделировании. Это необходимо для отладки и сравнения результатов.
+                
+                **Q: Почему в некоторых графиках видны доверительные интервалы?**
+                 A: Доверительные интервалы (диапазоны) на графиках ML-прогноза показывают неопределенность предсказаний. Это помогает понять, где прогноз точный, а где может быть большая погрешность.
+
+             """)
+    elif chosen == "Дашборд":
+        tab_container = st.container()
+        base_financials = calculate_financials(params, disable_extended=False, amortize_one_time_expenses=amortize_one_time_expenses)
+        display_tab5_header(tab_container)
+        display_tab5_dashboard(tab_container, base_financials, params,  help_texts=help_texts)

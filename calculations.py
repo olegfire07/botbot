@@ -14,6 +14,12 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 def calculate_irr(cash_flows):
     """
     Рассчитывает IRR (внутренняя норма доходности) в процентах.
+
+    Args:
+        cash_flows (list): Список денежных потоков, где отрицательные значения - это инвестиции, а положительные - доходы.
+
+    Returns:
+        float: Внутренняя норма доходности в процентах. Возвращает 0.0 в случае ошибки или если IRR не может быть рассчитан.
     """
     try:
         irr = npf.irr(cash_flows)
@@ -26,11 +32,17 @@ def calculate_irr(cash_flows):
 @st.cache_data
 def calculate_areas(params: WarehouseParams):
     """
-    Распределение площадей.
+    Распределяет общую площадь склада на различные типы хранения (простое, займы, VIP, краткосрочное).
+
+    Args:
+        params (WarehouseParams): Объект с параметрами склада, включая общую площадь, доли и режим распределения.
+
+    Returns:
+        dict: Словарь с распределенными площадями (usable_area, storage_area, loan_area, vip_area, short_term_area).
     """
     try:
-        usable_area = params.total_area * params.useful_area_ratio
-        
+        usable_area = params.total_area * params.useful_area_ratio # Расчет полезной площади
+
         if params.mode == "Ручной":
             total_manual = (
                 params.storage_area_manual
@@ -39,7 +51,7 @@ def calculate_areas(params: WarehouseParams):
                 + params.short_term_area_manual
             )
             if total_manual > usable_area > 0:
-                factor = usable_area / total_manual
+                factor = usable_area / total_manual  # Коэффициент масштабирования для ручного режима
                 storage_area = params.storage_area_manual * factor
                 loan_area = params.loan_area_manual * factor
                 vip_area = params.vip_area_manual * factor
@@ -50,7 +62,7 @@ def calculate_areas(params: WarehouseParams):
                 vip_area = params.vip_area_manual
                 short_term_area = params.short_term_area_manual
         else:
-            storage_area = usable_area * params.storage_share
+            storage_area = usable_area * params.storage_share # Автоматическое распределение площадей по долям
             loan_area = usable_area * params.loan_share
             vip_area = usable_area * params.vip_share
             short_term_area = usable_area * params.short_term_share
@@ -75,10 +87,19 @@ def calculate_areas(params: WarehouseParams):
 
 def calculate_items(area, shelves, density, fill_rate):
     """
-    Считает количество вещей: area * shelves * density * fill_rate
+    Считает количество вещей в определенной области хранения.
+
+     Args:
+        area (float): Площадь области хранения.
+        shelves (int): Количество полок на 1 м².
+        density (int): Плотность хранения (вещей на м²).
+        fill_rate (float): Процент заполненности области (от 0 до 1).
+
+    Returns:
+        float: Общее количество вещей в области.
     """
     try:
-        return area * shelves * density * fill_rate
+        return area * shelves * density * fill_rate # Расчет количества вещей
     except Exception as e:
         logging.error(f"Ошибка при расчёте количества вещей: {e}")
         return 0
@@ -87,55 +108,63 @@ def calculate_items(area, shelves, density, fill_rate):
 @st.cache_data
 def calculate_financials(params: WarehouseParams, disable_extended: bool, amortize_one_time_expenses=False):
     """
-    Ежемесячный расчёт (доходы, расходы, прибыль).
+    Рассчитывает ежемесячные финансовые показатели склада (доходы, расходы, прибыль).
+
+    Args:
+        params (WarehouseParams): Объект с параметрами склада.
+        disable_extended (bool): Если True, то не используются расширенные параметры (например, амортизация единовременных расходов).
+        amortize_one_time_expenses (bool): Если True, то единовременные расходы амортизируются на весь горизонт планирования.
+
+    Returns:
+        dict: Словарь с финансовыми показателями (total_income, total_expenses, profit и др.)
     """
     try:
-        storage_items = calculate_items(
+        storage_items = calculate_items( # Расчет количества вещей
             params.storage_area, params.shelves_per_m2,
             params.storage_items_density, params.storage_fill_rate
         )
-        loan_items = calculate_items(
+        loan_items = calculate_items( # Расчет количества вещей
             params.loan_area, params.shelves_per_m2,
             params.loan_items_density, params.loan_fill_rate
         )
-        vip_items = calculate_items(
+        vip_items = calculate_items( # Расчет количества вещей
             params.vip_area, params.shelves_per_m2,
             params.vip_items_density, params.vip_fill_rate
         )
-        short_term_items = calculate_items(
+        short_term_items = calculate_items( # Расчет количества вещей
             params.short_term_area, params.shelves_per_m2,
             params.short_term_items_density, params.short_term_fill_rate
         )
 
         # Доход
-        storage_income = params.storage_area * params.storage_fee
-        vip_income = params.vip_area * (params.storage_fee + params.vip_extra_fee)
-        short_term_income = params.short_term_area * params.short_term_daily_rate * 30
+        storage_income = params.storage_area * params.storage_fee  # Доход от простого хранения
+        vip_income = params.vip_area * (params.storage_fee + params.vip_extra_fee) # Доход от VIP-хранения
+        short_term_income = params.short_term_area * params.short_term_daily_rate * 30 # Доход от краткосрочного хранения
 
-        loan_items_interest = loan_items * (1 - params.realization_share_loan)
-        loan_items_realized = loan_items * params.realization_share_loan
+        loan_items_interest = loan_items * (1 - params.realization_share_loan) # Количество вещей под процент
+        loan_items_realized = loan_items * params.realization_share_loan # Количество вещей под реализацию
 
         loan_evaluated_interest = (
             params.average_item_value
             * params.item_evaluation
             * loan_items_interest
-        )
+        ) # Оценочная стоимость вещей под процент
         daily_loan_rate = max(params.loan_interest_rate / 100.0, 0)
         loan_interest_income = (
             loan_evaluated_interest
             * daily_loan_rate
             * params.loan_term_days
             * (1 - params.default_probability)
-        )
+        )  # Доход от процентов по займам
 
         loan_evaluated_real = (
             params.average_item_value
             * params.item_evaluation
             * loan_items_realized
-        )
-        loan_realization = loan_evaluated_real * (params.item_realization_markup / 100.0)
+        )  # Оценочная стоимость вещей под реализацию
+        loan_realization = loan_evaluated_real * (params.item_realization_markup / 100.0) # Доход от реализации займов
 
-        loan_income = loan_interest_income + loan_realization
+        loan_income = loan_interest_income + loan_realization # Общий доход от займов
 
         # Реализация
         def calc_realization(items, markup):
@@ -144,27 +173,27 @@ def calculate_financials(params: WarehouseParams, disable_extended: bool, amorti
                 * params.item_evaluation
                 * items
                 * (markup / 100.0)
-            )
+            ) # Расчет дохода от реализации
 
-        storage_realization = calc_realization(
+        storage_realization = calc_realization( # Доход от реализации простого хранения
             storage_items * params.realization_share_storage,
             params.item_realization_markup
         )
-        vip_realization = calc_realization(
+        vip_realization = calc_realization( # Доход от реализации VIP-хранения
             vip_items * params.realization_share_vip,
             params.item_realization_markup
         )
-        short_term_realization = calc_realization(
+        short_term_realization = calc_realization(  # Доход от реализации краткосрочного хранения
             short_term_items * params.realization_share_short_term,
             params.item_realization_markup
         )
-        realization_income = (
+        realization_income = ( # Общий доход от реализации
             storage_realization
             + vip_realization
             + short_term_realization
         )
 
-        total_income = (
+        total_income = (  # Общий доход
             storage_income
             + vip_income
             + short_term_income
@@ -173,11 +202,11 @@ def calculate_financials(params: WarehouseParams, disable_extended: bool, amorti
         )
 
         # Расходы
-        monthly_rent = params.total_area * params.rental_cost_per_m2
-        electricity_cost = params.total_area * params.electricity_cost_per_m2
-        packaging_cost = params.total_area * params.packaging_cost_per_m2
+        monthly_rent = params.total_area * params.rental_cost_per_m2  # Расходы на аренду
+        electricity_cost = params.total_area * params.electricity_cost_per_m2  # Расходы на электричество
+        packaging_cost = params.total_area * params.packaging_cost_per_m2 # Расходы на упаковку
 
-        total_monthly_expenses = (
+        total_monthly_expenses = (   # Общие ежемесячные расходы
             monthly_rent
             + params.salary_expense
             + params.miscellaneous_expenses
@@ -191,7 +220,7 @@ def calculate_financials(params: WarehouseParams, disable_extended: bool, amorti
             + packaging_cost
         )
 
-        params.one_time_expenses = (
+        params.one_time_expenses = ( # Общие единовременные расходы
             params.one_time_setup_cost
             + params.one_time_equipment_cost
             + params.one_time_other_costs
@@ -200,20 +229,20 @@ def calculate_financials(params: WarehouseParams, disable_extended: bool, amorti
         )
 
         if amortize_one_time_expenses and params.time_horizon > 0:
-            profit = (
+            profit = (  # Прибыль с амортизацией единовременных расходов
                 total_income
                 - total_monthly_expenses
                 - (params.one_time_expenses / params.time_horizon)
             )
         elif params.time_horizon > 0:
-            profit = (
+            profit = (  # Прибыль без амортизации единовременных расходов
                 total_income
                 - total_monthly_expenses
             )
             if params.time_horizon > 0:
-              profit -= params.one_time_expenses 
+              profit -= params.one_time_expenses
         else:
-            profit = total_income - total_monthly_expenses
+            profit = total_income - total_monthly_expenses # Прибыль без амортизации и time_horizon
 
         return {
             "total_income": total_income,
@@ -262,14 +291,20 @@ def calculate_financials(params: WarehouseParams, disable_extended: bool, amorti
 @st.cache_data
 def calculate_total_bep(financials: dict, params: WarehouseParams):
     """
-    Общая точка безубыточности (BEP).
-    Применяем рекомендацию Sourcery: тернарный оператор.
+    Рассчитывает общую точку безубыточности (BEP) в денежном выражении (рублях)
+
+    Args:
+        financials (dict): Словарь с финансовыми показателями, как результат работы функции calculate_financials
+        params (WarehouseParams): Объект с параметрами склада
+
+    Returns:
+        float: Точка безубыточности (общие расходы). Возвращает float("inf"), если доход равен нулю.
     """
     try:
         total_expenses = float(financials["total_expenses"])
         if params.time_horizon > 0:
             total_expenses += float(params.one_time_expenses) / float(params.time_horizon)
-        return float("inf") if financials["total_income"] == 0 else total_expenses
+        return float("inf") if financials["total_income"] == 0 else total_expenses  # Возвращает бесконечность если нет дохода
     except Exception as e:
         logging.error(f"Ошибка при расчёте BEP: {e}")
         return float("inf")
@@ -278,7 +313,14 @@ def calculate_total_bep(financials: dict, params: WarehouseParams):
 @st.cache_data
 def calculate_monthly_bep(financials: dict, params: WarehouseParams):
     """
-    Помесячная точка безубыточности.
+    Рассчитывает помесячную точку безубыточности.
+
+     Args:
+        financials (dict): Словарь с финансовыми показателями, как результат работы функции calculate_financials.
+        params (WarehouseParams): Объект с параметрами склада.
+
+    Returns:
+        pd.DataFrame: DataFrame с помесячным BEP, где 'Месяц' - месяц, а 'Необходимый доход для BEP' -  доход для достижения безубыточности
     """
     try:
         months = np.arange(1, params.time_horizon + 1, dtype=float)
@@ -326,7 +368,15 @@ def calculate_monthly_bep(financials: dict, params: WarehouseParams):
 
 def calculate_additional_metrics(total_income, total_expenses, profit):
     """
-    Возвращает (profit_margin, profitability).
+    Вычисляет и возвращает маржу прибыли и рентабельность.
+
+    Args:
+        total_income (float): Общий доход.
+        total_expenses (float): Общие расходы.
+        profit (float): Общая прибыль.
+
+    Returns:
+         tuple: Кортеж (profit_margin, profitability), где profit_margin - это маржа прибыли в процентах, profitability - рентабельность в процентах.
     """
     try:
         profit_margin = (profit / total_income * 100) if total_income else 0
@@ -339,7 +389,14 @@ def calculate_additional_metrics(total_income, total_expenses, profit):
 
 def calculate_roi(total_income, total_expenses):
     """
-    ROI = ((total_income - total_expenses)/total_expenses)*100
+    Вычисляет ROI (Return on Investment).
+
+    Args:
+       total_income (float): Общий доход.
+       total_expenses (float): Общие расходы.
+
+    Returns:
+        float: ROI в процентах. Возвращает None если total_expenses равен нулю.
     """
     try:
         if total_expenses == 0:
@@ -353,7 +410,14 @@ def calculate_roi(total_income, total_expenses):
 @st.cache_data
 def calculate_npv(cash_flows, rate):
     """
-    Рассчитывает NPV.
+    Рассчитывает NPV (чистая приведенная стоимость).
+
+    Args:
+        cash_flows (list): Список денежных потоков.
+        rate (float): Ставка дисконтирования.
+
+    Returns:
+        float: NPV. Возвращает 0.0 в случае ошибки.
     """
     try:
         return npf.npv(rate, cash_flows)
@@ -380,35 +444,54 @@ def monte_carlo_simulation(
     triang_right=2.0
 ):
     """
-    Простейшая симуляция Монте-Карло для доходов и расходов.
+    Проводит симуляцию Монте-Карло для доходов и расходов.
+
+    Args:
+        base_income (float): Базовый ежемесячный доход.
+        base_expenses (float): Базовые ежемесячные расходы.
+        time_horizon (int): Горизонт прогноза в месяцах.
+        simulations (int): Количество симуляций.
+        deviation (float): Максимальное отклонение (для равномерного распределения, как доля от 1).
+        seed (int): Зерно для генератора случайных чисел.
+        monthly_income_growth (float): Ежемесячный рост доходов.
+        monthly_expenses_growth (float): Ежемесячный рост расходов.
+        distribution_type (str): Тип распределения для симуляции ("Равномерное", "Нормальное", "Треугольное").
+        normal_mean (float): Среднее для нормального распределения.
+        normal_std (float): Стандартное отклонение для нормального распределения.
+        triang_left (float): Левая граница для треугольного распределения.
+        triang_mode (float): Мода для треугольного распределения.
+        triang_right (float): Правая граница для треугольного распределения.
+
+    Returns:
+        pd.DataFrame: DataFrame со средними значениями дохода, расходов и прибыли по месяцам.
     """
     try:
         np.random.seed(seed)
-        months = np.arange(1, time_horizon + 1)
+        months = np.arange(1, time_horizon + 1) # Месяцы
 
-        inc_growth = (1 + monthly_income_growth) ** months
-        exp_growth = (1 + monthly_expenses_growth) ** months
+        inc_growth = (1 + monthly_income_growth) ** months  # Рост доходов по месяцам
+        exp_growth = (1 + monthly_expenses_growth) ** months # Рост расходов по месяцам
 
         if distribution_type == "Нормальное":
-            inc_factors = np.random.normal(normal_mean, normal_std, (simulations, time_horizon))
-            exp_factors = np.random.normal(normal_mean, normal_std, (simulations, time_horizon))
+            inc_factors = np.random.normal(normal_mean, normal_std, (simulations, time_horizon)) # Нормальное распределение для доходов
+            exp_factors = np.random.normal(normal_mean, normal_std, (simulations, time_horizon)) # Нормальное распределение для расходов
         elif distribution_type == "Треугольное":
-            inc_factors = np.random.triangular(triang_left, triang_mode, triang_right, (simulations, time_horizon))
-            exp_factors = np.random.triangular(triang_left, triang_mode, triang_right, (simulations, time_horizon))
+            inc_factors = np.random.triangular(triang_left, triang_mode, triang_right, (simulations, time_horizon))  # Треугольное распределение для доходов
+            exp_factors = np.random.triangular(triang_left, triang_mode, triang_right, (simulations, time_horizon)) # Треугольное распределение для расходов
         else:
-            inc_factors = np.random.uniform(1 - deviation, 1 + deviation, (simulations, time_horizon))
-            exp_factors = np.random.uniform(1 - deviation, 1 + deviation, (simulations, time_horizon))
+            inc_factors = np.random.uniform(1 - deviation, 1 + deviation, (simulations, time_horizon)) # Равномерное распределение для доходов
+            exp_factors = np.random.uniform(1 - deviation, 1 + deviation, (simulations, time_horizon)) # Равномерное распределение для расходов
 
-        incomes = base_income * inc_growth * inc_factors
-        expenses = base_expenses * exp_growth * exp_factors
-        profits = incomes - expenses
+        incomes = base_income * inc_growth * inc_factors # Симуляция доходов
+        expenses = base_expenses * exp_growth * exp_factors # Симуляция расходов
+        profits = incomes - expenses # Расчет прибыли
 
         return pd.DataFrame(
             {
-                "Месяц": months,
-                "Средний Доход": incomes.mean(axis=0),
-                "Средний Расход": expenses.mean(axis=0),
-                "Средняя Прибыль": profits.mean(axis=0),
+                "Месяц": months,  # Месяц
+                "Средний Доход": incomes.mean(axis=0), # Средний доход
+                "Средний Расход": expenses.mean(axis=0),  # Средний расход
+                "Средняя Прибыль": profits.mean(axis=0),  # Средняя прибыль
             }
         )
     except Exception as e:
@@ -419,7 +502,14 @@ def monte_carlo_simulation(
 @st.cache_data
 def min_loan_amount_for_bep(params: WarehouseParams, fin: dict):
     """
-    Минимальная сумма займа для покрытия расходов (BEP).
+    Рассчитывает минимальную сумму займа на одну вещь для покрытия расходов (BEP).
+
+    Args:
+        params (WarehouseParams): Объект с параметрами склада.
+        fin (dict): Словарь с финансовыми показателями, как результат работы функции calculate_financials.
+
+    Returns:
+        float: Минимальная сумма займа на одну вещь. Возвращает 0.0, если `loan_items` <= 0
     """
     try:
         total_exp = float(fin["total_expenses"])
@@ -441,6 +531,15 @@ def min_loan_amount_for_bep(params: WarehouseParams, fin: dict):
 def calculate_multidimensional_sensitivity(params: WarehouseParams, param_keys: list, param_ranges: dict, disable_extended: bool):
     """
     Проводит многомерный анализ чувствительности.
+
+    Args:
+        params (WarehouseParams): Объект с параметрами склада.
+        param_keys (list): Список параметров для анализа чувствительности.
+        param_ranges (dict): Словарь с диапазонами значений для параметров.
+        disable_extended (bool): Если True, то не используются расширенные параметры.
+
+    Returns:
+        pd.DataFrame: DataFrame с результатами анализа чувствительности, где "Параметры" - значения параметров, а "Прибыль (руб.)" - прибыль для этих параметров.
     """
     try:
         results = []
@@ -478,11 +577,18 @@ def calculate_multidimensional_sensitivity(params: WarehouseParams, param_keys: 
 @st.cache_data
 def calculate_monthly_projection(params: WarehouseParams, base_financials: dict):
     """
-    Пример помесячного прогноза доходов/расходов/прибыли.
+    Создает помесячный прогноз доходов, расходов и прибыли на заданный горизонт.
+
+    Args:
+        params (WarehouseParams): Объект с параметрами склада.
+        base_financials (dict): Словарь с базовыми финансовыми показателями.
+
+    Returns:
+        pd.DataFrame: DataFrame с помесячными доходами, расходами и прибылью.
     """
     try:
         months = np.arange(1, params.time_horizon + 1)
-        start_income = base_financials["total_income"]
+        start_income = base_financials["total_income"] # Базовый доход
 
         rent = (
             params.total_area
@@ -498,15 +604,15 @@ def calculate_monthly_projection(params: WarehouseParams, base_financials: dict)
             * (1 + params.monthly_other_expenses_growth) ** (months - 1)
         )
 
-        marketing = np.full(params.time_horizon, params.marketing_expenses)
-        insurance = np.full(params.time_horizon, params.insurance_expenses)
-        taxes = np.full(params.time_horizon, params.taxes)
-        utilities = np.full(params.time_horizon, params.utilities_expenses)
-        maintenance = np.full(params.time_horizon, params.maintenance_expenses)
-        depreciation = np.full(params.time_horizon, params.depreciation_expense)
+        marketing = np.full(params.time_horizon, params.marketing_expenses) # Постоянные расходы
+        insurance = np.full(params.time_horizon, params.insurance_expenses) # Постоянные расходы
+        taxes = np.full(params.time_horizon, params.taxes) # Постоянные расходы
+        utilities = np.full(params.time_horizon, params.utilities_expenses)  # Постоянные расходы
+        maintenance = np.full(params.time_horizon, params.maintenance_expenses) # Постоянные расходы
+        depreciation = np.full(params.time_horizon, params.depreciation_expense) # Постоянные расходы
 
-        electricity = params.total_area * params.electricity_cost_per_m2
-        packaging = params.total_area * params.packaging_cost_per_m2
+        electricity = params.total_area * params.electricity_cost_per_m2 # Переменные расходы
+        packaging = params.total_area * params.packaging_cost_per_m2 # Переменные расходы
 
         monthly_expenses = (
             rent
@@ -520,20 +626,20 @@ def calculate_monthly_projection(params: WarehouseParams, base_financials: dict)
             + depreciation
             + electricity
             + packaging
-        )
+        ) # Общие расходы
 
         if params.time_horizon > 0:
-            monthly_expenses += params.one_time_expenses / params.time_horizon
+            monthly_expenses += params.one_time_expenses / params.time_horizon # Добавление единовременных расходов (если есть горизонт)
 
-        monthly_incomes = start_income * (1 + params.monthly_income_growth) ** (months - 1)
-        monthly_profit = monthly_incomes - monthly_expenses
+        monthly_incomes = start_income * (1 + params.monthly_income_growth) ** (months - 1) # Прогнозируемые доходы
+        monthly_profit = monthly_incomes - monthly_expenses # Прогнозируемая прибыль
 
         return pd.DataFrame(
             {
-                "Месяц": months,
-                "Доход": monthly_incomes,
-                "Расход": monthly_expenses,
-                "Прибыль": monthly_profit,
+                "Месяц": months, # Месяц
+                "Доход": monthly_incomes, # Доход
+                "Расход": monthly_expenses, # Расход
+                "Прибыль": monthly_profit, # Прибыль
             }
         )
     except Exception as e:
