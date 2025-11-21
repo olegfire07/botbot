@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,6 +15,7 @@
             --tg-theme-button-color: #2481cc;
             --tg-theme-button-text-color: #fff;
             --tg-theme-secondary-bg-color: #f0f0f0;
+            --tg-theme-destructive-text-color: #ff3b30;
         }
 
         body {
@@ -36,6 +38,14 @@
             text-align: center;
         }
 
+        h2 {
+            font-size: 16px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--tg-theme-hint-color);
+            padding-bottom: 5px;
+        }
+
         .form-group {
             margin-bottom: 15px;
         }
@@ -48,7 +58,9 @@
             font-size: 14px;
         }
 
-        input, select, textarea {
+        input,
+        select,
+        textarea {
             width: 100%;
             padding: 12px;
             border: 1px solid var(--tg-theme-hint-color);
@@ -61,13 +73,15 @@
             transition: border-color 0.2s;
         }
 
-        input:focus, select:focus, textarea:focus {
+        input:focus,
+        select:focus,
+        textarea:focus {
             border-color: var(--tg-theme-button-color);
         }
 
         textarea {
             resize: vertical;
-            min-height: 80px;
+            min-height: 60px;
         }
 
         .error {
@@ -75,6 +89,48 @@
             font-size: 12px;
             margin-top: 4px;
             display: none;
+        }
+
+        .item-card {
+            background-color: var(--tg-theme-secondary-bg-color);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .item-title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .remove-btn {
+            color: var(--tg-theme-destructive-text-color);
+            background: none;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 12px;
+            border: 1px dashed var(--tg-theme-button-color);
+            border-radius: 8px;
+            background-color: transparent;
+            color: var(--tg-theme-button-color);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
         }
 
         .main-btn {
@@ -87,7 +143,7 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 10px;
         }
 
         .main-btn:disabled {
@@ -96,6 +152,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>Новое заключение</h1>
@@ -141,15 +198,12 @@
                 </select>
             </div>
 
-            <div class="form-group">
-                <label for="description">Описание предмета</label>
-                <textarea id="description" placeholder="Краткое описание..." required></textarea>
+            <h2>Предметы</h2>
+            <div id="items-container">
+                <!-- Items will be added here -->
             </div>
 
-            <div class="form-group">
-                <label for="evaluation">Оценка (руб)</label>
-                <input type="number" id="evaluation" placeholder="Например: 1500" required>
-            </div>
+            <button type="button" class="add-btn" id="add-item-btn">+ Добавить предмет</button>
         </form>
     </div>
 
@@ -164,6 +218,50 @@
         // Set default date to today
         document.getElementById('date').valueAsDate = new Date();
 
+        // Items Logic
+        let itemCount = 0;
+        const itemsContainer = document.getElementById('items-container');
+
+        function createItemHTML(id) {
+            return `
+                <div class="item-card" id="item-${id}">
+                    <div class="item-header">
+                        <span class="item-title">Предмет #${id + 1}</span>
+                        ${id > 0 ? `<button type="button" class="remove-btn" onclick="removeItem(${id})">Удалить</button>` : ''}
+                    </div>
+                    <div class="form-group">
+                        <label>Описание</label>
+                        <textarea class="item-desc" placeholder="Краткое описание..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Оценка (руб)</label>
+                        <input type="number" class="item-eval" placeholder="Например: 1500" required>
+                    </div>
+                </div>
+            `;
+        }
+
+        function addItem() {
+            const div = document.createElement('div');
+            div.innerHTML = createItemHTML(itemCount);
+            itemsContainer.appendChild(div.firstElementChild);
+            itemCount++;
+            validate();
+        }
+
+        function removeItem(id) {
+            const item = document.getElementById(`item-${id}`);
+            if (item) {
+                item.remove();
+                validate();
+            }
+        }
+
+        // Initialize with one item
+        addItem();
+
+        document.getElementById('add-item-btn').addEventListener('click', addItem);
+
         // Validation
         const ticketInput = document.getElementById('ticket');
         const ticketError = document.getElementById('ticket-error');
@@ -174,19 +272,27 @@
             const ticket = ticketInput.value;
             const date = document.getElementById('date').value;
             const region = document.getElementById('region').value;
-            const desc = document.getElementById('description').value;
-            const evalVal = document.getElementById('evaluation').value;
+
+            // Check items
+            const descs = document.querySelectorAll('.item-desc');
+            const evals = document.querySelectorAll('.item-eval');
+            let itemsValid = true;
+
+            if (descs.length === 0) itemsValid = false;
+
+            descs.forEach(el => { if (!el.value.trim()) itemsValid = false; });
+            evals.forEach(el => { if (!el.value.trim()) itemsValid = false; });
 
             const isTicketValid = ticket.length === 11;
-            
+
             if (!isTicketValid && ticket.length > 0) {
                 ticketError.style.display = 'block';
             } else {
                 ticketError.style.display = 'none';
             }
 
-            const isValid = dept && issue && isTicketValid && date && region && desc && evalVal;
-            
+            const isValid = dept && issue && isTicketValid && date && region && itemsValid;
+
             if (isValid) {
                 mainButton.enable();
             } else {
@@ -196,19 +302,31 @@
 
         document.getElementById('form').addEventListener('input', validate);
         document.getElementById('region').addEventListener('change', validate);
+        // Listen to dynamic inputs
+        itemsContainer.addEventListener('input', validate);
 
-        Telegram.WebApp.onEvent('mainButtonClicked', function(){
+        Telegram.WebApp.onEvent('mainButtonClicked', function () {
+            const items = [];
+            const itemCards = document.querySelectorAll('.item-card');
+
+            itemCards.forEach(card => {
+                items.push({
+                    description: card.querySelector('.item-desc').value,
+                    evaluation: card.querySelector('.item-eval').value
+                });
+            });
+
             const data = {
                 department_number: document.getElementById('department').value,
                 issue_number: document.getElementById('issue').value,
                 ticket_number: document.getElementById('ticket').value,
-                date: document.getElementById('date').value.split('-').reverse().join('.'), // YYYY-MM-DD -> DD.MM.YYYY
+                date: document.getElementById('date').value.split('-').reverse().join('.'),
                 region: document.getElementById('region').value,
-                description: document.getElementById('description').value,
-                evaluation: document.getElementById('evaluation').value
+                items: items
             };
             tg.sendData(JSON.stringify(data));
         });
     </script>
 </body>
+
 </html>
