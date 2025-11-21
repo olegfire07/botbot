@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание заключения</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --tg-theme-bg-color: #fff;
+            --tg-theme-text-color: #000;
+            --tg-theme-hint-color: #999;
+            --tg-theme-link-color: #2481cc;
+            --tg-theme-button-color: #2481cc;
+            --tg-theme-button-text-color: #fff;
+            --tg-theme-secondary-bg-color: #f0f0f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--tg-theme-hint-color);
+            font-size: 14px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--tg-theme-hint-color);
+            border-radius: 8px;
+            background-color: var(--tg-theme-secondary-bg-color);
+            color: var(--tg-theme-text-color);
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--tg-theme-button-color);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .error {
+            color: #ff3b30;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .main-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .main-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Новое заключение</h1>
+        <form id="form">
+            <div class="form-group">
+                <label for="department">Номер подразделения</label>
+                <input type="number" id="department" placeholder="Например: 385" required>
+            </div>
+
+            <div class="form-group">
+                <label for="issue">Номер заключения (за день)</label>
+                <input type="number" id="issue" placeholder="Например: 1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="ticket">Номер залогового билета</label>
+                <input type="number" id="ticket" placeholder="11 цифр" required>
+                <div class="error" id="ticket-error">Должно быть 11 цифр</div>
+            </div>
+
+            <div class="form-group">
+                <label for="date">Дата</label>
+                <input type="date" id="date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="region">Регион</label>
+                <select id="region" required>
+                    <option value="" disabled selected>Выберите регион</option>
+                    <option value="Санкт-Петербург">Санкт-Петербург</option>
+                    <option value="Свердловская область">Свердловская область</option>
+                    <option value="Челябинская область">Челябинская область</option>
+                    <option value="Екатеринбург">Екатеринбург</option>
+                    <option value="Башкирия">Башкирия</option>
+                    <option value="Тюмень">Тюмень</option>
+                    <option value="ХМАО-Югра">ХМАО-Югра</option>
+                    <option value="Нижний Новгород">Нижний Новгород</option>
+                    <option value="Ростовская область">Ростовская область</option>
+                    <option value="Челябинск">Челябинск</option>
+                    <option value="Магнитогорск">Магнитогорск</option>
+                    <option value="Курган">Курган</option>
+                    <option value="Краснодарский край">Краснодарский край</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Описание предмета</label>
+                <textarea id="description" placeholder="Краткое описание..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="evaluation">Оценка (руб)</label>
+                <input type="number" id="evaluation" placeholder="Например: 1500" required>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        const mainButton = tg.MainButton;
+        mainButton.text = "Отправить";
+        mainButton.show();
+
+        // Set default date to today
+        document.getElementById('date').valueAsDate = new Date();
+
+        // Validation
+        const ticketInput = document.getElementById('ticket');
+        const ticketError = document.getElementById('ticket-error');
+
+        function validate() {
+            const dept = document.getElementById('department').value;
+            const issue = document.getElementById('issue').value;
+            const ticket = ticketInput.value;
+            const date = document.getElementById('date').value;
+            const region = document.getElementById('region').value;
+            const desc = document.getElementById('description').value;
+            const evalVal = document.getElementById('evaluation').value;
+
+            const isTicketValid = ticket.length === 11;
+            
+            if (!isTicketValid && ticket.length > 0) {
+                ticketError.style.display = 'block';
+            } else {
+                ticketError.style.display = 'none';
+            }
+
+            const isValid = dept && issue && isTicketValid && date && region && desc && evalVal;
+            
+            if (isValid) {
+                mainButton.enable();
+            } else {
+                mainButton.disable();
+            }
+        }
+
+        document.getElementById('form').addEventListener('input', validate);
+        document.getElementById('region').addEventListener('change', validate);
+
+        Telegram.WebApp.onEvent('mainButtonClicked', function(){
+            const data = {
+                department_number: document.getElementById('department').value,
+                issue_number: document.getElementById('issue').value,
+                ticket_number: document.getElementById('ticket').value,
+                date: document.getElementById('date').value.split('-').reverse().join('.'), // YYYY-MM-DD -> DD.MM.YYYY
+                region: document.getElementById('region').value,
+                description: document.getElementById('description').value,
+                evaluation: document.getElementById('evaluation').value
+            };
+            tg.sendData(JSON.stringify(data));
+        });
+    </script>
+</body>
+</html>

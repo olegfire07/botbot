@@ -1,1 +1,23 @@
+.venv/
 .env
+__pycache__/
+*.pyc
+.DS_Store
+user_data.db*
+photos/
+documents/
+documents_archive/
+conclusions.xlsx
+config/admins.json
+
+# Ignore old/backup directories
+bot 2/
+bot zakl/
+BOT ANTIK/
+botbotbotbo(запуск) 2 (1).py
+Бот по модулям/
+СУПЕР ФИНАЛ НЮЗ ДАШБОРД/
+анализ последний/
+версия про/
+мини ап заключение бот/
+хороший код с gem после 01 2.1/
