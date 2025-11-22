@@ -498,6 +498,10 @@
                         body: formData
                     });
 
+                    if (!response.ok) {
+                        throw new Error(`HTTP Error: ${response.status}`);
+                    }
+
                     const result = await response.json();
 
                     if (result && result[0] && result[0].src) {
@@ -509,12 +513,12 @@
                             photo_url: photoUrl
                         });
                     } else {
-                        throw new Error("Upload failed: " + JSON.stringify(result));
+                        throw new Error("Invalid response: " + JSON.stringify(result));
                     }
 
                 } catch (e) {
                     console.error("Upload failed", e);
-                    tg.showAlert("Ошибка загрузки фото. Возможно, файл слишком большой или проблема с сетью.");
+                    tg.showAlert(`Ошибка: ${e.message || e}\nПопробуйте другое фото.`);
                     btn.disabled = false;
                     btn.textContent = "Отправить";
                     return;
