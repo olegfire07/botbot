@@ -298,7 +298,8 @@
             background-color: #E5E5EA;
             border-radius: 9px;
             padding: 2px;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
+            /* Moved from inline style */
         }
 
         .segmented-control label {
@@ -352,15 +353,6 @@
     <h1 id="mainTitle" onclick="handleTitleClick()">Новое заключение</h1>
 
     <form id="mainForm">
-        <!-- Mode Toggle -->
-        <div class="segmented-control">
-            <input type="radio" name="mode" id="mode-test" value="test" checked>
-            <label for="mode-test">Черновик (Тест)</label>
-
-            <input type="radio" name="mode" id="mode-final" value="final">
-            <label for="mode-final">Оригинал (В группу)</label>
-        </div>
-
         <div class="section">
             <div class="form-group">
                 <label>Подразделение</label>
@@ -370,17 +362,6 @@
                 <label>Номер заключения</label>
                 <input type="tel" id="issue" placeholder="Например: 12" required pattern="\d+">
             </div>
-            <div class="form-group">
-                <label>ImgBB API Key</label>
-                <input type="text" id="apiKeyInput" placeholder="Введите ключ с api.imgbb.com">
-                <div class="hint-text">Ключ сохранится на устройстве</div>
-            </div>
-            <div class="form-group">
-                <label>URL Бота (для браузера)</label>
-                <input type="text" id="botUrlInput" placeholder="https://... (ngrok/glitch)">
-                <div class="hint-text">Оставьте пустым, если используете внутри Telegram</div>
-            </div>
-            <button class="btn btn-primary" onclick="saveSettings()">Сохранить</button>
             <div class="form-group">
                 <label>Номер билета</label>
                 <input type="tel" id="ticket" placeholder="03850006392" required pattern="\d{11}" maxlength="11">
@@ -423,6 +404,15 @@
             </button>
         </div>
 
+        <!-- Mode Toggle (Moved to Bottom) -->
+        <div class="segmented-control">
+            <input type="radio" name="mode" id="mode-test" value="test" checked>
+            <label for="mode-test">Черновик (Тест)</label>
+
+            <input type="radio" name="mode" id="mode-final" value="final">
+            <label for="mode-final">Оригинал (В группу)</label>
+        </div>
+
         <button type="button" class="btn btn-primary" onclick="showPreview()">
             Проверить и отправить
         </button>
@@ -441,17 +431,45 @@
         </div>
     </div>
 
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-top:0">Настройки</h2>
+            <div class="form-group">
+                <label>ImgBB API Key</label>
+                <input type="text" id="apiKeyInput" placeholder="Введите ключ с api.imgbb.com">
+                <div class="hint-text">Ключ сохранится на устройстве</div>
+            </div>
+            <div class="form-group">
+                <label>URL Бота (для браузера)</label>
+                <input type="text" id="botUrlInput" placeholder="https://... (ngrok/glitch)">
+                <div class="hint-text">Оставьте пустым, если используете внутри Telegram</div>
+            </div>
+            <button class="btn btn-primary" onclick="saveSettings()">Сохранить</button>
+            <button class="btn btn-secondary" style="margin-top:10px"
+                onclick="document.getElementById('settingsModal').style.display = 'none'">Закрыть</button>
+        </div>
+    </div>
+
     <script>
         const tg = window.Telegram.WebApp;
+
+        // --- CONFIGURATION ---
+        const APP_CONFIG = {
+            // Default URL for standalone mode. 
+            // CHANGE THIS if your ngrok tunnel URL changes.
+            DEFAULT_BOT_URL: "https://64ee6bd67fc0.ngrok-free.app",
+            DEFAULT_IMGBB_KEY: "c8574310f13ff081e6ed7e3c9f963f9f"
+        };
 
         // Initialize
         tg.expand();
 
         // Load API Key (default to the provided one if not in storage)
-        let imgbbKey = localStorage.getItem('imgbb_key') || "c8574310f13ff081e6ed7e3c9f963f9f";
+        let imgbbKey = localStorage.getItem('imgbb_key') || APP_CONFIG.DEFAULT_IMGBB_KEY;
 
         // Load Bot URL (for standalone mode)
-        let botUrl = localStorage.getItem('bot_url') || "";
+        let botUrl = localStorage.getItem('bot_url') || APP_CONFIG.DEFAULT_BOT_URL;
 
         // Secret Settings Access
         let titleClicks = 0;
@@ -466,6 +484,9 @@
 
             if (titleClicks >= 5) {
                 document.getElementById('settingsModal').style.display = 'block';
+                // Populate settings inputs when modal opens
+                document.getElementById('apiKeyInput').value = imgbbKey;
+                document.getElementById('botUrlInput').value = botUrl;
                 titleClicks = 0;
             }
         }
@@ -477,6 +498,9 @@
             if (key) {
                 localStorage.setItem('imgbb_key', key);
                 imgbbKey = key;
+            } else {
+                localStorage.removeItem('imgbb_key');
+                imgbbKey = APP_CONFIG.DEFAULT_IMGBB_KEY;
             }
 
             if (url !== undefined) {
@@ -484,6 +508,9 @@
                 const cleanUrl = url.replace(/\/$/, "");
                 localStorage.setItem('bot_url', cleanUrl);
                 botUrl = cleanUrl;
+            } else {
+                localStorage.removeItem('bot_url');
+                botUrl = APP_CONFIG.DEFAULT_BOT_URL;
             }
 
             document.getElementById('settingsModal').style.display = 'none';
@@ -493,13 +520,9 @@
         // Theme handling
         if (tg.themeParams) {
             const r = document.documentElement.style;
-            // We override some theme params to enforce our "Apple Style" look, 
-            // but respect the user's text color preference if needed.
         }
 
         document.getElementById('date').valueAsDate = new Date();
-        if (imgbbKey) document.getElementById('apiKeyInput').value = imgbbKey;
-        if (botUrl) document.getElementById('botUrlInput').value = botUrl;
 
         let itemCount = 0;
 
@@ -721,13 +744,14 @@
             };
 
             // Check if running in Telegram
+            // We check if initDataUnsafe is present and has user info
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 tg.sendData(JSON.stringify(data));
             } else {
                 // Standalone Mode
                 if (!botUrl) {
                     document.getElementById('settingsModal').style.display = 'block';
-                    alert("Для работы в браузере нужно указать URL бота в настройках (например, ngrok адрес).");
+                    tg.showAlert("Для работы в браузере нужно указать URL бота в настройках (например, ngrok адрес).");
                     btn.disabled = false;
                     btn.textContent = "Отправить";
                     return;
