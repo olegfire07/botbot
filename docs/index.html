@@ -685,6 +685,14 @@
                 const fileInput = div.querySelector('.file-input');
                 const file = fileInput.files[0];
 
+                // Skip if no file selected
+                if (!file) {
+                    console.warn(`Skipping item ${i + 1} - no photo selected`);
+                    continue;
+                }
+
+                btn.textContent = `Загрузка фото ${i + 1}/${cards.length}...`;
+
                 try {
                     // Compress first
                     const compressedBlob = await compressImage(file);
