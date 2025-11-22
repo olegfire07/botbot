@@ -1,0 +1,7 @@
+python-telegram-bot
+openpyxl
+python-docx
+Pillow
+aiosqlite
+nest_asyncio
+matplotlib
