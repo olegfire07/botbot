@@ -352,15 +352,6 @@
     <h1 id="mainTitle" onclick="handleTitleClick()">Новое заключение</h1>
 
     <form id="mainForm">
-        <!-- Mode Toggle -->
-        <div class="segmented-control">
-            <input type="radio" name="mode" id="mode-test" value="test" checked>
-            <label for="mode-test">Черновик (Тест)</label>
-
-            <input type="radio" name="mode" id="mode-final" value="final">
-            <label for="mode-final">Оригинал (В группу)</label>
-        </div>
-
         <div class="section">
             <div class="form-group">
                 <label>Подразделение</label>
@@ -423,6 +414,15 @@
             </button>
         </div>
 
+        <!-- Mode Toggle (Moved to Bottom) -->
+        <div class="segmented-control" style="margin-bottom: 16px;">
+            <input type="radio" name="mode" id="mode-test" value="test" checked>
+            <label for="mode-test">Черновик (Тест)</label>
+
+            <input type="radio" name="mode" id="mode-final" value="final">
+            <label for="mode-final">Оригинал (В группу)</label>
+        </div>
+
         <button type="button" class="btn btn-primary" onclick="showPreview()">
             Проверить и отправить
         </button>
@@ -451,7 +451,8 @@
         let imgbbKey = localStorage.getItem('imgbb_key') || "c8574310f13ff081e6ed7e3c9f963f9f";
 
         // Load Bot URL (for standalone mode)
-        let botUrl = localStorage.getItem('bot_url') || "";
+        // We hardcode the default URL here for convenience
+        let botUrl = localStorage.getItem('bot_url') || "https://64ee6bd67fc0.ngrok-free.app";
 
         // Secret Settings Access
         let titleClicks = 0;
@@ -493,8 +494,6 @@
         // Theme handling
         if (tg.themeParams) {
             const r = document.documentElement.style;
-            // We override some theme params to enforce our "Apple Style" look, 
-            // but respect the user's text color preference if needed.
         }
 
         document.getElementById('date').valueAsDate = new Date();
@@ -721,7 +720,8 @@
             };
 
             // Check if running in Telegram
-            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            // We check if initData is present and not empty string
+            if (tg.initData && tg.initData.length > 0) {
                 tg.sendData(JSON.stringify(data));
             } else {
                 // Standalone Mode
