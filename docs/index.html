@@ -333,11 +333,51 @@
             color: var(--success-color);
             font-weight: 600;
         }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 16px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .draft-notice {
+            background: rgba(52, 199, 89, 0.1);
+            border-left: 3px solid var(--success-color);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: var(--text-color);
+            display: none;
+        }
     </style>
 </head>
 
 <body>
     <h1 id="mainTitle" onclick="handleTitleClick()">Новое заключение</h1>
+
+    <!-- Draft Notice -->
+    <div class="draft-notice" id="draftNotice">
+        ✅ Восстановлен черновик из предыдущей сессии
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-container" id="progressContainer">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
 
     <form id="mainForm">
         <div class="section">
@@ -691,6 +731,8 @@
                     continue;
                 }
 
+                // Update progress
+                updateProgress(i, cards.length);
                 btn.textContent = `Загрузка фото ${i + 1}/${cards.length}...`;
 
                 try {
@@ -793,6 +835,7 @@
                     window.URL.revokeObjectURL(url);
                     document.body.removeChild(a);
 
+                    clearDraft(); // Add clear draft call after successful submission
                     alert("✅ Документ готов и скачан!");
                     closePreview();
                     btn.disabled = false;
@@ -812,6 +855,80 @@
 
         // Initial item
         addItem();
+
+        // ============================================
+        // AUTO-SAVE DRAFT & RESTORE
+        // ============================================
+        function saveDraft() {
+            const draft = {
+                department: document.getElementById('department').value,
+                issue: document.getElementById('issue').value,
+                ticket: document.getElementById('ticket').value,
+                date: document.getElementById('date').value,
+                region: document.getElementById('region').value,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('formDraft', JSON.stringify(draft));
+        }
+
+        function restoreDraft() {
+            const draftStr = localStorage.getItem('formDraft');
+            if (!draftStr) return;
+
+            const draft = JSON.parse(draftStr);
+            // Only restore if draft is less than 24 hours old
+            const hoursSinceLastSave = (Date.now() - draft.timestamp) / (1000 * 60 * 60);
+            if (hoursSinceLastSave > 24) {
+                localStorage.removeItem('formDraft');
+                return;
+            }
+
+            // Restore values
+            if (draft.department) document.getElementById('department').value = draft.department;
+            if (draft.issue) document.getElementById('issue').value = draft.issue;
+            if (draft.ticket) document.getElementById('ticket').value = draft.ticket;
+            if (draft.date) document.getElementById('date').value = draft.date;
+            if (draft.region) document.getElementById('region').value = draft.region;
+
+            // Show notice
+            const notice = document.getElementById('draftNotice');
+            notice.style.display = 'block';
+            setTimeout(() => {
+                notice.style.opacity = '0';
+                notice.style.transition = 'opacity 1s';
+                setTimeout(() => notice.style.display = 'none', 1000);
+            }, 3000);
+        }
+
+        function clearDraft() {
+            localStorage.removeItem('formDraft');
+        }
+
+        // Update progress bar
+        function updateProgress(current, total) {
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            const percent = (current / total) * 100;
+
+            progressContainer.style.display = 'block';
+            progressBar.style.width = percent + '%';
+
+            if (current === total) {
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                    progressBar.style.width = '0%';
+                }, 1000);
+            }
+        }
+
+        // Auto-save every 2 seconds
+        setInterval(saveDraft, 2000);
+
+        // Restore draft on page load
+        restoreDraft();
+
+        // Add item (with numbering)
+        let itemCounter = 1;
     </script>
 </body>
 
