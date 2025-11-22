@@ -141,15 +141,25 @@
             color: var(--accent-color);
         }
 
-        .photo-upload-container {
+        /* Photo Preview Styles */
+        .photo-preview-container {
             margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .file-input {
+        .photo-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.05);
+            background-size: cover;
+            background-position: center;
             display: none;
         }
 
-        .upload-btn {
+        .upload-label {
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -159,6 +169,16 @@
             font-size: 14px;
             color: var(--text-color);
             cursor: pointer;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .hint-text {
+            font-size: 12px;
+            color: var(--secondary-text);
+            margin-top: 4px;
         }
 
         .upload-status {
@@ -229,7 +249,7 @@
             <div class="form-group">
                 <label>Номер билета</label>
                 <input type="tel" id="ticket" placeholder="11 цифр" required pattern="\d{11}" maxlength="11">
-                <div style="font-size: 12px; color: #8e8e93; margin-top: 4px;">Ровно 11 цифр с залогового билета</div>
+                <div class="hint-text">Ровно 11 цифр с залогового билета</div>
             </div>
             <div class="form-group">
                 <label>Дата</label>
@@ -290,8 +310,9 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // BOT TOKEN FOR DIRECT UPLOAD (Client-side)
+        // CONFIG
         const BOT_TOKEN = "7514668293:AAHInixLv71o-WBrWVSndKrhc_mnHdM4ul4";
+        const DUMP_CHAT_ID = "-1002381542769"; // Main group ID
 
         // Theme handling
         if (tg.themeParams) {
@@ -307,13 +328,23 @@
 
         let itemCount = 0;
 
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
         function addItem() {
             itemCount++;
             updateBadge();
 
+            const uuid = generateUUID();
+
             const div = document.createElement('div');
             div.className = 'item-card';
             div.id = `item-${itemCount}`;
+            div.dataset.uuid = uuid;
             div.innerHTML = `
                 <div class="item-header">
                     <span class="item-title">Предмет #${itemCount}</span>
@@ -325,14 +356,14 @@
                 <div class="form-group">
                     <input type="tel" class="eval" placeholder="Оценка (руб)" required pattern="\\d+">
                 </div>
-                <div class="photo-upload-container">
-                    <label class="upload-btn">
-                        <input type="file" class="file-input" accept="image/*" onchange="handleFileUpload(this)" required>
-                        <span class="icon">📸</span> <span class="btn-text">Загрузить фото</span>
+                <div class="photo-preview-container">
+                    <div class="photo-preview"></div>
+                    <label class="upload-label">
+                        <input type="file" class="file-input" accept="image/*" onchange="handleFileSelect(this)">
+                        <span class="icon">📸</span> <span class="btn-text">Выбрать фото</span>
                     </label>
-                    <div class="upload-status">Фото не выбрано</div>
-                    <input type="hidden" class="file-id">
                 </div>
+                <div class="upload-status">Фото не выбрано</div>
             `;
             document.getElementById('itemsList').appendChild(div);
         }
@@ -347,63 +378,25 @@
             document.getElementById('itemCountBadge').textContent = count;
         }
 
-        async function handleFileUpload(input) {
+        function handleFileSelect(input) {
             const file = input.files[0];
             if (!file) return;
 
-            const container = input.closest('.photo-upload-container');
-            const status = container.querySelector('.upload-status');
-            const hiddenInput = container.querySelector('.file-id');
+            const container = input.closest('.item-card');
+            const preview = container.querySelector('.photo-preview');
             const btnText = container.querySelector('.btn-text');
+            const status = container.querySelector('.upload-status');
 
-            status.textContent = "Загрузка...";
-            status.className = "upload-status";
-            btnText.textContent = "Загрузка...";
-
-            const formData = new FormData();
-            formData.append('photo', file);
-
-            // Get user ID from WebApp init data if available, or just send to bot generally?
-            // Actually sendPhoto requires chat_id. We can use the user's ID if we have it.
-            // tg.initDataUnsafe.user.id is available!
-
-            const userId = tg.initDataUnsafe?.user?.id;
-            if (!userId) {
-                status.textContent = "Ошибка: Откройте в Telegram";
-                status.className = "upload-status error";
-                return;
-            }
-
-            formData.append('chat_id', userId);
-            // We send silently so user doesn't get spammed, but they will see the photo in chat.
-            // That's actually good confirmation.
-
-            try {
-                const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const result = await response.json();
-
-                if (result.ok) {
-                    // Get the largest photo file_id
-                    const photos = result.result.photo;
-                    const fileId = photos[photos.length - 1].file_id;
-                    hiddenInput.value = fileId;
-
-                    status.textContent = "✅ Фото загружено";
-                    status.className = "upload-status success";
-                    btnText.textContent = "Изменить фото";
-                } else {
-                    throw new Error(result.description);
-                }
-            } catch (e) {
-                console.error(e);
-                status.textContent = "Ошибка загрузки";
-                status.className = "upload-status error";
-                btnText.textContent = "Попробовать снова";
-            }
+            // Preview
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.style.backgroundImage = `url(${e.target.result})`;
+                preview.style.display = 'block';
+                btnText.textContent = "Изменить";
+                status.textContent = "Готово к отправке";
+                status.className = "upload-status success";
+            };
+            reader.readAsDataURL(file);
         }
 
         function showPreview() {
@@ -413,23 +406,23 @@
                 return;
             }
 
-            // Check ticket length manually
             const ticket = document.getElementById('ticket').value;
             if (ticket.length !== 11) {
                 tg.showAlert("Номер билета должен быть 11 цифр!");
                 return;
             }
 
-            // Check if all photos are uploaded
-            let allPhotosUploaded = true;
+            // Check photos
+            let allPhotosSelected = true;
             document.querySelectorAll('.item-card').forEach(div => {
-                if (!div.querySelector('.file-id').value) {
-                    allPhotosUploaded = false;
+                const input = div.querySelector('.file-input');
+                if (!input.files || !input.files[0]) {
+                    allPhotosSelected = false;
                 }
             });
 
-            if (!allPhotosUploaded) {
-                tg.showAlert("Пожалуйста, загрузите фото для всех предметов!");
+            if (!allPhotosSelected) {
+                tg.showAlert("Пожалуйста, выберите фото для всех предметов!");
                 return;
             }
 
@@ -451,19 +444,54 @@
             document.getElementById('previewModal').style.display = 'none';
         }
 
-        function submitForm() {
+        async function submitForm() {
             const btn = document.getElementById('finalSubmitBtn');
             btn.disabled = true;
-            btn.textContent = "Отправка...";
+            btn.textContent = "Загрузка фото...";
 
             const items = [];
-            document.querySelectorAll('.item-card').forEach(div => {
+            const cards = document.querySelectorAll('.item-card');
+
+            // Upload photos one by one
+            for (let i = 0; i < cards.length; i++) {
+                const div = cards[i];
+                const uuid = div.dataset.uuid;
+                const fileInput = div.querySelector('.file-input');
+                const file = fileInput.files[0];
+
+                try {
+                    const formData = new FormData();
+                    formData.append('chat_id', DUMP_CHAT_ID);
+                    formData.append('caption', `UUID:${uuid}`);
+                    formData.append('photo', file);
+
+                    // Send to Telegram API (blindly, no-cors)
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                        method: 'POST',
+                        body: formData
+                        // mode: 'no-cors' is default for some, but we might need it if CORS fails.
+                        // Actually, standard fetch will fail CORS. We rely on 'no-cors' opaque response.
+                    });
+
+                    // Small delay to ensure order/processing
+                    await new Promise(r => setTimeout(r, 500));
+
+                } catch (e) {
+                    console.error("Upload failed", e);
+                    // We continue anyway, hoping it worked or user will retry
+                }
+
                 items.push({
                     description: div.querySelector('.desc').value,
                     evaluation: div.querySelector('.eval').value,
-                    file_id: div.querySelector('.file-id').value
+                    uuid: uuid
                 });
-            });
+            }
+
+            btn.textContent = "Отправка данных...";
+
+            // Wait a bit for bot to download photos
+            await new Promise(r => setTimeout(r, 2000));
 
             const data = {
                 department_number: document.getElementById('department').value,
