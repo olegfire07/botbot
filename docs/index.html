@@ -445,7 +445,7 @@
         // WARNING: These are default values for local/demo use.
         // For production, consider injecting these via environment variables or a build step.
         const APP_CONFIG = {
-            DEFAULT_BOT_URL: window.APP_DEFAULT_BOT_URL || "https://64ee6bd67fc0.ngrok-free.app",
+            DEFAULT_BOT_URL: window.APP_DEFAULT_BOT_URL || "https://55181ef25a05.ngrok-free.app",
             DEFAULT_IMGBB_KEY: window.APP_DEFAULT_IMGBB_KEY || "c8574310f13ff081e6ed7e3c9f963f9f"
         };
 
@@ -684,6 +684,14 @@
                 const div = cards[i];
                 const fileInput = div.querySelector('.file-input');
                 const file = fileInput.files[0];
+
+                // Skip if no file selected
+                if (!file) {
+                    console.warn(`Skipping item ${i + 1} - no photo selected`);
+                    continue;
+                }
+
+                btn.textContent = `Загрузка фото ${i + 1}/${cards.length}...`;
 
                 try {
                     // Compress first
