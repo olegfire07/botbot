@@ -8,7 +8,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-color: #F2F2F7;
+            --bg-color: #EFEFF4;
             --card-bg: #FFFFFF;
             --text-color: #000000;
             --secondary-text: #8A8A8E;
@@ -18,7 +18,7 @@
             --input-bg: #F2F2F7;
             --border-color: #C6C6C8;
             --separator-color: #E5E5EA;
-            --shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         body {
@@ -292,6 +292,40 @@
             text-align: right;
         }
 
+        /* Segmented Control */
+        .segmented-control {
+            display: flex;
+            background-color: #E5E5EA;
+            border-radius: 9px;
+            padding: 2px;
+            margin-bottom: 24px;
+        }
+
+        .segmented-control label {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-color);
+            cursor: pointer;
+            border-radius: 7px;
+            transition: background-color 0.2s;
+            margin: 0;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        .segmented-control input[type="radio"] {
+            display: none;
+        }
+
+        .segmented-control input[type="radio"]:checked+label {
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+        }
+
         /* Settings Button */
         .settings-btn {
             position: absolute;
@@ -315,23 +349,41 @@
 </head>
 
 <body>
-    <button class="settings-btn" onclick="document.getElementById('settingsModal').style.display = 'block'">⚙️</button>
-
-    <h1>Новое заключение</h1>
+    <h1 id="mainTitle" onclick="handleTitleClick()">Новое заключение</h1>
 
     <form id="mainForm">
+        <!-- Mode Toggle -->
+        <div class="segmented-control">
+            <input type="radio" name="mode" id="mode-test" value="test" checked>
+            <label for="mode-test">Черновик (Тест)</label>
+
+            <input type="radio" name="mode" id="mode-final" value="final">
+            <label for="mode-final">Оригинал (В группу)</label>
+        </div>
+
         <div class="section">
             <div class="form-group">
                 <label>Подразделение</label>
-                <input type="tel" id="department" placeholder="Номер" required pattern="\d+">
+                <input type="tel" id="department" placeholder="Например: 385" required pattern="\d+">
             </div>
             <div class="form-group">
                 <label>Номер заключения</label>
-                <input type="tel" id="issue" placeholder="Номер" required pattern="\d+">
+                <input type="tel" id="issue" placeholder="Например: 12" required pattern="\d+">
             </div>
             <div class="form-group">
+                <label>ImgBB API Key</label>
+                <input type="text" id="apiKeyInput" placeholder="Введите ключ с api.imgbb.com">
+                <div class="hint-text">Ключ сохранится на устройстве</div>
+            </div>
+            <div class="form-group">
+                <label>URL Бота (для браузера)</label>
+                <input type="text" id="botUrlInput" placeholder="https://... (ngrok/glitch)">
+                <div class="hint-text">Оставьте пустым, если используете внутри Telegram</div>
+            </div>
+            <button class="btn btn-primary" onclick="saveSettings()">Сохранить</button>
+            <div class="form-group">
                 <label>Номер билета</label>
-                <input type="tel" id="ticket" placeholder="11 цифр" required pattern="\d{11}" maxlength="11">
+                <input type="tel" id="ticket" placeholder="03850006392" required pattern="\d{11}" maxlength="11">
                 <div class="hint-text">Ровно 11 цифр</div>
             </div>
             <div class="form-group">
@@ -376,19 +428,6 @@
         </button>
     </form>
 
-    <!-- Settings Modal -->
-    <div id="settingsModal" class="modal">
-        <div class="modal-content">
-            <h2 style="margin-top:0">Настройки</h2>
-            <div class="form-group">
-                <label>ImgBB API Key</label>
-                <input type="text" id="apiKeyInput" placeholder="Введите ключ с api.imgbb.com">
-                <div class="hint-text">Ключ сохранится на устройстве</div>
-            </div>
-            <button class="btn btn-primary" onclick="saveSettings()">Сохранить</button>
-        </div>
-    </div>
-
     <!-- Preview Modal -->
     <div id="previewModal" class="modal">
         <div class="modal-content">
@@ -404,35 +443,63 @@
 
     <script>
         const tg = window.Telegram.WebApp;
+
+        // Initialize
         tg.expand();
 
         // Load API Key (default to the provided one if not in storage)
         let imgbbKey = localStorage.getItem('imgbb_key') || "c8574310f13ff081e6ed7e3c9f963f9f";
 
+        // Load Bot URL (for standalone mode)
+        let botUrl = localStorage.getItem('bot_url') || "";
+
+        // Secret Settings Access
+        let titleClicks = 0;
+        let titleTimer;
+
+        function handleTitleClick() {
+            titleClicks++;
+            clearTimeout(titleTimer);
+            titleTimer = setTimeout(() => {
+                titleClicks = 0;
+            }, 1000);
+
+            if (titleClicks >= 5) {
+                document.getElementById('settingsModal').style.display = 'block';
+                titleClicks = 0;
+            }
+        }
+
         function saveSettings() {
             const key = document.getElementById('apiKeyInput').value.trim();
+            const url = document.getElementById('botUrlInput').value.trim();
+
             if (key) {
                 localStorage.setItem('imgbb_key', key);
                 imgbbKey = key;
-                document.getElementById('settingsModal').style.display = 'none';
-                tg.showAlert("Ключ сохранен!");
-            } else {
-                tg.showAlert("Введите ключ!");
             }
+
+            if (url !== undefined) {
+                // Remove trailing slash
+                const cleanUrl = url.replace(/\/$/, "");
+                localStorage.setItem('bot_url', cleanUrl);
+                botUrl = cleanUrl;
+            }
+
+            document.getElementById('settingsModal').style.display = 'none';
+            tg.showAlert("Настройки сохранены!");
         }
 
         // Theme handling
         if (tg.themeParams) {
             const r = document.documentElement.style;
-            if (tg.themeParams.bg_color) r.setProperty('--bg-color', tg.themeParams.bg_color);
-            if (tg.themeParams.secondary_bg_color) r.setProperty('--card-bg', tg.themeParams.secondary_bg_color);
-            if (tg.themeParams.text_color) r.setProperty('--text-color', tg.themeParams.text_color);
-            if (tg.themeParams.hint_color) r.setProperty('--secondary-text', tg.themeParams.hint_color);
-            if (tg.themeParams.button_color) r.setProperty('--accent-color', tg.themeParams.button_color);
+            // We override some theme params to enforce our "Apple Style" look, 
+            // but respect the user's text color preference if needed.
         }
 
         document.getElementById('date').valueAsDate = new Date();
         if (imgbbKey) document.getElementById('apiKeyInput').value = imgbbKey;
+        if (botUrl) document.getElementById('botUrlInput').value = botUrl;
 
         let itemCount = 0;
 
@@ -493,7 +560,7 @@
             reader.onload = function (e) {
                 preview.style.backgroundImage = `url(${e.target.result})`;
                 preview.style.display = 'block';
-                btnText.textContent = "Изменить";
+                btnText.textContent = "Изменить фото";
                 status.textContent = "Готово к отправке";
                 status.className = "upload-status success";
             };
@@ -527,15 +594,13 @@
                 return;
             }
 
-            if (!imgbbKey) {
-                document.getElementById('settingsModal').style.display = 'block';
-                tg.showAlert("Пожалуйста, введите API Key от ImgBB в настройках!");
-                return;
-            }
+            const isTest = document.getElementById('mode-test').checked;
+            const modeText = isTest ? "Черновик (Тест)" : "Оригинал (В группу)";
 
             // Build preview
             const content = document.getElementById('previewContent');
             content.innerHTML = `
+                <div class="preview-row"><span class="preview-label">Режим:</span> <div class="preview-value" style="color: ${isTest ? 'orange' : 'green'}">${modeText}</div></div>
                 <div class="preview-row"><span class="preview-label">Подразделение:</span> <div class="preview-value">${document.getElementById('department').value}</div></div>
                 <div class="preview-row"><span class="preview-label">Заключение:</span> <div class="preview-value">${document.getElementById('issue').value}</div></div>
                 <div class="preview-row"><span class="preview-label">Билет:</span> <div class="preview-value">${ticket}</div></div>
@@ -643,16 +708,68 @@
 
             btn.textContent = "Отправка данных...";
 
+            const isTest = document.getElementById('mode-test').checked;
+
             const data = {
                 department_number: document.getElementById('department').value,
                 issue_number: document.getElementById('issue').value,
                 ticket_number: document.getElementById('ticket').value,
                 date: document.getElementById('date').value.split('-').reverse().join('.'),
                 region: document.getElementById('region').value,
-                items: items
+                items: items,
+                is_test: isTest
             };
 
-            tg.sendData(JSON.stringify(data));
+            // Check if running in Telegram
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                tg.sendData(JSON.stringify(data));
+            } else {
+                // Standalone Mode
+                if (!botUrl) {
+                    document.getElementById('settingsModal').style.display = 'block';
+                    alert("Для работы в браузере нужно указать URL бота в настройках (например, ngrok адрес).");
+                    btn.disabled = false;
+                    btn.textContent = "Отправить";
+                    return;
+                }
+
+                try {
+                    btn.textContent = "Генерация документа...";
+                    const response = await fetch(botUrl + '/api/generate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (!response.ok) {
+                        const err = await response.json();
+                        throw new Error(err.error || `Server Error: ${response.status}`);
+                    }
+
+                    // Download File
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `Conclusion_${data.ticket_number}.docx`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+
+                    alert("✅ Документ готов и скачан!");
+                    closePreview();
+
+                } catch (e) {
+                    console.error("API Error", e);
+                    alert(`Ошибка: ${e.message}`);
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = "Отправить";
+                }
+            }
         }
 
         // Initial item
