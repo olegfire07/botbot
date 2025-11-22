@@ -734,47 +734,58 @@
 
             btn.textContent = "Отправка данных...";
 
-            const isTest = document.getElementById('mode-test').checked;
+            try {
+                const isTest = document.getElementById('mode-test').checked;
 
-            const data = {
-                department_number: document.getElementById('department').value,
-                issue_number: document.getElementById('issue').value,
-                ticket_number: document.getElementById('ticket').value,
-                date: document.getElementById('date').value.split('-').reverse().join('.'),
-                region: document.getElementById('region').value,
-                items: items,
-                is_test: isTest
-            };
+                const data = {
+                    department_number: document.getElementById('department').value,
+                    issue_number: document.getElementById('issue').value,
+                    ticket_number: document.getElementById('ticket').value,
+                    date: document.getElementById('date').value.split('-').reverse().join('.'),
+                    region: document.getElementById('region').value,
+                    items: items,
+                    is_test: isTest
+                };
 
-            // Check if running in Telegram
-            // We check if initDataUnsafe is present and has user info
-            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                tg.sendData(JSON.stringify(data));
-            } else {
-                // Standalone Mode
-                if (!botUrl) {
-                    populateSettingsInputs();
-                    document.getElementById('settingsModal').style.display = 'block';
-                    tg.showAlert("Для работы в браузере нужно указать URL бота в настройках (например, ngrok адрес).");
-                    btn.disabled = false;
-                    btn.textContent = "Отправить";
-                    return;
-                }
+                // Check if running in Telegram
+                // We check if initDataUnsafe is present and has user info
+                if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                    tg.sendData(JSON.stringify(data));
+                } else {
+                    // Standalone Mode
+                    if (!botUrl) {
+                        populateSettingsInputs();
+                        document.getElementById('settingsModal').style.display = 'block';
+                        tg.showAlert("Для работы в браузере нужно указать URL бота в настройках (например, ngrok адрес).");
+                        btn.disabled = false;
+                        btn.textContent = "Отправить";
+                        return;
+                    }
 
-                try {
-                    btn.textContent = "Генерация документа...";
+                    btn.textContent = "Подключение к серверу...";
+
+                    // Add timeout to fetch
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+
                     const response = await fetch(botUrl + '/api/generate', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(data)
+                        body: JSON.stringify(data),
+                        signal: controller.signal
                     });
 
+                    clearTimeout(timeoutId);
+
                     if (!response.ok) {
-                        const err = await response.json();
+                        btn.textContent = "Ошибка сервера...";
+                        const err = await response.json().catch(() => ({}));
                         throw new Error(err.error || `Server Error: ${response.status}`);
                     }
+
+                    btn.textContent = "Скачивание файла...";
 
                     // Download File
                     const blob = await response.blob();
@@ -789,14 +800,18 @@
 
                     alert("✅ Документ готов и скачан!");
                     closePreview();
-
-                } catch (e) {
-                    console.error("API Error", e);
-                    alert(`Ошибка: ${e.message}`);
-                } finally {
                     btn.disabled = false;
                     btn.textContent = "Отправить";
                 }
+            } catch (e) {
+                console.error("Submission Error", e);
+                if (e.name === 'AbortError') {
+                    alert("Ошибка: Превышено время ожидания (30с). Проверьте интернет или URL бота.");
+                } else {
+                    alert(`Ошибка при отправке: ${e.message}`);
+                }
+                btn.disabled = false;
+                btn.textContent = "Отправить";
             }
         }
 
