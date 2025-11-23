@@ -65,6 +65,7 @@ async def handle_options(request):
         'Access-Control-Allow-Headers': 'Content-Type'
     })
 
+async def handle_root(request):
     """Serve the index.html with injected config"""
     from pathlib import Path
     import os

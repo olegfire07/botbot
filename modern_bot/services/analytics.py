@@ -13,6 +13,10 @@ class AnalyticsService:
     @staticmethod
     async def get_region_stats(days: int = 30) -> Dict[str, int]:
         """Get statistics by region for the last N days."""
+        # Validate input
+        if days <= 0 or days > 365:
+            days = 30
+        
         # TODO: Implement database query
         # For now, return mock data
         return {
@@ -26,6 +30,10 @@ class AnalyticsService:
     @staticmethod
     async def get_department_stats(days: int = 30) -> Dict[str, int]:
         """Get statistics by department for the last N days."""
+        # Validate input
+        if days <= 0 or days > 365:
+            days = 30
+            
         # TODO: Implement database query
         return {
             "385": 67,
@@ -38,6 +46,10 @@ class AnalyticsService:
     @staticmethod
     async def get_top_users(limit: int = 10) -> List[Dict[str, Any]]:
         """Get top users by number of documents created."""
+        # Validate input
+        if limit <= 0 or limit > 100:
+            limit = 10
+            
         # TODO: Implement database query
         return [
             {"user_id": 123456, "username": "Иван", "count": 45},
@@ -45,11 +57,15 @@ class AnalyticsService:
             {"user_id": 345678, "username": "Петр", "count": 32},
             {"user_id": 456789, "username": "Ольга", "count": 28},
             {"user_id": 567890, "username": "Алексей", "count": 25}
-        ]
+        ][:limit]
     
     @staticmethod
     async def get_daily_stats(days: int = 30) -> Dict[str, int]:
         """Get daily document creation statistics."""
+        # Validate input
+        if days <= 0 or days > 365:
+            days = 30
+            
         # TODO: Implement database query
         today = datetime.now()
         stats = {}

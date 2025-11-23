@@ -52,8 +52,12 @@ class ReportService:
                         'description': item.get('description'),
                         'evaluation': item.get('evaluation')
                     }
+            except httpx.HTTPError as e:
+                logger.error(f"HTTP error downloading photo: {e}")
+            except IOError as e:
+                logger.error(f"IO error saving photo: {e}")
             except Exception as e:
-                logger.error(f"Error downloading photo: {e}")
+                logger.error(f"Unexpected error downloading photo: {e}")
             return None
 
         async with httpx.AsyncClient() as client:
