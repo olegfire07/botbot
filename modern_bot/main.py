@@ -75,6 +75,11 @@ def main():
     application.add_handler(CommandHandler("stats", stats_handler))
     application.add_handler(CommandHandler("stats_period", stats_period_handler))
     
+    # Admin Dashboard
+    from modern_bot.handlers.admin_dashboard import admin_dashboard_handler, get_admin_callback_handler
+    application.add_handler(CommandHandler("admin", admin_dashboard_handler))
+    application.add_handler(get_admin_callback_handler())
+    
     # Photo upload (for Web App flow) - simplified for now
     # application.add_handler(MessageHandler(filters.PHOTO, photo_upload_handler))
     
