@@ -22,6 +22,17 @@ async def finalize_conclusion(bot: Bot, user_id: int, user_name: str, data: Dict
         # 1. Generate Document
         path = await create_document(user_id, user_name)
         
+        # 1.5. Send notification about completion
+        try:
+            await bot.send_message(
+                chat_id=user_id,
+                text="🎉 <b>Документ готов!</b>\n\n"
+                     "✅ Заключение успешно сформировано и отправляется вам.",
+                parse_mode="HTML"
+            )
+        except Exception as e:
+            logger.warning(f"Failed to send notification: {e}")
+        
         # 2. Send to User
         await send_document_from_path(bot, user_id, path, caption="✅ Ваше заключение готово!")
         
