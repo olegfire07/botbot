@@ -431,12 +431,20 @@
             font-size: 13px;
             color: var(--secondary-text);
             text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+            color: #86868b;
+            font-size: 12px;
+            text-align: center;
+            margin-top: 4px;
+            /* Better contrast for mobile */
+            color: #666;
+            font-size: 13px;
         }
 
         /* Tooltip Hint */
         .input-hint {
-            font-size: 12px;
-            color: var(--secondary-text);
+            /* Improved contrast */
+            color: #666;
+            font-size: 13px;
             margin-top: 6px;
             display: flex;
             align-items: center;
@@ -556,6 +564,55 @@
                 transform: translateY(0);
                 opacity: 1;
             }
+        }
+
+        /* Error states */
+        .input-error {
+            border: 2px solid var(--danger-color) !important;
+            animation: shake 0.3s;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        .error-message {
+            color: var(--danger-color);
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Sticky submit button */
+        .sticky-submit {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            z-index: 100;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
         }
 
         .hint-text {
