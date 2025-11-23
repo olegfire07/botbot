@@ -140,32 +140,6 @@ async def create_document(user_id: int, user_name: str, db_data_override: Dict[s
         filepath = DOCS_DIR / candidate_name
         safe_filename_str = candidate_name
 
-def add_watermark_to_header(doc: Document) -> None:
-    """Add ЧЕРНОВИК watermark to document header."""
-    try:
-        from docx.enum.text import WD_ALIGN_PARAGRAPH
-        from docx.shared import Pt, RGBColor
-        
-        section = doc.sections[0]
-        header = section.header
-        
-        # Clear existing header content
-        for paragraph in header.paragraphs:
-            paragraph.clear()
-        
-        # Add watermark paragraph
-        watermark_para = header.paragraphs[0] if header.paragraphs else header.add_paragraph()
-        watermark_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        
-        run = watermark_para.add_run("ЧЕРНОВИК")
-        run.font.size = Pt(48)
-        run.font.color.rgb = RGBColor(200, 200, 200)  # Light gray
-        run.font.bold = True
-        
-        logger.info("Watermark added to document header")
-    except Exception as e:
-        logger.error(f"Failed to add watermark: {e}")
-
     def _build_document():
         try:
             # Use cached template stream
@@ -176,12 +150,6 @@ def add_watermark_to_header(doc: Document) -> None:
                 doc.add_paragraph(filepath.stem)
             replace_placeholders_in_document(doc, placeholders)
             populate_table_with_data(doc, data)
-            
-            # Add watermark if it's a test document
-            is_test = data.get('is_test', False)
-            if is_test:
-                add_watermark_to_header(doc)
-            
             doc.save(filepath)
         except Exception as doc_error:
             logger.error(f"Failed to build document {filepath}: {doc_error}", exc_info=True)
