@@ -1,159 +1,159 @@
 # Modern Bot
 
-This is the refactored and improved version of the conclusion bot, featuring a standalone web app mode.
+Это улучшенная и переработанная версия бота для создания заключений, включающая режим веб-приложения (Mini App).
 
-## Features
-- **Modular Structure**: Clean code organized in `modern_bot/`.
-- **Web App**: "Fool-proof" data entry via a Telegram Mini App.
-- **Standalone Mode**: Use the Web App in any browser (Chrome, Safari) to generate documents without Telegram.
-- **Monetization**: `/broadcast` command to send messages to all users.
-- **Improved Reports**: Better archive handling and stats.
+## Возможности
+- **Модульная структура**: Чистый код, организованный в папке `modern_bot/`.
+- **Веб-приложение**: Удобный ввод данных через Telegram Mini App с защитой от ошибок.
+- **Автономный режим**: Возможность использовать веб-приложение в любом браузере (Chrome, Safari) для генерации документов без Telegram.
+- **Монетизация**: Команда `/broadcast` для рассылки сообщений всем пользователям.
+- **Улучшенные отчеты**: Усовершенствованная работа с архивами и статистикой.
 
-## How to Run
-1.  Ensure you are in the project root (`/Users/oleg/Project_SKLAD`).
-2.  Run the bot:
+## Как запустить
+1.  Убедитесь, что вы находитесь в корне проекта (`/Users/oleg/Project_SKLAD`).
+2.  Запустите бота:
     ```bash
     python3 run_modern_bot.py
     ```
-3.  **For Standalone Mode**: Start the ngrok tunnel:
+3.  **Для автономного режима**: Запустите туннель ngrok:
     ```bash
     ./start_tunnel.sh
     ```
-    *Note: The default URL in `index.html` is set to a specific ngrok address. If your tunnel URL changes, you must update it in the Web App settings.*
+    *Примечание: URL по умолчанию в `index.html` настроен на конкретный адрес ngrok. Если ваш URL туннеля изменится, вам нужно будет обновить его в настройках веб-приложения.*
 
-## Web App Setup
-To use the Web App:
-1.  Host the file `modern_bot/web_app/index.html` on a public server (GitHub Pages).
-2.  **Standalone Access**: Open the GitHub Pages URL directly in your browser.
-    - If the "Bot URL" is not configured or incorrect, the app will prompt you to enter it (e.g., your ngrok URL).
-    - **Secret Settings**: Tap the "Новое заключение" title 5 times rapidly to open settings manually.
+## Настройка веб-приложения
+Чтобы использовать веб-приложение:
+1.  Разместите файл `modern_bot/web_app/index.html` на публичном сервере (например, GitHub Pages).
+2.  **Автономный доступ**: Откройте URL GitHub Pages прямо в браузере.
+    - Если "URL бота" не настроен или неверен, приложение предложит вам ввести его (например, ваш URL ngrok).
+    - **Секретные настройки**: Нажмите на заголовок "Новое заключение" 5 раз подряд, чтобы открыть настройки вручную.
 
-## Admin Commands
+## Команды администратора
 - `/add_admin <ID>`
-- `/broadcast <Message>`
-- `/download_month <MM.YYYY>`
+- `/broadcast <Сообщение>`
+- `/download_month <ММ.ГГГГ>`
 - `/stats`
 
-## Architecture & Flows
+## Архитектура и потоки данных
 
-### Settings & Configuration Flow
+### Поток настроек и конфигурации
 ```mermaid
 sequenceDiagram
-    actor "User" as User
-    participant "Main Title" as MainTitle
-    participant "Settings Modal" as SettingsModal
-    participant "Local Storage" as LocalStorage
-    participant "App Config" as AppConfig
+    actor "Пользователь" as User
+    participant "Заголовок" as MainTitle
+    participant "Модальное окно настроек" as SettingsModal
+    participant "Локальное хранилище" as LocalStorage
+    participant "Конфигурация приложения" as AppConfig
 
-    "User"->>"Main Title": "Click title (x5)"
-    "Main Title"->>"Main Title": "Increment titleClicks"
-    "Main Title"-->>"Main Title": "titleClicks >= 5?"
-    alt "Reached 5 clicks"
-        "Main Title"->>"Settings Modal": "Display settingsModal"
-        "Settings Modal"->>"Local Storage": "Read 'imgbb_key' and 'bot_url' (already loaded into variables)"
-        "Settings Modal"->>"Settings Modal": "Set 'apiKeyInput.value' = imgbbKey"
-        "Settings Modal"->>"Settings Modal": "Set 'botUrlInput.value' = botUrl"
-        "Main Title"->>"Main Title": "Reset titleClicks to 0"
+    "Пользователь"->>"Заголовок": "Клик по заголовку (x5)"
+    "Заголовок"->>"Заголовок": "Увеличение счетчика кликов"
+    "Заголовок"-->>"Заголовок": "Кликов >= 5?"
+    alt "Достигнуто 5 кликов"
+        "Заголовок"->>"Модальное окно настроек": "Показать окно настроек"
+        "Модальное окно настроек"->>"Локальное хранилище": "Чтение 'imgbb_key' и 'bot_url' (уже загружены в переменные)"
+        "Модальное окно настроек"->>"Модальное окно настроек": "Установить 'apiKeyInput.value' = imgbbKey"
+        "Модальное окно настроек"->>"Модальное окно настроек": "Установить 'botUrlInput.value' = botUrl"
+        "Заголовок"->>"Заголовок": "Сброс счетчика кликов в 0"
     end
 
-    "User"->>"Settings Modal": "Edit ImgBB key and Bot URL"
-    "User"->>"Settings Modal": "Click 'Save' button"
-    "Settings Modal"->>"Settings Modal": "saveSettings() reads apiKeyInput, botUrlInput"
+    "Пользователь"->>"Модальное окно настроек": "Редактирование ключа ImgBB и URL бота"
+    "Пользователь"->>"Модальное окно настроек": "Клик по кнопке 'Сохранить'"
+    "Модальное окно настроек"->>"Модальное окно настроек": "saveSettings() читает apiKeyInput, botUrlInput"
 
-    alt "ImgBB key is non-empty"
-        "Settings Modal"->>"Local Storage": "Set 'imgbb_key' = key"
-        "Settings Modal"->>"Settings Modal": "imgbbKey = key"
-    else "ImgBB key is empty"
-        "Settings Modal"->>"Local Storage": "Remove 'imgbb_key'"
-        "Settings Modal"->>"App Config": "Read DEFAULT_IMGBB_KEY"
-        "Settings Modal"->>"Settings Modal": "imgbbKey = APP_CONFIG.DEFAULT_IMGBB_KEY"
+    alt "Ключ ImgBB не пустой"
+        "Модальное окно настроек"->>"Локальное хранилище": "Установить 'imgbb_key' = ключ"
+        "Модальное окно настроек"->>"Модальное окно настроек": "imgbbKey = ключ"
+    else "Ключ ImgBB пустой"
+        "Модальное окно настроек"->>"Локальное хранилище": "Удалить 'imgbb_key'"
+        "Модальное окно настроек"->>"Конфигурация приложения": "Чтение DEFAULT_IMGBB_KEY"
+        "Модальное окно настроек"->>"Модальное окно настроек": "imgbbKey = APP_CONFIG.DEFAULT_IMGBB_KEY"
     end
 
-    alt "Bot URL input is non-empty"
-        "Settings Modal"->>"Settings Modal": "cleanUrl = url without trailing slash"
-        "Settings Modal"->>"Local Storage": "Set 'bot_url' = cleanUrl"
-        "Settings Modal"->>"Settings Modal": "botUrl = cleanUrl"
-    else "Bot URL input is empty or undefined"
-        "Settings Modal"->>"Local Storage": "Remove 'bot_url'"
-        "Settings Modal"->>"App Config": "Read DEFAULT_BOT_URL"
-        "Settings Modal"->>"Settings Modal": "botUrl = APP_CONFIG.DEFAULT_BOT_URL"
+    alt "Ввод URL бота не пустой"
+        "Модальное окно настроек"->>"Модальное окно настроек": "cleanUrl = url без слеша в конце"
+        "Модальное окно настроек"->>"Локальное хранилище": "Установить 'bot_url' = cleanUrl"
+        "Модальное окно настроек"->>"Модальное окно настроек": "botUrl = cleanUrl"
+    else "Ввод URL бота пустой или не определен"
+        "Модальное окно настроек"->>"Локальное хранилище": "Удалить 'bot_url'"
+        "Модальное окно настроек"->>"Конфигурация приложения": "Чтение DEFAULT_BOT_URL"
+        "Модальное окно настроек"->>"Модальное окно настроек": "botUrl = APP_CONFIG.DEFAULT_BOT_URL"
     end
 
-    "Settings Modal"->>"Settings Modal": "Hide settingsModal"
+    "Модальное окно настроек"->>"Модальное окно настроек": "Скрыть окно настроек"
 ```
 
-### Submission Flow
+### Поток отправки данных
 ```mermaid
 sequenceDiagram
-    actor "User" as User
-    participant "Main Form" as MainForm
+    actor "Пользователь" as User
+    participant "Главная форма" as MainForm
     participant "Telegram WebApp" as Telegram
-    participant "Settings Modal" as SettingsModal
-    participant "Local Storage" as LocalStorage
-    participant "Bot Backend" as BotBackend
+    participant "Модальное окно настроек" as SettingsModal
+    participant "Локальное хранилище" as LocalStorage
+    participant "Бэкенд бота" as BotBackend
 
-    "User"->>"Main Form": "Click 'Проверить и отправить'"
-    "Main Form"->>"Main Form": "showPreview() and prepare data object"
+    "Пользователь"->>"Главная форма": "Клик 'Проверить и отправить'"
+    "Главная форма"->>"Главная форма": "showPreview() и подготовка объекта данных"
 
-    "User"->>"Main Form": "Confirm send"
-    "Main Form"->>"Main Form": "Disable send button, set text 'Отправка...'"
+    "Пользователь"->>"Главная форма": "Подтверждение отправки"
+    "Главная форма"->>"Главная форма": "Отключение кнопки отправки, текст 'Отправка...'"
 
-    "Main Form"->>"Telegram": "Check tg.initDataUnsafe and tg.initDataUnsafe.user"
-    alt "Running inside Telegram"
-        "Main Form"->>"Telegram": "tg.sendData(JSON.stringify(data))"
-        "Telegram"-->>"Main Form": "Sending to bot via Telegram platform"
-        "Main Form"->>"Main Form": "Re-enable UI as needed"
-    else "Standalone browser mode"
-        "Main Form"->>"Main Form": "Check botUrl value"
-        alt "botUrl is empty or missing"
-            "Main Form"->>"Settings Modal": "Display settingsModal"
-            "Main Form"->>"Telegram": "tg.showAlert('Нужно указать URL бота...')"
-            "Main Form"->>"Main Form": "Re-enable send button, set text 'Отправить'"
-        else "botUrl is configured"
-            "Main Form"->>"Bot Backend": "Send data to botUrl (HTTP request)"
-            "Bot Backend"-->>"Main Form": "Respond with success or error"
-            "Main Form"->>"Main Form": "Handle response, re-enable send button"
+    "Главная форма"->>"Telegram": "Проверка tg.initDataUnsafe и tg.initDataUnsafe.user"
+    alt "Запущено внутри Telegram"
+        "Главная форма"->>"Telegram": "tg.sendData(JSON.stringify(data))"
+        "Telegram"-->>"Главная форма": "Отправка боту через платформу Telegram"
+        "Главная форма"->>"Главная форма": "Включение интерфейса при необходимости"
+    else "Автономный режим в браузере"
+        "Главная форма"->>"Главная форма": "Проверка значения botUrl"
+        alt "botUrl пустой или отсутствует"
+            "Главная форма"->>"Модальное окно настроек": "Показать окно настроек"
+            "Главная форма"->>"Telegram": "tg.showAlert('Нужно указать URL бота...')"
+            "Главная форма"->>"Главная форма": "Включение кнопки отправки, текст 'Отправить'"
+        else "botUrl настроен"
+            "Главная форма"->>"Бэкенд бота": "Отправка данных на botUrl (HTTP запрос)"
+            "Бэкенд бота"-->>"Главная форма": "Ответ с успехом или ошибкой"
+            "Главная форма"->>"Главная форма": "Обработка ответа, включение кнопки отправки"
         end
     end
 ```
 
-### Initialization Logic
+### Логика инициализации
 ```mermaid
 flowchart TD
-    A_Start["Start app"]
-    A_Start-->A_LoadImgBB["Load 'imgbb_key' from Local Storage"]
-    A_LoadImgBB-->A_ImgBBExists{"'imgbb_key' exists?"}
-    A_ImgBBExists-->|"Yes"|A_SetImgBBFromStorage["Set imgbbKey = stored value"]
-    A_ImgBBExists-->|"No"|A_SetImgBBDefault["Set imgbbKey = APP_CONFIG.DEFAULT_IMGBB_KEY"]
+    A_Start["Запуск приложения"]
+    A_Start-->A_LoadImgBB["Загрузка 'imgbb_key' из локального хранилища"]
+    A_LoadImgBB-->A_ImgBBExists{"'imgbb_key' существует?"}
+    A_ImgBBExists-->|"Да"|A_SetImgBBFromStorage["Установить imgbbKey = сохраненное значение"]
+    A_ImgBBExists-->|"Нет"|A_SetImgBBDefault["Установить imgbbKey = APP_CONFIG.DEFAULT_IMGBB_KEY"]
 
-    A_SetImgBBFromStorage-->A_LoadBotUrl["Load 'bot_url' from Local Storage"]
+    A_SetImgBBFromStorage-->A_LoadBotUrl["Загрузка 'bot_url' из локального хранилища"]
     A_SetImgBBDefault-->A_LoadBotUrl
-    A_LoadBotUrl-->A_BotUrlExists{"'bot_url' exists?"}
-    A_BotUrlExists-->|"Yes"|A_SetBotUrlFromStorage["Set botUrl = stored value"]
-    A_BotUrlExists-->|"No"|A_SetBotUrlDefault["Set botUrl = APP_CONFIG.DEFAULT_BOT_URL"]
+    A_LoadBotUrl-->A_BotUrlExists{"'bot_url' существует?"}
+    A_BotUrlExists-->|"Да"|A_SetBotUrlFromStorage["Установить botUrl = сохраненное значение"]
+    A_BotUrlExists-->|"Нет"|A_SetBotUrlDefault["Установить botUrl = APP_CONFIG.DEFAULT_BOT_URL"]
 
-    A_SetBotUrlFromStorage-->A_Wait["Wait for user actions"]
+    A_SetBotUrlFromStorage-->A_Wait["Ожидание действий пользователя"]
     A_SetBotUrlDefault-->A_Wait
 
-    subgraph B_Settings_Modal_Open ["B_Settings Modal Open"]
-        B_Open["User clicks title 5 times"]-->B_ShowModal["Show settingsModal"]
-        B_ShowModal-->B_Prefill["Prefill apiKeyInput = imgbbKey, botUrlInput = botUrl"]
+    subgraph B_Settings_Modal_Open ["B_Открытие окна настроек"]
+        B_Open["Пользователь кликает по заголовку 5 раз"]-->B_ShowModal["Показать окно настроек"]
+        B_ShowModal-->B_Prefill["Заполнить apiKeyInput = imgbbKey, botUrlInput = botUrl"]
     end
 
     A_Wait-->B_Open
 
-    subgraph C_Save_Settings ["C_Save Settings"]
-        C_UserSave["User clicks 'Сохранить'"]-->C_ReadInputs["Read apiKeyInput and botUrlInput"]
-        C_ReadInputs-->C_ImgBBNonEmpty{"ImgBB key non-empty?"}
-        C_ImgBBNonEmpty-->|"Yes"|C_SaveImgBB["Save 'imgbb_key' to Local Storage and set imgbbKey = key"]
-        C_ImgBBNonEmpty-->|"No"|C_ResetImgBB["Remove 'imgbb_key'; set imgbbKey = APP_CONFIG.DEFAULT_IMGBB_KEY"]
+    subgraph C_Save_Settings ["C_Сохранение настроек"]
+        C_UserSave["Пользователь кликает 'Сохранить'"]-->C_ReadInputs["Чтение apiKeyInput и botUrlInput"]
+        C_ReadInputs-->C_ImgBBNonEmpty{"Ключ ImgBB не пустой?"}
+        C_ImgBBNonEmpty-->|"Да"|C_SaveImgBB["Сохранить 'imgbb_key' в локальное хранилище и установить imgbbKey = ключ"]
+        C_ImgBBNonEmpty-->|"Нет"|C_ResetImgBB["Удалить 'imgbb_key'; установить imgbbKey = APP_CONFIG.DEFAULT_IMGBB_KEY"]
 
-        C_SaveImgBB-->C_BotUrlNonEmpty{"Bot URL non-empty?"}
+        C_SaveImgBB-->C_BotUrlNonEmpty{"URL бота не пустой?"}
         C_ResetImgBB-->C_BotUrlNonEmpty
-        C_BotUrlNonEmpty-->|"Yes"|C_CleanAndSaveUrl["Remove trailing slash; save 'bot_url'; set botUrl = cleanUrl"]
-        C_BotUrlNonEmpty-->|"No"|C_ResetBotUrl["Remove 'bot_url'; set botUrl = APP_CONFIG.DEFAULT_BOT_URL"]
+        C_BotUrlNonEmpty-->|"Да"|C_CleanAndSaveUrl["Удалить слеш в конце; сохранить 'bot_url'; установить botUrl = cleanUrl"]
+        C_BotUrlNonEmpty-->|"Нет"|C_ResetBotUrl["Удалить 'bot_url'; установить botUrl = APP_CONFIG.DEFAULT_BOT_URL"]
 
-        C_CleanAndSaveUrl-->C_CloseModal["Hide settingsModal"]
+        C_CleanAndSaveUrl-->C_CloseModal["Скрыть окно настроек"]
         C_ResetBotUrl-->C_CloseModal
     end
 

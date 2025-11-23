@@ -79,6 +79,18 @@ def populate_table_with_data(doc: Document, data: Dict[str, Any]) -> None:
             logger.error(f"Error populating table: {e}")
     add_borders_to_table(table)
 
+# Cache template bytes to avoid disk I/O on every request
+import io
+
+_template_cache = None
+
+def _get_template_stream():
+    global _template_cache
+    if _template_cache is None:
+        with open(TEMPLATE_PATH, "rb") as f:
+            _template_cache = f.read()
+    return io.BytesIO(_template_cache)
+
 async def create_document(user_id: int, user_name: str, db_data_override: Dict[str, Any] = None) -> Path:
     """
     Generates the DOCX document.
@@ -130,7 +142,8 @@ async def create_document(user_id: int, user_name: str, db_data_override: Dict[s
 
     def _build_document():
         try:
-            doc = Document(TEMPLATE_PATH)
+            # Use cached template stream
+            doc = Document(_get_template_stream())
             if doc.paragraphs:
                 doc.paragraphs[0].insert_paragraph_before(filepath.stem)
             else:

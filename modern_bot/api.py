@@ -26,84 +26,11 @@ async def handle_generate(request):
             if field not in data:
                 return web.json_response({'error': f'Missing field: {field}'}, status=400)
 
-        user_id = 0 # Anonymous / Web User
-        user_name = "Web User"
+        # Delegate to ReportService
+        from modern_bot.services.report import ReportService
         
-        # 2. Download Photos
-        TEMP_PHOTOS_DIR.mkdir(parents=True, exist_ok=True)
-        items = data.get('items', [])
-        
-        db_data = {
-            'department_number': data['department_number'],
-            'issue_number': data['issue_number'],
-            'ticket_number': data['ticket_number'],
-            'date': data['date'],
-            'region': data['region'],
-            'photo_desc': []
-        }
-
-        async with httpx.AsyncClient() as client:
-            for item in items:
-                photo_url = item.get('photo_url')
-                description = item.get('description')
-                evaluation = item.get('evaluation')
-                
-                if photo_url:
-                    try:
-                        response = await client.get(photo_url)
-                        if response.status_code == 200:
-                            unique_name = generate_unique_filename()
-                            file_path = TEMP_PHOTOS_DIR / unique_name
-                            
-                            # Write file in thread
-                            await asyncio.to_thread(file_path.write_bytes, response.content)
-                            
-                            db_data['photo_desc'].append({
-                                'photo': str(file_path),
-                                'description': description,
-                                'evaluation': evaluation
-                            })
-                    except Exception as e:
-                        logger.error(f"Error downloading photo: {e}")
-
-        # 3. Generate Document
-        path = await create_document(user_id, user_name, db_data_override=db_data)
-        
-        # 3.1 Update Excel and Archive (Data Integrity)
-        try:
-            from modern_bot.services.excel import update_excel
-            from modern_bot.services.archive import archive_document
-            
-            await update_excel(db_data)
-            await archive_document(path, db_data)
-        except Exception as e:
-            logger.error(f"Failed to update Excel/Archive: {e}")
-
-        # 4. Send to Group (if not test)
-        is_test = data.get('is_test', False)
-        if not is_test:
-            bot = request.app['bot']
-            region = data.get('region')
-            topic_id = REGION_TOPICS.get(region)
-            
-            caption = (
-                f"📄 Заключение от п. {data.get('department_number')}, "
-                f"билет: {data.get('ticket_number')}, "
-                f"от {data.get('date')}\n"
-                f"🌍 Регион: {region}\n"
-                f"(Создано через сайт)"
-            )
-            
-            try:
-                await send_document_from_path(
-                    bot, 
-                    MAIN_GROUP_CHAT_ID, 
-                    path, 
-                    message_thread_id=topic_id,
-                    caption=caption
-                )
-            except Exception as e:
-                logger.error(f"Failed to send to group: {e}")
+        bot = request.app['bot']
+        path = await ReportService.create_report(data, bot)
 
         # 5. Return File
         if path and path.exists():
@@ -112,7 +39,7 @@ async def handle_generate(request):
             
             # Cleanup
             try:
-                path.unlink()
+                await asyncio.to_thread(path.unlink)
             except:
                 pass
                 
@@ -138,13 +65,23 @@ async def handle_options(request):
         'Access-Control-Allow-Headers': 'Content-Type'
     })
 
-async def handle_root(request):
-    """Serve the index.html for testing"""
+    """Serve the index.html with injected config"""
     from pathlib import Path
+    import os
+    
     html_path = Path(__file__).parent / 'web_app' / 'index.html'
     if html_path.exists():
         with open(html_path, 'r', encoding='utf-8') as f:
-            return web.Response(text=f.read(), content_type='text/html')
+            content = f.read()
+            
+        # Inject Config
+        bot_url = os.getenv("BOT_URL", "")
+        imgbb_key = os.getenv("IMGBB_KEY", "")
+        
+        content = content.replace('window.APP_DEFAULT_BOT_URL || ""', f'"{bot_url}"')
+        content = content.replace('window.APP_DEFAULT_IMGBB_KEY || ""', f'"{imgbb_key}"')
+        
+        return web.Response(text=content, content_type='text/html')
     return web.Response(text='Web app not found', status=404)
 
 async def handle_stats(request):
