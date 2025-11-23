@@ -958,6 +958,13 @@
             e.target.value = e.target.value.replace(/\D/g, '').substring(0, 11);
         });
 
+        // Input Mask for Department and Issue (Digits only)
+        ['department', 'issue'].forEach(id => {
+            document.getElementById(id).addEventListener('input', function (e) {
+                e.target.value = e.target.value.replace(/\D/g, '');
+            });
+        });
+
         // 4. Smart Memory (Department & Region)
         const deptInput = document.getElementById('department');
         const regionInput = document.getElementById('region');
@@ -1000,7 +1007,42 @@
             reader.readAsDataURL(file);
         }
 
+        // 5. Telegram Native UI & Haptic Feedback
+        const mainButton = tg.MainButton;
+
+        function updateMainButton() {
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                // We are in Telegram
+                document.getElementById('finalSubmitBtn').style.display = 'none'; // Hide HTML button in modal
+                document.querySelector('.btn-primary[onclick="showPreview()"]').style.display = 'none'; // Hide main form button
+
+                mainButton.setText("ПРОВЕРИТЬ И ОТПРАВИТЬ");
+                mainButton.show();
+                mainButton.onClick(showPreview);
+            }
+        }
+
+        // Call on load
+        updateMainButton();
+
+        // Haptic Feedback Helper
+        function haptic(type = 'light') {
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred(type);
+            }
+        }
+
+        // Add haptic to interactive elements
+        document.querySelectorAll('input, select').forEach(el => {
+            el.addEventListener('focus', () => haptic('light'));
+        });
+
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', () => haptic('medium'));
+        });
+
         function showPreview() {
+            haptic('medium');
             const form = document.getElementById('mainForm');
             let isValid = true;
 
@@ -1009,6 +1051,7 @@
                 if (!input.value.trim()) {
                     isValid = false;
                     input.classList.add('invalid');
+                    haptic('error');
                     // Remove error on input
                     input.addEventListener('input', () => input.classList.remove('invalid'), { once: true });
                 }
@@ -1023,6 +1066,7 @@
             if (ticket.length !== 11) {
                 const ticketInput = document.getElementById('ticket');
                 ticketInput.classList.add('invalid');
+                haptic('error');
                 ticketInput.addEventListener('input', () => ticketInput.classList.remove('invalid'), { once: true });
                 tg.showAlert("Номер билета должен быть 11 цифр!");
                 return;
@@ -1037,6 +1081,7 @@
                     const container = div.querySelector('.photo-preview-container');
                     container.style.borderColor = 'var(--danger-color)';
                     container.style.animation = 'shake 0.4s cubic-bezier(.36, .07, .19, .97) both';
+                    haptic('error');
 
                     // Remove error on click/drop
                     input.addEventListener('change', () => {
@@ -1067,10 +1112,25 @@
             `;
 
             document.getElementById('previewModal').style.display = 'block';
+
+            // Update Main Button for Submit
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                mainButton.setText("ОТПРАВИТЬ");
+                mainButton.offClick(showPreview);
+                mainButton.onClick(submitForm);
+            }
         }
 
         function closePreview() {
+            haptic('light');
             document.getElementById('previewModal').style.display = 'none';
+
+            // Revert Main Button
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                mainButton.setText("ПРОВЕРИТЬ И ОТПРАВИТЬ");
+                mainButton.offClick(submitForm);
+                mainButton.onClick(showPreview);
+            }
         }
 
         // Image Compression Helper
@@ -1116,6 +1176,12 @@
         }
 
         async function submitForm() {
+            // Disable button
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                mainButton.showProgress();
+                mainButton.disable();
+            }
+
             const btn = document.getElementById('finalSubmitBtn');
             btn.disabled = true;
             btn.textContent = "Загрузка на ImgBB...";
@@ -1167,6 +1233,13 @@
                 } catch (e) {
                     console.error("Upload failed", e);
                     tg.showAlert(`Ошибка загрузки: ${e.message || e}`);
+                    haptic('error');
+
+                    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                        mainButton.hideProgress();
+                        mainButton.enable();
+                    }
+
                     btn.disabled = false;
                     btn.textContent = "Отправить";
                     return;
@@ -1192,6 +1265,7 @@
                 // We check if initDataUnsafe is present and has user info
                 if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                     tg.sendData(JSON.stringify(data));
+                    haptic('success');
                 } else {
                     // Standalone Mode
                     if (!botUrl) {
@@ -1247,6 +1321,13 @@
                 }
             } catch (e) {
                 console.error("Submission Error", e);
+                haptic('error');
+
+                if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                    mainButton.hideProgress();
+                    mainButton.enable();
+                }
+
                 if (e.name === 'AbortError') {
                     alert("Ошибка: Превышено время ожидания (30с). Проверьте интернет или URL бота.");
                 } else {

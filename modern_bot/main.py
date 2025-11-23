@@ -5,7 +5,8 @@ from modern_bot.config import load_bot_token
 from modern_bot.database.db import init_db, close_db
 from modern_bot.utils.files import clean_temp_files
 from modern_bot.handlers.common import process_network_recovery
-from modern_bot.handlers.commands import start_handler, help_handler, old_mode_handler
+from modern_bot.handlers.commands import start_handler, old_mode_handler
+from modern_bot.handlers.help import help_handler
 from modern_bot.handlers.conversation import get_conversation_handler
 from modern_bot.handlers.admin import (
     add_admin_handler, broadcast_handler, help_admin_handler, load_admin_ids
