@@ -1032,6 +1032,87 @@
             });
         });
 
+        // Auto-save on input
+        ['department', 'issue', 'ticket', 'date', 'region'].forEach(id => {
+            document.getElementById(id)?.addEventListener('change', saveDraft);
+        });
+
+        // Restore draft on load
+        restoreDraft();
+
+        // ============================================
+        // SERVICE WORKER & OFFLINE MODE
+        // ============================================
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(reg => console.log('Service Worker registered:', reg.scope))
+                .catch(err => console.error('Service Worker registration failed:', err));
+        }
+
+        // Offline queue using IndexedDB
+        async function openOfflineDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open('ReportsDB', 1);
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => resolve(request.result);
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains('pending')) {
+                        db.createObjectStore('pending', { keyPath: 'id', autoIncrement: true });
+                    }
+                };
+            });
+        }
+
+        async function savePendingReport(data) {
+            try {
+                const db = await openOfflineDB();
+                const tx = db.transaction('pending', 'readwrite');
+                const store = tx.objectStore('pending');
+                await store.add({ data, timestamp: Date.now() });
+                console.log('Report saved to offline queue');
+                return true;
+            } catch (error) {
+                console.error('Failed to save to offline queue:', error);
+                return false;
+            }
+        }
+
+        // Online event - sync pending reports
+        window.addEventListener('online', async () => {
+            console.log('Connection restored, syncing...');
+            tg.showAlert('✅ Соединение восстановлено! Отправляем данные...');
+
+            try {
+                const db = await openOfflineDB();
+                const tx = db.transaction('pending', 'readonly');
+                const store = tx.objectStore('pending');
+                const pending = await store.getAll();
+
+                if (pending.length > 0) {
+                    for (const item of pending) {
+                        try {
+                            await submitData(item.data);
+                            // Remove from queue after successful send
+                            const deleteTx = db.transaction('pending', 'readwrite');
+                            await deleteTx.objectStore('pending').delete(item.id);
+                        } catch (error) {
+                            console.error('Failed to sync report:', error);
+                        }
+                    }
+                    tg.showAlert(`🎉 Отправлено ${pending.length} сохраненных заключений!`);
+                }
+            } catch (error) {
+                console.error('Failed to sync:', error);
+            }
+        });
+
+        // Offline event notification
+        window.addEventListener('offline', () => {
+            console.log('Connection lost');
+            tg.showAlert('⚠️ Соединение потеряно. Данные будут сохранены и отправлены автоматически.');
+        });
+
         // 4. Smart Memory (Department & Region)
         const deptInput = document.getElementById('department');
         const regionInput = document.getElementById('region');
