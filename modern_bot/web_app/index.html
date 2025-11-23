@@ -237,6 +237,67 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
+        /* Segmented Control */
+        .segmented-control {
+            display: flex;
+            background: rgba(118, 118, 128, 0.12);
+            border-radius: 14px;
+            padding: 4px;
+            margin-bottom: 24px;
+            position: relative;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .segmented-control label {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-color);
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            margin: 0;
+            position: relative;
+            z-index: 1;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .segmented-control input[type="radio"] {
+            display: none;
+        }
+
+        .segmented-control input[type="radio"]:checked+label {
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+            font-weight: 600;
+            color: #000;
+            transform: scale(1.02);
+        }
+
+        /* Pulse Animation for Main Button */
+        @keyframes pulse-blue {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(0, 122, 255, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 122, 255, 0);
+            }
+        }
+
+        .btn-pulse {
+            animation: pulse-blue 2s infinite;
+        }
+
         /* Modal */
         .modal {
             display: none;
@@ -414,7 +475,7 @@
             <label for="mode-test">Черновик (Тест)</label>
         </div>
 
-        <button type="button" class="btn btn-primary" onclick="showPreview()">
+        <button type="button" class="btn btn-primary btn-pulse" onclick="showPreview()">
             Проверить и отправить
         </button>
     </form>
