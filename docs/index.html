@@ -287,7 +287,8 @@
             background: rgba(255, 255, 255, 0.3);
             border: 2px dashed rgba(0, 0, 0, 0.1);
             position: relative;
-            height: 180px;
+            height: 200px;
+            /* Increased height */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -298,7 +299,20 @@
         .photo-preview-container:hover {
             border-color: var(--primary-color);
             background: rgba(0, 122, 255, 0.03);
-            transform: translateY(-2px);
+        }
+
+        .photo-preview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: none;
+            z-index: 1;
+            border-radius: 14px;
         }
 
         .upload-icon {
@@ -323,18 +337,25 @@
             width: 100%;
             height: 100%;
             z-index: 2;
+            transition: opacity 0.3s;
         }
+
+        /* When preview is shown, hide label content but keep input clickable? 
+           Actually, we want to see "Change photo" text. 
+           Let's add a background to label when preview is active? */
 
         .btn-text {
             color: var(--primary-color);
             font-weight: 600;
             font-size: 16px;
             margin-bottom: 4px;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
         }
 
         .hint {
             font-size: 13px;
             color: var(--secondary-text);
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
         }
 
         /* Tooltip Hint */
@@ -357,25 +378,25 @@
         /* Segmented Control Redesign */
         .segmented-control {
             display: flex;
-            background: rgba(0, 0, 0, 0.05);
-            /* Darker background for contrast */
-            border-radius: 16px;
-            padding: 4px;
+            background: #EFEFF4;
+            /* iOS Segmented Control BG */
+            border-radius: 9px;
+            padding: 2px;
             margin-bottom: 24px;
             position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: none;
         }
 
         .segmented-control label {
             flex: 1;
             text-align: center;
-            padding: 14px;
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--secondary-text);
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #000;
             cursor: pointer;
-            border-radius: 12px;
-            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            border-radius: 7px;
+            transition: all 0.2s ease;
             margin: 0;
             position: relative;
             z-index: 1;
@@ -389,9 +410,10 @@
 
         .segmented-control input[type="radio"]:checked+label {
             background-color: #ffffff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            color: var(--text-color);
-            transform: scale(1.0);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12), 0 3px 1px rgba(0, 0, 0, 0.04);
+            font-weight: 600;
+            color: #000;
+            transform: none;
         }
 
         /* Pulse Animation for Main Button */
@@ -782,36 +804,38 @@
                         </button>` : ''}
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Описание</label>
-                    <input type="text" class="desc" placeholder="Например: Кольцо, металл желтого цвета" required>
-                    <div class="input-hint">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                        Без указания пробы и вида металла (золото/серебро)
+                <div class="item-body">
+                    <div class="form-group">
+                        <label>Описание</label>
+                        <input type="text" class="desc" placeholder="Например: Кольцо, металл желтого цвета" required>
+                        <div class="input-hint">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                            Без указания пробы и вида металла (золото/серебро)
+                        </div>
                     </div>
+                    <div class="form-group">
+                        <label>Оценка (руб)</label>
+                        <input type="tel" class="eval" placeholder="Сумма" required pattern="\\d+">
+                        <div class="input-hint">Только цифры, без пробелов</div>
+                    </div>
+                    <div class="photo-preview-container" 
+                         ondragover="handleDragOver(event)" 
+                         ondragleave="handleDragLeave(event)" 
+                         ondrop="handleDrop(event, this)">
+                        <div class="photo-preview"></div>
+                        <label class="upload-label">
+                            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                            <input type="file" class="file-input" accept="image/*" onchange="handleFileSelect(this)" style="display:none">
+                            <span class="btn-text">Добавить фото</span>
+                            <span class="hint">Нажмите или перетащите сюда</span>
+                        </label>
+                    </div>
+                    <div class="upload-status">Фото не выбрано</div>
                 </div>
-                <div class="form-group">
-                    <label>Оценка (руб)</label>
-                    <input type="tel" class="eval" placeholder="Сумма" required pattern="\\d+">
-                    <div class="input-hint">Только цифры, без пробелов</div>
-                </div>
-                <div class="photo-preview-container" 
-                     ondragover="handleDragOver(event)" 
-                     ondragleave="handleDragLeave(event)" 
-                     ondrop="handleDrop(event, this)">
-                    <div class="photo-preview"></div>
-                    <label class="upload-label">
-                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                            <polyline points="21 15 16 10 5 21"></polyline>
-                        </svg>
-                        <input type="file" class="file-input" accept="image/*" onchange="handleFileSelect(this)" style="display:none">
-                        <span class="btn-text">Добавить фото</span>
-                        <span class="hint">Нажмите или перетащите сюда</span>
-                    </label>
-                </div>
-                <div class="upload-status">Фото не выбрано</div>
             `;
             document.getElementById('itemsList').appendChild(div);
         }
