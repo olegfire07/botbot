@@ -111,6 +111,7 @@ async def show_analytics(update: Update, context: CallbackContext) -> None:
         [InlineKeyboardButton("📊 По регионам", callback_data="analytics_regions")],
         [InlineKeyboardButton("📈 По подразделениям", callback_data="analytics_departments")],
         [InlineKeyboardButton("👥 Топ пользователей", callback_data="analytics_top_users")],
+        [InlineKeyboardButton("📅 По дням", callback_data="analytics_daily")],
         [InlineKeyboardButton("◀️ Назад", callback_data="admin_refresh")]
     ]
     
@@ -121,6 +122,39 @@ async def show_analytics(update: Update, context: CallbackContext) -> None:
         parse_mode="HTML",
         reply_markup=reply_markup
     )
+
+async def analytics_callback_handler(update: Update, context: CallbackContext) -> None:
+    """Handle analytics callbacks."""
+    from modern_bot.services.analytics import AnalyticsService
+    
+    query = update.callback_query
+    await query.answer()
+    
+    action = query.data
+    
+    keyboard = [[InlineKeyboardButton("◀️ Назад к аналитике", callback_data="admin_analytics")]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    if action == "analytics_regions":
+        stats = await AnalyticsService.get_region_stats()
+        report = AnalyticsService.format_region_report(stats)
+        await query.edit_message_text(report, parse_mode="HTML", reply_markup=reply_markup)
+    
+    elif action == "analytics_departments":
+        stats = await AnalyticsService.get_department_stats()
+        report = AnalyticsService.format_department_report(stats)
+        await query.edit_message_text(report, parse_mode="HTML", reply_markup=reply_markup)
+    
+    elif action == "analytics_top_users":
+        users = await AnalyticsService.get_top_users()
+        report = AnalyticsService.format_top_users_report(users)
+        await query.edit_message_text(report, parse_mode="HTML", reply_markup=reply_markup)
+    
+    elif action == "analytics_daily":
+        stats = await AnalyticsService.get_daily_stats()
+        chart = AnalyticsService.create_simple_chart(stats)
+        text = f"📅 <b>Документы по дням (последние 30 дней)</b>\n\n{chart}"
+        await query.edit_message_text(text, parse_mode="HTML", reply_markup=reply_markup)
 
 async def show_download_menu(update: Update, context: CallbackContext) -> None:
     """Show download month instruction."""
@@ -152,6 +186,17 @@ async def show_history(update: Update, context: CallbackContext) -> None:
         reply_markup=reply_markup
     )
 
+
 def get_admin_callback_handler():
     """Return callback query handler for admin dashboard."""
-    return CallbackQueryHandler(admin_callback_handler, pattern="^admin_")
+    from telegram.ext import CallbackQueryHandler
+    return CallbackQueryHandler(handle_all_callbacks, pattern="^(admin_|analytics_)")
+
+async def handle_all_callbacks(update: Update, context: CallbackContext) -> None:
+    """Route all admin and analytics callbacks."""
+    action = update.callback_query.data
+    
+    if action.startswith("analytics_"):
+        await analytics_callback_handler(update, context)
+    elif action.startswith("admin_"):
+        await admin_callback_handler(update, context)
