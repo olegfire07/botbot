@@ -658,7 +658,7 @@
             <div class="form-group">
                 <label>Дата</label>
                 <div class="input-wrapper">
-                    <input type="date" id="date" required>
+                    <input type="date" id="date" required max="">
                     <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -667,6 +667,7 @@
                         <line x1="3" y1="10" x2="21" y2="10"></line>
                     </svg>
                 </div>
+                <div class="hint-text">Нельзя выбрать будущую дату</div>
             </div>
             <div class="form-group">
                 <label>Регион</label>
@@ -851,9 +852,69 @@
             const r = document.documentElement.style;
         }
 
-        document.getElementById('date').valueAsDate = new Date();
+        // Set today's date and max date (prevent future dates)
+        const today = new Date().toISOString().split('T')[0];
+        const dateInput = document.getElementById('date');
+        dateInput.valueAsDate = new Date();
+        dateInput.setAttribute('max', today);
 
         let itemCount = 0;
+
+        // Swipe gesture support
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let currentCard = null;
+
+        function handleTouchStart(e) {
+            const card = e.currentTarget.closest('.item-card');
+            if (!card) return;
+
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            currentCard = card;
+        }
+
+        function handleTouchMove(e) {
+            if (!currentCard) return;
+
+            const touchX = e.touches[0].clientX;
+            const touchY = e.touches[0].clientY;
+            const diffX = touchX - touchStartX;
+            const diffY = touchY - touchStartY;
+
+            // Only horizontal swipe
+            if (Math.abs(diffX) > Math.abs(diffY) && diffX < -50) {
+                currentCard.style.transform = `translateX(${diffX}px)`;
+                currentCard.style.opacity = 1 + diffX / 200;
+            }
+        }
+
+        function handleTouchEnd(e) {
+            if (!currentCard) return;
+
+            const touchX = e.changedTouches[0].clientX;
+            const diffX = touchX - touchStartX;
+
+            if (diffX < -100) {
+                // Swipe threshold reached - delete
+                currentCard.style.transition = 'transform 0.3s, opacity 0.3s';
+                currentCard.style.transform = 'translateX(-100%)';
+                currentCard.style.opacity = '0';
+
+                setTimeout(() => {
+                    currentCard.remove();
+                    updateBadge();
+                    haptic('medium');
+                }, 300);
+            } else {
+                // Reset position
+                currentCard.style.transition = 'transform 0.3s, opacity 0.3s';
+                currentCard.style.transform = 'translateX(0)';
+                currentCard.style.opacity = '1';
+            }
+
+            currentCard = null;
+        }
 
         function addItem() {
             itemCount++;
@@ -890,7 +951,10 @@
                     <div class="photo-preview-container" 
                          ondragover="handleDragOver(event)" 
                          ondragleave="handleDragLeave(event)" 
-                         ondrop="handleDrop(event, this)">
+                         ondrop="handleDrop(event, this)"
+                         ontouchstart="handleTouchStart(event)"
+                         ontouchmove="handleTouchMove(event)"
+                         ontouchend="handleTouchEnd(event)">
                         <div class="photo-preview"></div>
                         <label class="upload-label">
                             <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -898,9 +962,9 @@
                                 <circle cx="8.5" cy="8.5" r="1.5"></circle>
                                 <polyline points="21 15 16 10 5 21"></polyline>
                             </svg>
-                            <input type="file" class="file-input" accept="image/*" onchange="handleFileSelect(this)" style="display:none">
+                            <input type="file" class="file-input" accept="image/*" capture="environment" onchange="handleFileSelect(this)" style="display:none">
                             <span class="btn-text">Добавить фото</span>
-                            <span class="hint">Нажмите или перетащите сюда</span>
+                            <span class="hint">Нажмите, сфотографируйте или перетащите</span>
                         </label>
                     </div>
                     <div class="upload-status">Фото не выбрано</div>
@@ -990,6 +1054,14 @@
             const file = input.files[0];
             if (!file) return;
 
+            // Check file size (5MB limit)
+            const maxSize = 5 * 1024 * 1024; // 5 MB
+            if (file.size > maxSize) {
+                const sizeMB = (file.size / 1024 / 1024).toFixed(1);
+                tg.showAlert(`⚠️ Фото слишком большое (${sizeMB} МБ). Максимум 5 МБ. Оно будет сжато.`);
+                haptic('warning');
+            }
+
             const container = input.closest('.item-card');
             const preview = container.querySelector('.photo-preview');
             const btnText = container.querySelector('.btn-text');
@@ -1001,7 +1073,7 @@
                 preview.style.backgroundImage = `url(${e.target.result})`;
                 preview.style.display = 'block';
                 btnText.textContent = "Изменить фото";
-                status.textContent = "Готово к отправке";
+                status.textContent = file.size > maxSize ? "⚠️ Будет сжато" : "Готово к отправке";
                 status.className = "upload-status success";
             };
             reader.readAsDataURL(file);
@@ -1099,6 +1171,15 @@
             const isTest = document.getElementById('mode-test').checked;
             const modeText = isTest ? "Черновик (Тест)" : "Оригинал (В группу)";
 
+            // Calculate total cost
+            let totalCost = 0;
+            document.querySelectorAll('.item-card').forEach(div => {
+                const evalInput = div.querySelector('.eval');
+                if (evalInput && evalInput.value) {
+                    totalCost += parseInt(evalInput.value) || 0;
+                }
+            });
+
             // Build preview
             const content = document.getElementById('previewContent');
             content.innerHTML = `
@@ -1109,6 +1190,10 @@
                 <div class="preview-row"><span class="preview-label">Дата:</span> <div class="preview-value">${document.getElementById('date').value}</div></div>
                 <div class="preview-row"><span class="preview-label">Регион:</span> <div class="preview-value">${document.getElementById('region').value}</div></div>
                 <div class="preview-row"><span class="preview-label">Предметов:</span> <div class="preview-value">${document.querySelectorAll('.item-card').length}</div></div>
+                <div class="preview-row" style="border-top: 2px solid rgba(0,0,0,0.1); margin-top: 12px; padding-top: 12px;">
+                    <span class="preview-label" style="font-weight: 700;">💰 Общая сумма:</span> 
+                    <div class="preview-value" style="font-weight: 700; font-size: 18px; color: var(--success-color);">${totalCost.toLocaleString('ru-RU')} ₽</div>
+                </div>
             `;
 
             document.getElementById('previewModal').style.display = 'block';
