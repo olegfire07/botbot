@@ -106,7 +106,7 @@ async def create_document(user_id: int, user_name: str, db_data_override: Dict[s
         '{department_number}': data.get('department_number', 'Не указано'),
         '{region}': data.get('region', 'Не указано'),
         '{ticket_number}': data.get('ticket_number', 'Не указано'),
-        '{username}': username
+        '{username}': user_name
     }
     
     base_filename = (f"{placeholders['{department_number}']}, Заключение антиквариат № "

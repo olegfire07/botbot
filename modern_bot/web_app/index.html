@@ -333,11 +333,51 @@
             color: var(--success-color);
             font-weight: 600;
         }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 16px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .draft-notice {
+            background: rgba(52, 199, 89, 0.1);
+            border-left: 3px solid var(--success-color);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: var(--text-color);
+            display: none;
+        }
     </style>
 </head>
 
 <body>
     <h1 id="mainTitle" onclick="handleTitleClick()">Новое заключение</h1>
+
+    <!-- Draft Notice -->
+    <div class="draft-notice" id="draftNotice">
+        ✅ Восстановлен черновик из предыдущей сессии
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-container" id="progressContainer">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
 
     <form id="mainForm">
         <div class="section">
@@ -351,7 +391,7 @@
             </div>
             <div class="form-group">
                 <label>Номер билета</label>
-                <input type="tel" id="ticket" placeholder="03850006392" required pattern="\d{11}" maxlength="11">
+                <input type="tel" id="ticket" placeholder="03850006392" required maxlength="11">
                 <div class="hint-text">Ровно 11 цифр</div>
             </div>
             <div class="form-group">
@@ -445,7 +485,7 @@
         // WARNING: These are default values for local/demo use.
         // For production, consider injecting these via environment variables or a build step.
         const APP_CONFIG = {
-            DEFAULT_BOT_URL: window.APP_DEFAULT_BOT_URL || "https://64ee6bd67fc0.ngrok-free.app",
+            DEFAULT_BOT_URL: window.APP_DEFAULT_BOT_URL || "https://55181ef25a05.ngrok-free.app",
             DEFAULT_IMGBB_KEY: window.APP_DEFAULT_IMGBB_KEY || "c8574310f13ff081e6ed7e3c9f963f9f"
         };
 
@@ -526,7 +566,9 @@
             div.innerHTML = `
                 <div class="item-header">
                     <span class="item-title">Предмет #${itemCount}</span>
-                    ${itemCount > 1 ? `<button type="button" class="btn-remove" onclick="removeItem(this)">Удалить</button>` : ''}
+                    <div style="display: flex; gap: 8px;">
+                        ${itemCount > 1 ? `<button type="button" class="btn-remove" onclick="removeItem(this)">Удалить</button>` : ''}
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Описание</label>
@@ -536,12 +578,15 @@
                     <label>Оценка (руб)</label>
                     <input type="tel" class="eval" placeholder="Сумма" required pattern="\\d+">
                 </div>
-                <div class="photo-preview-container">
+                <div class="photo-preview-container" 
+                     ondragover="handleDragOver(event)" 
+                     ondragleave="handleDragLeave(event)" 
+                     ondrop="handleDrop(event, this)">
                     <div class="photo-preview"></div>
                     <label class="upload-label">
                         <input type="file" class="file-input" accept="image/*" onchange="handleFileSelect(this)">
                         <span class="btn-text">Добавить фото</span>
-                        <span class="hint">Нажмите чтобы выбрать</span>
+                        <span class="hint">Нажмите или перетащите</span>
                     </label>
                 </div>
                 <div class="upload-status">Фото не выбрано</div>
@@ -558,6 +603,66 @@
             const count = document.getElementById('itemsList').children.length;
             document.getElementById('itemCountBadge').textContent = count;
         }
+
+        // --- UX Features ---
+
+        // 1. Drag & Drop
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.currentTarget.style.borderColor = 'var(--primary-color)';
+            e.currentTarget.style.background = 'rgba(0, 122, 255, 0.05)';
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.1)';
+            e.currentTarget.style.background = 'rgba(0, 0, 0, 0.03)';
+        }
+
+        function handleDrop(e, container) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            container.style.borderColor = 'rgba(0, 0, 0, 0.1)';
+            container.style.background = 'rgba(0, 0, 0, 0.03)';
+
+            const dt = e.dataTransfer;
+            const files = dt.files;
+
+            if (files && files[0]) {
+                const fileInput = container.querySelector('.file-input');
+                fileInput.files = files;
+                handleFileSelect(fileInput);
+            }
+        }
+
+        // 3. Input Mask for Ticket (Digits only, max 11)
+        document.getElementById('ticket').addEventListener('input', function (e) {
+            e.target.value = e.target.value.replace(/\D/g, '').substring(0, 11);
+        });
+
+        // 4. Smart Memory (Department & Region)
+        const deptInput = document.getElementById('department');
+        const regionInput = document.getElementById('region');
+
+        // Load defaults if not draft
+        if (!localStorage.getItem('formDraft')) {
+            const savedDept = localStorage.getItem('default_department');
+            const savedRegion = localStorage.getItem('default_region');
+            if (savedDept) deptInput.value = savedDept;
+            if (savedRegion) regionInput.value = savedRegion;
+        }
+
+        // Save on change
+        deptInput.addEventListener('change', (e) => {
+            localStorage.setItem('default_department', e.target.value);
+        });
+
+        regionInput.addEventListener('change', (e) => {
+            localStorage.setItem('default_region', e.target.value);
+        });
 
         function handleFileSelect(input) {
             const file = input.files[0];
@@ -685,6 +790,16 @@
                 const fileInput = div.querySelector('.file-input');
                 const file = fileInput.files[0];
 
+                // Skip if no file selected
+                if (!file) {
+                    console.warn(`Skipping item ${i + 1} - no photo selected`);
+                    continue;
+                }
+
+                // Update progress
+                updateProgress(i, cards.length);
+                btn.textContent = `Загрузка фото ${i + 1}/${cards.length}...`;
+
                 try {
                     // Compress first
                     const compressedBlob = await compressImage(file);
@@ -785,6 +900,7 @@
                     window.URL.revokeObjectURL(url);
                     document.body.removeChild(a);
 
+                    clearDraft(); // Add clear draft call after successful submission
                     alert("✅ Документ готов и скачан!");
                     closePreview();
                     btn.disabled = false;
@@ -804,6 +920,80 @@
 
         // Initial item
         addItem();
+
+        // ============================================
+        // AUTO-SAVE DRAFT & RESTORE
+        // ============================================
+        function saveDraft() {
+            const draft = {
+                department: document.getElementById('department').value,
+                issue: document.getElementById('issue').value,
+                ticket: document.getElementById('ticket').value,
+                date: document.getElementById('date').value,
+                region: document.getElementById('region').value,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('formDraft', JSON.stringify(draft));
+        }
+
+        function restoreDraft() {
+            const draftStr = localStorage.getItem('formDraft');
+            if (!draftStr) return;
+
+            const draft = JSON.parse(draftStr);
+            // Only restore if draft is less than 24 hours old
+            const hoursSinceLastSave = (Date.now() - draft.timestamp) / (1000 * 60 * 60);
+            if (hoursSinceLastSave > 24) {
+                localStorage.removeItem('formDraft');
+                return;
+            }
+
+            // Restore values
+            if (draft.department) document.getElementById('department').value = draft.department;
+            if (draft.issue) document.getElementById('issue').value = draft.issue;
+            if (draft.ticket) document.getElementById('ticket').value = draft.ticket;
+            if (draft.date) document.getElementById('date').value = draft.date;
+            if (draft.region) document.getElementById('region').value = draft.region;
+
+            // Show notice
+            const notice = document.getElementById('draftNotice');
+            notice.style.display = 'block';
+            setTimeout(() => {
+                notice.style.opacity = '0';
+                notice.style.transition = 'opacity 1s';
+                setTimeout(() => notice.style.display = 'none', 1000);
+            }, 3000);
+        }
+
+        function clearDraft() {
+            localStorage.removeItem('formDraft');
+        }
+
+        // Update progress bar
+        function updateProgress(current, total) {
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            const percent = (current / total) * 100;
+
+            progressContainer.style.display = 'block';
+            progressBar.style.width = percent + '%';
+
+            if (current === total) {
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                    progressBar.style.width = '0%';
+                }, 1000);
+            }
+        }
+
+        // Auto-save every 2 seconds
+        setInterval(saveDraft, 2000);
+
+        // Restore draft on page load
+        restoreDraft();
+
+        // Add item (with numbering)
+        let itemCounter = 1;
     </script>
 </body>
 
