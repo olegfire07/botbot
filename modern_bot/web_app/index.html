@@ -236,24 +236,32 @@
         .segmented-control {
             display: flex;
             background: rgba(118, 118, 128, 0.12);
-            border-radius: 12px;
-            padding: 3px;
+            border-radius: 14px;
+            /* Slightly more rounded */
+            padding: 4px;
+            /* More breathing room */
             margin-bottom: 24px;
+            position: relative;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
         .segmented-control label {
             flex: 1;
             text-align: center;
-            padding: 10px;
-            font-size: 14px;
+            padding: 12px;
+            font-size: 15px;
+            /* Larger text */
             font-weight: 500;
             color: var(--text-color);
             cursor: pointer;
-            border-radius: 9px;
+            border-radius: 10px;
             transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
             margin: 0;
-            text-transform: none;
-            letter-spacing: normal;
+            position: relative;
+            z-index: 1;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .segmented-control input[type="radio"] {
@@ -261,10 +269,12 @@
         }
 
         .segmented-control input[type="radio"]:checked+label {
-            background-color: white;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12), 0 3px 1px rgba(0, 0, 0, 0.04);
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
             font-weight: 600;
             color: #000;
+            transform: scale(1.02);
+            /* Subtle pop */
         }
 
         /* Modal */
@@ -468,11 +478,11 @@
 
         <!-- Mode Toggle (Moved to Bottom) -->
         <div class="segmented-control">
-            <input type="radio" name="mode" id="mode-test" value="test" checked>
-            <label for="mode-test">Черновик (Тест)</label>
-
-            <input type="radio" name="mode" id="mode-final" value="final">
+            <input type="radio" name="mode" id="mode-final" value="final" checked>
             <label for="mode-final">Оригинал (В группу)</label>
+
+            <input type="radio" name="mode" id="mode-test" value="test">
+            <label for="mode-test">Черновик (Тест)</label>
         </div>
 
         <button type="button" class="btn btn-primary" onclick="showPreview()">
