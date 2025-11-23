@@ -126,9 +126,40 @@ async def handle_options(request):
         'Access-Control-Allow-Headers': 'Content-Type'
     })
 
+async def handle_root(request):
+    """Serve the index.html for testing"""
+    from pathlib import Path
+    html_path = Path(__file__).parent / 'web_app' / 'index.html'
+    if html_path.exists():
+        with open(html_path, 'r', encoding='utf-8') as f:
+            return web.Response(text=f.read(), content_type='text/html')
+    return web.Response(text='Web app not found', status=404)
+
+async def handle_stats(request):
+    """Return stats for the current month"""
+    from datetime import datetime
+    from modern_bot.config import ARCHIVE_DIR
+    
+    try:
+        now = datetime.now()
+        subdir_name = now.strftime("%Y-%m")
+        month_dir = ARCHIVE_DIR / subdir_name
+        
+        count = 0
+        if month_dir.exists():
+            # Count files, excluding hidden ones
+            count = len([f for f in month_dir.iterdir() if f.is_file() and not f.name.startswith('.')])
+            
+        return web.json_response({'count': count, 'month': subdir_name}, headers={'Access-Control-Allow-Origin': '*'})
+    except Exception as e:
+        logger.error(f"Stats Error: {e}")
+        return web.json_response({'error': str(e)}, status=500)
+
 async def start_api_server(bot, port=8080):
     app = web.Application()
     app['bot'] = bot
+    app.router.add_get('/', handle_root)
+    app.router.add_get('/api/stats', handle_stats)
     app.router.add_post('/api/generate', handle_generate)
     app.router.add_options('/api/generate', handle_options)
     

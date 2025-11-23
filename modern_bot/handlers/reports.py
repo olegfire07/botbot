@@ -55,3 +55,59 @@ async def download_month_handler(update: Update, context: CallbackContext) -> No
     finally:
         if zip_path.exists():
             zip_path.unlink()
+
+async def stats_handler(update: Update, context: CallbackContext) -> None:
+    if not is_admin(update.message.from_user.id):
+        return
+
+    records = await read_excel_data()
+    total = len(records)
+    
+    # Simple stats by region
+    regions = {}
+    for r in records:
+        reg = r[4] # Region column
+        regions[reg] = regions.get(reg, 0) + 1
+        
+    text = f"📊 **Общая статистика**:\nВсего заключений: {total}\n\n**По регионам**:\n"
+    for reg, count in regions.items():
+        text += f"{reg}: {count}\n"
+        
+    await safe_reply(update, text)
+
+async def stats_period_handler(update: Update, context: CallbackContext) -> None:
+    if not is_admin(update.message.from_user.id):
+        return
+        
+    if len(context.args) < 2:
+        await safe_reply(update, "Использование: /stats_period ДД.ММ.ГГГГ ДД.ММ.ГГГГ [Регион]")
+        return
+        
+    start_str, end_str = context.args[0], context.args[1]
+    start = parse_date_str(start_str)
+    end = parse_date_str(end_str)
+    
+    if not start or not end:
+        await safe_reply(update, "Неверный формат даты.")
+        return
+        
+    region = None
+    if len(context.args) > 2:
+        region = match_region_name(" ".join(context.args[2:]))
+        
+    records = await read_excel_data()
+    count = 0
+    total_sum = 0
+    
+    for r in records:
+        r_date = parse_date_str(r[3])
+        if not r_date: continue
+        
+        if start <= r_date <= end:
+            if region and r[4] != region:
+                continue
+            count += 1
+            # Try to parse sum if needed, but for now just count
+            
+    filter_text = f" ({region})" if region else ""
+    await safe_reply(update, f"📅 Статистика за {start_str} - {end_str}{filter_text}:\nНайдено заключений: {count}")

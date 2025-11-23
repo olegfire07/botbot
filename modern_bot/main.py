@@ -12,7 +12,7 @@ from modern_bot.handlers.admin import (
 )
 from modern_bot.config import load_bot_token, MAIN_GROUP_CHAT_ID
 from modern_bot.handlers.reports import (
-    history_handler, download_month_handler
+    history_handler, download_month_handler, stats_handler, stats_period_handler
 )
 from modern_bot.utils.logger import setup_logger
 
@@ -71,6 +71,8 @@ def main():
     # Reports
     application.add_handler(CommandHandler("history", history_handler))
     application.add_handler(CommandHandler("download_month", download_month_handler))
+    application.add_handler(CommandHandler("stats", stats_handler))
+    application.add_handler(CommandHandler("stats_period", stats_period_handler))
     
     # Photo upload (for Web App flow) - simplified for now
     # application.add_handler(MessageHandler(filters.PHOTO, photo_upload_handler))

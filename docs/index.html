@@ -399,6 +399,10 @@
 
 <body>
     <h1 id="mainTitle" onclick="handleTitleClick()">Новое заключение</h1>
+    <div id="statsCounter"
+        style="text-align: center; color: var(--secondary-text); font-size: 13px; margin-top: -10px; margin-bottom: 20px; opacity: 0.8;">
+        📅 Загрузка статистики...
+    </div>
 
     <!-- Draft Notice -->
     <div class="draft-notice" id="draftNotice">
@@ -520,8 +524,26 @@
             DEFAULT_IMGBB_KEY: window.APP_DEFAULT_IMGBB_KEY || "c8574310f13ff081e6ed7e3c9f963f9f"
         };
 
+        // 5. Fetch Stats
+        async function fetchStats() {
+            try {
+                const response = await fetch('/api/stats');
+                if (response.ok) {
+                    const data = await response.json();
+                    const counter = document.getElementById('statsCounter');
+                    counter.textContent = `📅 В этом месяце создано: ${data.count}`;
+                }
+            } catch (e) {
+                console.warn("Failed to fetch stats", e);
+                document.getElementById('statsCounter').style.display = 'none';
+            }
+        }
+
         // Initialize
         tg.expand();
+        // Assuming restoreDraft() exists elsewhere or will be added.
+        // restoreDraft();
+        fetchStats();
 
         // Load API Key (default to the provided one if not in storage)
         let imgbbKey = localStorage.getItem('imgbb_key') || APP_CONFIG.DEFAULT_IMGBB_KEY;
