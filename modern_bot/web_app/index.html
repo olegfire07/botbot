@@ -363,6 +363,37 @@
             color: var(--text-color);
             display: none;
         }
+
+        /* Validation Error */
+        .invalid {
+            border-color: var(--danger-color) !important;
+            animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
+            background: rgba(255, 59, 48, 0.05) !important;
+        }
+
+        @keyframes shake {
+
+            10%,
+            90% {
+                transform: translate3d(-1px, 0, 0);
+            }
+
+            20%,
+            80% {
+                transform: translate3d(2px, 0, 0);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translate3d(-4px, 0, 0);
+            }
+
+            40%,
+            60% {
+                transform: translate3d(4px, 0, 0);
+            }
+        }
     </style>
 </head>
 
@@ -687,13 +718,28 @@
 
         function showPreview() {
             const form = document.getElementById('mainForm');
-            if (!form.checkValidity()) {
-                form.reportValidity();
+            let isValid = true;
+
+            // 1. Check required fields
+            form.querySelectorAll('input[required], select[required]').forEach(input => {
+                if (!input.value.trim()) {
+                    isValid = false;
+                    input.classList.add('invalid');
+                    // Remove error on input
+                    input.addEventListener('input', () => input.classList.remove('invalid'), { once: true });
+                }
+            });
+
+            if (!isValid) {
+                tg.showAlert("Пожалуйста, заполните все обязательные поля!");
                 return;
             }
 
             const ticket = document.getElementById('ticket').value;
             if (ticket.length !== 11) {
+                const ticketInput = document.getElementById('ticket');
+                ticketInput.classList.add('invalid');
+                ticketInput.addEventListener('input', () => ticketInput.classList.remove('invalid'), { once: true });
                 tg.showAlert("Номер билета должен быть 11 цифр!");
                 return;
             }
@@ -704,6 +750,15 @@
                 const input = div.querySelector('.file-input');
                 if (!input.files || !input.files[0]) {
                     allPhotosSelected = false;
+                    const container = div.querySelector('.photo-preview-container');
+                    container.style.borderColor = 'var(--danger-color)';
+                    container.style.animation = 'shake 0.4s cubic-bezier(.36, .07, .19, .97) both';
+
+                    // Remove error on click/drop
+                    input.addEventListener('change', () => {
+                        container.style.borderColor = 'rgba(0, 0, 0, 0.1)';
+                        container.style.animation = 'none';
+                    }, { once: true });
                 }
             });
 
