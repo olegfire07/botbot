@@ -156,6 +156,9 @@
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
             appearance: none;
             -webkit-appearance: none;
+            /* Mobile fixes */
+            box-sizing: border-box;
+            max-width: 100%;
         }
 
         /* Fix for Select Icon Overlap */
@@ -239,6 +242,10 @@
             background: rgba(0, 0, 0, 0.05);
             padding: 6px 12px;
             border-radius: 12px;
+            /* Mobile text handling */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-width: 100%;
         }
 
         .btn {
@@ -965,9 +972,9 @@
                                 <circle cx="8.5" cy="8.5" r="1.5"></circle>
                                 <polyline points="21 15 16 10 5 21"></polyline>
                             </svg>
-                            <input type="file" class="file-input" accept="image/*" capture="environment" onchange="handleFileSelect(this)" style="display:none">
+                            <input type="file" class="file-input" accept="image/*" onchange="handleFileSelect(this)" style="display:none">
                             <span class="btn-text">Добавить фото</span>
-                            <span class="hint">Нажмите, сфотографируйте или перетащите</span>
+                            <span class="hint">Нажмите для выбора или перетащите</span>
                         </label>
                     </div>
                     <div class="upload-status">Фото не выбрано</div>
