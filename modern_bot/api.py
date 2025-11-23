@@ -54,8 +54,10 @@ async def handle_generate(request):
                         if response.status_code == 200:
                             unique_name = generate_unique_filename()
                             file_path = TEMP_PHOTOS_DIR / unique_name
-                            with open(file_path, 'wb') as f:
-                                f.write(response.content)
+                            
+                            # Write file in thread
+                            await asyncio.to_thread(file_path.write_bytes, response.content)
+                            
                             db_data['photo_desc'].append({
                                 'photo': str(file_path),
                                 'description': description,
@@ -67,6 +69,16 @@ async def handle_generate(request):
         # 3. Generate Document
         path = await create_document(user_id, user_name, db_data_override=db_data)
         
+        # 3.1 Update Excel and Archive (Data Integrity)
+        try:
+            from modern_bot.services.excel import update_excel
+            from modern_bot.services.archive import archive_document
+            
+            await update_excel(db_data)
+            await archive_document(path, db_data)
+        except Exception as e:
+            logger.error(f"Failed to update Excel/Archive: {e}")
+
         # 4. Send to Group (if not test)
         is_test = data.get('is_test', False)
         if not is_test:
@@ -95,8 +107,8 @@ async def handle_generate(request):
 
         # 5. Return File
         if path and path.exists():
-            with open(path, 'rb') as f:
-                content = f.read()
+            # Read file in thread to avoid blocking
+            content = await asyncio.to_thread(path.read_bytes)
             
             # Cleanup
             try:
