@@ -1700,18 +1700,21 @@
                 };
 
                 // Check if running in Telegram
-                // Use initData (string) as primary check, initDataUnsafe as fallback
+                // iOS Telegram 9.x bug: initData may be empty even in WebApp
+                // Instead, check for platform/version which are always present in Telegram
+                console.log('tg.platform:', tg.platform);
+                console.log('tg.version:', tg.version);
                 console.log('tg.initData:', tg.initData);
                 console.log('tg.initDataUnsafe:', tg.initDataUnsafe);
-                console.log('tg.initDataUnsafe.user:', tg.initDataUnsafe?.user);
 
-                // Check if we have ANY Telegram data (initData string OR initDataUnsafe.user)
-                const isInTelegram = (tg.initData && tg.initData.length > 0) || (tg.initDataUnsafe && tg.initDataUnsafe.user);
+                // Check if we're in Telegram by platform/version presence
+                const isInTelegram = (tg.platform && tg.platform.length > 0) ||
+                    (tg.version && tg.version.length > 0) ||
+                    (tg.initData && tg.initData.length > 0);
 
                 if (isInTelegram) {
-                    console.log('Using Telegram WebApp mode - sending via tg.sendData()');
-                    tg.showAlert('Режим: Telegram WebApp. Отправка данных боту...');
-                    btn.textContent = "Отправка...";
+                    console.log('Detected Telegram WebApp - sending via tg.sendData()');
+                    btn.textContent = "Отправка в Telegram...";
                     tg.sendData(JSON.stringify(data));
                     haptic('success');
                     // Close WebApp after sending data
