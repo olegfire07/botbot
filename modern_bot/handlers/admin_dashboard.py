@@ -1,5 +1,5 @@
 import logging
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import CallbackContext, CallbackQueryHandler
 from modern_bot.handlers.admin import is_admin
 from modern_bot.handlers.common import safe_reply
@@ -14,7 +14,13 @@ async def admin_dashboard_handler(update: Update, context: CallbackContext) -> N
         await safe_reply(update, "❌ Доступ запрещен.")
         return
     
+    # WebApp URL from config
+    web_app_url = "https://olegfire07.github.io/botbot/?v=8"
+    
     keyboard = [
+        [
+            InlineKeyboardButton("📝 Создать заключение", web_app=WebAppInfo(url=web_app_url))
+        ],
         [
             InlineKeyboardButton("📊 Статистика", callback_data="admin_stats"),
             InlineKeyboardButton("📈 Аналитика", callback_data="admin_analytics")
@@ -101,17 +107,28 @@ async def admin_callback_handler(update: Update, context: CallbackContext) -> No
 
 async def show_stats(update: Update, context: CallbackContext) -> None:
     """Show quick stats with back button."""
-    from modern_bot.handlers.reports import stats_handler
+    from modern_bot.services.excel import read_excel_data
     
-    # Call existing stats handler
-    await stats_handler(update, context)
+    records = await read_excel_data()
+    total = len(records)
+    
+    # Simple stats by region
+    regions = {}
+    for r in records:
+        reg = r[4] if len(r) > 4 else "Неизвестно"  # Region column
+        regions[reg] = regions.get(reg, 0) + 1
+    
+    text = f"📊 <b>Общая статистика</b>\n\nВсего заключений: {total}\n\n<b>По регионам:</b>\n"
+    for reg, count in sorted(regions.items(), key=lambda x: x[1], reverse=True):
+        text += f"• {reg}: {count}\n"
     
     # Add back button
     keyboard = [[InlineKeyboardButton("◀️ Назад", callback_data="admin_refresh")]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
-    await update.callback_query.message.reply_text(
-        "⬆️ Статистика выше",
+    await update.callback_query.edit_message_text(
+        text,
+        parse_mode="HTML",
         reply_markup=reply_markup
     )
 
@@ -190,15 +207,28 @@ async def show_download_menu(update: Update, context: CallbackContext) -> None:
 
 async def show_history(update: Update, context: CallbackContext) -> None:
     """Show history with back button."""
-    from modern_bot.handlers.reports import history_handler
+    from modern_bot.services.excel import read_excel_data
     
-    await history_handler(update, context)
+    records = await read_excel_data()
+    if not records:
+        text = "📜 <b>История</b>\n\nИстория пуста."
+    else:
+        text = "📜 <b>Последние 10 записей:</b>\n\n"
+        for r in records[-10:]:
+            ticket = r[0] if len(r) > 0 else "?"
+            num = r[1] if len(r) > 1 else "?"
+            dept = r[2] if len(r) > 2 else "?"
+            date = r[3] if len(r) > 3 else "?"
+            region = r[4] if len(r) > 4 else "?"
+            rating = r[7] if len(r) > 7 else "?"
+            text += f"• <b>Билет:</b> {ticket}, <b>№:</b> {num}\n  <b>Под:</b> {dept}, <b>Дата:</b> {date}\n  <b>Регион:</b> {region}, <b>Оценка:</b> {rating}\n\n"
     
     keyboard = [[InlineKeyboardButton("◀️ Назад", callback_data="admin_refresh")]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
-    await update.callback_query.message.reply_text(
-        "⬆️ История выше",
+    await update.callback_query.edit_message_text(
+        text,
+        parse_mode="HTML",
         reply_markup=reply_markup
     )
 
