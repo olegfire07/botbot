@@ -180,6 +180,14 @@
             /* Increased right padding */
         }
 
+        /* Disable browser's native invalid styling */
+        input:invalid,
+        select:invalid,
+        textarea:invalid {
+            box-shadow: none;
+            border-color: inherit;
+        }
+
         input:focus,
         select:focus {
             outline: none;
@@ -801,7 +809,7 @@
         <div class="progress-bar" id="progressBar"></div>
     </div>
 
-    <form id="mainForm">
+    <form id="mainForm" novalidate>
         <div class="section">
             <div class="form-group">
                 <label>Подразделение</label>
@@ -1145,28 +1153,35 @@
             const allInputs = form.querySelectorAll('input, select, textarea');
 
             allInputs.forEach(input => {
-                // Clear invalid state on input
+                // Clear invalid state on input (immediately on typing)
                 input.addEventListener('input', function () {
                     this.classList.remove('invalid');
-                    // Also check if field is now valid and remove browser's native invalid state
-                    if (this.validity.valid) {
-                        this.setCustomValidity('');
+                    this.setCustomValidity('');
+
+                    // Remove any parent container invalid states
+                    const wrapper = this.closest('.input-wrapper, .photo-preview-container');
+                    if (wrapper) {
+                        wrapper.classList.remove('invalid');
+                        wrapper.style.borderColor = '';
                     }
                 });
 
                 // Clear invalid state on change (for selects and file inputs)
                 input.addEventListener('change', function () {
                     this.classList.remove('invalid');
-                    if (this.validity.valid) {
-                        this.setCustomValidity('');
+                    this.setCustomValidity('');
+
+                    const wrapper = this.closest('.input-wrapper, .photo-preview-container');
+                    if (wrapper) {
+                        wrapper.classList.remove('invalid');
+                        wrapper.style.borderColor = '';
                     }
                 });
 
                 // Clear invalid state on focus
                 input.addEventListener('focus', function () {
-                    if (this.classList.contains('invalid')) {
-                        this.classList.remove('invalid');
-                    }
+                    this.classList.remove('invalid');
+                    this.setCustomValidity('');
                 });
             });
         }
