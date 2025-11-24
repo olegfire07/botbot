@@ -650,7 +650,8 @@
         }
 
         /* Sticky submit button */
-        .sticky-submit {
+        /* Sticky footer container */
+        .sticky-footer {
             position: fixed;
             bottom: 0;
             left: 0;
@@ -662,6 +663,8 @@
             border-top: 1px solid rgba(0, 0, 0, 0.08);
             z-index: 100;
             box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: center;
         }
 
         .hint-text {
@@ -879,9 +882,11 @@
             <label for="mode-test">Черновик (Тест)</label>
         </div>
 
-        <button type="button" class="btn btn-primary sticky-submit" onclick="showPreview()">
-            Проверить и отправить
-        </button>
+        <div class="sticky-footer">
+            <button type="button" class="btn btn-primary" onclick="showPreview()">
+                Проверить и отправить
+            </button>
+        </div>
 
         <div style="text-align: center; margin-top: 20px; color: var(--secondary-text); font-size: 11px; opacity: 0.5;">
             Version 2.2 (UX Enhanced) - 2025-11-23

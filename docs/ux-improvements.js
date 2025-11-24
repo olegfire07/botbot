@@ -135,12 +135,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }, true);
 
-    // 4. Make sticky button
-    const submitSection = document.querySelector('section:last-of-type');
-    if (submitSection) {
-        submitSection.classList.add('sticky-submit');
+    // 4. Handle sticky footer padding
+    const stickyFooter = document.querySelector('.sticky-footer');
+    if (stickyFooter) {
         // Add padding to body to prevent content being hidden
-        document.body.style.paddingBottom = '80px';
+        document.body.style.paddingBottom = '100px';
     }
 
     // 5. Auto-fill department from localStorage
