@@ -1693,6 +1693,7 @@
 
                 if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                     console.log('Using Telegram WebApp mode - sending via tg.sendData()');
+                    tg.showAlert('Режим: Telegram WebApp. Отправка данных боту...');
                     btn.textContent = "Отправка...";
                     tg.sendData(JSON.stringify(data));
                     haptic('success');
