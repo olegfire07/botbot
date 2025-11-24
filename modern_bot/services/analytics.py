@@ -105,7 +105,17 @@ class AnalyticsService:
     @staticmethod
     def format_top_users_report(users: List[Dict[str, Any]]) -> str:
         """Format top users report."""
-        return "👥 Статистика по пользователям недоступна в текущей версии (данные не сохраняются в Excel)."
+        if not users:
+            return "👥 <b>Топ пользователей</b>\n\nНет данных (возможно, новые заключения еще не создавались)."
+            
+        lines = ["👥 <b>Топ активных пользователей</b>\n"]
+        for i, u in enumerate(users, 1):
+            name = u['user']
+            count = u['count']
+            icon = "🥇" if i == 1 else "🥈" if i == 2 else "🥉" if i == 3 else "👤"
+            lines.append(f"{icon} <b>{name}</b>: {count} зак.")
+            
+        return "\n".join(lines)
     
     @staticmethod
     def create_simple_chart(data: Dict[str, int], width: int = 20) -> str:
