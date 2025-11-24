@@ -1,9 +1,9 @@
 import logging
 from datetime import datetime, timedelta
-from pathlib import Path
-from collections import Counter, defaultdict
+from collections import Counter
 from typing import Dict, List, Any
-from modern_bot.config import DOCS_DIR
+from modern_bot.services.excel import read_excel_data
+from modern_bot.utils.validators import parse_date_str
 
 logger = logging.getLogger(__name__)
 
@@ -12,67 +12,49 @@ class AnalyticsService:
     
     @staticmethod
     async def get_region_stats(days: int = 30) -> Dict[str, int]:
-        """Get statistics by region for the last N days."""
-        # Validate input
-        if days <= 0 or days > 365:
-            days = 30
-        
-        # TODO: Implement database query
-        # For now, return mock data
-        return {
-            "Москва": 45,
-            "Санкт-Петербург": 32,
-            "Екатеринбург": 28,
-            "Новосибирск": 15,
-            "Казань": 12
-        }
+        """Get statistics by region."""
+        rows = await read_excel_data()
+        if not rows:
+            return {}
+            
+        # Region is index 4
+        stats = Counter(row[4] for row in rows if len(row) > 4 and row[4])
+        return dict(stats)
     
     @staticmethod
     async def get_department_stats(days: int = 30) -> Dict[str, int]:
-        """Get statistics by department for the last N days."""
-        # Validate input
-        if days <= 0 or days > 365:
-            days = 30
+        """Get statistics by department."""
+        rows = await read_excel_data()
+        if not rows:
+            return {}
             
-        # TODO: Implement database query
-        return {
-            "385": 67,
-            "350": 45,
-            "420": 38,
-            "510": 22,
-            "670": 18
-        }
+        # Department is index 2
+        stats = Counter(str(row[2]) for row in rows if len(row) > 2 and row[2])
+        return dict(stats)
     
     @staticmethod
     async def get_top_users(limit: int = 10) -> List[Dict[str, Any]]:
-        """Get top users by number of documents created."""
-        # Validate input
-        if limit <= 0 or limit > 100:
-            limit = 10
-            
-        # TODO: Implement database query
-        return [
-            {"user_id": 123456, "username": "Иван", "count": 45},
-            {"user_id": 234567, "username": "Мария", "count": 38},
-            {"user_id": 345678, "username": "Петр", "count": 32},
-            {"user_id": 456789, "username": "Ольга", "count": 28},
-            {"user_id": 567890, "username": "Алексей", "count": 25}
-        ][:limit]
+        """Get top users (Not available in Excel version)."""
+        return []
     
     @staticmethod
     async def get_daily_stats(days: int = 30) -> Dict[str, int]:
         """Get daily document creation statistics."""
-        # Validate input
-        if days <= 0 or days > 365:
-            days = 30
+        rows = await read_excel_data()
+        if not rows:
+            return {}
             
-        # TODO: Implement database query
-        today = datetime.now()
-        stats = {}
-        for i in range(days):
-            date = (today - timedelta(days=i)).strftime("%d.%m")
-            stats[date] = max(0, 20 + (i % 7) * 3 - i // 7)
-        return dict(reversed(list(stats.items())))
+        stats = Counter()
+        cutoff = datetime.now() - timedelta(days=days)
+        
+        for row in rows:
+            if len(row) > 3 and row[3]:
+                dt = parse_date_str(row[3])
+                if dt and dt >= cutoff:
+                    stats[dt.strftime("%d.%m")] += 1
+                    
+        # Sort by date
+        return dict(sorted(stats.items(), key=lambda x: datetime.strptime(x[0] + f".{datetime.now().year}", "%d.%m.%Y"), reverse=True))
     
     @staticmethod
     def format_region_report(stats: Dict[str, int]) -> str:
@@ -111,32 +93,20 @@ class AnalyticsService:
     @staticmethod
     def format_top_users_report(users: List[Dict[str, Any]]) -> str:
         """Format top users report."""
-        if not users:
-            return "👥 Нет данных"
-        
-        lines = ["👥 <b>Топ пользователей</b>\n"]
-        
-        medals = ["🥇", "🥈", "🥉"]
-        for i, user in enumerate(users[:10]):
-            medal = medals[i] if i < 3 else f"{i+1}."
-            username = user.get("username", "Неизвестно")
-            count = user.get("count", 0)
-            lines.append(f"{medal} <b>{username}</b> — {count} документов")
-        
-        return "\n".join(lines)
+        return "👥 Статистика по пользователям недоступна в текущей версии (данные не сохраняются в Excel)."
     
     @staticmethod
-    def create_simple_chart(data: Dict[str, int], width: int = 30) -> str:
+    def create_simple_chart(data: Dict[str, int], width: int = 20) -> str:
         """Create simple ASCII chart."""
         if not data:
-            return ""
+            return "Нет данных за последние 30 дней."
         
         max_val = max(data.values()) if data.values() else 1
         lines = []
         
-        for key, value in list(data.items())[:10]:  # Show last 10
+        for key, value in list(data.items())[:15]:  # Show last 15 days
             bar_length = int((value / max_val) * width) if max_val > 0 else 0
             bar = "█" * bar_length
-            lines.append(f"<code>{key:10s}</code> {bar} {value}")
+            lines.append(f"<code>{key}</code> {bar} {value}")
         
         return "\n".join(lines)
