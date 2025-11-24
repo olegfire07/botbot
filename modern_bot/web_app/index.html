@@ -1448,28 +1448,38 @@
             const isTest = document.getElementById('mode-test').checked;
             const modeText = isTest ? "Черновик (Тест)" : "Оригинал (В группу)";
 
-            // Calculate total cost
+            // Calculate total cost (remove spaces before parsing)
             let totalCost = 0;
             document.querySelectorAll('.item-card').forEach(div => {
                 const evalInput = div.querySelector('.eval');
                 if (evalInput && evalInput.value) {
-                    totalCost += parseInt(evalInput.value) || 0;
+                    // Remove spaces and parse
+                    const cleanValue = evalInput.value.replace(/\s/g, '');
+                    totalCost += parseInt(cleanValue) || 0;
                 }
             });
 
-            // Build preview
+            // Get ticket value
+            const ticketValue = document.getElementById('ticket').value;
+
+            // Build preview with better structure
             const content = document.getElementById('previewContent');
             content.innerHTML = `
-                <div class="preview-row"><span class="preview-label">Режим:</span> <div class="preview-value" style="color: ${isTest ? 'orange' : 'green'}">${modeText}</div></div>
+                <div class="preview-row" style="background: ${isTest ? 'rgba(255,165,0,0.1)' : 'rgba(52,199,89,0.1)'}; padding: 12px; border-radius: 12px; margin-bottom: 16px;">
+                    <span class="preview-label">Режим:</span> 
+                    <div class="preview-value" style="color: ${isTest ? 'orange' : 'green'}; font-weight: 700;">${modeText}</div>
+                </div>
                 <div class="preview-row"><span class="preview-label">Подразделение:</span> <div class="preview-value">${document.getElementById('department').value}</div></div>
                 <div class="preview-row"><span class="preview-label">Заключение:</span> <div class="preview-value">${document.getElementById('issue').value}</div></div>
-                <div class="preview-row"><span class="preview-label">Билет:</span> <div class="preview-value">${ticket}</div></div>
+                <div class="preview-row"><span class="preview-label">Билет:</span> <div class="preview-value" style="font-family: monospace; font-weight: 600;">${ticketValue}</div></div>
                 <div class="preview-row"><span class="preview-label">Дата:</span> <div class="preview-value">${document.getElementById('date').value}</div></div>
                 <div class="preview-row"><span class="preview-label">Регион:</span> <div class="preview-value">${document.getElementById('region').value}</div></div>
-                <div class="preview-row"><span class="preview-label">Предметов:</span> <div class="preview-value">${document.querySelectorAll('.item-card').length}</div></div>
-                <div class="preview-row" style="border-top: 2px solid rgba(0,0,0,0.1); margin-top: 12px; padding-top: 12px;">
-                    <span class="preview-label" style="font-weight: 700;">💰 Общая сумма:</span> 
-                    <div class="preview-value" style="font-weight: 700; font-size: 18px; color: var(--success-color);">${totalCost.toLocaleString('ru-RU')} ₽</div>
+                <div class="preview-row" style="border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 12px; margin-bottom: 12px;">
+                    <span class="preview-label">Предметов:</span> <div class="preview-value">${document.querySelectorAll('.item-card').length}</div>
+                </div>
+                <div class="preview-row" style="background: rgba(52,199,89,0.1); padding: 12px; border-radius: 12px;">
+                    <span class="preview-label" style="font-weight: 700; font-size: 15px;">💰 Общая сумма:</span> 
+                    <div class="preview-value" style="font-weight: 700; font-size: 20px; color: var(--success-color);">${totalCost.toLocaleString('ru-RU')} ₽</div>
                 </div>
             `;
 
