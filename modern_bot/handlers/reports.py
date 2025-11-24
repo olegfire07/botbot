@@ -1,3 +1,4 @@
+import logging
 from telegram import Update
 from telegram.ext import CallbackContext
 from modern_bot.handlers.common import safe_reply, send_document_from_path
@@ -5,6 +6,8 @@ from modern_bot.handlers.admin import is_admin
 from modern_bot.services.excel import read_excel_data, create_excel_snapshot
 from modern_bot.services.archive import get_archive_paths, create_archive_zip
 from modern_bot.utils.validators import get_month_bounds, match_region_name, parse_date_str
+
+logger = logging.getLogger(__name__)
 
 async def history_handler(update: Update, context: CallbackContext) -> None:
     if not is_admin(update.effective_user.id):
