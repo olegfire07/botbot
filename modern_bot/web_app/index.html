@@ -1611,6 +1611,10 @@
             btn.disabled = true;
             btn.textContent = "Загрузка на ImgBB...";
 
+            // DEBUG: Show what we detected
+            const hasUser = !!(tg.initDataUnsafe && tg.initDataUnsafe.user);
+            tg.showAlert(`DEBUG: hasUser=${hasUser}, initDataUnsafe=${JSON.stringify(tg.initDataUnsafe)?.substring(0, 50)}`);
+
             const items = [];
             const cards = document.querySelectorAll('.item-card');
 
