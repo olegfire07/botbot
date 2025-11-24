@@ -1,7 +1,7 @@
 import logging
 from telegram import Update, WebAppInfo, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import ContextTypes
-from modern_bot.config import ADMIN_IDS
+from modern_bot.handlers.admin import is_admin
 
 logger = logging.getLogger(__name__)
 
@@ -10,7 +10,8 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     Sends a welcome message with a menu (ReplyKeyboard).
     """
     user = update.effective_user
-    logger.info(f"⭐ User ID: {user.id} | Name: {user.full_name} | Is Admin: {user.id in ADMIN_IDS}")
+    user_is_admin = is_admin(user.id)
+    logger.info(f"⭐ User ID: {user.id} | Name: {user.full_name} | Is Admin: {user_is_admin}")
 
     # Web App URL (GitHub Pages)
     web_app_url = "https://olegfire07.github.io/botbot/?v=8"
@@ -22,7 +23,7 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]
 
     # Add Admin Button if user is admin
-    if user.id in ADMIN_IDS:
+    if user_is_admin:
         keyboard.append([KeyboardButton("⚙️ Админ-панель")])
     
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
@@ -51,7 +52,7 @@ async def help_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
     # Admin Help
-    if user_id in ADMIN_IDS:
+    if is_admin(user_id):
         text += (
             "\n\n<b>👮‍♂️ Команды администратора:</b>\n"
             "/add_admin [ID] - Добавить админа\n"

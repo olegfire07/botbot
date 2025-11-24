@@ -654,19 +654,7 @@
         /* Sticky submit button */
         /* Sticky footer container */
         .sticky-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 12px 20px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(0, 0, 0, 0.08);
-            z-index: 100;
-            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
-            display: flex;
-            justify-content: center;
+            display: none; /* Используем нативную кнопку Telegram MainButton */
         }
 
         .hint-text {
@@ -884,11 +872,7 @@
             <label for="mode-test">Черновик (Тест)</label>
         </div>
 
-        <div class="sticky-footer">
-            <button type="button" class="btn btn-primary" onclick="showPreview()">
-                Проверить и отправить
-            </button>
-        </div>
+        <div class="sticky-footer"></div>
 
         <div style="text-align: center; margin-top: 20px; color: var(--secondary-text); font-size: 11px; opacity: 0.5;">
             Version 2.3 (Auto-Key) - 2025-11-24
@@ -930,6 +914,7 @@
 
     <script>
         const tg = window.Telegram.WebApp;
+        let isSubmitting = false;
 
         // --- CONFIGURATION ---
         // WARNING: These are default values for local/demo use.
@@ -1104,7 +1089,22 @@
 
             // Haptic feedback setup
             setupHapticFeedback();
+
+            // Configure native MainButton
+            setupMainButton();
         });
+
+        function setupMainButton() {
+            tg.MainButton.setParams({
+                text: "Проверить и отправить",
+                color: "#007AFF",
+                text_color: "#FFFFFF",
+                is_active: true,
+                is_visible: true,
+            });
+            tg.MainButton.onClick(showPreview);
+            tg.MainButton.show();
+        }
 
         function setupHapticFeedback() {
             document.querySelectorAll('input, select').forEach(el => {
@@ -1178,14 +1178,12 @@
         function updateSubmitButton() {
             // Find the visible submit button (either the main one or the one in preview if we had one)
             // For now, we assume there is a button with onclick="showPreview()" or similar
-            const btn = document.querySelector('.btn-primary');
-            if (!btn) return;
-
             const isTest = document.querySelector('input[name="mode"]:checked').value === 'test';
-            if (isTest) {
-                btn.textContent = "Проверить и сохранить как черновик";
-            } else {
-                btn.textContent = "Проверить и отправить в группу";
+            const buttonText = isTest ? "Проверить и сохранить как черновик" : "Проверить и отправить в группу";
+            try {
+                tg.MainButton.setText(buttonText);
+            } catch (e) {
+                // fallback silently
             }
 
             if (submitHint) {
@@ -1432,68 +1430,60 @@
                 return;
             }
 
-            // Build Preview
-            const isTest = document.querySelector('input[name="mode"]:checked').value === 'test';
-            const modeText = isTest ? "Черновик (Тест)" : "Оригинал (В группу)";
-
-            // ... (Preview building logic similar to before) ...
-            // For brevity, I'll skip complex preview generation here and just submit directly 
-            // OR we can keep the preview modal logic if it exists in HTML.
-            // Assuming we want to proceed to submission logic directly for now as per user request "Check and Send"
-
             submitForm();
         }
 
         async function submitForm() {
-            const btn = document.querySelector('.btn-primary');
-            btn.disabled = true;
-            btn.textContent = "Загрузка фото...";
-
-            tg.MainButton.showProgress();
+            if (isSubmitting) return;
+            isSubmitting = true;
+            tg.MainButton.showProgress(true);
+            tg.MainButton.disable();
 
             const items = [];
             const cards = document.querySelectorAll('.item-card');
 
-            // Upload photos
-            for (let i = 0; i < cards.length; i++) {
-                const div = cards[i];
+            // Upload photos in parallel
+            const uploadTasks = Array.from(cards).map(async (div) => {
                 const fileInput = div.querySelector('.file-input');
                 const file = fileInput.files[0];
-
-                if (!file) continue;
-
-                try {
-                    // Compress
-                    const compressedBlob = await compressImage(file);
-
-                    // Upload to ImgBB
-                    const formData = new FormData();
-                    formData.append('image', compressedBlob, 'image.jpg');
-                    formData.append('key', imgbbKey);
-
-                    const response = await fetch('https://api.imgbb.com/1/upload', {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    const result = await response.json();
-                    if (result && result.data && result.data.url) {
-                        items.push({
-                            description: div.querySelector('.desc').value,
-                            evaluation: div.querySelector('.eval').value,
-                            photo_url: result.data.url
-                        });
-                    } else {
-                        throw new Error("ImgBB Upload Failed");
-                    }
-                } catch (e) {
-                    console.error(e);
-                    tg.showAlert("Ошибка загрузки фото. Попробуйте снова.");
-                    tg.MainButton.hideProgress();
-                    btn.disabled = false;
-                    updateSubmitButton();
-                    return;
+                if (!file) {
+                    throw new Error("Не выбрано фото для одного из предметов.");
                 }
+
+                // Compress
+                const compressedBlob = await compressImage(file);
+
+                // Upload to ImgBB
+                const formData = new FormData();
+                formData.append('image', compressedBlob, 'image.jpg');
+                formData.append('key', imgbbKey);
+
+                const response = await fetch('https://api.imgbb.com/1/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                if (result && result.data && result.data.url) {
+                    return {
+                        description: div.querySelector('.desc').value,
+                        evaluation: div.querySelector('.eval').value,
+                        photo_url: result.data.url
+                    };
+                }
+                throw new Error("ImgBB Upload Failed");
+            });
+
+            try {
+                const uploaded = await Promise.all(uploadTasks);
+                items.push(...uploaded);
+            } catch (e) {
+                console.error(e);
+                tg.showAlert(e.message || "Ошибка загрузки фото. Попробуйте снова.");
+                tg.MainButton.hideProgress();
+                tg.MainButton.enable();
+                isSubmitting = false;
+                return;
             }
 
             const data = {
@@ -1507,6 +1497,9 @@
             };
 
             tg.sendData(JSON.stringify(data));
+            tg.MainButton.hideProgress();
+            tg.MainButton.enable();
+            isSubmitting = false;
         }
 
         function compressImage(file) {

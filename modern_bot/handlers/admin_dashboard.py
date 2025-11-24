@@ -3,6 +3,7 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppI
 from telegram.ext import CallbackContext, CallbackQueryHandler
 from modern_bot.handlers.admin import is_admin
 from modern_bot.handlers.common import safe_reply
+from modern_bot.config import REGION_TOPICS
 
 logger = logging.getLogger(__name__)
 
@@ -99,15 +100,16 @@ async def admin_callback_handler(update: Update, context: CallbackContext) -> No
     elif action == "admin_dl_current":
         from datetime import datetime
         month = datetime.now().strftime("%m.%Y")
-        from modern_bot.handlers.reports import send_month_archive
-        # Use query.message because send_month_archive expects a message-like object or handles update gracefully
-        await send_month_archive(update, context, month)
+        await query.answer("Выберите регион…", show_alert=False)
+        await show_region_menu(update, context, month)
     elif action == "admin_dl_last":
         from datetime import datetime, timedelta
         last_month = datetime.now().replace(day=1) - timedelta(days=1)
         month = last_month.strftime("%m.%Y")
-        from modern_bot.handlers.reports import send_month_archive
-        await send_month_archive(update, context, month)
+        await query.answer("Выберите регион…", show_alert=False)
+        await show_region_menu(update, context, month)
+    elif action.startswith("admin_dl_region|"):
+        await handle_region_choice(update, context, action)
     elif action == "admin_start_dialog":
         # Send the /start_chat command to the admin to start dialog mode
         await query.edit_message_text(
@@ -221,6 +223,50 @@ async def show_download_menu(update: Update, context: CallbackContext) -> None:
         parse_mode="HTML",
         reply_markup=reply_markup
     )
+
+async def show_region_menu(update: Update, context: CallbackContext, month: str) -> None:
+    """Ask admin to choose region for the archive."""
+    try:
+        regions = list(REGION_TOPICS.keys())
+        context.user_data["dl_regions"] = regions
+        context.user_data["dl_month"] = month
+
+        keyboard = [[InlineKeyboardButton("🌍 Все регионы", callback_data=f"admin_dl_region|{month}|all")]]
+        for idx, region in enumerate(regions):
+            keyboard.append([InlineKeyboardButton(region, callback_data=f"admin_dl_region|{month}|{idx}")])
+        keyboard.append([InlineKeyboardButton("◀️ Назад к выбору месяца", callback_data="admin_download_month")])
+
+        target_message = update.callback_query.message if update.callback_query else update.effective_message
+        if target_message:
+            await target_message.edit_text(
+                f"📦 <b>Архив за {month}</b>\n\nВыберите регион:",
+                parse_mode="HTML",
+                reply_markup=InlineKeyboardMarkup(keyboard)
+            )
+        else:
+            await safe_reply(update, "Не удалось показать выбор региона.")
+    except Exception as e:
+        await safe_reply(update, f"Ошибка при показе регионов: {e}")
+
+async def handle_region_choice(update: Update, context: CallbackContext, action: str) -> None:
+    """Handle region selection for month archive."""
+    parts = action.split("|", 2)
+    if len(parts) != 3:
+        await safe_reply(update, "Неверный формат запроса архива.")
+        return
+    _, month, region_key = parts
+    regions = context.user_data.get("dl_regions", list(REGION_TOPICS.keys()))
+    region = None
+    if region_key != "all":
+        try:
+            idx = int(region_key)
+            region = regions[idx]
+        except (ValueError, IndexError):
+            await safe_reply(update, "Не удалось определить регион.")
+            return
+
+    from modern_bot.handlers.reports import send_month_archive
+    await send_month_archive(update, context, month, region)
 
 async def show_history(update: Update, context: CallbackContext) -> None:
     """Show history with back button."""

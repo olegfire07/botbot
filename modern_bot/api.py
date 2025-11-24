@@ -1,21 +1,37 @@
 import logging
-import json
 import asyncio
-from aiohttp import web
-from modern_bot.services.docx_gen import create_document
-from modern_bot.services.flow import finalize_conclusion, send_document_from_path
-from modern_bot.config import TEMP_PHOTOS_DIR, MAIN_GROUP_CHAT_ID, REGION_TOPICS
-from modern_bot.utils.files import generate_unique_filename
-from modern_bot.database.db import save_user_data
-import httpx
 import os
+from aiohttp import web
+from modern_bot.config import (
+    API_ENABLED,
+    API_PORT,
+    API_BIND_HOST,
+    API_AUTH_TOKEN,
+    API_MAX_REQUEST_SIZE_MB,
+    ARCHIVE_DIR,
+)
 
 logger = logging.getLogger(__name__)
+
+def _unauthorized():
+    return web.json_response(
+        {"error": "Unauthorized"},
+        status=401,
+        headers={"Access-Control-Allow-Origin": "*"}
+    )
+
+def _is_authorized(request) -> bool:
+    if not API_AUTH_TOKEN:
+        return True
+    return request.headers.get("X-API-KEY") == API_AUTH_TOKEN
 
 async def handle_generate(request):
     """
     Handle POST /api/generate
     """
+    if not _is_authorized(request):
+        return _unauthorized()
+
     try:
         # 1. Parse Data
         data = await request.json()
@@ -88,8 +104,10 @@ async def handle_root(request):
 async def handle_stats(request):
     """Return stats for the current month"""
     from datetime import datetime
-    from modern_bot.config import ARCHIVE_DIR
     
+    if not _is_authorized(request):
+        return _unauthorized()
+
     try:
         now = datetime.now()
         subdir_name = now.strftime("%Y-%m")
@@ -105,8 +123,16 @@ async def handle_stats(request):
         logger.error(f"Stats Error: {e}")
         return web.json_response({'error': str(e)}, status=500)
 
-async def start_api_server(bot, port=8080):
-    app = web.Application()
+async def start_api_server(bot, host: str = None, port: int = None):
+    if not API_ENABLED:
+        logger.info("API server disabled (API_ENABLED=false).")
+        return
+
+    bind_host = host or API_BIND_HOST
+    bind_port = port or API_PORT
+    max_size_bytes = max(API_MAX_REQUEST_SIZE_MB, 1) * 1024 * 1024
+
+    app = web.Application(client_max_size=max_size_bytes)
     app['bot'] = bot
     app.router.add_get('/', handle_root)
     app.router.add_get('/api/stats', handle_stats)
@@ -115,6 +141,6 @@ async def start_api_server(bot, port=8080):
     
     runner = web.AppRunner(app)
     await runner.setup()
-    site = web.TCPSite(runner, '0.0.0.0', port)
+    site = web.TCPSite(runner, bind_host, bind_port)
     await site.start()
-    logger.info(f"API Server started on port {port}")
+    logger.info(f"API Server started on http://{bind_host}:{bind_port} (max {max_size_bytes} bytes)")

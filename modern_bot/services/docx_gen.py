@@ -16,22 +16,26 @@ from modern_bot.database.db import load_user_data
 logger = logging.getLogger(__name__)
 
 def replace_placeholders_in_document(doc: Document, placeholders: Dict[str, str]) -> None:
-    def _replace_in_runs(runs):
-        for run in runs:
-            for key, value in placeholders.items():
-                if key in run.text:
-                    run.text = run.text.replace(key, value)
+    def _replace_in_paragraph(paragraph):
+        if not placeholders:
+            return
+        original = paragraph.text
+        updated = original
+        for key, value in placeholders.items():
+            if key in updated:
+                updated = updated.replace(key, value)
+        if updated != original:
+            # Reset paragraph text to ensure placeholders split across runs are replaced
+            paragraph.text = updated
 
     for paragraph in doc.paragraphs:
-        if paragraph.runs:
-            _replace_in_runs(paragraph.runs)
+        _replace_in_paragraph(paragraph)
 
     for table in doc.tables:
         for row in table.rows:
             for cell in row.cells:
                 for paragraph in cell.paragraphs:
-                    if paragraph.runs:
-                        _replace_in_runs(paragraph.runs)
+                    _replace_in_paragraph(paragraph)
 
 def add_borders_to_table(table: Any) -> None:
     for row in table.rows:

@@ -61,8 +61,15 @@ async def web_app_entry(update: Update, context: CallbackContext) -> int:
         TEMP_PHOTOS_DIR.mkdir(parents=True, exist_ok=True)
         
         items = data.get('items', [])
-        
-        async with httpx.AsyncClient() as client:
+        if len(items) > MAX_PHOTOS:
+            logger.warning("Received %s items, trimming to MAX_PHOTOS=%s", len(items), MAX_PHOTOS)
+            items = items[:MAX_PHOTOS]
+
+        max_photo_bytes = MAX_PHOTO_SIZE_MB * 1024 * 1024
+        http_timeout = httpx.Timeout(10.0)
+        http_limits = httpx.Limits(max_connections=4, max_keepalive_connections=2)
+
+        async with httpx.AsyncClient(timeout=http_timeout, limits=http_limits) as client:
             for item in items:
                 photo_url = item.get('photo_url')
                 description = item.get('description')
@@ -70,22 +77,34 @@ async def web_app_entry(update: Update, context: CallbackContext) -> int:
                 
                 if photo_url:
                     try:
-                        # Download photo
                         response = await client.get(photo_url)
-                        if response.status_code == 200:
-                            unique_name = generate_unique_filename()
-                            file_path = TEMP_PHOTOS_DIR / unique_name
-                            
-                            with open(file_path, 'wb') as f:
-                                f.write(response.content)
-                                
-                            db_data['photo_desc'].append({
-                                'photo': str(file_path),
-                                'description': description,
-                                'evaluation': evaluation
-                            })
-                        else:
+                        content_type = response.headers.get("Content-Type", "")
+                        content_length = response.headers.get("Content-Length")
+
+                        if response.status_code != 200:
                             logger.error(f"Failed to download photo from {photo_url}: {response.status_code}")
+                            continue
+                        if not content_type.startswith("image/"):
+                            logger.error(f"Invalid content type for {photo_url}: {content_type}")
+                            continue
+                        if content_length and int(content_length) > max_photo_bytes:
+                            logger.error(f"Photo too large (header) {photo_url}: {content_length} bytes")
+                            continue
+                        if len(response.content) > max_photo_bytes:
+                            logger.error(f"Photo too large (body) {photo_url}: {len(response.content)} bytes")
+                            continue
+
+                        unique_name = generate_unique_filename()
+                        file_path = TEMP_PHOTOS_DIR / unique_name
+
+                        with open(file_path, 'wb') as f:
+                            f.write(response.content)
+                            
+                        db_data['photo_desc'].append({
+                            'photo': str(file_path),
+                            'description': description,
+                            'evaluation': evaluation
+                        })
                     except Exception as e:
                         logger.error(f"Error downloading photo: {e}")
                 else:

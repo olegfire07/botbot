@@ -13,6 +13,13 @@ BOT_TOKEN_ENV_VAR = "BOT_TOKEN"
 # Admin IDs
 ADMIN_IDS = [2064900, 636601018]  # Super admins
 
+# --- API SETTINGS ---
+API_ENABLED: bool = os.getenv("API_ENABLED", "true").lower() == "true"
+API_PORT: int = int(os.getenv("API_PORT", "8080"))
+API_BIND_HOST: str = os.getenv("API_BIND_HOST", "127.0.0.1")
+API_AUTH_TOKEN: str = os.getenv("API_AUTH_TOKEN", "").strip()
+API_MAX_REQUEST_SIZE_MB: int = int(os.getenv("API_MAX_REQUEST_SIZE_MB", "2"))
+
 def load_bot_token():
     """
     Loads the bot token from environment variables.

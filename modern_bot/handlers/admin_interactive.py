@@ -1,6 +1,8 @@
+import asyncio
 import logging
 from telegram import Update, ForceReply
 from telegram.ext import CallbackContext
+from telegram.error import RetryAfter, TimedOut, NetworkError, TelegramError
 from modern_bot.handlers.admin import is_admin, admin_ids, save_admin_ids
 from modern_bot.handlers.common import safe_reply
 from modern_bot.handlers.user_management import add_user_by_id, remove_user_by_id, get_all_users
@@ -159,19 +161,35 @@ async def handle_admin_reply(update: Update, context: CallbackContext):
         users = await get_all_users()
         success_count = 0
         fail_count = 0
-        
+
+        async def send_with_backoff(chat_id: int) -> bool:
+            for attempt in range(3):
+                try:
+                    await context.bot.send_message(
+                        chat_id=chat_id,
+                        text=f"📢 <b>Рассылка от администрации:</b>\n\n{text}",
+                        parse_mode="HTML"
+                    )
+                    return True
+                except RetryAfter as e:
+                    await asyncio.sleep(getattr(e, "retry_after", 1) + 0.5)
+                except (TimedOut, NetworkError):
+                    await asyncio.sleep(2 ** attempt)
+                except TelegramError as e:
+                    logger.error(f"Failed to send broadcast to {chat_id}: {e}")
+                    return False
+                except Exception as e:
+                    logger.error(f"Unexpected error sending broadcast to {chat_id}: {e}")
+                    return False
+            return False
+
         for user in users:
-            try:
-                await context.bot.send_message(
-                    chat_id=user['user_id'],
-                    text=f"📢 <b>Рассылка от администрации:</b>\n\n{text}",
-                    parse_mode="HTML"
-                )
+            if await send_with_backoff(user['user_id']):
                 success_count += 1
-            except Exception as e:
-                logger.error(f"Failed to send broadcast to {user['user_id']}: {e}")
+            else:
                 fail_count += 1
-        
+            await asyncio.sleep(0.05)  # throttle to reduce flood risks
+
         await safe_reply(
             update,
             f"✅ Рассылка завершена!\n\n"
@@ -179,4 +197,3 @@ async def handle_admin_reply(update: Update, context: CallbackContext):
             f"Ошибок: {fail_count}"
         )
         context.user_data.pop('admin_action', None)
-

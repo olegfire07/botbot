@@ -100,4 +100,6 @@ async def create_archive_zip(paths: List[Path], filename_prefix: str) -> Path:
                 zf.write(path, arcname=path.name)
         return zip_path
 
-    return await asyncio.to_thread(_create_zip)
+    result = await asyncio.to_thread(_create_zip)
+    logger.info("Archive created: %s (items=%s)", result, len(paths))
+    return result

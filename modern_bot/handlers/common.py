@@ -95,14 +95,23 @@ async def process_network_recovery(bot, min_interval: float = NETWORK_RECOVERY_I
                 pass
 
 async def safe_reply(update: Update, text: str, retries: int = 3, base_delay: float = 2.0, **kwargs):
-    chat_id = update.effective_chat.id
+    """
+    Safe reply that also works for callback queries (effective_message) and falls back to bot.send_message.
+    """
+    chat_id = update.effective_chat.id if update.effective_chat else None
+    target_message = update.effective_message
     kwargs_copy = dict(kwargs)
     last_error: Optional[Exception] = None
     last_recoverable = False
 
     for attempt in range(retries):
         try:
-            return await update.message.reply_text(text, **kwargs)
+            if target_message:
+                return await target_message.reply_text(text, **kwargs)
+            if chat_id is not None:
+                return await update.get_bot().send_message(chat_id=chat_id, text=text, **kwargs)
+            last_error = RuntimeError("No chat to reply to")
+            break
         except RetryAfter as error:
             last_error = error
             last_recoverable = True
@@ -118,7 +127,7 @@ async def safe_reply(update: Update, text: str, retries: int = 3, base_delay: fl
             last_recoverable = False
             break
 
-    if last_recoverable:
+    if last_recoverable and chat_id is not None:
         await mark_network_issue(chat_id, text, kwargs_copy)
         await process_network_recovery(update.get_bot())
 

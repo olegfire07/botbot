@@ -22,24 +22,63 @@ async def history_handler(update: Update, context: CallbackContext) -> None:
 
 async def send_month_archive(update: Update, context: CallbackContext, month_text: str, region: str = None) -> None:
     """Helper to send month archive."""
+    # Направляем уведомления и файл инициатору, плюс дублируем в сообщение панели, если это callback.
+    chat_id = update.effective_user.id if update.effective_user else (update.effective_chat.id if update.effective_chat else None)
+    query = getattr(update, "callback_query", None)
+
+    async def notify(text: str, alert: bool = False):
+        # 1) Всплывающее уведомление на кнопке
+        if query:
+            try:
+                await query.answer(text if alert else None, show_alert=alert)
+            except Exception:
+                pass
+        # 2) Ответ в чате (reply или send_message)
+        sent = await safe_reply(update, text)
+        if not sent and chat_id:
+            try:
+                await context.bot.send_message(chat_id=chat_id, text=text)
+            except Exception:
+                pass
+
     bounds = get_month_bounds(month_text)
     if not bounds:
-        await safe_reply(update, "Неверный формат даты.")
+        await notify("Неверный формат даты.")
         return
 
     start, end = bounds
     paths = await get_archive_paths(start, end, region)
     if not paths:
-        await safe_reply(update, f"Архивы за {month_text} не найдены.")
+        await notify(f"Архивы за {month_text} не найдены.", alert=True)
         return
 
-    await safe_reply(update, "⏳ Формирую архив...")
-    zip_path = await create_archive_zip(paths, f"archive_{month_text}")
+    await notify(f"⏳ Формирую архив за {month_text} ({len(paths)} файлов)...")
     try:
-        await send_document_from_path(context.bot, update.effective_chat.id, zip_path, caption=f"Архив {month_text}")
+        filename_prefix = f"archive_{month_text}" + (f"_{region}" if region else "")
+        zip_path = await create_archive_zip(paths, filename_prefix)
+    except Exception as e:
+        await notify(f"❌ Не удалось сформировать архив: {e}")
+        return
+
+    if not chat_id:
+        await notify("❌ Не удалось определить чат для отправки архива.")
+        return
+
+    try:
+        await send_document_from_path(
+            context.bot,
+            chat_id,
+            zip_path,
+            caption=f"📦 Архив {month_text}" + (f" ({region})" if region else "")
+        )
+    except Exception as e:
+        await notify(f"❌ Ошибка отправки архива: {e}")
     finally:
-        if zip_path.exists():
-            zip_path.unlink()
+        try:
+            if zip_path.exists():
+                zip_path.unlink()
+        except Exception:
+            pass
 
 async def download_month_handler(update: Update, context: CallbackContext) -> None:
     if not is_admin(update.effective_user.id):

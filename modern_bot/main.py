@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from telegram import Update
+from telegram import Update, BotCommand, BotCommandScopeDefault, BotCommandScopeChat
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from modern_bot.config import load_bot_token
 from modern_bot.database.db import init_db, close_db
@@ -11,7 +11,6 @@ from modern_bot.handlers.help import help_handler
 from modern_bot.handlers.admin import (
     add_admin_handler, broadcast_handler, load_admin_ids
 )
-from modern_bot.config import load_bot_token, MAIN_GROUP_CHAT_ID
 from modern_bot.handlers.reports import (
     history_handler, download_month_handler, stats_handler, stats_period_handler
 )
@@ -45,9 +44,47 @@ async def track_user_middleware(update, context):
 
 async def post_init(application: Application):
     """
-    Post initialization hook to start the API server.
+    Post initialization hook to prepare dependencies and start the API server.
+    Keeps DB and API on the same event loop that the bot uses.
     """
+    await init_db()
+    await configure_bot_commands(application.bot)
     await start_api_server(application.bot)
+
+
+async def configure_bot_commands(bot):
+    """
+    Configure Telegram menu commands for users and admins separately.
+    """
+    default_commands = [
+        BotCommand("start", "Запустить бота"),
+        BotCommand("help", "Помощь"),
+        BotCommand("start_chat", "Диалоговый режим"),
+    ]
+    try:
+        await bot.set_my_commands(default_commands, scope=BotCommandScopeDefault())
+    except Exception as e:
+        logger.warning(f"Failed to set default commands: {e}")
+
+    # Admin-specific commands visible only in admin chats
+    try:
+        from modern_bot.handlers.admin import admin_ids
+        admin_commands = default_commands + [
+            BotCommand("admin", "Админ-панель"),
+            BotCommand("history", "История"),
+            BotCommand("download_month", "Архив за месяц"),
+            BotCommand("stats", "Статистика"),
+            BotCommand("stats_period", "Статистика за период"),
+            BotCommand("add_user", "Добавить пользователя"),
+            BotCommand("remove_user", "Удалить пользователя"),
+            BotCommand("add_admin", "Добавить админа"),
+            BotCommand("remove_admin", "Удалить админа"),
+            BotCommand("broadcast", "Рассылка"),
+        ]
+        for admin_id in admin_ids:
+            await bot.set_my_commands(admin_commands, scope=BotCommandScopeChat(chat_id=admin_id))
+    except Exception as e:
+        logger.warning(f"Failed to set admin commands: {e}")
 
 def main():
     # Load config
@@ -56,10 +93,6 @@ def main():
 
     # Build Application
     application = Application.builder().token(token).post_init(post_init).post_shutdown(close_db).build()
-
-    # Init DB
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(init_db())
 
     # Jobs
     job_queue = application.job_queue
