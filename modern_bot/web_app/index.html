@@ -1130,12 +1130,46 @@
             }
             if (regionInput) regionInput.addEventListener('change', checkFirstSectionCompletion);
 
+            // Setup automatic validation clearing
+            setupInputValidationClearing();
+
             // Haptic feedback setup
             setupHapticFeedback();
 
             // Configure native MainButton
             setupMainButton();
         });
+
+        // Automatically clear invalid state when user starts typing/filling fields
+        function setupInputValidationClearing() {
+            const allInputs = form.querySelectorAll('input, select, textarea');
+
+            allInputs.forEach(input => {
+                // Clear invalid state on input
+                input.addEventListener('input', function () {
+                    this.classList.remove('invalid');
+                    // Also check if field is now valid and remove browser's native invalid state
+                    if (this.validity.valid) {
+                        this.setCustomValidity('');
+                    }
+                });
+
+                // Clear invalid state on change (for selects and file inputs)
+                input.addEventListener('change', function () {
+                    this.classList.remove('invalid');
+                    if (this.validity.valid) {
+                        this.setCustomValidity('');
+                    }
+                });
+
+                // Clear invalid state on focus
+                input.addEventListener('focus', function () {
+                    if (this.classList.contains('invalid')) {
+                        this.classList.remove('invalid');
+                    }
+                });
+            });
+        }
 
         function setupMainButton() {
             tg.MainButton.setParams({
@@ -1469,36 +1503,60 @@
         // --- Form Submission & Preview ---
         function showPreview() {
             haptic('medium');
+
+            // Check form validity and mark invalid fields
             if (!form.checkValidity()) {
-                form.reportValidity();
+                const invalidInputs = form.querySelectorAll(':invalid');
+                invalidInputs.forEach(input => {
+                    input.classList.add('invalid');
+                });
+
+                // Show toast instead of blocking alert
+                showToast('Пожалуйста, заполните все обязательные поля', 'error');
+
+                // Scroll to first invalid input
+                if (invalidInputs.length > 0) {
+                    invalidInputs[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    setTimeout(() => invalidInputs[0].focus(), 300);
+                }
                 return;
             }
 
             // Validate Ticket
             const ticketVal = ticketInput.value.replace(/\D/g, '');
             if (ticketVal.length !== 11) {
-                tg.showAlert("Номер билета должен содержать ровно 11 цифр.");
+                showToast('Номер билета должен содержать ровно 11 цифр', 'error');
                 ticketInput.focus();
                 ticketInput.classList.add('invalid');
-                setTimeout(() => ticketInput.classList.remove('invalid'), 500);
                 return;
             }
 
             // Check photos
             let allPhotosSelected = true;
+            const missingPhotoCards = [];
+
             document.querySelectorAll('.item-card').forEach(div => {
                 const input = div.querySelector('.file-input');
                 if (!input.files || !input.files[0]) {
                     allPhotosSelected = false;
+                    missingPhotoCards.push(div);
                     const container = div.querySelector('.photo-preview-container');
                     container.style.borderColor = 'var(--danger-color)';
+                    container.classList.add('invalid');
                     haptic('error');
-                    setTimeout(() => container.style.borderColor = 'rgba(0, 0, 0, 0.1)', 2000);
+                    setTimeout(() => {
+                        container.style.borderColor = '';
+                        container.classList.remove('invalid');
+                    }, 2000);
                 }
             });
 
             if (!allPhotosSelected) {
-                tg.showAlert("Пожалуйста, выберите фото для всех предметов!");
+                showToast(`Пожалуйста, выберите фото для всех предметов (${missingPhotoCards.length})`, 'error');
+                // Scroll to first missing photo
+                if (missingPhotoCards.length > 0) {
+                    missingPhotoCards[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
                 return;
             }
 
