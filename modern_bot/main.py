@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from modern_bot.config import load_bot_token
 from modern_bot.database.db import init_db, close_db
@@ -29,6 +30,19 @@ async def network_recovery_job(context):
 async def error_handler(update, context):
     logger.error(f"Update {update} caused error {context.error}", exc_info=context.error)
 
+async def track_user_middleware(update, context):
+    """Automatically track all users who interact with the bot."""
+    if update.effective_user:
+        from modern_bot.handlers.user_management import add_user
+        user = update.effective_user
+        await add_user(
+            user_id=user.id,
+            username=user.username,
+            first_name=user.first_name,
+            last_name=user.last_name
+        )
+
+
 async def post_init(application: Application):
     """
     Post initialization hook to start the API server.
@@ -52,6 +66,10 @@ def main():
     job_queue.run_repeating(clean_temp_files_job, interval=3600, first=60)
     job_queue.run_repeating(network_recovery_job, interval=60, first=60)
 
+    # Middleware
+    from telegram.ext import TypeHandler
+    application.add_handler(TypeHandler(Update, track_user_middleware), group=-1)
+
     # Handlers
     application.add_handler(CommandHandler("start", start_handler))
     application.add_handler(CommandHandler("help", help_handler))
@@ -70,6 +88,12 @@ def main():
     # Admin
     application.add_handler(CommandHandler("add_admin", add_admin_handler))
     application.add_handler(CommandHandler("broadcast", broadcast_handler))
+    
+    # User Management
+    from modern_bot.handlers.user_commands import add_user_command, remove_user_command, remove_admin_command
+    application.add_handler(CommandHandler("add_user", add_user_command))
+    application.add_handler(CommandHandler("remove_user", remove_user_command))
+    application.add_handler(CommandHandler("remove_admin", remove_admin_command))
     
     # Reports
     application.add_handler(CommandHandler("history", history_handler))

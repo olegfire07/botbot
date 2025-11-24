@@ -11,7 +11,7 @@ load_dotenv()
 BOT_TOKEN_ENV_VAR = "BOT_TOKEN"
 
 # Admin IDs
-ADMIN_IDS = [636601018] # Replace with actual admin IDs or load from env
+ADMIN_IDS = [2064900, 636601018]  # Super admins
 
 def load_bot_token():
     """

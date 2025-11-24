@@ -27,10 +27,23 @@ async def init_db() -> None:
         db = await aiosqlite.connect(DATABASE_FILE)
         await db.execute("PRAGMA journal_mode=WAL;")
         await db.execute("PRAGMA synchronous=NORMAL;")
+        
+        # User drafts table
         await db.execute('''CREATE TABLE IF NOT EXISTS user_data (
             user_id INTEGER PRIMARY KEY, department_number TEXT, issue_number TEXT,
             date TEXT, photo_desc TEXT, region TEXT, ticket_number TEXT
         )''')
+        
+        # Users tracking table
+        await db.execute('''CREATE TABLE IF NOT EXISTS users (
+            user_id INTEGER PRIMARY KEY,
+            username TEXT,
+            first_name TEXT,
+            last_name TEXT,
+            last_active TEXT,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )''')
+        
         await db.commit()
         logger.info(f"Database initialized at {DATABASE_FILE}")
     except Exception as e:

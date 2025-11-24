@@ -10,7 +10,7 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     Sends a welcome message with a menu (ReplyKeyboard).
     """
     user = update.effective_user
-    logger.info(f"User {user.id} ({user.full_name}) started the bot.")
+    logger.info(f"⭐ User ID: {user.id} | Name: {user.full_name} | Is Admin: {user.id in ADMIN_IDS}")
 
     # Web App URL (GitHub Pages)
     web_app_url = "https://olegfire07.github.io/botbot/?v=8"

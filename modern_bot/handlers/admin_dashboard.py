@@ -20,11 +20,14 @@ async def admin_dashboard_handler(update: Update, context: CallbackContext) -> N
             InlineKeyboardButton("📈 Аналитика", callback_data="admin_analytics")
         ],
         [
-            InlineKeyboardButton("📦 Архив за месяц", callback_data="admin_download_month"),
+            InlineKeyboardButton("📦 Архив", callback_data="admin_download_month"),
             InlineKeyboardButton("📋 История", callback_data="admin_history")
         ],
         [
-            InlineKeyboardButton("👥 Добавить админа", callback_data="admin_add_admin"),
+            InlineKeyboardButton("👥 Пользователи", callback_data="admin_users"),
+            InlineKeyboardButton("⚙️ Администраторы", callback_data="admin_admins")
+        ],
+        [
             InlineKeyboardButton("📢 Рассылка", callback_data="admin_broadcast")
         ],
         [
@@ -76,17 +79,18 @@ async def admin_callback_handler(update: Update, context: CallbackContext) -> No
         await show_download_menu(update, context)
     elif action == "admin_history":
         await show_history(update, context)
-    elif action == "admin_add_admin":
-        await query.edit_message_text(
-            "👥 Для добавления администратора используйте:\n"
-            "<code>/add_admin USER_ID</code>",
-            parse_mode="HTML"
-        )
+    elif action == "admin_users":
+        await show_users_menu(update, context)
+    elif action == "admin_admins":
+        await show_admins_menu(update, context)
     elif action == "admin_broadcast":
+        keyboard = [[InlineKeyboardButton("◀️ Назад", callback_data="admin_refresh")]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
             "📢 Для рассылки используйте:\n"
             "<code>/broadcast Ваше сообщение</code>",
-            parse_mode="HTML"
+            parse_mode="HTML",
+            reply_markup=reply_markup
         )
     elif action == "admin_dl_current":
         from datetime import datetime
@@ -207,7 +211,7 @@ async def show_history(update: Update, context: CallbackContext) -> None:
 def get_admin_callback_handler():
     """Return callback query handler for admin dashboard."""
     from telegram.ext import CallbackQueryHandler
-    return CallbackQueryHandler(handle_all_callbacks, pattern="^(admin_|analytics_)")
+    return CallbackQueryHandler(handle_all_callbacks, pattern="^(admin_|analytics_|users_|admins_)")
 
 async def handle_all_callbacks(update: Update, context: CallbackContext) -> None:
     """Route all admin and analytics callbacks."""
@@ -215,5 +219,130 @@ async def handle_all_callbacks(update: Update, context: CallbackContext) -> None
     
     if action.startswith("analytics_"):
         await analytics_callback_handler(update, context)
+    elif action.startswith("users_"):
+        await users_management_callback_handler(update, context)
+    elif action.startswith("admins_"):
+        await admins_management_callback_handler(update, context)
     elif action.startswith("admin_"):
         await admin_callback_handler(update, context)
+
+
+# User Management Section
+async def show_users_menu(update: Update, context: CallbackContext) -> None:
+    """Show users management menu."""
+    keyboard = [
+        [InlineKeyboardButton("➕ Добавить пользователя", callback_data="users_add")],
+        [InlineKeyboardButton("➖ Удалить пользователя", callback_data="users_remove")],
+        [InlineKeyboardButton("📋 Список пользователей", callback_data="users_list")],
+        [InlineKeyboardButton("◀️ Назад", callback_data="admin_refresh")]
+    ]
+    
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    await update.callback_query.edit_message_text(
+        "👥 <b>Управление пользователями</b>\n\n"
+        "Выберите действие:",
+        parse_mode="HTML",
+        reply_markup=reply_markup
+    )
+
+async def show_admins_menu(update: Update, context: CallbackContext) -> None:
+    """Show admins management menu."""
+    from modern_bot.handlers.admin import admin_ids
+    
+    admin_list = "\n".join([f"• <code>{aid}</code>" for aid in sorted(admin_ids)])
+    
+    keyboard = [
+        [InlineKeyboardButton("➕ Добавить админа", callback_data="admins_add")],
+        [InlineKeyboardButton("➖ Удалить админа", callback_data="admins_remove")],
+        [InlineKeyboardButton("🔄 Обновить список", callback_data="admins_refresh")],
+        [InlineKeyboardButton("◀️ Назад", callback_data="admin_refresh")]
+    ]
+    
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    text = (
+        f"⚙️ <b>Управление администраторами</b>\n\n"
+        f"<b>Текущие админы ({len(admin_ids)}):</b>\n{admin_list}\n\n"
+        f"Выберите действие:"
+    )
+    
+    await update.callback_query.edit_message_text(
+        text,
+        parse_mode="HTML",
+        reply_markup=reply_markup
+    )
+
+async def users_management_callback_handler(update: Update, context: CallbackContext) -> None:
+    """Handle users management callbacks."""
+    from modern_bot.handlers.user_management import list_users_handler
+    
+    query = update.callback_query
+    await query.answer()
+    
+    action = query.data
+    
+    if action == "users_list":
+        text = await list_users_handler(update, context)
+        keyboard = [[InlineKeyboardButton("◀️ Назад", callback_data="admin_users")]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text(text, parse_mode="HTML", reply_markup=reply_markup)
+    
+    elif action == "users_add":
+        keyboard = [[InlineKeyboardButton("◀️ Назад", callback_data="admin_users")]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text(
+            "➕ <b>Добавить пользователя</b>\n\n"
+            "Используйте команду:\n"
+            "<code>/add_user USER_ID</code>\n\n"
+            "Пример: <code>/add_user 123456789</code>",
+            parse_mode="HTML",
+            reply_markup=reply_markup
+        )
+    
+    elif action == "users_remove":
+        keyboard = [[InlineKeyboardButton("◀️ Назад", callback_data="admin_users")]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text(
+            "➖ <b>Удалить пользователя</b>\n\n"
+            "Используйте команду:\n"
+            "<code>/remove_user USER_ID</code>\n\n"
+            "Пример: <code>/remove_user 123456789</code>",
+            parse_mode="HTML",
+            reply_markup=reply_markup
+        )
+
+async def admins_management_callback_handler(update: Update, context: CallbackContext) -> None:
+    """Handle admins management callbacks."""
+    query = update.callback_query
+    await query.answer()
+    
+    action = query.data
+    
+    if action == "admins_refresh":
+        await show_admins_menu(update, context)
+    
+    elif action == "admins_add":
+        keyboard = [[InlineKeyboardButton("◀️ Назад", callback_data="admin_admins")]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text(
+            "➕ <b>Добавить администратора</b>\n\n"
+            "Используйте команду:\n"
+            "<code>/add_admin USER_ID</code>\n\n"
+            "Пример: <code>/add_admin 123456789</code>",
+            parse_mode="HTML",
+            reply_markup=reply_markup
+        )
+    
+    elif action == "admins_remove":
+        keyboard = [[InlineKeyboardButton("◀️ Назад", callback_data="admin_admins")]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text(
+            "➖ <b>Удалить администратора</b>\n\n"
+            "Используйте команду:\n"
+            "<code>/remove_admin USER_ID</code>\n\n"
+            "Пример: <code>/remove_admin 123456789</code>\n\n"
+            "⚠️ Нельзя удалить себя или супер-админов.",
+            parse_mode="HTML",
+            reply_markup=reply_markup
+        )
