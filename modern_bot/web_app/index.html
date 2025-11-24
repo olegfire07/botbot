@@ -1613,7 +1613,8 @@
 
             // DEBUG: Show what we detected
             const hasUser = !!(tg.initDataUnsafe && tg.initDataUnsafe.user);
-            tg.showAlert(`DEBUG: hasUser=${hasUser}, initDataUnsafe=${JSON.stringify(tg.initDataUnsafe)?.substring(0, 50)}`);
+            const hasInitData = !!(tg.initData && tg.initData.length > 0);
+            tg.showAlert(`DEBUG: hasUser=${hasUser}, hasInitData=${hasInitData}, initData.length=${tg.initData?.length || 0}`);
 
             const items = [];
             const cards = document.querySelectorAll('.item-card');
@@ -1691,11 +1692,15 @@
                 };
 
                 // Check if running in Telegram
-                // We check if initDataUnsafe is present and has user info
+                // Use initData (string) as primary check, initDataUnsafe as fallback
+                console.log('tg.initData:', tg.initData);
                 console.log('tg.initDataUnsafe:', tg.initDataUnsafe);
                 console.log('tg.initDataUnsafe.user:', tg.initDataUnsafe?.user);
 
-                if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                // Check if we have ANY Telegram data (initData string OR initDataUnsafe.user)
+                const isInTelegram = (tg.initData && tg.initData.length > 0) || (tg.initDataUnsafe && tg.initDataUnsafe.user);
+
+                if (isInTelegram) {
                     console.log('Using Telegram WebApp mode - sending via tg.sendData()');
                     tg.showAlert('Режим: Telegram WebApp. Отправка данных боту...');
                     btn.textContent = "Отправка...";
