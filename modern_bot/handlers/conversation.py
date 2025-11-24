@@ -1,8 +1,12 @@
+import logging
+import json
+import httpx
+from pathlib import Path
 from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove, InputMediaPhoto
 from telegram.ext import CallbackContext, ConversationHandler, CommandHandler, MessageHandler, filters
 from modern_bot.config import (
     PROGRESS_STEPS, TOTAL_STEPS, MAX_PHOTOS, MAX_PHOTO_SIZE_MB, 
-    PHOTO_REQUIREMENTS_MESSAGE, REGION_TOPICS, MAIN_GROUP_CHAT_ID
+    PHOTO_REQUIREMENTS_MESSAGE, REGION_TOPICS, MAIN_GROUP_CHAT_ID, TEMP_PHOTOS_DIR
 )
 from modern_bot.utils.validators import is_digit, is_valid_ticket_number, normalize_region_input
 from modern_bot.utils.files import generate_unique_filename, compress_image, is_image_too_large
@@ -12,10 +16,6 @@ from modern_bot.services.excel import update_excel
 from modern_bot.services.archive import archive_document
 from modern_bot.handlers.common import safe_reply, send_document_from_path
 from modern_bot.services.flow import finalize_conclusion
-from modern_bot.config import TEMP_PHOTOS_DIR
-import logging
-import json
-from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -23,13 +23,15 @@ logger = logging.getLogger(__name__)
  MORE_PHOTO, CONFIRMATION, TESTING, WEB_APP_PHOTO) = range(12)
 
 def format_progress(stage: str) -> str:
+    """Format the progress step string."""
     step = PROGRESS_STEPS.get(stage)
     return f"Шаг {step}/{TOTAL_STEPS}" if step else ""
 
 async def start_conversation(update: Update, context: CallbackContext) -> int:
-    user_id = update.message.from_user.id
-    await delete_user_data(user_id)
-    await save_user_data(user_id, {'photo_desc': []})
+    """Start the conversation flow."""
+    user = update.effective_user
+    await delete_user_data(user.id)
+    await save_user_data(user.id, {'photo_desc': []})
     
     await safe_reply(
         update,
@@ -39,7 +41,7 @@ async def start_conversation(update: Update, context: CallbackContext) -> int:
     return DEPARTMENT
 
 async def web_app_entry(update: Update, context: CallbackContext) -> int:
-    """Entry point for Web App data."""
+    """Handle data received from the Web App."""
     try:
         data = json.loads(update.effective_message.web_app_data.data)
         user_id = update.effective_user.id
@@ -59,7 +61,6 @@ async def web_app_entry(update: Update, context: CallbackContext) -> int:
         TEMP_PHOTOS_DIR.mkdir(parents=True, exist_ok=True)
         
         items = data.get('items', [])
-        import httpx
         
         async with httpx.AsyncClient() as client:
             for item in items:
@@ -104,6 +105,7 @@ async def web_app_entry(update: Update, context: CallbackContext) -> int:
         return ConversationHandler.END
 
 async def web_app_photo_handler(update: Update, context: CallbackContext) -> int:
+    """Handle photos uploaded via Web App (legacy flow)."""
     user_id = update.effective_user.id
     data = await load_user_data(user_id)
     
@@ -158,6 +160,7 @@ async def web_app_photo_handler(update: Update, context: CallbackContext) -> int
         return ConversationHandler.END
 
 async def get_department(update: Update, context: CallbackContext) -> int:
+    """Handle department number input."""
     if not is_digit(update.message.text):
         await safe_reply(update, "Только цифры, пожалуйста.")
         return DEPARTMENT
@@ -171,6 +174,7 @@ async def get_department(update: Update, context: CallbackContext) -> int:
     return ISSUE_NUMBER
 
 async def get_issue_number(update: Update, context: CallbackContext) -> int:
+    """Handle issue number input."""
     if not is_digit(update.message.text):
         await safe_reply(update, "Только цифры, пожалуйста.")
         return ISSUE_NUMBER
@@ -184,6 +188,7 @@ async def get_issue_number(update: Update, context: CallbackContext) -> int:
     return TICKET_NUMBER
 
 async def get_ticket_number(update: Update, context: CallbackContext) -> int:
+    """Handle ticket number input."""
     if not is_valid_ticket_number(update.message.text):
         await safe_reply(update, "Неверный формат номера билета.")
         return TICKET_NUMBER
@@ -197,6 +202,7 @@ async def get_ticket_number(update: Update, context: CallbackContext) -> int:
     return DATE
 
 async def get_date(update: Update, context: CallbackContext) -> int:
+    """Handle date input."""
     user_id = update.message.from_user.id
     data = await load_user_data(user_id)
     data['date'] = update.message.text
@@ -208,6 +214,7 @@ async def get_date(update: Update, context: CallbackContext) -> int:
     return REGION
 
 async def get_region(update: Update, context: CallbackContext) -> int:
+    """Handle region selection."""
     region = normalize_region_input(update.message.text)
     if not region:
         await safe_reply(update, "Пожалуйста, выберите корректный регион.")
@@ -226,6 +233,7 @@ async def get_region(update: Update, context: CallbackContext) -> int:
     return PHOTO
 
 async def photo_handler(update: Update, context: CallbackContext) -> int:
+    """Handle photo upload."""
     user_id = update.message.from_user.id
     photo_file = await update.message.photo[-1].get_file()
     
@@ -247,6 +255,7 @@ async def photo_handler(update: Update, context: CallbackContext) -> int:
     return DESCRIPTION
 
 async def description_handler(update: Update, context: CallbackContext) -> int:
+    """Handle item description input."""
     user_id = update.message.from_user.id
     data = await load_user_data(user_id)
     if data.get('photo_desc'):
@@ -257,6 +266,7 @@ async def description_handler(update: Update, context: CallbackContext) -> int:
     return EVALUATION
 
 async def evaluation_handler(update: Update, context: CallbackContext) -> int:
+    """Handle item evaluation (price) input."""
     if not is_digit(update.message.text):
         await safe_reply(update, "Только цифры.")
         return EVALUATION
@@ -272,6 +282,7 @@ async def evaluation_handler(update: Update, context: CallbackContext) -> int:
     return MORE_PHOTO
 
 async def more_photo_handler(update: Update, context: CallbackContext) -> int:
+    """Handle 'add more photos' decision."""
     if "да" in update.message.text.lower():
         await safe_reply(update, "Отправьте следующее фото.", reply_markup=ReplyKeyboardRemove())
         return PHOTO
@@ -281,6 +292,7 @@ async def more_photo_handler(update: Update, context: CallbackContext) -> int:
     return TESTING
 
 async def testing_handler(update: Update, context: CallbackContext) -> int:
+    """Handle final mode selection (Test/Final)."""
     user_id = update.message.from_user.id
     mode = update.message.text.lower()
     

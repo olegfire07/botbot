@@ -34,8 +34,20 @@ class AnalyticsService:
     
     @staticmethod
     async def get_top_users(limit: int = 10) -> List[Dict[str, Any]]:
-        """Get top users (Not available in Excel version)."""
-        return []
+        """Get top users by submission count."""
+        rows = await read_excel_data()
+        if not rows:
+            return []
+            
+        # User is index 8 (added recently)
+        # We need to be careful about rows created before this column existed
+        users = []
+        for row in rows:
+            if len(row) > 8 and row[8]:
+                users.append(str(row[8]))
+                
+        stats = Counter(users)
+        return [{"user": user, "count": count} for user, count in stats.most_common(limit)]
     
     @staticmethod
     async def get_daily_stats(days: int = 30) -> Dict[str, int]:

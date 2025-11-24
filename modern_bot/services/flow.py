@@ -62,6 +62,8 @@ async def finalize_conclusion(bot: Bot, user_id: int, user_name: str, data: Dict
                 logger.error(f"Failed to send to group: {e}")
                 # We don't stop here, we continue to archive
             
+            # Add user name to data for Excel tracking
+            data['user_name'] = user_name
             await update_excel(data)
             await archive_document(path, data)
             

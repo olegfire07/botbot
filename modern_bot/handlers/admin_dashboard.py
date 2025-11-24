@@ -213,20 +213,10 @@ async def show_download_menu(update: Update, context: CallbackContext) -> None:
 async def show_history(update: Update, context: CallbackContext) -> None:
     """Show history with back button."""
     from modern_bot.services.excel import read_excel_data
+    from modern_bot.utils.formatters import format_history_list
     
     records = await read_excel_data()
-    if not records:
-        text = "📜 <b>История</b>\n\nИстория пуста."
-    else:
-        text = "📜 <b>Последние 10 записей:</b>\n\n"
-        for r in records[-10:]:
-            ticket = r[0] if len(r) > 0 else "?"
-            num = r[1] if len(r) > 1 else "?"
-            dept = r[2] if len(r) > 2 else "?"
-            date = r[3] if len(r) > 3 else "?"
-            region = r[4] if len(r) > 4 else "?"
-            rating = r[7] if len(r) > 7 else "?"
-            text += f"• <b>Билет:</b> {ticket}, <b>№:</b> {num}\n  <b>Под:</b> {dept}, <b>Дата:</b> {date}\n  <b>Регион:</b> {region}, <b>Оценка:</b> {rating}\n\n"
+    text = format_history_list(records)
     
     keyboard = [[InlineKeyboardButton("◀️ Назад", callback_data="admin_refresh")]]
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -236,6 +226,8 @@ async def show_history(update: Update, context: CallbackContext) -> None:
         parse_mode="HTML",
         reply_markup=reply_markup
     )
+    
+
 
 
 def get_admin_callback_handler():

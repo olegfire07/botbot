@@ -63,7 +63,7 @@ PHOTO_REQUIREMENTS_MESSAGE = (
 
 EXCEL_HEADERS = [
     "Ticket Number", "Conclusion Number", "Department Number", 
-    "Date", "Region", "Item Number", "Description", "Evaluation"
+    "Date", "Region", "Item Number", "Description", "Evaluation", "User"
 ]
 
 # --- PROGRESS STEPS (Legacy Chat Flow) ---

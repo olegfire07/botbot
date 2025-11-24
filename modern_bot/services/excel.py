@@ -45,7 +45,8 @@ async def update_excel(data: Dict[str, Any]) -> None:
                 data.get("region", "Не указано"),
                 idx,
                 item.get("description", "Нет описания"),
-                item.get("evaluation", "Нет данных")
+                item.get("evaluation", "Нет данных"),
+                data.get("user_name", "Unknown")
             ]
             ws.append(row)
         wb.save(EXCEL_FILE)
