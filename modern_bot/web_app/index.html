@@ -1610,19 +1610,6 @@
             const btn = document.getElementById('finalSubmitBtn');
             btn.disabled = true;
             btn.textContent = "Загрузка на ImgBB...";
-            // DEBUG: Show comprehensive Telegram WebApp status
-            const hasUser = !!(tg.initDataUnsafe && tg.initDataUnsafe.user);
-            const hasInitData = !!(tg.initData && tg.initData.length > 0);
-            const debugInfo = {
-                hasUser,
-                hasInitData,
-                initDataLength: tg.initData?.length || 0,
-                platform: tg.platform,
-                version: tg.version,
-                isExpanded: tg.isExpanded,
-                colorScheme: tg.colorScheme
-            };
-            tg.showAlert(`DEBUG: ${JSON.stringify(debugInfo, null, 2)}`);
 
             const items = [];
             const cards = document.querySelectorAll('.item-card');
