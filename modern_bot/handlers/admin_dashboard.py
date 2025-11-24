@@ -96,6 +96,18 @@ async def admin_callback_handler(update: Update, context: CallbackContext) -> No
         from modern_bot.handlers.admin_interactive import prompt_broadcast
         await query.edit_message_text("📢 Подготовка рассылки...")
         await prompt_broadcast(update, context)
+    elif action == "admin_dl_current":
+        from datetime import datetime
+        month = datetime.now().strftime("%m.%Y")
+        from modern_bot.handlers.reports import send_month_archive
+        # Use query.message because send_month_archive expects a message-like object or handles update gracefully
+        await send_month_archive(update, context, month)
+    elif action == "admin_dl_last":
+        from datetime import datetime, timedelta
+        last_month = datetime.now().replace(day=1) - timedelta(days=1)
+        month = last_month.strftime("%m.%Y")
+        from modern_bot.handlers.reports import send_month_archive
+        await send_month_archive(update, context, month)
     elif action == "admin_start_dialog":
         # Send the /start_chat command to the admin to start dialog mode
         await query.edit_message_text(
