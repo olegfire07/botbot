@@ -161,6 +161,17 @@
             max-width: 100%;
         }
 
+        /* Hide spin buttons */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
         /* Fix for Select Icon Overlap */
         select {
             padding-right: 50px;
@@ -198,8 +209,10 @@
 
         input:focus+.input-icon,
         input:focus~.input-icon,
-        select:focus+.input-icon {
+        select:focus+.input-icon,
+        .input-wrapper input:focus+.input-icon {
             color: var(--primary-color);
+            opacity: 1;
         }
 
         .item-card {
@@ -269,11 +282,9 @@
 
         .item-title {
             font-weight: 700;
-            font-size: 16px;
+            font-size: 17px;
             color: var(--text-color);
-            background: rgba(0, 0, 0, 0.05);
-            padding: 6px 12px;
-            border-radius: 12px;
+            /* Removed background pill style for cleaner look */
             /* Mobile text handling */
             word-wrap: break-word;
             overflow-wrap: break-word;
@@ -391,7 +402,8 @@
             margin-top: 16px;
             border-radius: 16px;
             overflow: hidden;
-            background: rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+            background: rgba(0, 122, 255, 0.03);
             border: 2px dashed rgba(0, 0, 0, 0.1);
             position: relative;
             height: 200px;
@@ -713,6 +725,32 @@
             font-weight: 700;
             cursor: pointer;
             opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .info-icon:hover {
+            opacity: 1;
+        }
+
+        @keyframes skeleton-loading {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.06) 25%, rgba(0, 0, 0, 0.12) 50%, rgba(0, 0, 0, 0.06) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            border-radius: 6px;
+            display: inline-block;
+            height: 14px;
+            width: 140px;
+            vertical-align: middle;
         }
     </style>
 </head>
@@ -720,8 +758,8 @@
 <body>
     <h1 id="mainTitle" onclick="handleTitleClick()">Новое заключение</h1>
     <div id="statsCounter"
-        style="text-align: center; color: var(--secondary-text); font-size: 13px; margin-top: -10px; margin-bottom: 20px; opacity: 0.8; display: flex; align-items: center; justify-content: center; gap: 6px;">
-        <span id="statsText">📅 Загрузка статистики...</span>
+        style="text-align: center; color: var(--secondary-text); font-size: 13px; margin-top: -10px; margin-bottom: 20px; opacity: 0.8; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <span id="statsText"><span class="skeleton"></span></span>
         <span class="info-icon" onclick="showStatsInfo()">i</span>
     </div>
 
