@@ -61,6 +61,10 @@ def main():
     application.add_handler(MessageHandler(filters.Regex("^ℹ️ Помощь$"), help_handler))
     application.add_handler(MessageHandler(filters.Regex("^📂 Старый режим$"), old_mode_handler))
     
+    # WebApp Data Handler
+    from modern_bot.handlers.conversation import web_app_entry
+    application.add_handler(MessageHandler(filters.StatusUpdate.WEB_APP_DATA, web_app_entry))
+    
     # Legacy Conversation
     application.add_handler(get_conversation_handler())
     

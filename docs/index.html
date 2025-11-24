@@ -1447,39 +1447,92 @@
 
             const isTest = document.getElementById('mode-test').checked;
             const modeText = isTest ? "Черновик (Тест)" : "Оригинал (В группу)";
+            const modeExplanation = isTest
+                ? "Сообщение будет отправлено только вам для проверки."
+                : "Сообщение будет отправлено в рабочий чат. Изменить после отправки нельзя.";
 
             // Calculate total cost (remove spaces before parsing)
             let totalCost = 0;
+            const items = [];
             document.querySelectorAll('.item-card').forEach(div => {
                 const evalInput = div.querySelector('.eval');
+                const descInput = div.querySelector('.desc');
                 if (evalInput && evalInput.value) {
                     // Remove spaces and parse
                     const cleanValue = evalInput.value.replace(/\s/g, '');
-                    totalCost += parseInt(cleanValue) || 0;
+                    const price = parseInt(cleanValue) || 0;
+                    totalCost += price;
+                    items.push({
+                        desc: descInput.value,
+                        price: price
+                    });
                 }
             });
 
             // Get ticket value
             const ticketValue = document.getElementById('ticket').value;
 
+            // Build items list
+            let itemsList = '';
+            items.forEach((item, idx) => {
+                itemsList += `
+                    <div style="padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.05);">
+                        <div style="font-weight: 600; color: #000;">#${idx + 1} ${item.desc}</div>
+                        <div style="color: var(--secondary-text); font-size: 14px; margin-top: 2px;">${item.price.toLocaleString('ru-RU')} ₽</div>
+                    </div>
+                `;
+            });
+
             // Build preview with better structure
             const content = document.getElementById('previewContent');
             content.innerHTML = `
-                <div class="preview-row" style="background: ${isTest ? 'rgba(255,165,0,0.1)' : 'rgba(52,199,89,0.1)'}; padding: 12px; border-radius: 12px; margin-bottom: 16px;">
-                    <span class="preview-label">Режим:</span> 
-                    <div class="preview-value" style="color: ${isTest ? 'orange' : 'green'}; font-weight: 700;">${modeText}</div>
+                <!-- Mode Section -->
+                <div style="background: ${isTest ? 'rgba(255,165,0,0.15)' : 'rgba(52,199,89,0.15)'}; padding: 16px; border-radius: 16px; margin-bottom: 20px; border: 2px solid ${isTest ? 'rgba(255,165,0,0.3)' : 'rgba(52,199,89,0.3)'};">
+                    <div style="font-weight: 700; font-size: 15px; color: ${isTest ? '#FF8C00' : '#28a745'}; margin-bottom: 6px;">
+                        Режим: ${modeText}
+                    </div>
+                    <div style="font-size: 12px; color: var(--secondary-text); line-height: 1.4;">${modeExplanation}</div>
                 </div>
-                <div class="preview-row"><span class="preview-label">Подразделение:</span> <div class="preview-value">${document.getElementById('department').value}</div></div>
-                <div class="preview-row"><span class="preview-label">Заключение:</span> <div class="preview-value">${document.getElementById('issue').value}</div></div>
-                <div class="preview-row"><span class="preview-label">Билет:</span> <div class="preview-value" style="font-family: monospace; font-weight: 600;">${ticketValue}</div></div>
-                <div class="preview-row"><span class="preview-label">Дата:</span> <div class="preview-value">${document.getElementById('date').value}</div></div>
-                <div class="preview-row"><span class="preview-label">Регион:</span> <div class="preview-value">${document.getElementById('region').value}</div></div>
-                <div class="preview-row" style="border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 12px; margin-bottom: 12px;">
-                    <span class="preview-label">Предметов:</span> <div class="preview-value">${document.querySelectorAll('.item-card').length}</div>
+
+                <!--Main Data Section-->
+                <div style="margin-bottom: 16px;">
+                    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--secondary-text); margin-bottom: 12px;">Основные данные</div>
+                    <div style="display: grid; gap: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                            <span style="color: var(--secondary-text); font-size: 13px;">Подразделение:</span>
+                            <span style="color: #000; font-weight: 600; font-size: 15px;">${document.getElementById('department').value}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                            <span style="color: var(--secondary-text); font-size: 13px;">Регион:</span>
+                            <span style="color: #000; font-weight: 600; font-size: 15px;">${document.getElementById('region').value}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                            <span style="color: var(--secondary-text); font-size: 13px;">Дата:</span>
+                            <span style="color: #000; font-weight: 600; font-size: 15px;">${document.getElementById('date').value}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                            <span style="color: var(--secondary-text); font-size: 13px;">№ заключения:</span>
+                            <span style="color: #000; font-weight: 600; font-size: 15px;">${document.getElementById('issue').value}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                            <span style="color: var(--secondary-text); font-size: 13px;">№ билета:</span>
+                            <span style="color: #000; font-weight: 600; font-size: 15px; font-family: monospace;">${ticketValue}</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="preview-row" style="background: rgba(52,199,89,0.1); padding: 12px; border-radius: 12px;">
-                    <span class="preview-label" style="font-weight: 700; font-size: 15px;">💰 Общая сумма:</span> 
-                    <div class="preview-value" style="font-weight: 700; font-size: 20px; color: var(--success-color);">${totalCost.toLocaleString('ru-RU')} ₽</div>
+
+                <!--Items Section-- >
+                <div style="margin-bottom: 16px;">
+                    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--secondary-text); margin-bottom: 12px;">Предметы (${items.length})</div>
+                    ${itemsList}
+                </div>
+
+                <!--Total Section-- >
+                <div style="background: rgba(52,199,89,0.15); padding: 16px; border-radius: 16px; border: 2px solid rgba(52,199,89,0.3);">
+                    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                        <span style="font-weight: 700; font-size: 15px; color: #000;">💰 Общая сумма:</span>
+                        <span style="font-weight: 700; font-size: 22px; color: var(--success-color);">${totalCost.toLocaleString('ru-RU')} ₽</span>
+                    </div>
                 </div>
             `;
 
@@ -1636,8 +1689,11 @@
                 // Check if running in Telegram
                 // We check if initDataUnsafe is present and has user info
                 if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                    btn.textContent = "Отправка...";
                     tg.sendData(JSON.stringify(data));
                     haptic('success');
+                    // Close WebApp after sending data
+                    setTimeout(() => tg.close(), 100);
                 } else {
                     // Standalone Mode
                     if (!botUrl) {
