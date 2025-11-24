@@ -1144,39 +1144,35 @@
             const val = ticketInput.value.replace(/\D/g, '');
             ticketInput.value = val; // Enforce digits only
 
-            if (val.length === 11) {
-                ticketInput.classList.remove('invalid');
-                ticketInput.classList.add('valid');
-                if (ticketHint) {
+            const isValid = val.length === 11;
+
+            ticketInput.classList.toggle('valid', isValid);
+            ticketInput.classList.toggle('invalid', !isValid && val.length > 0);
+
+            if (ticketHint) {
+                if (isValid) {
                     ticketHint.textContent = "11 цифр, всё ок";
                     ticketHint.style.color = "var(--success-color)";
+                } else if (val.length > 0) {
+                    ticketHint.textContent = "Должно быть 11 цифр";
+                    ticketHint.style.color = "var(--danger-color)";
+                } else {
+                    ticketHint.textContent = "Ровно 11 цифр";
+                    ticketHint.style.color = "var(--secondary-text)";
                 }
-                if (ticketIcon) {
+            }
+
+            if (ticketIcon) {
+                if (isValid) {
                     ticketIcon.style.color = "var(--success-color)";
                     ticketIcon.innerHTML = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
-                }
-            } else {
-                ticketInput.classList.remove('valid');
-                if (val.length > 0 && val.length !== 11) {
-                    if (ticketHint) {
-                        ticketHint.textContent = "Должно быть 11 цифр";
-                        ticketHint.style.color = "var(--danger-color)";
-                    }
-                    if (ticketIcon) {
-                        ticketIcon.innerHTML = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H5z"></path></svg>';
-                        ticketIcon.style.color = "var(--secondary-text)";
-                    }
                 } else {
-                    if (ticketHint) {
-                        ticketHint.textContent = "Ровно 11 цифр";
-                        ticketHint.style.color = "var(--secondary-text)";
-                    }
-                    if (ticketIcon) {
-                        ticketIcon.style.color = "var(--secondary-text)";
-                    }
+                    ticketIcon.style.color = val.length > 0 ? "var(--danger-color)" : "var(--secondary-text)";
+                    ticketIcon.innerHTML = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H5z"></path></svg>';
                 }
             }
             updateProgress();
+            checkFirstSectionCompletion(); // Also check completion when ticket changes
         }
 
         function updateSubmitButton() {
