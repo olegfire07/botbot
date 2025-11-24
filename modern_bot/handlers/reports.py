@@ -7,7 +7,7 @@ from modern_bot.services.archive import get_archive_paths, create_archive_zip
 from modern_bot.utils.validators import get_month_bounds, match_region_name, parse_date_str
 
 async def history_handler(update: Update, context: CallbackContext) -> None:
-    if not is_admin(update.message.from_user.id):
+    if not is_admin(update.effective_user.id):
         await safe_reply(update, "Доступ запрещен.")
         return
     records = await read_excel_data()
@@ -42,7 +42,7 @@ async def send_month_archive(update: Update, context: CallbackContext, month_tex
             zip_path.unlink()
 
 async def download_month_handler(update: Update, context: CallbackContext) -> None:
-    if not is_admin(update.message.from_user.id):
+    if not is_admin(update.effective_user.id):
         await safe_reply(update, "Доступ запрещен.")
         return
 
@@ -62,7 +62,7 @@ async def download_month_handler(update: Update, context: CallbackContext) -> No
     await send_month_archive(update, context, month_text, region)
 
 async def stats_handler(update: Update, context: CallbackContext) -> None:
-    if not is_admin(update.message.from_user.id):
+    if not is_admin(update.effective_user.id):
         return
 
     records = await read_excel_data()
@@ -81,7 +81,7 @@ async def stats_handler(update: Update, context: CallbackContext) -> None:
     await safe_reply(update, text)
 
 async def stats_period_handler(update: Update, context: CallbackContext) -> None:
-    if not is_admin(update.message.from_user.id):
+    if not is_admin(update.effective_user.id):
         return
         
     if len(context.args) < 2:

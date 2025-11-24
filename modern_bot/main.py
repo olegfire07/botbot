@@ -5,11 +5,10 @@ from modern_bot.config import load_bot_token
 from modern_bot.database.db import init_db, close_db
 from modern_bot.utils.files import clean_temp_files
 from modern_bot.handlers.common import process_network_recovery
-from modern_bot.handlers.commands import start_handler, old_mode_handler
+from modern_bot.handlers.commands import start_handler
 from modern_bot.handlers.help import help_handler
-from modern_bot.handlers.conversation import get_conversation_handler
 from modern_bot.handlers.admin import (
-    add_admin_handler, broadcast_handler, help_admin_handler, load_admin_ids
+    add_admin_handler, broadcast_handler, load_admin_ids
 )
 from modern_bot.config import load_bot_token, MAIN_GROUP_CHAT_ID
 from modern_bot.handlers.reports import (
@@ -68,13 +67,9 @@ def main():
     from modern_bot.handlers.conversation import web_app_entry
     application.add_handler(MessageHandler(filters.StatusUpdate.WEB_APP_DATA, web_app_entry))
     
-    # Legacy Conversation
-    application.add_handler(get_conversation_handler())
-    
     # Admin
     application.add_handler(CommandHandler("add_admin", add_admin_handler))
     application.add_handler(CommandHandler("broadcast", broadcast_handler))
-    application.add_handler(CommandHandler("help_admin", help_admin_handler))
     
     # Reports
     application.add_handler(CommandHandler("history", history_handler))
@@ -86,9 +81,6 @@ def main():
     from modern_bot.handlers.admin_dashboard import admin_dashboard_handler, get_admin_callback_handler
     application.add_handler(CommandHandler("admin", admin_dashboard_handler))
     application.add_handler(get_admin_callback_handler())
-    
-    # Photo upload (for Web App flow) - simplified for now
-    # application.add_handler(MessageHandler(filters.PHOTO, photo_upload_handler))
     
     application.add_error_handler(error_handler)
 
