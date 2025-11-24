@@ -106,6 +106,13 @@ def main():
     application.add_handler(CommandHandler("admin", admin_dashboard_handler))
     application.add_handler(get_admin_callback_handler())
     
+    # Interactive Admin Reply Handler
+    from modern_bot.handlers.admin_interactive import handle_admin_reply
+    application.add_handler(MessageHandler(
+        filters.REPLY & filters.TEXT & ~filters.COMMAND,
+        handle_admin_reply
+    ), group=10)
+    
     application.add_error_handler(error_handler)
 
     logger.info("Bot started.")

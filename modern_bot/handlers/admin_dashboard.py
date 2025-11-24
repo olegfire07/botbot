@@ -84,14 +84,9 @@ async def admin_callback_handler(update: Update, context: CallbackContext) -> No
     elif action == "admin_admins":
         await show_admins_menu(update, context)
     elif action == "admin_broadcast":
-        keyboard = [[InlineKeyboardButton("◀️ Назад", callback_data="admin_refresh")]]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text(
-            "📢 Для рассылки используйте:\n"
-            "<code>/broadcast Ваше сообщение</code>",
-            parse_mode="HTML",
-            reply_markup=reply_markup
-        )
+        from modern_bot.handlers.admin_interactive import prompt_broadcast
+        await query.edit_message_text("📢 Подготовка рассылки...")
+        await prompt_broadcast(update, context)
     elif action == "admin_dl_current":
         from datetime import datetime
         month = datetime.now().strftime("%m.%Y")
@@ -289,28 +284,14 @@ async def users_management_callback_handler(update: Update, context: CallbackCon
         await query.edit_message_text(text, parse_mode="HTML", reply_markup=reply_markup)
     
     elif action == "users_add":
-        keyboard = [[InlineKeyboardButton("◀️ Назад", callback_data="admin_users")]]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text(
-            "➕ <b>Добавить пользователя</b>\n\n"
-            "Используйте команду:\n"
-            "<code>/add_user USER_ID</code>\n\n"
-            "Пример: <code>/add_user 123456789</code>",
-            parse_mode="HTML",
-            reply_markup=reply_markup
-        )
+        from modern_bot.handlers.admin_interactive import prompt_add_user
+        await query.edit_message_text("➕ Добавление пользователя...")
+        await prompt_add_user(update, context)
     
     elif action == "users_remove":
-        keyboard = [[InlineKeyboardButton("◀️ Назад", callback_data="admin_users")]]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text(
-            "➖ <b>Удалить пользователя</b>\n\n"
-            "Используйте команду:\n"
-            "<code>/remove_user USER_ID</code>\n\n"
-            "Пример: <code>/remove_user 123456789</code>",
-            parse_mode="HTML",
-            reply_markup=reply_markup
-        )
+        from modern_bot.handlers.admin_interactive import prompt_remove_user
+        await query.edit_message_text("➖ Удаление пользователя...")
+        await prompt_remove_user(update, context)
 
 async def admins_management_callback_handler(update: Update, context: CallbackContext) -> None:
     """Handle admins management callbacks."""
@@ -323,26 +304,11 @@ async def admins_management_callback_handler(update: Update, context: CallbackCo
         await show_admins_menu(update, context)
     
     elif action == "admins_add":
-        keyboard = [[InlineKeyboardButton("◀️ Назад", callback_data="admin_admins")]]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text(
-            "➕ <b>Добавить администратора</b>\n\n"
-            "Используйте команду:\n"
-            "<code>/add_admin USER_ID</code>\n\n"
-            "Пример: <code>/add_admin 123456789</code>",
-            parse_mode="HTML",
-            reply_markup=reply_markup
-        )
+        from modern_bot.handlers.admin_interactive import prompt_add_admin
+        await query.edit_message_text("➕ Добавление администратора...")
+        await prompt_add_admin(update, context)
     
     elif action == "admins_remove":
-        keyboard = [[InlineKeyboardButton("◀️ Назад", callback_data="admin_admins")]]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text(
-            "➖ <b>Удалить администратора</b>\n\n"
-            "Используйте команду:\n"
-            "<code>/remove_admin USER_ID</code>\n\n"
-            "Пример: <code>/remove_admin 123456789</code>\n\n"
-            "⚠️ Нельзя удалить себя или супер-админов.",
-            parse_mode="HTML",
-            reply_markup=reply_markup
-        )
+        from modern_bot.handlers.admin_interactive import prompt_remove_admin
+        await query.edit_message_text("➖ Удаление администратора...")
+        await prompt_remove_admin(update, context)
