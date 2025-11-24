@@ -13,7 +13,7 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info(f"User {user.id} ({user.full_name}) started the bot.")
 
     # Web App URL (GitHub Pages)
-    web_app_url = "https://olegfire07.github.io/botbot/?v=5"
+    web_app_url = "https://olegfire07.github.io/botbot/?v=6"
 
     # Menu Buttons
     keyboard = [
