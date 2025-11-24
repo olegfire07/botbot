@@ -1688,7 +1688,11 @@
 
                 // Check if running in Telegram
                 // We check if initDataUnsafe is present and has user info
+                console.log('tg.initDataUnsafe:', tg.initDataUnsafe);
+                console.log('tg.initDataUnsafe.user:', tg.initDataUnsafe?.user);
+
                 if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                    console.log('Using Telegram WebApp mode - sending via tg.sendData()');
                     btn.textContent = "Отправка...";
                     tg.sendData(JSON.stringify(data));
                     haptic('success');
