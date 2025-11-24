@@ -88,6 +88,17 @@ async def admin_callback_handler(update: Update, context: CallbackContext) -> No
             "<code>/broadcast Ваше сообщение</code>",
             parse_mode="HTML"
         )
+    elif action == "admin_dl_current":
+        from datetime import datetime
+        month = datetime.now().strftime("%m.%Y")
+        from modern_bot.handlers.reports import send_month_archive
+        await send_month_archive(update.callback_query.message, context, month)
+    elif action == "admin_dl_last":
+        from datetime import datetime, timedelta
+        last_month = datetime.now().replace(day=1) - timedelta(days=1)
+        month = last_month.strftime("%m.%Y")
+        from modern_bot.handlers.reports import send_month_archive
+        await send_month_archive(update.callback_query.message, context, month)
 
 async def show_stats(update: Update, context: CallbackContext) -> None:
     """Show quick stats with back button."""
@@ -158,16 +169,22 @@ async def analytics_callback_handler(update: Update, context: CallbackContext) -
 
 async def show_download_menu(update: Update, context: CallbackContext) -> None:
     """Show download month instruction."""
-    keyboard = [[InlineKeyboardButton("◀️ Назад", callback_data="admin_refresh")]]
+    from datetime import datetime, timedelta
+    now = datetime.now()
+    curr_month = now.strftime("%m.%Y")
+    last_month = (now.replace(day=1) - timedelta(days=1)).strftime("%m.%Y")
+
+    keyboard = [
+        [InlineKeyboardButton(f"📅 Текущий ({curr_month})", callback_data="admin_dl_current")],
+        [InlineKeyboardButton(f"📅 Прошлый ({last_month})", callback_data="admin_dl_last")],
+        [InlineKeyboardButton("◀️ Назад", callback_data="admin_refresh")]
+    ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     await update.callback_query.edit_message_text(
         "📦 <b>Скачать архив за месяц</b>\n\n"
-        "Используйте команду:\n"
-        "<code>/download_month ММ.ГГГГ [Регион]</code>\n\n"
-        "Пример:\n"
-        "<code>/download_month 11.2025</code>\n"
-        "<code>/download_month 11.2025 Москва</code>",
+        "Выберите месяц или используйте команду:\n"
+        "<code>/download_month ММ.ГГГГ [Регион]</code>",
         parse_mode="HTML",
         reply_markup=reply_markup
     )

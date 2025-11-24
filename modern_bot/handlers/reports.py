@@ -20,6 +20,27 @@ async def history_handler(update: Update, context: CallbackContext) -> None:
     ])
     await safe_reply(update, history_text)
 
+async def send_month_archive(update: Update, context: CallbackContext, month_text: str, region: str = None) -> None:
+    """Helper to send month archive."""
+    bounds = get_month_bounds(month_text)
+    if not bounds:
+        await safe_reply(update, "Неверный формат даты.")
+        return
+
+    start, end = bounds
+    paths = await get_archive_paths(start, end, region)
+    if not paths:
+        await safe_reply(update, f"Архивы за {month_text} не найдены.")
+        return
+
+    await safe_reply(update, "⏳ Формирую архив...")
+    zip_path = await create_archive_zip(paths, f"archive_{month_text}")
+    try:
+        await send_document_from_path(context.bot, update.effective_chat.id, zip_path, caption=f"Архив {month_text}")
+    finally:
+        if zip_path.exists():
+            zip_path.unlink()
+
 async def download_month_handler(update: Update, context: CallbackContext) -> None:
     if not is_admin(update.message.from_user.id):
         await safe_reply(update, "Доступ запрещен.")
@@ -30,11 +51,6 @@ async def download_month_handler(update: Update, context: CallbackContext) -> No
         return
 
     month_text = context.args[0]
-    bounds = get_month_bounds(month_text)
-    if not bounds:
-        await safe_reply(update, "Неверный формат. Используйте ММ.ГГГГ")
-        return
-
     region = None
     if len(context.args) > 1:
         candidate = " ".join(context.args[1:])
@@ -43,18 +59,7 @@ async def download_month_handler(update: Update, context: CallbackContext) -> No
             await safe_reply(update, "Неизвестный регион.")
             return
 
-    start, end = bounds
-    paths = await get_archive_paths(start, end, region)
-    if not paths:
-        await safe_reply(update, "Архивы не найдены.")
-        return
-
-    zip_path = await create_archive_zip(paths, f"archive_{month_text}")
-    try:
-        await send_document_from_path(context.bot, update.effective_chat.id, zip_path, caption=f"Архив {month_text}")
-    finally:
-        if zip_path.exists():
-            zip_path.unlink()
+    await send_month_archive(update, context, month_text, region)
 
 async def stats_handler(update: Update, context: CallbackContext) -> None:
     if not is_admin(update.message.from_user.id):
