@@ -81,9 +81,9 @@ def main():
     from modern_bot.handlers.admin_dashboard import admin_dashboard_handler
     application.add_handler(MessageHandler(filters.Regex("^⚙️ Админ-панель$"), admin_dashboard_handler))
     
-    # WebApp Data Handler
-    from modern_bot.handlers.conversation import web_app_entry
-    application.add_handler(MessageHandler(filters.StatusUpdate.WEB_APP_DATA, web_app_entry))
+    # Conversation Handler (Dialog Mode)
+    from modern_bot.handlers.conversation import get_conversation_handler
+    application.add_handler(get_conversation_handler())
     
     # Admin
     application.add_handler(CommandHandler("add_admin", add_admin_handler))

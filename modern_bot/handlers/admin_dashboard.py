@@ -19,7 +19,10 @@ async def admin_dashboard_handler(update: Update, context: CallbackContext) -> N
     
     keyboard = [
         [
-            InlineKeyboardButton("📝 Создать заключение", web_app=WebAppInfo(url=web_app_url))
+            InlineKeyboardButton("📝 Создать заключение (Web App)", web_app=WebAppInfo(url=web_app_url))
+        ],
+        [
+            InlineKeyboardButton("💬 Создать через диалог", callback_data="admin_start_dialog")
         ],
         [
             InlineKeyboardButton("📊 Статистика", callback_data="admin_stats"),
@@ -93,17 +96,19 @@ async def admin_callback_handler(update: Update, context: CallbackContext) -> No
         from modern_bot.handlers.admin_interactive import prompt_broadcast
         await query.edit_message_text("📢 Подготовка рассылки...")
         await prompt_broadcast(update, context)
-    elif action == "admin_dl_current":
-        from datetime import datetime
-        month = datetime.now().strftime("%m.%Y")
-        from modern_bot.handlers.reports import send_month_archive
-        await send_month_archive(update.callback_query.message, context, month)
-    elif action == "admin_dl_last":
-        from datetime import datetime, timedelta
-        last_month = datetime.now().replace(day=1) - timedelta(days=1)
-        month = last_month.strftime("%m.%Y")
-        from modern_bot.handlers.reports import send_month_archive
-        await send_month_archive(update.callback_query.message, context, month)
+    elif action == "admin_start_dialog":
+        # Send the /start_chat command to the admin to start dialog mode
+        await query.edit_message_text(
+            "🗨️ Запускаем диалоговое создание заключения...",
+            parse_mode="HTML",
+        )
+        # Send the command as a message so the ConversationHandler picks it up
+        await context.bot.send_message(
+            chat_id=update.effective_user.id,
+            text="/start_chat"
+        )
+        # No further processing needed
+
 
 async def show_stats(update: Update, context: CallbackContext) -> None:
     """Show quick stats with back button."""
