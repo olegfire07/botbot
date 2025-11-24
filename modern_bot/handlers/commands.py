@@ -13,13 +13,17 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info(f"User {user.id} ({user.full_name}) started the bot.")
 
     # Web App URL (GitHub Pages)
-    web_app_url = "https://olegfire07.github.io/botbot/?v=7"
+    web_app_url = "https://olegfire07.github.io/botbot/?v=8"
 
-    # Menu Buttons
+    # Common Buttons
     keyboard = [
         [KeyboardButton("📝 Создать заключение", web_app=WebAppInfo(url=web_app_url))],
-        [KeyboardButton("ℹ️ Помощь"), KeyboardButton("📂 Старый режим")]
+        [KeyboardButton("ℹ️ Помощь")]
     ]
+
+    # Add Admin Button if user is admin
+    if user.id in ADMIN_IDS:
+        keyboard.append([KeyboardButton("⚙️ Админ-панель")])
     
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 

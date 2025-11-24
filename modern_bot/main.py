@@ -59,7 +59,10 @@ def main():
     
     # Menu Buttons Handlers
     application.add_handler(MessageHandler(filters.Regex("^ℹ️ Помощь$"), help_handler))
-    application.add_handler(MessageHandler(filters.Regex("^📂 Старый режим$"), old_mode_handler))
+    
+    # Admin Dashboard Button
+    from modern_bot.handlers.admin_dashboard import admin_dashboard_handler
+    application.add_handler(MessageHandler(filters.Regex("^⚙️ Админ-панель$"), admin_dashboard_handler))
     
     # WebApp Data Handler
     from modern_bot.handlers.conversation import web_app_entry
