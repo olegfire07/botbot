@@ -1085,6 +1085,7 @@
         const MAX_PHOTOS = 30;
         const MAX_PHOTO_SIZE_MB = 5;
         let itemCount = 0;
+        let validationClearingAttached = false;
 
         // --- DOM Elements ---
         const form = document.getElementById('mainForm');
@@ -1122,7 +1123,7 @@
             }
 
             // Setup Mode Change
-            modeRadios.forEach(radio => {
+            Array.from(modeRadios).forEach(radio => {
                 radio.addEventListener('change', updateSubmitButton);
             });
 
@@ -1162,6 +1163,9 @@
         // Automatically clear invalid state when user starts typing/filling fields
         // Automatically clear invalid state using event delegation (handles dynamic inputs too)
         function setupInputValidationClearing() {
+            if (validationClearingAttached || !form) return;
+            validationClearingAttached = true;
+
             // Use focusin instead of focus because focus doesn't bubble
             ['input', 'change', 'focusin'].forEach(eventType => {
                 form.addEventListener(eventType, (e) => {
@@ -1182,6 +1186,9 @@
                 });
             });
         }
+
+        // Attach immediately so fields clear errors even if later init fails
+        setupInputValidationClearing();
 
         function setupMainButton() {
             tg.MainButton.setParams({
