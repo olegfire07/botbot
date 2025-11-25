@@ -218,6 +218,19 @@
             animation: none !important;
         }
 
+        /* CRITICAL: Override .invalid class when user is editing - highest specificity */
+        input.user-editing.invalid,
+        select.user-editing.invalid,
+        textarea.user-editing.invalid,
+        input.user-editing:invalid,
+        select.user-editing:invalid,
+        textarea.user-editing:invalid {
+            border-color: rgba(0, 0, 0, 0.12) !important;
+            background: #fafafa !important;
+            animation: none !important;
+            box-shadow: none !important;
+        }
+
         input:focus,
         select:focus {
             outline: none;
