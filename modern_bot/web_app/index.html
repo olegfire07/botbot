@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -87,8 +87,8 @@
 
         .section {
             background: var(--card-bg);
-            backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
+            backdrop-filter: blur(30px);
             border-radius: var(--radius-lg);
             padding: 24px;
             margin-bottom: 24px;
@@ -155,8 +155,8 @@
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             color: var(--text-color);
             box-shadow: none;
-            appearance: none;
             -webkit-appearance: none;
+            appearance: none;
             /* Mobile fixes */
             box-sizing: border-box;
             max-width: 100%;
@@ -312,8 +312,8 @@
         /* Glass Button Style for Submit */
         .btn-primary {
             background: rgba(0, 122, 255, 0.85);
-            backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
             color: white;
             box-shadow: 0 8px 20px rgba(0, 122, 255, 0.25);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -532,6 +532,7 @@
             margin: 0;
             position: relative;
             z-index: 1;
+            -webkit-user-select: none;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
@@ -579,8 +580,8 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
             animation: fadeIn 0.3s;
         }
 
@@ -660,8 +661,8 @@
             right: 0;
             padding: 12px 20px;
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
             border-top: 1px solid rgba(0, 0, 0, 0.08);
             z-index: 100;
             box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
@@ -757,13 +758,25 @@
             width: 140px;
             vertical-align: middle;
         }
+
+        .stats-counter {
+            text-align: center;
+            color: var(--secondary-text);
+            font-size: 13px;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
     </style>
 </head>
 
 <body>
     <h1 id="mainTitle" onclick="handleTitleClick()">Новое заключение</h1>
-    <div id="statsCounter"
-        style="text-align: center; color: var(--secondary-text); font-size: 13px; margin-top: -10px; margin-bottom: 20px; opacity: 0.8; display: flex; align-items: center; justify-content: center; gap: 8px;">
+    <div id="statsCounter" class="stats-counter">
         <span id="statsText"><span class="skeleton"></span></span>
         <span class="info-icon" onclick="showStatsInfo()">i</span>
     </div>
@@ -823,7 +836,7 @@
             <div class="form-group">
                 <label>Дата</label>
                 <div class="input-wrapper">
-                    <input type="date" id="date" required max="">
+                    <input type="date" id="date" required max="" placeholder="Дата" title="Дата">
                     <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -837,7 +850,7 @@
             <div class="form-group">
                 <label>Регион</label>
                 <div class="input-wrapper">
-                    <select id="region" required>
+                    <select id="region" required aria-label="Регион">
                         <option value="" disabled selected>Выберите регион</option>
                         <option value="Санкт-Петербург">Санкт-Петербург</option>
                         <option value="Свердловская область">Свердловская область</option>
@@ -862,11 +875,10 @@
             </div>
         </div>
 
-        <div style="margin-bottom: 16px; padding: 0 8px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <h3 style="margin:0; font-size: 20px; font-weight: 700;">Предметы</h3>
-                <span id="itemCountBadge"
-                    style="background: var(--accent-color); padding: 4px 10px; border-radius: 12px; font-size: 13px; color: white; font-weight: 600;">1</span>
+        <div class="items-header">
+            <div class="flex-space">
+                <h3 class="section-title">Предметы</h3>
+                <span id="itemCountBadge" class="badge">1</span>
             </div>
             <div id="itemsList"></div>
             <button type="button" class="btn btn-secondary" onclick="addItem()">
@@ -875,7 +887,7 @@
         </div>
 
         <!-- Mode Toggle (Moved to Bottom) -->
-        <label style="margin-left: 4px; margin-bottom: 8px;">Режим отправки</label>
+        <label class="mode-label">Режим отправки</label>
         <div class="segmented-control">
             <input type="radio" name="mode" id="mode-final" value="final" checked>
             <label for="mode-final">Оригинал (В группу)</label>
@@ -890,7 +902,7 @@
             </button>
         </div>
 
-        <div style="text-align: center; margin-top: 20px; color: var(--secondary-text); font-size: 11px; opacity: 0.5;">
+        <div class="footer-note">
             Version 2.3 (Auto-Key) - 2025-11-24
         </div>
     </form>
@@ -898,11 +910,11 @@
     <!-- Preview Modal -->
     <div id="previewModal" class="modal">
         <div class="modal-content">
-            <h2 style="margin-top:0">Проверка данных</h2>
+            <h2 class="no-margin-top">Проверка данных</h2>
             <div id="previewContent"></div>
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <div class="flex-gap">
                 <button class="btn btn-secondary" onclick="closePreview()">Назад</button>
-                <button class="btn btn-primary" style="margin-top:0" onclick="submitForm()"
+                <button class="btn btn-primary btn-no-margin" onclick="submitForm()"
                     id="finalSubmitBtn">Отправить</button>
             </div>
         </div>
@@ -911,7 +923,7 @@
     <!-- Settings Modal -->
     <div id="settingsModal" class="modal">
         <div class="modal-content">
-            <h2 style="margin-top:0">Настройки</h2>
+            <h2 class="no-margin-top">Настройки</h2>
             <div class="form-group">
                 <label>ImgBB API Key</label>
                 <input type="text" id="apiKeyInput" placeholder="Введите ключ с api.imgbb.com">
@@ -923,7 +935,7 @@
                 <div class="hint-text">Оставьте пустым, если используете внутри Telegram</div>
             </div>
             <button class="btn btn-primary" onclick="saveSettings()">Сохранить</button>
-            <button class="btn btn-secondary" style="margin-top:10px"
+            <button class="btn btn-secondary btn-margin-10"
                 onclick="document.getElementById('settingsModal').style.display = 'none'">Закрыть</button>
         </div>
     </div>
