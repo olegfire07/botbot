@@ -199,6 +199,25 @@
             outline: none !important;
         }
 
+        /* Override :invalid styles when user is actively editing */
+        input.user-editing:invalid,
+        select.user-editing:invalid,
+        textarea.user-editing:invalid {
+            box-shadow: none !important;
+            border-color: rgba(0, 0, 0, 0.12) !important;
+            outline: none !important;
+            background: #fafafa !important;
+        }
+
+        /* Ensure .user-editing also removes .invalid styling */
+        input.user-editing,
+        select.user-editing,
+        textarea.user-editing {
+            border-color: rgba(0, 0, 0, 0.12) !important;
+            background: #fafafa !important;
+            animation: none !important;
+        }
+
         input:focus,
         select:focus {
             outline: none;
@@ -1173,6 +1192,9 @@
                     // Only process form elements
                     if (!['INPUT', 'SELECT', 'TEXTAREA'].includes(input.tagName)) return;
 
+                    // Add .user-editing class to override all invalid styles
+                    input.classList.add('user-editing');
+
                     // Clear invalid class
                     input.classList.remove('invalid');
                     input.setCustomValidity('');
@@ -1185,6 +1207,17 @@
                     }
                 });
             });
+
+            // Remove .user-editing on blur so validation can show again if needed
+            form.addEventListener('blur', (e) => {
+                const input = e.target;
+                if (!['INPUT', 'SELECT', 'TEXTAREA'].includes(input.tagName)) return;
+
+                // Only remove if field is now valid
+                if (input.validity.valid || input.value.trim() !== '') {
+                    input.classList.remove('user-editing');
+                }
+            }, true);
         }
 
         // Attach immediately so fields clear errors even if later init fails
