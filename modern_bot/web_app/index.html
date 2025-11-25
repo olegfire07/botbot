@@ -1154,6 +1154,31 @@
                 ticketInput.addEventListener('input', validateTicket);
             }
 
+            // Clear invalid class on input for all fields (mimicking ticketInput behavior)
+            if (departmentInput) {
+                departmentInput.addEventListener('input', function () {
+                    this.classList.remove('invalid');
+                });
+            }
+
+            if (document.getElementById('issue')) {
+                document.getElementById('issue').addEventListener('input', function () {
+                    this.classList.remove('invalid');
+                });
+            }
+
+            if (document.getElementById('date')) {
+                document.getElementById('date').addEventListener('change', function () {
+                    this.classList.remove('invalid');
+                });
+            }
+
+            if (document.getElementById('region')) {
+                document.getElementById('region').addEventListener('change', function () {
+                    this.classList.remove('invalid');
+                });
+            }
+
             // Setup Mode Change
             Array.from(modeRadios).forEach(radio => {
                 radio.addEventListener('change', updateSubmitButton);
@@ -1473,7 +1498,24 @@
             </div>
             `;
 
+
             itemsContainer.appendChild(itemDiv);
+
+            // Add event listeners to clear invalid class (mimicking ticket behavior)
+            const descInput = itemDiv.querySelector(`input[name="description_${itemCount}"]`);
+            const evalInput = itemDiv.querySelector(`input[name="evaluation_${itemCount}"]`);
+
+            if (descInput) {
+                descInput.addEventListener('input', function () {
+                    this.classList.remove('invalid');
+                });
+            }
+
+            if (evalInput) {
+                evalInput.addEventListener('input', function () {
+                    this.classList.remove('invalid');
+                });
+            }
 
             // Scroll to new item
             setTimeout(() => {
