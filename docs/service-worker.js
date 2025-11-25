@@ -1,5 +1,5 @@
 // Service Worker for offline support
-const CACHE_NAME = 'sklad-bot-v2.2';
+const CACHE_NAME = 'sklad-bot-v2.3';
 const urlsToCache = [
     '/',
     '/index.html'
