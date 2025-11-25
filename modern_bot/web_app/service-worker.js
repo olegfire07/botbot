@@ -1,7 +1,8 @@
 // Service Worker for offline support
 const VERSION = 'v2.3.1';
 const CACHE_NAME = `sklad-bot-${VERSION}`;
-const BASE_PATH = self.location.pathname.replace(/service-worker\.js$/, '');
+const swPath = self.location.pathname.replace(/service-worker\.js.*$/, '');
+const BASE_PATH = swPath.endsWith('/') ? swPath : `${swPath}/`;
 const urlsToCache = [
     BASE_PATH,
     `${BASE_PATH}index.html`

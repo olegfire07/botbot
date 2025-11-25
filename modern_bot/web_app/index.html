@@ -1263,7 +1263,9 @@
         // ============================================
         if ('serviceWorker' in navigator) {
             const swVersion = '2303';
-            navigator.serviceWorker.register(`./service-worker.js?v=${swVersion}`)
+            const basePath = location.pathname.endsWith('/') ? location.pathname : `${location.pathname}/`;
+            const swUrl = `${basePath}service-worker.js?v=${swVersion}`;
+            navigator.serviceWorker.register(swUrl)
                 .then(reg => console.log('Service Worker registered:', reg.scope))
                 .catch(err => console.error('Service Worker registration failed:', err));
         }
