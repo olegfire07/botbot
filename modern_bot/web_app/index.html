@@ -388,11 +388,11 @@
             }
         }
 
-        /* Validation Error - DISABLED to prevent persistent red highlighting */
+        /* Validation Error */
         .invalid {
-            /* border-color: var(--danger-color) !important; */
-            /* animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both; */
-            /* background: rgba(255, 59, 48, 0.05) !important; */
+            border-color: var(--danger-color) !important;
+            animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
+            background: rgba(255, 59, 48, 0.05) !important;
         }
 
         @keyframes shake {
@@ -857,7 +857,7 @@
             <div class="form-group">
                 <label>Подразделение</label>
                 <div class="input-wrapper">
-                    <input type="tel" id="department" placeholder="Например: 385" pattern="\d+">
+                    <input type="tel" id="department" placeholder="Например: 385" required pattern="\d+">
                     <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
@@ -868,7 +868,7 @@
             <div class="form-group">
                 <label>Номер заключения</label>
                 <div class="input-wrapper">
-                    <input type="tel" id="issue" placeholder="Например: 12" pattern="\d+">
+                    <input type="tel" id="issue" placeholder="Например: 12" required pattern="\d+">
                     <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -882,7 +882,7 @@
             <div class="form-group">
                 <label>Номер билета</label>
                 <div class="input-wrapper">
-                    <input type="tel" id="ticket" placeholder="03850006392" maxlength="11" inputmode="numeric"
+                    <input type="tel" id="ticket" placeholder="03850006392" required maxlength="11" inputmode="numeric"
                         pattern="[0-9]{11}">
                     <div class="error-message"></div>
                     <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -897,7 +897,7 @@
             <div class="form-group">
                 <label>Дата</label>
                 <div class="input-wrapper">
-                    <input type="date" id="date" max="">
+                    <input type="date" id="date" required max="">
                     <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -911,7 +911,7 @@
             <div class="form-group">
                 <label>Регион</label>
                 <div class="input-wrapper">
-                    <select id="region">
+                    <select id="region" required>
                         <option value="" disabled selected>Выберите регион</option>
                         <option value="Санкт-Петербург">Санкт-Петербург</option>
                         <option value="Свердловская область">Свердловская область</option>
@@ -1460,7 +1460,7 @@
                 <div class="form-group">
                     <label>Описание предмета</label>
                     <div class="input-wrapper">
-                        <input type="text" class="desc" name="description_${itemCount}" placeholder="Например: Кольцо, золото 585" oninput="updateItemSummary(${itemCount})">
+                        <input type="text" class="desc" name="description_${itemCount}" placeholder="Например: Кольцо, золото 585" required oninput="updateItemSummary(${itemCount})">
                             <div class="input-icon">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                             </div>
@@ -1470,7 +1470,7 @@
                 <div class="form-group">
                     <label>Оценка (руб.)</label>
                     <div class="input-wrapper">
-                        <input type="tel" class="eval" inputmode="numeric" name="evaluation_${itemCount}" placeholder="0" oninput="formatPrice(this); updateItemSummary(${itemCount}); calculateTotal();">
+                        <input type="tel" class="eval" inputmode="numeric" name="evaluation_${itemCount}" placeholder="0" required oninput="formatPrice(this); updateItemSummary(${itemCount}); calculateTotal();">
                             <div class="input-icon">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             </div>
@@ -1481,7 +1481,7 @@
                 <div class="form-group">
                     <label>Фото предмета</label>
                     <div class="photo-preview-container" onclick="document.getElementById('photo_${itemCount}').click()">
-                        <input type="file" id="photo_${itemCount}" class="file-input" name="photo_${itemCount}" accept="image/*" style="display: none" onchange="handlePhotoSelect(this, ${itemCount})">
+                        <input type="file" id="photo_${itemCount}" class="file-input" name="photo_${itemCount}" accept="image/*" style="display: none" onchange="handlePhotoSelect(this, ${itemCount})" required>
                             <div class="photo-preview" id="preview_${itemCount}"></div>
                             <div class="upload-label" id="label_${itemCount}">
                                 <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
