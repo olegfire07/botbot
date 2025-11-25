@@ -1202,6 +1202,16 @@
             validationClearingAttached = true;
             console.log('✅ Validation clearing setup started');
 
+            // Show visual confirmation that function loaded
+            setTimeout(() => {
+                const toast = document.getElementById('toast');
+                if (toast) {
+                    toast.textContent = '✅ Валидация настроена';
+                    toast.className = 'toast show success';
+                    setTimeout(() => toast.classList.remove('show'), 2000);
+                }
+            }, 1000);
+
             // Use focusin instead of focus because focus doesn't bubble
             ['input', 'change', 'focusin'].forEach(eventType => {
                 form.addEventListener(eventType, (e) => {
@@ -1211,8 +1221,15 @@
 
                     console.log(`🔧 Clearing validation for ${input.tagName} (${input.name || input.id})`, {
                         hadInvalid: input.classList.contains('invalid'),
-                        value: input.value
+                        value: input.value,
+                        wasRequired: input.hasAttribute('required')
                     });
+
+                    // CRITICAL: Temporarily remove required attribute to force browser to re-evaluate
+                    if (input.hasAttribute('required')) {
+                        input.setAttribute('data-was-required', 'true');
+                        input.removeAttribute('required');
+                    }
 
                     // Add .user-editing class to override all invalid styles
                     input.classList.add('user-editing');
@@ -1227,15 +1244,24 @@
                         wrapper.classList.remove('invalid');
                         wrapper.style.borderColor = '';
                     }
+
+                    // Force repaint
+                    input.offsetHeight;
                 });
             });
 
-            // Remove .user-editing on blur so validation can show again if needed
+            // Restore required attribute on blur
             form.addEventListener('blur', (e) => {
                 const input = e.target;
                 if (!['INPUT', 'SELECT', 'TEXTAREA'].includes(input.tagName)) return;
 
-                // Only remove if field is now valid
+                // Restore required if it was there before
+                if (input.getAttribute('data-was-required') === 'true') {
+                    input.setAttribute('required', '');
+                    input.removeAttribute('data-was-required');
+                }
+
+                // Only remove .user-editing if field is now valid
                 if (input.validity.valid || input.value.trim() !== '') {
                     input.classList.remove('user-editing');
                     console.log(`✅ Removed .user-editing from ${input.name || input.id} (valid: ${input.validity.valid})`);
