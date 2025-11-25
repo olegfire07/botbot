@@ -771,6 +771,94 @@
             justify-content: center;
             gap: 8px;
         }
+
+        /* Preview Modal Styles */
+        .preview-card {
+            background: rgba(255, 255, 255, 0.5);
+            padding: 16px;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .preview-card.mode-test {
+            background: rgba(255, 165, 0, 0.15);
+            border-color: rgba(255, 165, 0, 0.3);
+        }
+
+        .preview-card.mode-final {
+            background: rgba(52, 199, 89, 0.15);
+            border-color: rgba(52, 199, 89, 0.3);
+        }
+
+        .preview-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--secondary-text);
+            margin-bottom: 12px;
+        }
+
+        .preview-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+        }
+
+        .preview-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .preview-label {
+            color: var(--secondary-text);
+            font-size: 13px;
+        }
+
+        .preview-value {
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 15px;
+            text-align: right;
+        }
+
+        .preview-item {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .preview-item:last-child {
+            border-bottom: none;
+        }
+
+        .preview-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #f0f0f0;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .preview-item-content {
+            flex: 1;
+        }
+
+        .preview-item-desc {
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 14px;
+        }
+
+        .preview-item-price {
+            color: var(--secondary-text);
+            font-size: 13px;
+            margin-top: 2px;
+        }
     </style>
 </head>
 
@@ -1491,63 +1579,75 @@
             // Build items list
             let itemsList = '';
             items.forEach((item, idx) => {
+                // Get image preview URL
+                const fileInput = document.querySelectorAll('.item-card')[idx].querySelector('.file-input');
+                const file = fileInput.files[0];
+                const imgUrl = file ? URL.createObjectURL(file) : '';
+                const imgTag = imgUrl ? `<img src="${imgUrl}" class="preview-image">` : '<div class="preview-image"></div>';
+
                 itemsList += `
-                    <div style="padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.05);">
-                        <div style="font-weight: 600; color: #000;">#${idx + 1} ${item.desc}</div>
-                        <div style="color: var(--secondary-text); font-size: 14px; margin-top: 2px;">${item.price.toLocaleString('ru-RU')} ₽</div>
+                    <div class="preview-item">
+                        ${imgTag}
+                        <div class="preview-item-content">
+                            <div class="preview-item-desc">#${idx + 1} ${item.desc}</div>
+                            <div class="preview-item-price">${item.price.toLocaleString('ru-RU')} ₽</div>
+                        </div>
                     </div>
                 `;
             });
+
+            // Format Date
+            const dateValue = document.getElementById('date').value;
+            const dateParts = dateValue.split('-');
+            const formattedDate = dateParts.length === 3 ? `${dateParts[2]}.${dateParts[1]}.${dateParts[0]}` : dateValue;
 
             // Build preview with better structure
             const content = document.getElementById('previewContent');
             content.innerHTML = `
                 <!-- Mode Section -->
-                <div style="background: ${isTest ? 'rgba(255,165,0,0.15)' : 'rgba(52,199,89,0.15)'}; padding: 16px; border-radius: 16px; margin-bottom: 20px; border: 2px solid ${isTest ? 'rgba(255,165,0,0.3)' : 'rgba(52,199,89,0.3)'};">
-                    <div style="font-weight: 700; font-size: 15px; color: ${isTest ? '#FF8C00' : '#28a745'}; margin-bottom: 6px;">
+                <div class="preview-card ${isTest ? 'mode-test' : 'mode-final'}">
+                    <div class="preview-section-title" style="color: ${isTest ? '#FF8C00' : '#28a745'}; margin-bottom: 6px;">
                         Режим: ${modeText}
                     </div>
                     <div style="font-size: 12px; color: var(--secondary-text); line-height: 1.4;">${modeExplanation}</div>
                 </div>
 
                 <!--Main Data Section-->
-                <div style="margin-bottom: 16px;">
-                    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--secondary-text); margin-bottom: 12px;">Основные данные</div>
-                    <div style="display: grid; gap: 10px;">
-                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                            <span style="color: var(--secondary-text); font-size: 13px;">Подразделение:</span>
-                            <span style="color: #000; font-weight: 600; font-size: 15px;">${document.getElementById('department').value}</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                            <span style="color: var(--secondary-text); font-size: 13px;">Регион:</span>
-                            <span style="color: #000; font-weight: 600; font-size: 15px;">${document.getElementById('region').value}</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                            <span style="color: var(--secondary-text); font-size: 13px;">Дата:</span>
-                            <span style="color: #000; font-weight: 600; font-size: 15px;">${document.getElementById('date').value}</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                            <span style="color: var(--secondary-text); font-size: 13px;">№ заключения:</span>
-                            <span style="color: #000; font-weight: 600; font-size: 15px;">${document.getElementById('issue').value}</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                            <span style="color: var(--secondary-text); font-size: 13px;">№ билета:</span>
-                            <span style="color: #000; font-weight: 600; font-size: 15px; font-family: monospace;">${ticketValue}</span>
-                        </div>
+                <div class="preview-card">
+                    <div class="preview-section-title">Основные данные</div>
+                    <div class="preview-row">
+                        <span class="preview-label">Подразделение:</span>
+                        <span class="preview-value">${document.getElementById('department').value}</span>
+                    </div>
+                    <div class="preview-row">
+                        <span class="preview-label">Регион:</span>
+                        <span class="preview-value">${document.getElementById('region').value}</span>
+                    </div>
+                    <div class="preview-row">
+                        <span class="preview-label">Дата:</span>
+                        <span class="preview-value">${formattedDate}</span>
+                    </div>
+                    <div class="preview-row">
+                        <span class="preview-label">№ заключения:</span>
+                        <span class="preview-value">${document.getElementById('issue').value}</span>
+                    </div>
+                    <div class="preview-row">
+                        <span class="preview-label">№ билета:</span>
+                        <span class="preview-value" style="font-family: 'Inter', sans-serif;">${ticketValue}</span>
                     </div>
                 </div>
 
-                <!--Items Section-- >
-                <div style="margin-bottom: 16px;">
-                    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--secondary-text); margin-bottom: 12px;">Предметы (${items.length})</div>
+                <!--Items Section-->
+                <div class="preview-card">
+                    <div class="preview-section-title">Предметы (${items.length})</div>
                     ${itemsList}
                 </div>
 
-                <!--Total Section-- >
-                <div style="background: rgba(52,199,89,0.15); padding: 16px; border-radius: 16px; border: 2px solid rgba(52,199,89,0.3);">
-                    <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                        <span style="font-weight: 700; font-size: 15px; color: #000;">💰 Общая сумма:</span>
-                        <span style="font-weight: 700; font-size: 22px; color: var(--success-color);">${totalCost.toLocaleString('ru-RU')} ₽</span>
+                <!--Total Section-->
+                <div class="preview-card mode-final" style="margin-bottom: 0;">
+                    <div class="preview-row">
+                        <span class="preview-value" style="color: #000;">💰 Общая сумма:</span>
+                        <span class="preview-value" style="color: var(--success-color); font-size: 20px;">${totalCost.toLocaleString('ru-RU')} ₽</span>
                     </div>
                 </div>
             `;
