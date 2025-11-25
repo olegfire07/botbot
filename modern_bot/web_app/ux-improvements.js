@@ -20,6 +20,15 @@ function validateField(field, errorMessage) {
     }
 }
 
+function clearFieldError(field) {
+    field.classList.remove('input-error');
+
+    const errorDiv = field.nextElementSibling;
+    if (errorDiv && errorDiv.classList.contains('error-message')) {
+        errorDiv.classList.remove('show');
+    }
+}
+
 // Validate ticket number (exactly 11 digits)
 function validateTicket(input) {
     const value = input.value.replace(/\D/g, '');
@@ -105,6 +114,15 @@ function validateForm() {
 
     return isValid;
 }
+
+// Remove highlight while the user is editing the field
+document.addEventListener('input', function (e) {
+    const target = e.target;
+    if (!(target instanceof HTMLElement)) return;
+    if (target.matches('input, select, textarea')) {
+        clearFieldError(target);
+    }
+}, true);
 
 // Initialize improvements
 document.addEventListener('DOMContentLoaded', function () {
