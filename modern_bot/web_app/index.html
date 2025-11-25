@@ -180,12 +180,23 @@
             /* Increased right padding */
         }
 
-        /* Disable browser's native invalid styling */
+        /* Disable browser's native invalid styling - AGGRESSIVE */
         input:invalid,
         select:invalid,
         textarea:invalid {
-            box-shadow: none;
-            border-color: inherit;
+            box-shadow: none !important;
+            border-color: rgba(0, 0, 0, 0.12) !important;
+            outline: none !important;
+            background: #fafafa !important;
+        }
+
+        /* Force remove any red styling from invalid inputs */
+        input:required:invalid,
+        select:required:invalid,
+        textarea:required:invalid {
+            box-shadow: none !important;
+            border-color: rgba(0, 0, 0, 0.12) !important;
+            outline: none !important;
         }
 
         input:focus,
@@ -1149,39 +1160,25 @@
         });
 
         // Automatically clear invalid state when user starts typing/filling fields
+        // Automatically clear invalid state using event delegation (handles dynamic inputs too)
         function setupInputValidationClearing() {
-            const allInputs = form.querySelectorAll('input, select, textarea');
+            // Use focusin instead of focus because focus doesn't bubble
+            ['input', 'change', 'focusin'].forEach(eventType => {
+                form.addEventListener(eventType, (e) => {
+                    const input = e.target;
+                    // Only process form elements
+                    if (!['INPUT', 'SELECT', 'TEXTAREA'].includes(input.tagName)) return;
 
-            allInputs.forEach(input => {
-                // Clear invalid state on input (immediately on typing)
-                input.addEventListener('input', function () {
-                    this.classList.remove('invalid');
-                    this.setCustomValidity('');
+                    // Clear invalid class
+                    input.classList.remove('invalid');
+                    input.setCustomValidity('');
 
                     // Remove any parent container invalid states
-                    const wrapper = this.closest('.input-wrapper, .photo-preview-container');
+                    const wrapper = input.closest('.input-wrapper, .photo-preview-container');
                     if (wrapper) {
                         wrapper.classList.remove('invalid');
                         wrapper.style.borderColor = '';
                     }
-                });
-
-                // Clear invalid state on change (for selects and file inputs)
-                input.addEventListener('change', function () {
-                    this.classList.remove('invalid');
-                    this.setCustomValidity('');
-
-                    const wrapper = this.closest('.input-wrapper, .photo-preview-container');
-                    if (wrapper) {
-                        wrapper.classList.remove('invalid');
-                        wrapper.style.borderColor = '';
-                    }
-                });
-
-                // Clear invalid state on focus
-                input.addEventListener('focus', function () {
-                    this.classList.remove('invalid');
-                    this.setCustomValidity('');
                 });
             });
         }
