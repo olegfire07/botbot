@@ -1262,7 +1262,8 @@
         // SERVICE WORKER & OFFLINE MODE
         // ============================================
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/service-worker.js')
+            const swVersion = '2303';
+            navigator.serviceWorker.register(`./service-worker.js?v=${swVersion}`)
                 .then(reg => console.log('Service Worker registered:', reg.scope))
                 .catch(err => console.error('Service Worker registration failed:', err));
         }
