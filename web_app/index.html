@@ -1296,6 +1296,36 @@
                 </div>
             `;
             document.getElementById('itemsList').appendChild(div);
+
+            // --- ADDED EVENT LISTENERS ---
+            // 1. Input Mask for Evaluation
+            const evalInput = div.querySelector('.eval');
+            evalInput.addEventListener('input', function (e) {
+                let val = e.target.value.replace(/\D/g, '');
+                e.target.value = formatNumberWithSpaces(val);
+            });
+
+            // 2. File Input Trigger
+            const fileInput = div.querySelector('.file-input');
+            const previewContainer = div.querySelector('.photo-preview-container');
+
+            // Handle click on container to trigger file input
+            previewContainer.onclick = (e) => {
+                // Prevent double trigger if clicking on label/input directly
+                if (e.target !== fileInput && !e.target.closest('.upload-label')) {
+                    fileInput.click();
+                }
+            };
+
+            // 3. Validation clearing
+            const inputs = div.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    input.classList.remove('invalid');
+                    const errorMsg = input.closest('.form-group')?.querySelector('.error-message');
+                    if (errorMsg) errorMsg.classList.remove('show');
+                });
+            });
         }
 
         function removeItem(btn, event) {
@@ -1612,6 +1642,35 @@
         document.querySelectorAll('.btn').forEach(btn => {
             btn.addEventListener('click', () => haptic('medium'));
         });
+
+        function validateForm() {
+            let isValid = true;
+            const requiredIds = ['department', 'issue', 'ticket', 'date', 'region'];
+
+            requiredIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el.value.trim()) {
+                    isValid = false;
+                    el.classList.add('invalid');
+                    // Add listener to remove invalid class on input
+                    el.addEventListener('input', () => el.classList.remove('invalid'), { once: true });
+                } else {
+                    // Specific checks
+                    if (id === 'ticket' && el.value.length !== 11) {
+                        isValid = false;
+                        el.classList.add('invalid');
+                        el.addEventListener('input', () => el.classList.remove('invalid'), { once: true });
+                    }
+                }
+            });
+
+            if (!isValid) {
+                tg.showAlert("Пожалуйста, заполните все обязательные поля корректно.");
+                haptic('error');
+            }
+
+            return isValid;
+        }
 
         function showPreview() {
             haptic('medium');
