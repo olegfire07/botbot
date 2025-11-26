@@ -9,6 +9,8 @@
     <meta http-equiv="Expires" content="0">
     <title>Создание заключения</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -697,6 +699,30 @@
             font-size: 13px;
             margin-top: 8px;
             color: var(--secondary-text);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(0, 122, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .photo-preview-container.loading {
+            pointer-events: none;
+            opacity: 0.7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .upload-status.success {
@@ -1581,7 +1607,7 @@
         // SERVICE WORKER & OFFLINE MODE
         // ============================================
         if ('serviceWorker' in navigator) {
-            const swVersion = '2308'; // UX Fixes (Modal, Zoom, Mask, Region)
+            const swVersion = '2309'; // Image Compression Feature
             const basePath = location.pathname.endsWith('/') ? location.pathname : `${location.pathname}/`;
             const swUrl = `${basePath}service-worker.js?v=${swVersion}`;
             navigator.serviceWorker.register(swUrl)
@@ -1678,60 +1704,93 @@
             const file = input.files[0];
             if (!file) return;
 
-            // Check file size (5MB limit)
-            const maxSize = 5 * 1024 * 1024; // 5 MB
-            if (file.size > maxSize) {
-                const sizeMB = (file.size / 1024 / 1024).toFixed(1);
-                tg.showAlert(`⚠️ Фото слишком большое (${sizeMB} МБ). Максимум 5 МБ. Оно будет сжато.`);
-                haptic('warning');
-            }
-
             const container = input.closest('.item-card');
-            const preview = container.querySelector('.photo-preview');
+            const previewContainer = container.querySelector('.photo-preview-container');
             const btnText = container.querySelector('.btn-text');
             const status = container.querySelector('.upload-status');
 
-            // Preview
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                preview.style.backgroundImage = `url(${e.target.result})`;
-                preview.style.display = 'block';
-
-                // Lightbox Trigger
-                preview.onclick = (evt) => {
-                    evt.stopPropagation();
-                    openLightbox(e.target.result);
-                };
-            };
-            reader.readAsDataURL(file);
-
-            // 🚀 BACKGROUND UPLOAD - Start immediately
-            btnText.textContent = "Загрузка...";
-            status.textContent = "⏳ Загрузка на сервер...";
+            // Show loading state
+            previewContainer.innerHTML = '<div class="spinner"></div>';
+            previewContainer.classList.add('loading');
+            btnText.textContent = "Сжатие...";
+            status.textContent = "⏳ Обработка фото...";
             status.className = "upload-status";
 
             try {
-                const uploadedUrl = await uploadImageToImgBB(file);
+                // Compression options
+                const options = {
+                    maxSizeMB: 1,
+                    maxWidthOrHeight: 1920,
+                    useWebWorker: true,
+                    fileType: 'image/jpeg'
+                };
 
-                // Store URL in data attribute
+                console.log(`Original: ${(file.size / 1024 / 1024).toFixed(2)} MB`);
+
+                // Compress
+                const compressedFile = await imageCompression(file, options);
+
+                console.log(`Compressed: ${(compressedFile.size / 1024 / 1024).toFixed(2)} MB`);
+
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewContainer.innerHTML = `<img src="${e.target.result}" class="photo-preview">`;
+                    previewContainer.classList.add('has-photo');
+                    previewContainer.classList.remove('loading');
+
+                    // Lightbox trigger
+                    previewContainer.onclick = (evt) => {
+                        evt.stopPropagation();
+                        openLightbox(e.target.result);
+                    };
+                };
+                reader.readAsDataURL(compressedFile);
+
+                // 🚀 BACKGROUND UPLOAD with Compressed File
+                btnText.textContent = "Загрузка...";
+                status.textContent = "⏳ Загрузка на сервер...";
+
+                const uploadedUrl = await uploadImageToImgBB(compressedFile);
+
+                // Store URL
                 container.dataset.photoUrl = uploadedUrl;
 
-                // Update UI
+                // Success UI
                 btnText.textContent = "✓ Загружено";
                 status.textContent = "✅ Готово к отправке";
                 status.className = "upload-status success";
                 haptic('success');
+
             } catch (error) {
-                console.error('Background upload failed:', error);
-                btnText.textContent = "❌ Ошибка загрузки";
-                status.textContent = `⚠️ ${error.message || 'Попробуйте еще раз'}`;
+                console.error('Processing failed:', error);
+                btnText.textContent = "❌ Ошибка";
+                status.textContent = `⚠️ ${error.message || 'Ошибка обработки'}`;
                 status.className = "upload-status";
                 haptic('error');
 
-                // Clear the file input so user can try again
+                // Reset UI
                 input.value = '';
-                preview.style.display = 'none';
+                previewContainer.innerHTML = `
+                    <div class="upload-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                    </div>
+                    <div class="upload-text">Добавить фото</div>
+                `;
+                previewContainer.classList.remove('loading');
+                previewContainer.classList.remove('has-photo');
                 delete container.dataset.photoUrl;
+
+                // Re-attach click handler for upload
+                previewContainer.onclick = (e) => {
+                    if (e.target !== input && !e.target.closest('.upload-label')) {
+                        input.click();
+                    }
+                };
             }
         }
 
