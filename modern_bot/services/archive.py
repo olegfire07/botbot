@@ -35,7 +35,11 @@ async def archive_document(filepath: Path, data: Dict[str, Any]) -> Optional[Pat
     date_text = data.get("date")
     dt = parse_date_str(date_text)
     subdir_name = dt.strftime("%Y-%m") if dt else "undated"
-    month_dir = ARCHIVE_DIR / subdir_name
+    
+    # ✅ Separate test and original conclusions
+    is_test = data.get("is_test", False)
+    mode_folder = "test" if is_test else "original"
+    month_dir = ARCHIVE_DIR / subdir_name / mode_folder
 
     description = data.get('photo_desc', [])
 

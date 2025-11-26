@@ -133,8 +133,11 @@ async def handle_stats(request):
         
         count = 0
         if month_dir.exists():
-            # Count files, excluding hidden ones
-            count = len([f for f in month_dir.iterdir() if f.is_file() and not f.name.startswith('.')])
+            # ✅ Count only ORIGINAL conclusions (not test)
+            original_dir = month_dir / "original"
+            if original_dir.exists():
+                count = len([f for f in original_dir.iterdir() 
+                           if f.is_file() and not f.name.startswith('.')])
             
         return web.json_response(
             {'count': count, 'month': subdir_name}, 
