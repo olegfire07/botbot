@@ -13,11 +13,28 @@ from modern_bot.config import (
 
 logger = logging.getLogger(__name__)
 
-def _unauthorized():
+# CORS allowed origins (load from environment for security)
+ALLOWED_ORIGINS = os.getenv(
+    "ALLOWED_ORIGINS", 
+    "https://olegfire07.github.io"
+).split(",")
+
+def _get_cors_headers(request):
+    """Get CORS headers for specific origin (security: no wildcard)"""
+    origin = request.headers.get("Origin", "")
+    if any(origin.startswith(allowed.strip()) for allowed in ALLOWED_ORIGINS):
+        return {
+            "Access-Control-Allow-Origin": origin,
+            "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, X-API-KEY"
+        }
+    return {}
+
+def _unauthorized(request):
     return web.json_response(
         {"error": "Unauthorized"},
         status=401,
-        headers={"Access-Control-Allow-Origin": "*"}
+        headers=_get_cors_headers(request)
     )
 
 def _is_authorized(request) -> bool:
@@ -30,7 +47,7 @@ async def handle_generate(request):
     Handle POST /api/generate
     """
     if not _is_authorized(request):
-        return _unauthorized()
+        return _unauthorized(request)
 
     try:
         # 1. Parse Data
@@ -64,7 +81,7 @@ async def handle_generate(request):
                 content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                 headers={
                     'Content-Disposition': f'attachment; filename="Conclusion_{data["ticket_number"]}.docx"',
-                    'Access-Control-Allow-Origin': '*'
+                    **_get_cors_headers(request)
                 }
             )
         else:
@@ -72,14 +89,15 @@ async def handle_generate(request):
 
     except Exception as e:
         logger.error(f"API Error: {e}", exc_info=True)
-        return web.json_response({'error': str(e)}, status=500, headers={'Access-Control-Allow-Origin': '*'})
+        # ✅ Security: Don't expose error details
+        return web.json_response(
+            {'error': 'Internal server error'}, 
+            status=500, 
+            headers=_get_cors_headers(request)
+        )
 
 async def handle_options(request):
-    return web.Response(headers={
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type'
-    })
+    return web.Response(headers=_get_cors_headers(request))
 
 async def handle_root(request):
     """Serve the index.html with injected config"""
@@ -106,7 +124,7 @@ async def handle_stats(request):
     from datetime import datetime
     
     if not _is_authorized(request):
-        return _unauthorized()
+        return _unauthorized(request)
 
     try:
         now = datetime.now()
@@ -118,10 +136,18 @@ async def handle_stats(request):
             # Count files, excluding hidden ones
             count = len([f for f in month_dir.iterdir() if f.is_file() and not f.name.startswith('.')])
             
-        return web.json_response({'count': count, 'month': subdir_name}, headers={'Access-Control-Allow-Origin': '*'})
+        return web.json_response(
+            {'count': count, 'month': subdir_name}, 
+            headers=_get_cors_headers(request)
+        )
     except Exception as e:
         logger.error(f"Stats Error: {e}")
-        return web.json_response({'error': str(e)}, status=500)
+        # ✅ Security: Don't expose error details
+        return web.json_response(
+            {'error': 'Internal server error'}, 
+            status=500,
+            headers=_get_cors_headers(request)
+        )
 
 async def start_api_server(bot, host: str = None, port: int = None):
     if not API_ENABLED:

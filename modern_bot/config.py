@@ -10,8 +10,12 @@ load_dotenv()
 # --- BOT SETTINGS ---
 BOT_TOKEN_ENV_VAR = "BOT_TOKEN"
 
-# Admin IDs
-ADMIN_IDS = [2064900, 636601018]  # Super admins
+# Admin IDs (load from environment for security)
+ADMIN_IDS = [
+    int(id.strip()) 
+    for id in os.getenv("ADMIN_IDS", "2064900,636601018").split(",") 
+    if id.strip()
+]
 
 # --- API SETTINGS ---
 API_ENABLED: bool = os.getenv("API_ENABLED", "true").lower() == "true"

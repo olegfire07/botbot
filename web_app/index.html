@@ -1034,9 +1034,20 @@
         // --- CONFIGURATION ---
         // WARNING: These are default values for local/demo use.
         // For production, consider injecting these via environment variables or a build step.
+        // --- SECURITY: XSS PROTECTION ---
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return String(unsafe)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
         const APP_CONFIG = {
             DEFAULT_BOT_URL: window.APP_DEFAULT_BOT_URL || "",
-            DEFAULT_IMGBB_KEY: window.APP_DEFAULT_IMGBB_KEY || "364e06e6ef30dffbda1950db29da2a6a"
+            DEFAULT_IMGBB_KEY: window.APP_DEFAULT_IMGBB_KEY || ""  // ✅ Removed hardcoded key for security
         };
 
         // 5. Fetch Stats
@@ -1589,7 +1600,7 @@
                     <div class="preview-item">
                         ${imgTag}
                         <div class="preview-item-content">
-                            <div class="preview-item-desc">#${idx + 1} ${item.desc}</div>
+                            <div class="preview-item-desc">#${idx + 1} ${escapeHtml(item.desc)}</div>
                             <div class="preview-item-price">${item.price.toLocaleString('ru-RU')} ₽</div>
                         </div>
                     </div>
@@ -1617,23 +1628,23 @@
                     <div class="preview-section-title">Основные данные</div>
                     <div class="preview-row">
                         <span class="preview-label">Подразделение:</span>
-                        <span class="preview-value">${document.getElementById('department').value}</span>
+                        <span class="preview-value">${escapeHtml(document.getElementById('department').value)}</span>
                     </div>
                     <div class="preview-row">
                         <span class="preview-label">Регион:</span>
-                        <span class="preview-value">${document.getElementById('region').value}</span>
+                        <span class="preview-value">${escapeHtml(document.getElementById('region').value)}</span>
                     </div>
                     <div class="preview-row">
                         <span class="preview-label">Дата:</span>
-                        <span class="preview-value">${formattedDate}</span>
+                        <span class="preview-value">${escapeHtml(formattedDate)}</span>
                     </div>
                     <div class="preview-row">
                         <span class="preview-label">№ заключения:</span>
-                        <span class="preview-value">${document.getElementById('issue').value}</span>
+                        <span class="preview-value">${escapeHtml(document.getElementById('issue').value)}</span>
                     </div>
                     <div class="preview-row">
                         <span class="preview-label">№ билета:</span>
-                        <span class="preview-value" style="font-family: 'Inter', sans-serif;">${ticketValue}</span>
+                        <span class="preview-value" style="font-family: 'Inter', sans-serif;">${escapeHtml(ticketValue)}</span>
                     </div>
                 </div>
 
