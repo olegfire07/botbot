@@ -1357,24 +1357,18 @@
             // Collapse existing items
             collapseAllItems();
 
-            itemCount++;
-            updateBadge();
-
+            // Create new item
             const div = document.createElement('div');
             div.className = 'item-card';
-            div.id = `item-${itemCount}`;
+            // ID and Title will be fixed by renumberItems()
             div.innerHTML = `
                 <div class="item-header" onclick="toggleItem(this)">
                     <div class="item-header-info">
-                        <span class="item-title">Предмет #${itemCount}</span>
+                        <span class="item-title">Предмет</span>
                         <span class="item-summary"></span>
                     </div>
                     <div style="display: flex; gap: 8px;">
-                        ${itemCount > 1 ? `
-                        <button type="button" class="btn-remove" onclick="removeItem(this, event)">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                            Удалить
-                        </button>` : ''}
+                        <!-- Remove button will be added by renumberItems if needed -->
                     </div>
                 </div>
                 <div class="item-body">
@@ -1485,11 +1479,50 @@
                     if (errorMsg) errorMsg.classList.remove('show');
                 });
             });
+
+
+            // Fix numbering
+            document.getElementById('itemsList').appendChild(div);
+            renumberItems();
         }
 
         function removeItem(btn, event) {
             if (event) event.stopPropagation();
             btn.closest('.item-card').remove();
+            renumberItems();
+        }
+
+        function renumberItems() {
+            const items = document.querySelectorAll('.item-card');
+            items.forEach((card, index) => {
+                const num = index + 1;
+                card.id = `item-${num}`;
+
+                // Update Title
+                const title = card.querySelector('.item-title');
+                if (title) title.textContent = `Предмет #${num}`;
+
+                // Update Remove Button visibility
+                const headerBtnContainer = card.querySelector('.item-header > div:last-child');
+                if (headerBtnContainer) {
+                    if (num > 1) {
+                        // Add button if missing
+                        if (!headerBtnContainer.querySelector('.btn-remove')) {
+                            headerBtnContainer.innerHTML = `
+                                <button type="button" class="btn-remove" onclick="removeItem(this, event)">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                    Удалить
+                                </button>`;
+                        }
+                    } else {
+                        // Remove button for first item
+                        headerBtnContainer.innerHTML = '';
+                    }
+                }
+            });
+
+            // Update global counter
+            itemCount = items.length;
             updateBadge();
         }
 
@@ -1617,7 +1650,7 @@
         // SERVICE WORKER & OFFLINE MODE
         // ============================================
         if ('serviceWorker' in navigator) {
-            const swVersion = '2312'; // Photo Preview Fix (IMG tag)
+            const swVersion = '2313'; // Fix Item Numbering
             const basePath = location.pathname.endsWith('/') ? location.pathname : `${location.pathname}/`;
             const swUrl = `${basePath}service-worker.js?v=${swVersion}`;
             navigator.serviceWorker.register(swUrl)
