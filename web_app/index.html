@@ -1607,7 +1607,7 @@
         // SERVICE WORKER & OFFLINE MODE
         // ============================================
         if ('serviceWorker' in navigator) {
-            const swVersion = '2309'; // Image Compression Feature
+            const swVersion = '2310'; // Haptic Fix
             const basePath = location.pathname.endsWith('/') ? location.pathname : `${location.pathname}/`;
             const swUrl = `${basePath}service-worker.js?v=${swVersion}`;
             navigator.serviceWorker.register(swUrl)
@@ -1866,8 +1866,27 @@
 
         // Haptic Feedback Helper
         function haptic(type = 'light') {
-            if (tg.HapticFeedback) {
-                tg.HapticFeedback.impactOccurred(type);
+            if (!tg.HapticFeedback) return;
+
+            switch (type) {
+                case 'light':
+                case 'medium':
+                case 'heavy':
+                case 'rigid':
+                case 'soft':
+                    tg.HapticFeedback.impactOccurred(type);
+                    break;
+                case 'error':
+                case 'success':
+                case 'warning':
+                    tg.HapticFeedback.notificationOccurred(type);
+                    break;
+                case 'selection':
+                    tg.HapticFeedback.selectionChanged();
+                    break;
+                default:
+                    // Fallback for unknown types
+                    tg.HapticFeedback.impactOccurred('light');
             }
         }
 
