@@ -5,7 +5,8 @@ from typing import Dict, List
 from dotenv import load_dotenv
 
 # Load env vars from .env file
-load_dotenv()
+env_path = Path(__file__).parent.parent / '.env'
+load_dotenv(dotenv_path=env_path)
 
 # --- BOT SETTINGS ---
 BOT_TOKEN_ENV_VAR = "BOT_TOKEN"
