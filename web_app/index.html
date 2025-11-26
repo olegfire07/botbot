@@ -2177,6 +2177,63 @@
         // ============================================
         // 🚀 CloudStorage for cross-device sync
         // 🚀 Reverted to localStorage for reliability
+        // ============================================
+        // STORAGE MANAGER (Hybrid Cloud + Local)
+        // ============================================
+        const StorageManager = {
+            // Check if CloudStorage is available and supported
+            isCloudSupported: () => {
+                return tg.initDataUnsafe &&
+                    tg.initDataUnsafe.user &&
+                    tg.CloudStorage &&
+                    tg.isVersionAtLeast('6.9');
+            },
+
+            setItem: (key, value) => {
+                // Always save to localStorage as backup/cache
+                try {
+                    localStorage.setItem(key, value);
+                } catch (e) {
+                    console.error('LocalStorage set error:', e);
+                }
+
+                // Try CloudStorage if supported
+                if (StorageManager.isCloudSupported()) {
+                    tg.CloudStorage.setItem(key, value, (err, success) => {
+                        if (err) console.warn('CloudStorage set error:', err);
+                    });
+                }
+            },
+
+            getItem: (key, callback) => {
+                // Try CloudStorage first if supported
+                if (StorageManager.isCloudSupported()) {
+                    tg.CloudStorage.getItem(key, (err, value) => {
+                        if (!err && value) {
+                            console.log(`Loaded ${key} from CloudStorage`);
+                            callback(value);
+                        } else {
+                            // Fallback to LocalStorage
+                            console.log(`CloudStorage failed/empty for ${key}, using LocalStorage`);
+                            callback(localStorage.getItem(key));
+                        }
+                    });
+                } else {
+                    // LocalStorage only
+                    callback(localStorage.getItem(key));
+                }
+            },
+
+            removeItem: (key) => {
+                localStorage.removeItem(key);
+                if (StorageManager.isCloudSupported()) {
+                    tg.CloudStorage.removeItem(key, (err, success) => {
+                        if (err) console.warn('CloudStorage remove error:', err);
+                    });
+                }
+            }
+        };
+
         function saveDraft() {
             const draft = {
                 department: document.getElementById('department').value,
@@ -2188,56 +2245,60 @@
             };
 
             try {
-                localStorage.setItem('formDraft', JSON.stringify(draft));
+                StorageManager.setItem('formDraft', JSON.stringify(draft));
             } catch (e) {
                 console.error('Save draft error:', e);
             }
         }
 
         function restoreDraft() {
-            const draftStr = localStorage.getItem('formDraft');
-            if (!draftStr) return;
+            StorageManager.getItem('formDraft', (draftStr) => {
+                if (!draftStr) return;
 
-            try {
-                const draft = JSON.parse(draftStr);
-                // Only restore if draft is less than 24 hours old
-                const hoursSinceLastSave = (Date.now() - draft.timestamp) / (1000 * 60 * 60);
-                if (hoursSinceLastSave > 24) {
-                    localStorage.removeItem('formDraft');
-                    return;
-                }
-
-                // Restore values (ticket excluded - always unique)
-                if (draft.department) document.getElementById('department').value = draft.department;
-                if (draft.issue) document.getElementById('issue').value = draft.issue;
-                // if (draft.ticket) document.getElementById('ticket').value = draft.ticket;  // ❌ Never restore
-                if (draft.date) document.getElementById('date').value = draft.date;
-
-                // Smart Auto-fill for Region
-                const regionSelect = document.getElementById('region');
-                if (draft.region) {
-                    regionSelect.value = draft.region;
-                } else {
-                    // Check smart history
-                    const history = JSON.parse(localStorage.getItem('region_history') || '{}');
-                    // Find region with > 5 consecutive uses
-                    const smartRegion = Object.keys(history).find(r => history[r] >= 5);
-                    if (smartRegion) {
-                        regionSelect.value = smartRegion;
+                try {
+                    const draft = JSON.parse(draftStr);
+                    // Only restore if draft is less than 24 hours old
+                    const hoursSinceLastSave = (Date.now() - draft.timestamp) / (1000 * 60 * 60);
+                    if (hoursSinceLastSave > 24) {
+                        StorageManager.removeItem('formDraft');
+                        return;
                     }
-                }
 
-                // Show notice
-                const notice = document.getElementById('draftNotice');
-                notice.style.display = 'block';
-                setTimeout(() => {
-                    notice.style.opacity = '0';
-                    notice.style.transition = 'opacity 1s';
-                    setTimeout(() => notice.style.display = 'none', 1000);
-                }, 3000);
-            } catch (e) {
-                console.error('Restore draft error:', e);
-            }
+                    // Restore values (ticket excluded - always unique)
+                    if (draft.department) document.getElementById('department').value = draft.department;
+                    if (draft.issue) document.getElementById('issue').value = draft.issue;
+                    if (draft.date) document.getElementById('date').value = draft.date;
+
+                    // Smart Auto-fill for Region
+                    const regionSelect = document.getElementById('region');
+                    if (draft.region) {
+                        regionSelect.value = draft.region;
+                    } else {
+                        // Check smart history
+                        StorageManager.getItem('region_history', (historyStr) => {
+                            const history = JSON.parse(historyStr || '{}');
+                            // Find region with > 5 consecutive uses
+                            const smartRegion = Object.keys(history).find(r => history[r] >= 5);
+                            if (smartRegion) {
+                                regionSelect.value = smartRegion;
+                            }
+                        });
+                    }
+
+                    // Show notice
+                    const notice = document.getElementById('draftNotice');
+                    if (notice) {
+                        notice.style.display = 'block';
+                        setTimeout(() => {
+                            notice.style.opacity = '0';
+                            notice.style.transition = 'opacity 1s';
+                            setTimeout(() => notice.style.display = 'none', 1000);
+                        }, 3000);
+                    }
+                } catch (e) {
+                    console.error('Restore draft error:', e);
+                }
+            });
         }
 
         // Track Region Selection
@@ -2245,23 +2306,25 @@
             const region = e.target.value;
             if (!region) return;
 
-            try {
-                const history = JSON.parse(localStorage.getItem('region_history') || '{}');
+            StorageManager.getItem('region_history', (historyStr) => {
+                try {
+                    const history = JSON.parse(historyStr || '{}');
 
-                // Reset others, increment selected
-                Object.keys(history).forEach(key => {
-                    if (key !== region) history[key] = 0;
-                });
+                    // Reset others, increment selected
+                    Object.keys(history).forEach(key => {
+                        if (key !== region) history[key] = 0;
+                    });
 
-                history[region] = (history[region] || 0) + 1;
-                localStorage.setItem('region_history', JSON.stringify(history));
-            } catch (error) {
-                console.warn('Region tracking failed:', error);
-            }
+                    history[region] = (history[region] || 0) + 1;
+                    StorageManager.setItem('region_history', JSON.stringify(history));
+                } catch (error) {
+                    console.warn('Region tracking failed:', error);
+                }
+            });
         });
 
         function clearDraft() {
-            localStorage.removeItem('formDraft');
+            StorageManager.removeItem('formDraft');
         }
 
         // Update progress bar
