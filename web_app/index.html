@@ -886,7 +886,7 @@
 
 <body>
     <div class="title-header">
-        <h1 id="mainTitle">Новое заключение</h1>
+        <h1 id="mainTitle" onclick="handleTitleClick()">Новое заключение</h1>
         <span class="info-icon" onclick="showUserGuide()" title="Инструкция">i</span>
     </div>
 
@@ -1453,7 +1453,7 @@
         // SERVICE WORKER & OFFLINE MODE
         // ============================================
         if ('serviceWorker' in navigator) {
-            const swVersion = '2303';
+            const swVersion = '2500';
             const basePath = location.pathname.endsWith('/') ? location.pathname : `${location.pathname}/`;
             const swUrl = `${basePath}service-worker.js?v=${swVersion}`;
             navigator.serviceWorker.register(swUrl)

@@ -103,21 +103,36 @@ async def handle_root(request):
     """Serve the index.html with injected config"""
     from pathlib import Path
     import os
+
+    def _find_web_app():
+        """
+        Prefer the canonical web_app in repo root to avoid serving stale copies.
+        Fallback to the legacy modern_bot/web_app if needed.
+        """
+        candidates = [
+            Path(__file__).resolve().parent.parent / 'web_app' / 'index.html',
+            Path(__file__).resolve().parent / 'web_app' / 'index.html'
+        ]
+        for path in candidates:
+            if path.exists():
+                return path
+        return None
+
+    html_path = _find_web_app()
+    if not html_path:
+        return web.Response(text='Web app not found', status=404)
+
+    with open(html_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+        
+    # Inject Config
+    bot_url = os.getenv("BOT_URL", "")
+    imgbb_key = os.getenv("IMGBB_KEY", "")
     
-    html_path = Path(__file__).parent / 'web_app' / 'index.html'
-    if html_path.exists():
-        with open(html_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-            
-        # Inject Config
-        bot_url = os.getenv("BOT_URL", "")
-        imgbb_key = os.getenv("IMGBB_KEY", "")
-        
-        content = content.replace('window.APP_DEFAULT_BOT_URL || ""', f'"{bot_url}"')
-        content = content.replace('window.APP_DEFAULT_IMGBB_KEY || ""', f'"{imgbb_key}"')
-        
-        return web.Response(text=content, content_type='text/html')
-    return web.Response(text='Web app not found', status=404)
+    content = content.replace('window.APP_DEFAULT_BOT_URL || ""', f'"{bot_url}"')
+    content = content.replace('window.APP_DEFAULT_IMGBB_KEY || ""', f'"{imgbb_key}"')
+    
+    return web.Response(text=content, content_type='text/html')
 
 async def handle_stats(request):
     """Return stats for the current month"""
