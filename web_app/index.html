@@ -772,6 +772,28 @@
             gap: 8px;
         }
 
+        .title-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .title-header h1 {
+            margin: 0;
+        }
+
+        .footer-author {
+            opacity: 0.5;
+            font-size: 10px;
+            margin-bottom: 2px;
+        }
+
+        .footer-version {
+            font-size: 11px;
+        }
+
         /* Preview Modal Styles */
         .preview-card {
             background: rgba(255, 255, 255, 0.5);
@@ -863,8 +885,8 @@
 </head>
 
 <body>
-    <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 10px;">
-        <h1 id="mainTitle" style="margin: 0;">Новое заключение</h1>
+    <div class="title-header">
+        <h1 id="mainTitle">Новое заключение</h1>
         <span class="info-icon" onclick="showUserGuide()" title="Инструкция">i</span>
     </div>
 
@@ -990,10 +1012,10 @@
         </div>
 
         <div class="footer-note">
-            <div style="opacity: 0.5; font-size: 10px; margin-bottom: 2px;">
+            <div class="footer-author">
                 Разработано Жуковым Олегом
             </div>
-            <div style="font-size: 11px;">
+            <div class="footer-version">
                 Version 2.5 - 2025-11-26
             </div>
         </div>
