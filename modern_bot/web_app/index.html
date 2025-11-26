@@ -1456,7 +1456,7 @@
     // SERVICE WORKER & OFFLINE MODE
     // ============================================
     if ('serviceWorker' in navigator) {
-        const swVersion = '2303';
+        const swVersion = '2502';
         const basePath = location.pathname.endsWith('/') ? location.pathname : `${location.pathname}/`;
         const swUrl = `${basePath}service-worker.js?v=${swVersion}`;
         navigator.serviceWorker.register(swUrl)
