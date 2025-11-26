@@ -1615,25 +1615,50 @@
                 throw new Error('API ключ не настроен');
             }
 
-            // Compress first
-            const compressedBlob = await compressImage(file);
+            // 🚀 Retry logic for unstable networks
+            const maxRetries = 3;
+            let lastError;
 
-            const formData = new FormData();
-            formData.append('image', compressedBlob, 'image.jpg');
-            formData.append('key', imgbbKey);
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                try {
+                    // Compress first
+                    const compressedBlob = await compressImage(file);
 
-            const response = await fetch('https://api.imgbb.com/1/upload', {
-                method: 'POST',
-                body: formData
-            });
+                    const formData = new FormData();
+                    formData.append('image', compressedBlob, 'image.webp');
+                    formData.append('key', imgbbKey);
 
-            const result = await response.json();
+                    const response = await fetch('https://api.imgbb.com/1/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
 
-            if (result && result.data && result.data.url) {
-                return result.data.url;
-            } else {
-                throw new Error(result.error ? result.error.message : "Неизвестная ошибка");
+                    const result = await response.json();
+
+                    if (result && result.data && result.data.url) {
+                        return result.data.url;
+                    } else {
+                        throw new Error(result.error ? result.error.message : "Неизвестная ошибка");
+                    }
+                } catch (error) {
+                    lastError = error;
+
+                    // Don't retry on client errors (like invalid API key)
+                    if (error.message.includes('ключ') || error.message.includes('key')) {
+                        throw error;
+                    }
+
+                    // If not the last attempt, wait before retrying
+                    if (attempt < maxRetries) {
+                        const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000); // Exponential backoff, max 5s
+                        console.log(`Upload attempt ${attempt} failed, retrying in ${delay}ms...`);
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    }
+                }
             }
+
+            // All attempts failed
+            throw new Error(`Не удалось загрузить после ${maxRetries} попыток: ${lastError.message}`);
         }
 
         // Lightbox Functions
@@ -1712,6 +1737,21 @@
                         isValid = false;
                         el.classList.add('invalid');
                         el.addEventListener('input', () => el.classList.remove('invalid'), { once: true });
+                    }
+
+                    // 🚀 Date validation: no older than 30 days
+                    if (id === 'date') {
+                        const selectedDate = new Date(el.value);
+                        const today = new Date();
+                        const thirtyDaysAgo = new Date(today);
+                        thirtyDaysAgo.setDate(today.getDate() - 30);
+
+                        if (selectedDate < thirtyDaysAgo) {
+                            isValid = false;
+                            el.classList.add('invalid');
+                            tg.showAlert('⚠️ Дата не может быть старше 30 дней. Проверьте год!');
+                            el.addEventListener('input', () => el.classList.remove('invalid'), { once: true });
+                        }
                     }
                 }
             });
@@ -1912,9 +1952,10 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
 
+                        // 🚀 WebP format for 30-40% better compression
                         canvas.toBlob(function (blob) {
                             resolve(blob);
-                        }, 'image/jpeg', 0.8); // 80% quality
+                        }, 'image/webp', 0.85); // WebP at 85% quality
                     };
                     img.onerror = reject;
                 };
@@ -2102,7 +2143,8 @@
         // ============================================
         // AUTO-SAVE DRAFT & RESTORE
         // ============================================
-        function saveDraft() {
+        // 🚀 CloudStorage for cross-device sync
+        async function saveDraft() {
             const draft = {
                 department: document.getElementById('department').value,
                 issue: document.getElementById('issue').value,
@@ -2111,18 +2153,40 @@
                 region: document.getElementById('region').value,
                 timestamp: Date.now()
             };
-            localStorage.setItem('formDraft', JSON.stringify(draft));
+
+            // Use CloudStorage if available, fallback to localStorage
+            if (tg.CloudStorage) {
+                tg.CloudStorage.setItem('formDraft', JSON.stringify(draft));
+            } else {
+                localStorage.setItem('formDraft', JSON.stringify(draft));
+            }
         }
 
-        function restoreDraft() {
-            const draftStr = localStorage.getItem('formDraft');
+        async function restoreDraft() {
+            let draftStr;
+
+            // 🚀 Use CloudStorage if available, fallback to localStorage
+            if (tg.CloudStorage) {
+                draftStr = await new Promise((resolve) => {
+                    tg.CloudStorage.getItem('formDraft', (error, value) => {
+                        resolve(value || null);
+                    });
+                });
+            } else {
+                draftStr = localStorage.getItem('formDraft');
+            }
+
             if (!draftStr) return;
 
             const draft = JSON.parse(draftStr);
             // Only restore if draft is less than 24 hours old
             const hoursSinceLastSave = (Date.now() - draft.timestamp) / (1000 * 60 * 60);
             if (hoursSinceLastSave > 24) {
-                localStorage.removeItem('formDraft');
+                if (tg.CloudStorage) {
+                    tg.CloudStorage.removeItem('formDraft');
+                } else {
+                    localStorage.removeItem('formDraft');
+                }
                 return;
             }
 
@@ -2137,13 +2201,22 @@
             if (draft.region) {
                 regionSelect.value = draft.region;
             } else {
-                // Check smart history
-                const history = JSON.parse(localStorage.getItem('region_history') || '{}');
+                // Check smart history from CloudStorage
+                let historyStr;
+                if (tg.CloudStorage) {
+                    historyStr = await new Promise((resolve) => {
+                        tg.CloudStorage.getItem('region_history', (error, value) => {
+                            resolve(value || '{}');
+                        });
+                    });
+                } else {
+                    historyStr = localStorage.getItem('region_history') || '{}';
+                }
+                const history = JSON.parse(historyStr);
                 // Find region with > 5 consecutive uses
                 const smartRegion = Object.keys(history).find(r => history[r] >= 5);
                 if (smartRegion) {
                     regionSelect.value = smartRegion;
-                    // Optional: Visual cue that it was auto-selected?
                 }
             }
 
@@ -2158,11 +2231,21 @@
         }
 
         // Track Region Selection
-        document.getElementById('region').addEventListener('change', (e) => {
+        document.getElementById('region').addEventListener('change', async (e) => {
             const region = e.target.value;
             if (!region) return;
 
-            const history = JSON.parse(localStorage.getItem('region_history') || '{}');
+            let historyStr;
+            if (tg.CloudStorage) {
+                historyStr = await new Promise((resolve) => {
+                    tg.CloudStorage.getItem('region_history', (error, value) => {
+                        resolve(value || '{}');
+                    });
+                });
+            } else {
+                historyStr = localStorage.getItem('region_history') || '{}';
+            }
+            const history = JSON.parse(historyStr);
 
             // Reset others, increment selected
             Object.keys(history).forEach(key => {
@@ -2170,11 +2253,20 @@
             });
 
             history[region] = (history[region] || 0) + 1;
-            localStorage.setItem('region_history', JSON.stringify(history));
+
+            if (tg.CloudStorage) {
+                tg.CloudStorage.setItem('region_history', JSON.stringify(history));
+            } else {
+                localStorage.setItem('region_history', JSON.stringify(history));
+            }
         });
 
         function clearDraft() {
-            localStorage.removeItem('formDraft');
+            if (tg.CloudStorage) {
+                tg.CloudStorage.removeItem('formDraft');
+            } else {
+                localStorage.removeItem('formDraft');
+            }
         }
 
         // Update progress bar
