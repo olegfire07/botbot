@@ -1058,13 +1058,28 @@
         // 5. Fetch Stats
         async function fetchStats() {
             try {
-                const response = await fetch('/api/stats');
+                // Determine API base URL
+                let apiUrl = '/api/stats';
+
+                // In Telegram WebApp, need to use bot URL if available
+                if (botUrl && botUrl.length > 0) {
+                    apiUrl = botUrl + '/api/stats';
+                } else if (tg.platform && tg.platform.length > 0) {
+                    // In Telegram but no botUrl configured - hide counter
+                    document.getElementById('statsCounter').style.display = 'none';
+                    return;
+                }
+
+                const response = await fetch(apiUrl);
                 if (response.ok) {
                     const data = await response.json();
                     const counter = document.getElementById('statsText');
                     if (counter) {
                         counter.textContent = `📅 В этом месяце создано: ${data.count}`;
                     }
+                } else {
+                    // API not available - hide counter
+                    document.getElementById('statsCounter').style.display = 'none';
                 }
             } catch (e) {
                 console.warn("Failed to fetch stats", e);
