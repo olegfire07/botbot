@@ -1225,7 +1225,8 @@
             collapseAllItems();
 
             itemCount++;
-            updateBadge();
+            itemCount++;
+            // updateBadge(); // Moved to after appendChild
 
             const div = document.createElement('div');
             div.className = 'item-card';
@@ -1283,6 +1284,9 @@
             `;
             document.getElementById('itemsList').appendChild(div);
 
+            // Update badge AFTER adding to DOM
+            updateBadge();
+
             // --- ADDED EVENT LISTENERS ---
             // 1. Input Mask for Evaluation
             const evalInput = div.querySelector('.eval');
@@ -1317,7 +1321,12 @@
         function removeItem(btn, event) {
             if (event) event.stopPropagation();
             btn.closest('.item-card').remove();
+            btn.closest('.item-card').remove();
             updateBadge();
+            // Update Main Button if in Telegram
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                updateMainButton();
+            }
         }
 
         function collapseAllItems() {
@@ -1360,7 +1369,15 @@
 
         function updateBadge() {
             const count = document.getElementById('itemsList').children.length;
-            document.getElementById('itemCountBadge').textContent = count;
+            // Update button text instead of separate badge
+            const btn = document.querySelector('.sticky-footer .btn-primary');
+            if (btn) {
+                btn.textContent = `Проверить и отправить (${count})`;
+            }
+
+            // Also update header badge if it exists (or hide it)
+            const headerBadge = document.getElementById('itemCountBadge');
+            if (headerBadge) headerBadge.style.display = 'none';
         }
 
         // --- UX Features ---
@@ -1676,7 +1693,7 @@
                 document.getElementById('finalSubmitBtn').style.display = 'none'; // Hide HTML button in modal
                 document.querySelector('.btn-primary[onclick="showPreview()"]').style.display = 'none'; // Hide main form button
 
-                mainButton.setText("ПРОВЕРИТЬ И ОТПРАВИТЬ");
+                mainButton.setText(`ПРОВЕРИТЬ И ОТПРАВИТЬ (${document.getElementById('itemsList')?.children.length || 1})`);
                 mainButton.show();
                 mainButton.onClick(showPreview);
             }
@@ -1742,6 +1759,24 @@
                             el.addEventListener('input', () => el.classList.remove('invalid'), { once: true });
                         }
                     }
+                }
+            });
+
+            // 🚀 Validate Items
+            document.querySelectorAll('.item-card').forEach((card, index) => {
+                const desc = card.querySelector('.desc');
+                const evalInput = card.querySelector('.eval');
+
+                if (!desc.value.trim()) {
+                    isValid = false;
+                    desc.classList.add('invalid');
+                    desc.addEventListener('input', () => desc.classList.remove('invalid'), { once: true });
+                }
+
+                if (!evalInput.value.trim()) {
+                    isValid = false;
+                    evalInput.classList.add('invalid');
+                    evalInput.addEventListener('input', () => evalInput.classList.remove('invalid'), { once: true });
                 }
             });
 
