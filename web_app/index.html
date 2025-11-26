@@ -1416,14 +1416,9 @@
             }
         }
 
-        // 3. Input Mask for Ticket (Digits only, max 11) + Auto-focus
+        // 3. Input Mask for Ticket (Digits only, max 11)
         document.getElementById('ticket').addEventListener('input', function (e) {
             e.target.value = e.target.value.replace(/\D/g, '').substring(0, 11);
-
-            // \u2705 UX: Auto-focus to date field when 11 digits entered
-            if (e.target.value.length === 11) {
-                document.getElementById('date').focus();
-            }
         });
 
         // Input Mask for Department and Issue (Digits only)
@@ -2001,7 +1996,7 @@
                         console.log(`Card ${i}: Photo selected but not uploaded`);
                         // Photo selected but not uploaded yet (shouldn't happen with background upload)
                         allUploaded = false;
-                        tg.showAlert('⏳ Дождитесь загрузки всех фотографий');
+                        alert('⏳ Дождитесь загрузки всех фотографий'); // Use native alert for safety
                         btn.disabled = false;
                         btn.textContent = "Отправить";
 
@@ -2026,7 +2021,7 @@
 
             if (items.length === 0) {
                 console.log('No items to submit');
-                tg.showAlert('❌ Нет загруженных фотографий');
+                alert('❌ Нет загруженных фотографий'); // Use native alert
                 btn.disabled = false;
                 btn.textContent = "Отправить";
                 return;
