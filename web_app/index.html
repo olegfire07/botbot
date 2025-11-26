@@ -1195,16 +1195,6 @@
 
         function handleTouchStart(e) {
             const card = e.currentTarget.closest('.item-card');
-            if (!card) return;
-
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-            currentCard = card;
-        }
-
-        function handleTouchMove(e) {
-            if (!currentCard) return;
-
             const touchX = e.touches[0].clientX;
             const touchY = e.touches[0].clientY;
             const diffX = touchX - touchStartX;
