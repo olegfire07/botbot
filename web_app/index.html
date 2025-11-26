@@ -1706,8 +1706,16 @@
 
         // Haptic Feedback Helper
         function haptic(type = 'light') {
-            if (tg.HapticFeedback) {
-                tg.HapticFeedback.impactOccurred(type);
+            if (!tg.HapticFeedback) return;
+            try {
+                if (['success', 'error', 'warning'].includes(type)) {
+                    tg.HapticFeedback.notificationOccurred(type);
+                } else {
+                    // light, medium, heavy, rigid, soft
+                    tg.HapticFeedback.impactOccurred(type);
+                }
+            } catch (e) {
+                console.warn('Haptic error:', e);
             }
         }
 
@@ -2155,9 +2163,15 @@
             };
 
             // Use CloudStorage if available, fallback to localStorage
-            if (tg.CloudStorage) {
-                tg.CloudStorage.setItem('formDraft', JSON.stringify(draft));
-            } else {
+            try {
+                if (tg.CloudStorage) {
+                    tg.CloudStorage.setItem('formDraft', JSON.stringify(draft));
+                } else {
+                    localStorage.setItem('formDraft', JSON.stringify(draft));
+                }
+            } catch (error) {
+                // Fallback to localStorage if CloudStorage fails
+                console.warn('CloudStorage failed, using localStorage:', error);
                 localStorage.setItem('formDraft', JSON.stringify(draft));
             }
         }
@@ -2166,13 +2180,23 @@
             let draftStr;
 
             // 🚀 Use CloudStorage if available, fallback to localStorage
-            if (tg.CloudStorage) {
-                draftStr = await new Promise((resolve) => {
-                    tg.CloudStorage.getItem('formDraft', (error, value) => {
-                        resolve(value || null);
+            try {
+                if (tg.CloudStorage) {
+                    draftStr = await new Promise((resolve) => {
+                        tg.CloudStorage.getItem('formDraft', (error, value) => {
+                            if (error) {
+                                console.warn('CloudStorage getItem failed:', error);
+                                resolve(null);
+                            } else {
+                                resolve(value || null);
+                            }
+                        });
                     });
-                });
-            } else {
+                } else {
+                    draftStr = localStorage.getItem('formDraft');
+                }
+            } catch (error) {
+                console.warn('CloudStorage failed, using localStorage:', error);
                 draftStr = localStorage.getItem('formDraft');
             }
 
@@ -2182,9 +2206,13 @@
             // Only restore if draft is less than 24 hours old
             const hoursSinceLastSave = (Date.now() - draft.timestamp) / (1000 * 60 * 60);
             if (hoursSinceLastSave > 24) {
-                if (tg.CloudStorage) {
-                    tg.CloudStorage.removeItem('formDraft');
-                } else {
+                try {
+                    if (tg.CloudStorage) {
+                        tg.CloudStorage.removeItem('formDraft');
+                    } else {
+                        localStorage.removeItem('formDraft');
+                    }
+                } catch (error) {
                     localStorage.removeItem('formDraft');
                 }
                 return;
@@ -2203,13 +2231,18 @@
             } else {
                 // Check smart history from CloudStorage
                 let historyStr;
-                if (tg.CloudStorage) {
-                    historyStr = await new Promise((resolve) => {
-                        tg.CloudStorage.getItem('region_history', (error, value) => {
-                            resolve(value || '{}');
+                try {
+                    if (tg.CloudStorage) {
+                        historyStr = await new Promise((resolve) => {
+                            tg.CloudStorage.getItem('region_history', (error, value) => {
+                                if (error) resolve('{}');
+                                else resolve(value || '{}');
+                            });
                         });
-                    });
-                } else {
+                    } else {
+                        historyStr = localStorage.getItem('region_history') || '{}';
+                    }
+                } catch (error) {
                     historyStr = localStorage.getItem('region_history') || '{}';
                 }
                 const history = JSON.parse(historyStr);
@@ -2235,36 +2268,52 @@
             const region = e.target.value;
             if (!region) return;
 
-            let historyStr;
-            if (tg.CloudStorage) {
-                historyStr = await new Promise((resolve) => {
-                    tg.CloudStorage.getItem('region_history', (error, value) => {
-                        resolve(value || '{}');
+            try {
+                let historyStr;
+                if (tg.CloudStorage) {
+                    historyStr = await new Promise((resolve) => {
+                        tg.CloudStorage.getItem('region_history', (error, value) => {
+                            if (error) resolve('{}');
+                            else resolve(value || '{}');
+                        });
                     });
+                } else {
+                    historyStr = localStorage.getItem('region_history') || '{}';
+                }
+                const history = JSON.parse(historyStr);
+
+                // Reset others, increment selected
+                Object.keys(history).forEach(key => {
+                    if (key !== region) history[key] = 0;
                 });
-            } else {
-                historyStr = localStorage.getItem('region_history') || '{}';
-            }
-            const history = JSON.parse(historyStr);
 
-            // Reset others, increment selected
-            Object.keys(history).forEach(key => {
-                if (key !== region) history[key] = 0;
-            });
+                history[region] = (history[region] || 0) + 1;
 
-            history[region] = (history[region] || 0) + 1;
-
-            if (tg.CloudStorage) {
-                tg.CloudStorage.setItem('region_history', JSON.stringify(history));
-            } else {
+                if (tg.CloudStorage) {
+                    tg.CloudStorage.setItem('region_history', JSON.stringify(history));
+                } else {
+                    localStorage.setItem('region_history', JSON.stringify(history));
+                }
+            } catch (error) {
+                console.warn('Region tracking failed, using localStorage:', error);
+                const history = JSON.parse(localStorage.getItem('region_history') || '{}');
+                Object.keys(history).forEach(key => {
+                    if (key !== region) history[key] = 0;
+                });
+                history[region] = (history[region] || 0) + 1;
                 localStorage.setItem('region_history', JSON.stringify(history));
             }
         });
 
         function clearDraft() {
-            if (tg.CloudStorage) {
-                tg.CloudStorage.removeItem('formDraft');
-            } else {
+            try {
+                if (tg.CloudStorage) {
+                    tg.CloudStorage.removeItem('formDraft');
+                } else {
+                    localStorage.removeItem('formDraft');
+                }
+            } catch (error) {
+                console.warn('clearDraft failed, using localStorage:', error);
                 localStorage.removeItem('formDraft');
             }
         }
