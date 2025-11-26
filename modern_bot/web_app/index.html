@@ -32,6 +32,8 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             margin: 0;
             padding: 20px;
+            padding-bottom: 100px;
+            /* Fix sticky footer overlap */
             min-height: 100vh;
             color: var(--text-color);
             background-color: #f0f2f5;
@@ -403,7 +405,6 @@
         .photo-preview-container {
             margin-top: 16px;
             border-radius: 16px;
-            overflow: hidden;
             overflow: hidden;
             background: rgba(0, 122, 255, 0.03);
             border: 2px dashed rgba(0, 0, 0, 0.1);
@@ -1374,7 +1375,14 @@
 
         function updateBadge() {
             const count = document.getElementById('itemsList').children.length;
-            document.getElementById('itemCountBadge').textContent = count;
+            const badge = document.getElementById('itemCountBadge');
+            if (badge) badge.textContent = count;
+
+            // Update button text with counter
+            const btn = document.querySelector('.sticky-footer .btn-primary');
+            if (btn) {
+                btn.textContent = `Проверить и отправить (${count})`;
+            }
         }
 
         // --- UX Features ---
@@ -1713,6 +1721,24 @@
                         el.classList.add('invalid');
                         el.addEventListener('input', () => el.classList.remove('invalid'), { once: true });
                     }
+                }
+            });
+
+            // Validate item fields (description and evaluation)
+            document.querySelectorAll('.item-card').forEach((card) => {
+                const desc = card.querySelector('.desc');
+                const evalInput = card.querySelector('.eval');
+
+                if (desc && !desc.value.trim()) {
+                    isValid = false;
+                    desc.classList.add('invalid');
+                    desc.addEventListener('input', () => desc.classList.remove('invalid'), { once: true });
+                }
+
+                if (evalInput && !evalInput.value.trim()) {
+                    isValid = false;
+                    evalInput.classList.add('invalid');
+                    evalInput.addEventListener('input', () => evalInput.classList.remove('invalid'), { once: true });
                 }
             });
 
