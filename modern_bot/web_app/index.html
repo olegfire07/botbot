@@ -1030,10 +1030,7 @@
         </div>
 
         <div class="items-header">
-            <div class="flex-space">
-                <h3 class="section-title">Предметы</h3>
-                <span id="itemCountBadge" class="badge">1</span>
-            </div>
+            <h3 class="section-title">Предметы</h3>
         </div>
 
         <!-- Items List (moved outside items-header) -->
@@ -1492,7 +1489,7 @@
         // SERVICE WORKER & OFFLINE MODE
         // ============================================
         if ('serviceWorker' in navigator) {
-            const swVersion = '2305'; // CSS fix for counter
+            const swVersion = '2306'; // Removed badge counter
             const basePath = location.pathname.endsWith('/') ? location.pathname : `${location.pathname}/`;
             const swUrl = `${basePath}service-worker.js?v=${swVersion}`;
             navigator.serviceWorker.register(swUrl)
