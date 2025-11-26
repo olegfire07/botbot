@@ -588,13 +588,27 @@
 
         .modal-content {
             background: #ffffff;
-            margin: 15% auto;
+            margin: 10% auto;
+            /* Reduced top margin */
             padding: 24px;
             border-radius: 24px;
             width: 85%;
             max-width: 400px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
             animation: slideUp 0.3s;
+            max-height: 80vh;
+            /* Limit height */
+            overflow-y: auto;
+            /* Enable scroll */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Prevent iOS Zoom on inputs */
+        input,
+        select,
+        textarea {
+            font-size: 16px !important;
         }
 
         @keyframes fadeIn {
@@ -1067,7 +1081,8 @@
         </div>
 
         <div class="items-header">
-            <h3 class="section-title">Предметы</h3>
+            <h3 class="section-title">Предметы <span id="itemCountHeader"
+                    style="opacity: 0.5; font-weight: 400; margin-left: 4px;">(1)</span></h3>
         </div>
 
         <!-- Items List (moved outside items-header) -->
@@ -1366,11 +1381,51 @@
             document.getElementById('itemsList').appendChild(div);
 
             // --- ADDED EVENT LISTENERS ---
-            // 1. Input Mask for Evaluation
+            // 1. Input Mask for Evaluation (Fix Cursor Jump)
             const evalInput = div.querySelector('.eval');
             evalInput.addEventListener('input', function (e) {
-                let val = e.target.value.replace(/\D/g, '');
-                e.target.value = formatNumberWithSpaces(val);
+                const input = e.target;
+                const oldVal = input.value;
+                const oldSelectionStart = input.selectionStart;
+
+                // Remove non-digits
+                let cleanVal = oldVal.replace(/\D/g, '');
+
+                // Format with spaces
+                const newVal = formatNumberWithSpaces(cleanVal);
+
+                // Update value
+                input.value = newVal;
+
+                // Restore cursor position logic
+                // If we added a space before cursor, move cursor +1
+                // Simple heuristic: keep cursor relative to digits
+                // For now, just setting it to end is annoying, so let's try to preserve
+                // A simple way is to count non-digits before cursor
+
+                // Better approach: use a small timeout or just leave it at end if complex
+                // But user asked to fix jump. 
+                // Let's use a simple cursor preservation:
+
+                const digitsBeforeCursor = oldVal.slice(0, oldSelectionStart).replace(/\D/g, '').length;
+
+                // Find new position
+                let newPos = 0;
+                let digitsSeen = 0;
+                for (let i = 0; i < newVal.length; i++) {
+                    if (/\d/.test(newVal[i])) {
+                        digitsSeen++;
+                    }
+                    if (digitsSeen > digitsBeforeCursor) {
+                        break;
+                    }
+                    newPos = i + 1;
+                }
+
+                // Adjust if we are at a space
+                if (newPos > 0 && /\s/.test(newVal[newPos - 1])) newPos--;
+
+                input.setSelectionRange(newPos, newPos);
             });
 
             // 2. File Input Trigger
@@ -1442,8 +1497,8 @@
 
         function updateBadge() {
             const count = document.getElementById('itemsList').children.length;
-            const badge = document.getElementById('itemCountBadge');
-            if (badge) badge.textContent = count;
+            const headerCount = document.getElementById('itemCountHeader');
+            if (headerCount) headerCount.textContent = `(${count})`;
 
             // Keep button text clean (removed counter)
         }
@@ -1526,7 +1581,7 @@
         // SERVICE WORKER & OFFLINE MODE
         // ============================================
         if ('serviceWorker' in navigator) {
-            const swVersion = '2307'; // Premium Preview Design
+            const swVersion = '2308'; // UX Fixes (Modal, Zoom, Mask, Region)
             const basePath = location.pathname.endsWith('/') ? location.pathname : `${location.pathname}/`;
             const swUrl = `${basePath}service-worker.js?v=${swVersion}`;
             navigator.serviceWorker.register(swUrl)
@@ -2301,6 +2356,20 @@
 
         // Auto-save every 2 seconds
         setInterval(saveDraft, 2000);
+
+        // Smart Region: Load saved region
+        const savedRegion = localStorage.getItem('last_region');
+        if (savedRegion) {
+            const regionSelect = document.getElementById('region');
+            if (regionSelect) {
+                regionSelect.value = savedRegion;
+            }
+        }
+
+        // Save region on change
+        document.getElementById('region').addEventListener('change', (e) => {
+            localStorage.setItem('last_region', e.target.value);
+        });
 
         // Restore draft on page load
         restoreDraft();
