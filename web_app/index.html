@@ -1349,9 +1349,14 @@
             }
         }
 
-        // 3. Input Mask for Ticket (Digits only, max 11)
+        // 3. Input Mask for Ticket (Digits only, max 11) + Auto-focus
         document.getElementById('ticket').addEventListener('input', function (e) {
             e.target.value = e.target.value.replace(/\D/g, '').substring(0, 11);
+
+            // \u2705 UX: Auto-focus to date field when 11 digits entered
+            if (e.target.value.length === 11) {
+                document.getElementById('date').focus();
+            }
         });
 
         // Input Mask for Department and Issue (Digits only)
@@ -1831,6 +1836,11 @@
                     btn.textContent = "Отправка в Telegram...";
                     tg.sendData(JSON.stringify(data));
                     haptic('success');
+
+                    // ✅ UX: Clear ticket for next form (always unique)
+                    document.getElementById('ticket').value = '';
+                    clearDraft();
+
                     // Close WebApp after sending data
                     setTimeout(() => tg.close(), 100);
                 } else {
@@ -1880,7 +1890,11 @@
                     window.URL.revokeObjectURL(url);
                     document.body.removeChild(a);
 
-                    clearDraft(); // Add clear draft call after successful submission
+                    clearDraft();
+
+                    // ✅ UX: Clear ticket for next form (always unique)
+                    document.getElementById('ticket').value = '';
+
                     alert("✅ Документ готов и скачан!");
                     closePreview();
                     btn.disabled = false;
@@ -1915,7 +1929,7 @@
             const draft = {
                 department: document.getElementById('department').value,
                 issue: document.getElementById('issue').value,
-                ticket: document.getElementById('ticket').value,
+                // ticket: excluded - always unique per form
                 date: document.getElementById('date').value,
                 region: document.getElementById('region').value,
                 timestamp: Date.now()
@@ -1935,10 +1949,10 @@
                 return;
             }
 
-            // Restore values
+            // Restore values (ticket excluded - always unique)
             if (draft.department) document.getElementById('department').value = draft.department;
             if (draft.issue) document.getElementById('issue').value = draft.issue;
-            if (draft.ticket) document.getElementById('ticket').value = draft.ticket;
+            // if (draft.ticket) document.getElementById('ticket').value = draft.ticket;  // ❌ Never restore
             if (draft.date) document.getElementById('date').value = draft.date;
             if (draft.region) document.getElementById('region').value = draft.region;
 
