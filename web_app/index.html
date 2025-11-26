@@ -864,7 +864,7 @@
 
 <body>
     <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 10px;">
-        <h1 id="mainTitle" onclick="handleTitleClick()" style="margin: 0;">Новое заключение</h1>
+        <h1 id="mainTitle" style="margin: 0;">Новое заключение</h1>
         <span class="info-icon" onclick="showUserGuide()" title="Инструкция">i</span>
     </div>
 
@@ -1116,7 +1116,8 @@
    • Регион и подразделение запоминаются
    • Данные сохраняются автоматически`;
 
-            tg.showAlert(guide);
+            // Use alert() for browser compatibility
+            alert(guide);
         }
 
         function saveSettings() {
