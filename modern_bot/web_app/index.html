@@ -467,8 +467,8 @@
             transition: opacity 0.3s;
         }
 
-        /* When preview is shown, hide label content but keep input clickable? 
-           Actually, we want to see "Change photo" text. 
+        /* When preview is shown, hide label content but keep input clickable?
+           Actually, we want to see "Change photo" text.
            Let's add a background to label when preview is active? */
 
         .btn-text {
@@ -879,15 +879,16 @@
             font-size: 11px;
         }
 
-        /* Premium Preview Modal Styles */
+        /* Premium Preview Modal Styles - Compact Version */
         .preview-card {
             background: #ffffff;
-            padding: 20px;
-            border-radius: 20px;
-            margin-bottom: 16px;
+            padding: 16px;
+            /* Reduced padding */
+            border-radius: 16px;
+            margin-bottom: 12px;
+            /* Reduced margin */
             box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
             border: none;
-            /* Removed border for cleaner look */
         }
 
         .preview-card.mode-test {
@@ -901,12 +902,14 @@
         }
 
         .preview-section-title {
-            font-size: 12px;
+            font-size: 11px;
+            /* Smaller font */
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: var(--secondary-text);
-            margin-bottom: 16px;
+            margin-bottom: 10px;
+            /* Reduced margin */
             opacity: 0.7;
         }
 
@@ -914,34 +917,37 @@
         .preview-grid {
             display: grid;
             grid-template-columns: auto 1fr;
-            gap: 12px 24px;
+            gap: 8px 16px;
+            /* Reduced gap */
             align-items: baseline;
         }
 
         .preview-label {
             color: var(--secondary-text);
-            font-size: 14px;
+            font-size: 13px;
+            /* Smaller font */
             font-weight: 500;
         }
 
         .preview-value {
             color: var(--text-color);
             font-weight: 700;
-            font-size: 15px;
+            font-size: 14px;
+            /* Smaller font */
             text-align: right;
             font-variant-numeric: tabular-nums;
-            /* Better number alignment */
         }
 
         /* Items List */
         .preview-item {
-            padding: 12px;
+            padding: 10px;
+            /* Reduced padding */
             background: #f8f9fa;
-            border-radius: 16px;
-            margin-bottom: 10px;
+            border-radius: 12px;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
             border: 1px solid rgba(0, 0, 0, 0.03);
         }
 
@@ -950,9 +956,10 @@
         }
 
         .preview-image {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
+            width: 40px;
+            /* Smaller image */
+            height: 40px;
+            border-radius: 8px;
             object-fit: cover;
             background: #fff;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -965,22 +972,24 @@
         .preview-item-desc {
             font-weight: 700;
             color: var(--text-color);
-            font-size: 15px;
-            margin-bottom: 4px;
+            font-size: 14px;
+            /* Smaller font */
+            margin-bottom: 2px;
             line-height: 1.3;
         }
 
         .preview-item-price {
             color: var(--primary-color);
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         /* Total Cost Banner */
         .total-banner {
             background: linear-gradient(135deg, #f0f9ff 0%, #e6f7ff 100%);
-            padding: 20px;
-            border-radius: 20px;
+            padding: 16px;
+            /* Reduced padding */
+            border-radius: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -998,7 +1007,8 @@
         }
 
         .total-amount {
-            font-size: 22px;
+            font-size: 20px;
+            /* Smaller font */
             font-weight: 800;
             color: var(--primary-color);
             letter-spacing: -0.5px;
@@ -1607,7 +1617,7 @@
         // SERVICE WORKER & OFFLINE MODE
         // ============================================
         if ('serviceWorker' in navigator) {
-            const swVersion = '2310'; // Haptic Fix
+            const swVersion = '2311'; // Photo Preview Fix & Compact Summary
             const basePath = location.pathname.endsWith('/') ? location.pathname : `${location.pathname}/`;
             const swUrl = `${basePath}service-worker.js?v=${swVersion}`;
             navigator.serviceWorker.register(swUrl)
@@ -1710,7 +1720,6 @@
             const status = container.querySelector('.upload-status');
 
             // Show loading state
-            previewContainer.innerHTML = '<div class="spinner"></div>';
             previewContainer.classList.add('loading');
             btnText.textContent = "Сжатие...";
             status.textContent = "⏳ Обработка фото...";
@@ -1735,12 +1744,21 @@
                 // Show preview
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    previewContainer.innerHTML = `<img src="${e.target.result}" class="photo-preview">`;
+                    // Update preview div instead of replacing container content
+                    const previewDiv = previewContainer.querySelector('.photo-preview');
+                    // Ensure preview is an img tag or background
+                    // Let's use background-image for better fit, or create an img if not exists
+                    // But current CSS expects .photo-preview to be a div with bg image? 
+                    // Let's check CSS. If it was empty div, we can set bg image.
+
+                    previewDiv.style.backgroundImage = `url(${e.target.result})`;
+                    previewDiv.innerHTML = ''; // Clear any spinner
+
                     previewContainer.classList.add('has-photo');
                     previewContainer.classList.remove('loading');
 
                     // Lightbox trigger
-                    previewContainer.onclick = (evt) => {
+                    previewDiv.onclick = (evt) => {
                         evt.stopPropagation();
                         openLightbox(e.target.result);
                     };
@@ -1771,16 +1789,18 @@
 
                 // Reset UI
                 input.value = '';
-                previewContainer.innerHTML = `
-                    <div class="upload-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="17 8 12 3 7 8"></polyline>
-                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                        </svg>
-                    </div>
-                    <div class="upload-text">Добавить фото</div>
-                `;
+                const previewDiv = previewContainer.querySelector('.photo-preview');
+                previewDiv.style.backgroundImage = ''; // Clear background image
+                previewDiv.innerHTML = ''; // Clear any content
+
+                // Restore default upload label content if it was removed/hidden
+                const uploadLabel = previewContainer.querySelector('.upload-label');
+                if (uploadLabel) {
+                    uploadLabel.style.display = 'flex'; // Ensure it's visible
+                    btnText.textContent = "Добавить фото"; // Reset text
+                    previewContainer.querySelector('.hint').style.display = 'block'; // Show hint
+                }
+
                 previewContainer.classList.remove('loading');
                 previewContainer.classList.remove('has-photo');
                 delete container.dataset.photoUrl;
