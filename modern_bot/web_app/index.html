@@ -1617,7 +1617,7 @@
         // SERVICE WORKER & OFFLINE MODE
         // ============================================
         if ('serviceWorker' in navigator) {
-            const swVersion = '2311'; // Photo Preview Fix & Compact Summary
+            const swVersion = '2312'; // Photo Preview Fix (IMG tag)
             const basePath = location.pathname.endsWith('/') ? location.pathname : `${location.pathname}/`;
             const swUrl = `${basePath}service-worker.js?v=${swVersion}`;
             navigator.serviceWorker.register(swUrl)
@@ -1744,21 +1744,27 @@
                 // Show preview
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    // Update preview div instead of replacing container content
-                    const previewDiv = previewContainer.querySelector('.photo-preview');
-                    // Ensure preview is an img tag or background
-                    // Let's use background-image for better fit, or create an img if not exists
-                    // But current CSS expects .photo-preview to be a div with bg image? 
-                    // Let's check CSS. If it was empty div, we can set bg image.
+                    // Create or get IMG element
+                    let img = previewContainer.querySelector('.photo-preview-img');
+                    if (!img) {
+                        img = document.createElement('img');
+                        img.className = 'photo-preview-img';
+                        img.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 10; border-radius: 16px;';
+                        previewContainer.appendChild(img);
+                    }
 
-                    previewDiv.style.backgroundImage = `url(${e.target.result})`;
-                    previewDiv.innerHTML = ''; // Clear any spinner
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+
+                    // Hide placeholder elements
+                    const label = previewContainer.querySelector('.upload-label');
+                    if (label) label.style.opacity = '0';
 
                     previewContainer.classList.add('has-photo');
                     previewContainer.classList.remove('loading');
 
                     // Lightbox trigger
-                    previewDiv.onclick = (evt) => {
+                    img.onclick = (evt) => {
                         evt.stopPropagation();
                         openLightbox(e.target.result);
                     };
