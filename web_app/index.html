@@ -1378,11 +1378,7 @@
             const badge = document.getElementById('itemCountBadge');
             if (badge) badge.textContent = count;
 
-            // Update button text with counter
-            const btn = document.querySelector('.sticky-footer .btn-primary');
-            if (btn) {
-                btn.textContent = `Проверить и отправить (${count})`;
-            }
+            // Keep button text clean (removed counter)
         }
 
         // --- UX Features ---
@@ -1705,6 +1701,7 @@
 
         function validateForm() {
             let isValid = true;
+            let firstInvalidField = null; // Track first invalid for auto-scroll
             const requiredIds = ['department', 'issue', 'ticket', 'date', 'region'];
 
             requiredIds.forEach(id => {
@@ -1712,6 +1709,7 @@
                 if (!el.value.trim()) {
                     isValid = false;
                     el.classList.add('invalid');
+                    if (!firstInvalidField) firstInvalidField = el;
                     // Add listener to remove invalid class on input
                     el.addEventListener('input', () => el.classList.remove('invalid'), { once: true });
                 } else {
@@ -1719,6 +1717,7 @@
                     if (id === 'ticket' && el.value.length !== 11) {
                         isValid = false;
                         el.classList.add('invalid');
+                        if (!firstInvalidField) firstInvalidField = el;
                         el.addEventListener('input', () => el.classList.remove('invalid'), { once: true });
                     }
                 }
@@ -1732,17 +1731,32 @@
                 if (desc && !desc.value.trim()) {
                     isValid = false;
                     desc.classList.add('invalid');
+                    if (!firstInvalidField) firstInvalidField = desc;
                     desc.addEventListener('input', () => desc.classList.remove('invalid'), { once: true });
                 }
 
                 if (evalInput && !evalInput.value.trim()) {
                     isValid = false;
                     evalInput.classList.add('invalid');
+                    if (!firstInvalidField) firstInvalidField = evalInput;
                     evalInput.addEventListener('input', () => evalInput.classList.remove('invalid'), { once: true });
                 }
             });
 
             if (!isValid) {
+                // Auto-scroll to first invalid field
+                if (firstInvalidField) {
+                    firstInvalidField.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+
+                    // Focus after scroll animation
+                    setTimeout(() => {
+                        firstInvalidField.focus();
+                    }, 500);
+                }
+
                 tg.showAlert("Пожалуйста, заполните все обязательные поля корректно.");
                 haptic('error');
             }
