@@ -1004,11 +1004,14 @@
                 <h3 class="section-title">Предметы</h3>
                 <span id="itemCountBadge" class="badge">1</span>
             </div>
-            <div id="itemsList"></div>
-            <button type="button" class="btn btn-secondary" onclick="addItem()">
-                Добавить предмет
-            </button>
         </div>
+
+        <!-- Items List (moved outside items-header) -->
+        <div id="itemsList"></div>
+
+        <button type="button" class="btn btn-secondary" onclick="addItem()">
+            Добавить предмет
+        </button>
 
         <!-- Mode Toggle (Moved to Bottom) -->
         <label class="mode-label">Режим отправки</label>
@@ -2239,9 +2242,6 @@
 
         // Restore draft on page load
         restoreDraft();
-
-        // Add item (with numbering)
-        let itemCounter = 1;
     </script>
 </body>
 
