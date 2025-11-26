@@ -1981,6 +1981,7 @@
             const btn = document.getElementById('finalSubmitBtn');
             btn.disabled = true;
             btn.textContent = "Подготовка данных...";
+            console.log('Starting submission...');
 
             const items = [];
             const cards = document.querySelectorAll('.item-card');
@@ -1988,13 +1989,16 @@
             // 🚀 NEW: Use pre-uploaded URLs instead of uploading again
             let allUploaded = true;
             for (let i = 0; i < cards.length; i++) {
+                console.log(`Processing card ${i}`);
                 const div = cards[i];
                 const photoUrl = div.dataset.photoUrl;
 
                 // Check if photo was uploaded
                 if (!photoUrl) {
+                    console.log(`Card ${i}: No photo URL`);
                     const fileInput = div.querySelector('.file-input');
                     if (fileInput.files && fileInput.files[0]) {
+                        console.log(`Card ${i}: Photo selected but not uploaded`);
                         // Photo selected but not uploaded yet (shouldn't happen with background upload)
                         allUploaded = false;
                         tg.showAlert('⏳ Дождитесь загрузки всех фотографий');
@@ -2007,9 +2011,11 @@
                         }
                         return;
                     }
+                    console.log(`Card ${i}: No photo selected, skipping`);
                     continue; // Skip items without photos
                 }
 
+                console.log(`Card ${i}: Photo URL found: ${photoUrl}`);
                 // Use pre-uploaded URL
                 items.push({
                     description: div.querySelector('.desc').value,
@@ -2019,12 +2025,14 @@
             }
 
             if (items.length === 0) {
+                console.log('No items to submit');
                 tg.showAlert('❌ Нет загруженных фотографий');
                 btn.disabled = false;
                 btn.textContent = "Отправить";
                 return;
             }
 
+            console.log('Items prepared, sending...', items);
             btn.textContent = "Отправка данных...";
 
             try {
@@ -2152,7 +2160,8 @@
         // AUTO-SAVE DRAFT & RESTORE
         // ============================================
         // 🚀 CloudStorage for cross-device sync
-        async function saveDraft() {
+        // 🚀 Reverted to localStorage for reliability
+        function saveDraft() {
             const draft = {
                 department: document.getElementById('department').value,
                 issue: document.getElementById('issue').value,
@@ -2162,125 +2171,66 @@
                 timestamp: Date.now()
             };
 
-            // Use CloudStorage if available, fallback to localStorage
             try {
-                if (tg.CloudStorage) {
-                    tg.CloudStorage.setItem('formDraft', JSON.stringify(draft));
-                } else {
-                    localStorage.setItem('formDraft', JSON.stringify(draft));
-                }
-            } catch (error) {
-                // Fallback to localStorage if CloudStorage fails
-                console.warn('CloudStorage failed, using localStorage:', error);
                 localStorage.setItem('formDraft', JSON.stringify(draft));
+            } catch (e) {
+                console.error('Save draft error:', e);
             }
         }
 
-        async function restoreDraft() {
-            let draftStr;
-
-            // 🚀 Use CloudStorage if available, fallback to localStorage
-            try {
-                if (tg.CloudStorage) {
-                    draftStr = await new Promise((resolve) => {
-                        tg.CloudStorage.getItem('formDraft', (error, value) => {
-                            if (error) {
-                                console.warn('CloudStorage getItem failed:', error);
-                                resolve(null);
-                            } else {
-                                resolve(value || null);
-                            }
-                        });
-                    });
-                } else {
-                    draftStr = localStorage.getItem('formDraft');
-                }
-            } catch (error) {
-                console.warn('CloudStorage failed, using localStorage:', error);
-                draftStr = localStorage.getItem('formDraft');
-            }
-
+        function restoreDraft() {
+            const draftStr = localStorage.getItem('formDraft');
             if (!draftStr) return;
 
-            const draft = JSON.parse(draftStr);
-            // Only restore if draft is less than 24 hours old
-            const hoursSinceLastSave = (Date.now() - draft.timestamp) / (1000 * 60 * 60);
-            if (hoursSinceLastSave > 24) {
-                try {
-                    if (tg.CloudStorage) {
-                        tg.CloudStorage.removeItem('formDraft');
-                    } else {
-                        localStorage.removeItem('formDraft');
-                    }
-                } catch (error) {
+            try {
+                const draft = JSON.parse(draftStr);
+                // Only restore if draft is less than 24 hours old
+                const hoursSinceLastSave = (Date.now() - draft.timestamp) / (1000 * 60 * 60);
+                if (hoursSinceLastSave > 24) {
                     localStorage.removeItem('formDraft');
+                    return;
                 }
-                return;
-            }
 
-            // Restore values (ticket excluded - always unique)
-            if (draft.department) document.getElementById('department').value = draft.department;
-            if (draft.issue) document.getElementById('issue').value = draft.issue;
-            // if (draft.ticket) document.getElementById('ticket').value = draft.ticket;  // ❌ Never restore
-            if (draft.date) document.getElementById('date').value = draft.date;
+                // Restore values (ticket excluded - always unique)
+                if (draft.department) document.getElementById('department').value = draft.department;
+                if (draft.issue) document.getElementById('issue').value = draft.issue;
+                // if (draft.ticket) document.getElementById('ticket').value = draft.ticket;  // ❌ Never restore
+                if (draft.date) document.getElementById('date').value = draft.date;
 
-            // Smart Auto-fill for Region
-            const regionSelect = document.getElementById('region');
-            if (draft.region) {
-                regionSelect.value = draft.region;
-            } else {
-                // Check smart history from CloudStorage
-                let historyStr;
-                try {
-                    if (tg.CloudStorage) {
-                        historyStr = await new Promise((resolve) => {
-                            tg.CloudStorage.getItem('region_history', (error, value) => {
-                                if (error) resolve('{}');
-                                else resolve(value || '{}');
-                            });
-                        });
-                    } else {
-                        historyStr = localStorage.getItem('region_history') || '{}';
+                // Smart Auto-fill for Region
+                const regionSelect = document.getElementById('region');
+                if (draft.region) {
+                    regionSelect.value = draft.region;
+                } else {
+                    // Check smart history
+                    const history = JSON.parse(localStorage.getItem('region_history') || '{}');
+                    // Find region with > 5 consecutive uses
+                    const smartRegion = Object.keys(history).find(r => history[r] >= 5);
+                    if (smartRegion) {
+                        regionSelect.value = smartRegion;
                     }
-                } catch (error) {
-                    historyStr = localStorage.getItem('region_history') || '{}';
                 }
-                const history = JSON.parse(historyStr);
-                // Find region with > 5 consecutive uses
-                const smartRegion = Object.keys(history).find(r => history[r] >= 5);
-                if (smartRegion) {
-                    regionSelect.value = smartRegion;
-                }
-            }
 
-            // Show notice
-            const notice = document.getElementById('draftNotice');
-            notice.style.display = 'block';
-            setTimeout(() => {
-                notice.style.opacity = '0';
-                notice.style.transition = 'opacity 1s';
-                setTimeout(() => notice.style.display = 'none', 1000);
-            }, 3000);
+                // Show notice
+                const notice = document.getElementById('draftNotice');
+                notice.style.display = 'block';
+                setTimeout(() => {
+                    notice.style.opacity = '0';
+                    notice.style.transition = 'opacity 1s';
+                    setTimeout(() => notice.style.display = 'none', 1000);
+                }, 3000);
+            } catch (e) {
+                console.error('Restore draft error:', e);
+            }
         }
 
         // Track Region Selection
-        document.getElementById('region').addEventListener('change', async (e) => {
+        document.getElementById('region').addEventListener('change', (e) => {
             const region = e.target.value;
             if (!region) return;
 
             try {
-                let historyStr;
-                if (tg.CloudStorage) {
-                    historyStr = await new Promise((resolve) => {
-                        tg.CloudStorage.getItem('region_history', (error, value) => {
-                            if (error) resolve('{}');
-                            else resolve(value || '{}');
-                        });
-                    });
-                } else {
-                    historyStr = localStorage.getItem('region_history') || '{}';
-                }
-                const history = JSON.parse(historyStr);
+                const history = JSON.parse(localStorage.getItem('region_history') || '{}');
 
                 // Reset others, increment selected
                 Object.keys(history).forEach(key => {
@@ -2288,34 +2238,14 @@
                 });
 
                 history[region] = (history[region] || 0) + 1;
-
-                if (tg.CloudStorage) {
-                    tg.CloudStorage.setItem('region_history', JSON.stringify(history));
-                } else {
-                    localStorage.setItem('region_history', JSON.stringify(history));
-                }
-            } catch (error) {
-                console.warn('Region tracking failed, using localStorage:', error);
-                const history = JSON.parse(localStorage.getItem('region_history') || '{}');
-                Object.keys(history).forEach(key => {
-                    if (key !== region) history[key] = 0;
-                });
-                history[region] = (history[region] || 0) + 1;
                 localStorage.setItem('region_history', JSON.stringify(history));
+            } catch (error) {
+                console.warn('Region tracking failed:', error);
             }
         });
 
         function clearDraft() {
-            try {
-                if (tg.CloudStorage) {
-                    tg.CloudStorage.removeItem('formDraft');
-                } else {
-                    localStorage.removeItem('formDraft');
-                }
-            } catch (error) {
-                console.warn('clearDraft failed, using localStorage:', error);
-                localStorage.removeItem('formDraft');
-            }
+            localStorage.removeItem('formDraft');
         }
 
         // Update progress bar
