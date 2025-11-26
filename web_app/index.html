@@ -1349,6 +1349,11 @@
 
         // --- UX Features ---
 
+        // Helper for formatting numbers
+        function formatNumberWithSpaces(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        }
+
         // 1. Drag & Drop
         function handleDragOver(e) {
             e.preventDefault();
@@ -1915,8 +1920,10 @@
                     document.getElementById('ticket').value = '';
                     clearDraft();
 
+                    fireConfetti(); // 🎉 Celebration!
+
                     // Close WebApp after sending data
-                    setTimeout(() => tg.close(), 100);
+                    setTimeout(() => tg.close(), 1000);
                 } else {
                     // Standalone Mode
                     if (!botUrl) {
@@ -1970,6 +1977,7 @@
                     document.getElementById('ticket').value = '';
 
                     fireConfetti(); // 🎉 Celebration!
+
                     alert("✅ Документ готов и скачан!");
                     closePreview();
                     btn.disabled = false;
@@ -2101,7 +2109,6 @@
         // Add item (with numbering)
         let itemCounter = 1;
     </script>
-    <script src="ux-improvements.js"></script>
 </body>
 
 </html>
