@@ -853,9 +853,27 @@
 
         .section-title {
             font-size: 20px;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--text-color);
             margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .items-badge {
+            background: var(--primary-color);
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 12px;
+            margin-left: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 24px;
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.25);
         }
 
         .badge {
@@ -1117,8 +1135,10 @@
         </div>
 
         <div class="items-header">
-            <h3 class="section-title">Предметы <span id="itemCountHeader"
-                    style="opacity: 0.5; font-weight: 400; margin-left: 4px;">(1)</span></h3>
+            <h3 class="section-title">
+                Предметы
+                <span id="itemCountBadge" class="items-badge">1</span>
+            </h3>
         </div>
 
         <!-- Items List (moved outside items-header) -->
@@ -1566,10 +1586,12 @@
 
         function updateBadge() {
             const count = document.getElementById('itemsList').children.length;
-            const headerCount = document.getElementById('itemCountHeader');
-            if (headerCount) headerCount.textContent = `(${count})`;
-
-            // Keep button text clean (removed counter)
+            const badge = document.getElementById('itemCountBadge');
+            if (badge) {
+                badge.textContent = count;
+                // Optional: Hide badge if 0 (though we always have 1 item)
+                // badge.style.display = count > 0 ? 'inline-block' : 'none';
+            }
         }
 
         // --- UX Features ---
@@ -1650,7 +1672,7 @@
         // SERVICE WORKER & OFFLINE MODE
         // ============================================
         if ('serviceWorker' in navigator) {
-            const swVersion = '2313'; // Fix Item Numbering
+            const swVersion = '2314'; // Item Badge UI
             const basePath = location.pathname.endsWith('/') ? location.pathname : `${location.pathname}/`;
             const swUrl = `${basePath}service-worker.js?v=${swVersion}`;
             navigator.serviceWorker.register(swUrl)
