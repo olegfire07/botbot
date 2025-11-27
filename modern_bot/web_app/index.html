@@ -954,6 +954,7 @@
             /* Smaller font */
             text-align: right;
             font-variant-numeric: tabular-nums;
+
         }
 
         /* Items List */
@@ -968,6 +969,72 @@
             gap: 12px;
             border: 1px solid rgba(0, 0, 0, 0.03);
         }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .item-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            animation: slideInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Button Press Effect */
+        .main-button:active,
+        .btn-add:active,
+        .btn-remove:active {
+            transform: scale(0.96);
+        }
+
+        /* Input Focus Effect */
+        .item-field {
+            transition: all 0.2s ease;
+        }
+
+        .item-field:focus {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.15);
+            border-color: var(--primary-color);
+        }
+
+
 
         .preview-item:last-child {
             margin-bottom: 0;
@@ -1672,7 +1739,7 @@
         // SERVICE WORKER & OFFLINE MODE
         // ============================================
         if ('serviceWorker' in navigator) {
-            const swVersion = '2314'; // Item Badge UI
+            const swVersion = '2316'; // Live Animations Fix
             const basePath = location.pathname.endsWith('/') ? location.pathname : `${location.pathname}/`;
             const swUrl = `${basePath}service-worker.js?v=${swVersion}`;
             navigator.serviceWorker.register(swUrl)
