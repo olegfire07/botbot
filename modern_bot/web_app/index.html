@@ -840,6 +840,79 @@
         }
 
         /* Items Header Styles */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+            /* For floating label */
+        }
+
+        .form-group label:not(.floating-label) {
+            /* Legacy support for non-floating labels if any */
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-color);
+            margin-left: 4px;
+        }
+
+        .item-field {
+            width: 100%;
+            padding: 24px 16px 8px;
+            /* Increased top padding for label */
+            border: 2px solid transparent;
+            background: #f2f2f7;
+            border-radius: 14px;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            color: var(--text-color);
+            height: 56px;
+            /* Fixed height for consistency */
+        }
+
+        /* Floating Label Styles */
+        .floating-label {
+            position: absolute;
+            left: 16px;
+            top: 18px;
+            font-size: 16px;
+            color: var(--secondary-text);
+            pointer-events: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: left top;
+            z-index: 1;
+        }
+
+        /* Float State */
+        .item-field:focus~.floating-label,
+        .item-field:not(:placeholder-shown)~.floating-label {
+            transform: translateY(-10px) scale(0.75);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Error State Color */
+        .item-field.invalid~.floating-label {
+            color: var(--error-color);
+        }
+
+        /* Hide placeholder when not focused (optional, cleaner look) */
+        .item-field:not(:focus)::placeholder {
+            opacity: 0;
+        }
+
+        .item-field::placeholder {
+            transition: opacity 0.2s;
+            color: #999;
+        }
+
+        .item-field:focus {
+            background: #fff;
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.1);
+        }
+
         .items-header {
             margin-bottom: 16px;
         }
@@ -1460,16 +1533,16 @@
                 </div>
                 <div class="item-body">
                     <div class="form-group">
-                        <label>Описание</label>
-                        <input type="text" class="desc item-field" placeholder="Кольцо, металл желтого цвета" required>
+                        <input type="text" class="desc item-field" placeholder="Кольцо, металл желтого цвета" required id="desc-${itemCount}">
+                        <label class="floating-label" for="desc-${itemCount}">Описание</label>
                         <div class="error-message"></div>
                         <div class="input-hint">
                             Без указания пробы и вида металла (золото/серебро)
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Оценка (руб.)</label>
-                        <input type="tel" class="eval item-field" placeholder="Сумма" required inputmode="numeric">
+                        <input type="tel" class="eval item-field" placeholder="Сумма" required inputmode="numeric" id="eval-${itemCount}">
+                        <label class="floating-label" for="eval-${itemCount}">Оценка (руб.)</label>
                         <div class="error-message"></div>
                         <div class="input-hint">Только цифры, без пробелов</div>
                     </div>
@@ -1739,7 +1812,7 @@
         // SERVICE WORKER & OFFLINE MODE
         // ============================================
         if ('serviceWorker' in navigator) {
-            const swVersion = '2316'; // Live Animations Fix
+            const swVersion = '2318'; // Floating Labels
             const basePath = location.pathname.endsWith('/') ? location.pathname : `${location.pathname}/`;
             const swUrl = `${basePath}service-worker.js?v=${swVersion}`;
             navigator.serviceWorker.register(swUrl)
