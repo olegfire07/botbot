@@ -1306,10 +1306,10 @@
 
         <div class="footer-note">
             <div class="footer-author">
-                Разработано Жуковым Олегом
+                Жуков Олег
             </div>
             <div class="footer-version">
-                Version 2.5 - 2025-11-26
+                Version 2.0 - 27-11-2025
             </div>
         </div>
     </form>
@@ -1416,7 +1416,7 @@
 2️⃣ Добавьте предметы:
    • Описание без пробы и металла
    • Оценка (только цифры)
-   • Фото (можно перетащить)
+   • Фото
 
 3️⃣ Выберите режим:
    • Оригинал → отправка в группу
@@ -1424,8 +1424,12 @@
 
 4️⃣ Нажмите "Проверить и отправить"`;
 
-            // Use alert() for browser compatibility
-            alert(guide);
+            // Use showPopup for modern Telegram UI
+            if (tg.showPopup) {
+                tg.showPopup({ message: guide });
+            } else {
+                alert(guide); // Fallback for old clients
+            }
         }
 
         function saveSettings() {
@@ -1466,6 +1470,8 @@
         dateInput.setAttribute('max', today);
 
         let itemCount = 0;
+        let appState = 'editing'; // State: 'editing' or 'preview'
+        let autosaveTimeout; // For debounced autosave
 
         // Swipe gesture support
         let touchStartX = 0;
@@ -2070,6 +2076,15 @@
         // 5. Telegram Native UI & Haptic Feedback
         const mainButton = tg.MainButton;
 
+        // State Machine Button Handler
+        function handleMainButton() {
+            if (appState === 'editing') {
+                showPreview();
+            } else if (appState === 'preview') {
+                submitForm();
+            }
+        }
+
         function updateMainButton() {
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 // We are in Telegram
@@ -2078,7 +2093,8 @@
 
                 mainButton.setText("ПРОВЕРИТЬ И ОТПРАВИТЬ");
                 mainButton.show();
-                mainButton.onClick(showPreview);
+                // Use single state-based handler
+                mainButton.onClick(handleMainButton);
             }
         }
 
@@ -2319,11 +2335,10 @@
 
             document.getElementById('previewModal').style.display = 'block';
 
-            // Update Main Button for Submit
+            // Update state to preview mode
+            appState = 'preview';
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 mainButton.setText("ОТПРАВИТЬ");
-                mainButton.offClick(showPreview);
-                mainButton.onClick(submitForm);
             }
         }
 
@@ -2331,11 +2346,10 @@
             haptic('light');
             document.getElementById('previewModal').style.display = 'none';
 
-            // Revert Main Button
+            // Revert state to editing
+            appState = 'editing';
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 mainButton.setText("ПРОВЕРИТЬ И ОТПРАВИТЬ");
-                mainButton.offClick(submitForm);
-                mainButton.onClick(showPreview);
             }
         }
 
@@ -2531,7 +2545,11 @@
 
                     fireConfetti(); // 🎉 Celebration!
 
-                    alert("✅ Документ готов и скачан!");
+                    if (tg.showPopup) {
+                        tg.showPopup({ message: "✅ Документ готов и скачан!" });
+                    } else {
+                        alert("✅ Документ готов и скачан!");
+                    }
                     closePreview();
                     btn.disabled = false;
                     btn.textContent = "Отправить";
@@ -2546,9 +2564,17 @@
                 }
 
                 if (e.name === 'AbortError') {
-                    alert("Ошибка: Превышено время ожидания (30с). Проверьте интернет или URL бота.");
+                    if (tg.showPopup) {
+                        tg.showPopup({ message: "Ошибка: Превышено время ожидания (30с). Проверьте интернет или URL бота." });
+                    } else {
+                        alert("Ошибка: Превышено время ожидания (30с). Проверьте интернет или URL бота.");
+                    }
                 } else {
-                    alert(`Ошибка при отправке: ${e.message}`);
+                    if (tg.showPopup) {
+                        tg.showPopup({ message: `Ошибка при отправке: ${e.message}` });
+                    } else {
+                        alert(`Ошибка при отправке: ${e.message}`);
+                    }
                 }
                 btn.disabled = false;
                 btn.textContent = "Отправить";
@@ -2653,8 +2679,17 @@
             }
         }
 
-        // Auto-save every 2 seconds
-        setInterval(saveDraft, 2000);
+        // Debounced auto-save (saves 1s after last input)
+        function debouncedAutosave() {
+            clearTimeout(autosaveTimeout);
+            autosaveTimeout = setTimeout(() => {
+                saveDraft();
+            }, 1000); // Save 1 second after last change
+        }
+
+        // Attach to all input/change events
+        document.getElementById('mainForm').addEventListener('input', debouncedAutosave);
+        document.getElementById('mainForm').addEventListener('change', debouncedAutosave);
 
         // Smart Region: Load saved region
         const savedRegion = localStorage.getItem('last_region');
