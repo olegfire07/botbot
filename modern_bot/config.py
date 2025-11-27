@@ -36,7 +36,17 @@ def load_bot_token():
     return token
 
 MAIN_GROUP_CHAT_ID: int = -1002381542769
-DEFAULT_ADMIN_IDS: List[int] = [2064900]
+DEFAULT_ADMIN_IDS: List[int] = [
+    2064900,      # Original admin
+    7511144435,
+    960665399,
+    478023829,
+    912447830,
+    465479436,
+    625352555,
+    466509784,
+    649764051
+]
 
 REGION_TOPICS: Dict[str, int] = {
     "Санкт-Петербург": 11, "Свердловская область": 8, "Челябинская область": 6,
