@@ -36,7 +36,3 @@
 2025-11-27 14:15:41,386 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-27.db
 2025-11-27 14:15:41,386 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-27.pickle
 2025-11-27 14:15:41,386 - modern_bot.utils.files - INFO - Backup completed: 2 files
-2025-11-27 14:18:46,664 - modern_bot.handlers.user_management - ERROR - Error adding user 2064900: 'NoneType' object has no attribute 'execute'
-2025-11-27 14:18:46,665 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
-2025-11-27 14:19:52,333 - modern_bot.handlers.user_management - ERROR - Error adding user 2064900: 'NoneType' object has no attribute 'execute'
-2025-11-27 14:19:52,334 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
