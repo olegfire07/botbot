@@ -1,0 +1,3 @@
+2025-11-27 10:19:19,488 - modern_bot - INFO - Bot started.
+2025-11-27 10:19:19,717 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-27 10:19:19,904 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)

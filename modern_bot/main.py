@@ -1,10 +1,10 @@
 import asyncio
 import logging
 from telegram import Update, BotCommand, BotCommandScopeDefault, BotCommandScopeChat
-from telegram.ext import Application, CommandHandler, MessageHandler, filters
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, PicklePersistence
 from modern_bot.config import load_bot_token
 from modern_bot.database.db import init_db, close_db
-from modern_bot.utils.files import clean_temp_files
+from modern_bot.utils.files import clean_temp_files, clean_old_archives, backup_database
 from modern_bot.handlers.common import process_network_recovery
 from modern_bot.handlers.commands import start_handler
 from modern_bot.handlers.help import help_handler
@@ -22,6 +22,12 @@ logger = setup_logger()
 
 async def clean_temp_files_job(context):
     await asyncio.to_thread(clean_temp_files, 3600)
+
+async def clean_archives_job(context):
+    await asyncio.to_thread(clean_old_archives)
+
+async def backup_database_job(context):
+    await asyncio.to_thread(backup_database)
 
 async def network_recovery_job(context):
     await process_network_recovery(context.application.bot)
@@ -91,12 +97,19 @@ def main():
     token = load_bot_token()
     load_admin_ids()
 
+    # Persistence
+    from modern_bot.config import BASE_DIR
+    persistence_file = BASE_DIR / "bot_persistence.pickle"
+    persistence = PicklePersistence(filepath=persistence_file)
+
     # Build Application
-    application = Application.builder().token(token).post_init(post_init).post_shutdown(close_db).build()
+    application = Application.builder().token(token).persistence(persistence).post_init(post_init).post_shutdown(close_db).build()
 
     # Jobs
     job_queue = application.job_queue
     job_queue.run_repeating(clean_temp_files_job, interval=3600, first=60)
+    job_queue.run_repeating(clean_archives_job, interval=86400, first=120) # Run daily
+    job_queue.run_repeating(backup_database_job, interval=86400, first=180) # Run daily
     job_queue.run_repeating(network_recovery_job, interval=60, first=60)
 
     # Middleware

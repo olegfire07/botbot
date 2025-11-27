@@ -99,6 +99,30 @@ async def handle_generate(request):
 async def handle_options(request):
     return web.Response(headers=_get_cors_headers(request))
 
+async def handle_health(request):
+    """Health check endpoint GET /health"""
+    import time
+    from pathlib import Path
+    from modern_bot.config import DATABASE_FILE, BASE_DIR
+    
+    # Calculate uptime
+    start_time = request.app.get('start_time', time.time())
+    uptime_seconds = int(time.time() - start_time)
+    uptime_str = f"{uptime_seconds // 3600}h {(uptime_seconds % 3600) // 60}m"
+    
+    # Check DB connection
+    db_status = "connected" if DATABASE_FILE.exists() else "missing"
+    
+    health_data = {
+        "status": "ok",
+        "bot": "running",
+        "database": db_status,
+        "uptime": uptime_str,
+        "version": "1.0.0"
+    }
+    
+    return web.json_response(health_data, headers=_get_cors_headers(request))
+
 async def handle_root(request):
     """Serve the index.html with injected config"""
     from pathlib import Path
@@ -178,7 +202,9 @@ async def start_api_server(bot, host: str = None, port: int = None):
 
     app = web.Application(client_max_size=max_size_bytes)
     app['bot'] = bot
+    app['start_time'] = __import__('time').time()  # Track start time for uptime
     app.router.add_get('/', handle_root)
+    app.router.add_get('/health', handle_health)
     app.router.add_get('/api/stats', handle_stats)
     app.router.add_post('/api/generate', handle_generate)
     app.router.add_options('/api/generate', handle_options)

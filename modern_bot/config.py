@@ -65,6 +65,7 @@ PREVIEW_MAX_ITEMS: int = 2
 NETWORK_RECOVERY_INTERVAL: float = 45.0
 MAX_PENDING_RESENDS: int = 20
 MENU_BUTTON_LABEL = "/menu 📋"
+ARCHIVE_RETENTION_DAYS: int = 90
 
 PHOTO_REQUIREMENTS_MESSAGE = (
     "Требования к фото:\n"

@@ -41,6 +41,9 @@ async def admin_dashboard_handler(update: Update, context: CallbackContext) -> N
             InlineKeyboardButton("📢 Рассылка", callback_data="admin_broadcast")
         ],
         [
+            InlineKeyboardButton("🖥️ Система", callback_data="admin_system")
+        ],
+        [
             InlineKeyboardButton("🔄 Обновить", callback_data="admin_refresh")
         ]
     ]
@@ -85,6 +88,8 @@ async def admin_callback_handler(update: Update, context: CallbackContext) -> No
         await show_stats(update, context)
     elif action == "admin_analytics":
         await show_analytics(update, context)
+    elif action == "admin_system":
+        await show_system_status(update, context)
     elif action == "admin_download_month":
         await show_download_menu(update, context)
     elif action == "admin_history":
@@ -142,6 +147,72 @@ async def show_stats(update: Update, context: CallbackContext) -> None:
         text += f"• {reg}: {count}\n"
     
     # Add back button
+    keyboard = [[InlineKeyboardButton("◀️ Назад", callback_data="admin_refresh")]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    await update.callback_query.edit_message_text(
+        text,
+        parse_mode="HTML",
+        reply_markup=reply_markup
+    )
+
+async def show_system_status(update: Update, context: CallbackContext) -> None:
+    """Show system status (disk, DB, uptime)."""
+    import time
+    import shutil
+    from modern_bot.config import BASE_DIR, DATABASE_FILE
+    from datetime import datetime
+    
+    # Disk space
+    try:
+        total, used, free = shutil.disk_usage(BASE_DIR)
+        total_gb = total / (1024**3)
+        free_gb = free / (1024**3)
+        used_percent = (used / total) * 100
+        disk_info = f"{free_gb:.1f} GB  / {total_gb:.1f} GB ({used_percent:.0f}% used)"
+    except:
+        disk_info = "N/A"
+    
+    # Database size
+    try:
+        db_size_mb = DATABASE_FILE.stat().st_size / (1024**2)
+        db_info = f"{db_size_mb:.2f} MB"
+    except:
+        db_info = "N/A"
+    
+    # Uptime (estimate from bot start)
+    # Note: This is a rough estimate, actual uptime tracking would need a global variable
+    uptime_info = "Running (exact uptime unavailable)"
+    
+    # Archive stats
+    try:
+        archive_dir = BASE_DIR / "documents_archive"
+        if archive_dir.exists():
+            archive_files = sum(1 for f in archive_dir.rglob('*') if f.is_file() and f.name != 'index.json')
+        else:
+            archive_files = 0
+    except:
+        archive_files = 0
+    
+    # Backup stats  
+    try:
+        backups_dir = BASE_DIR / "backups"
+        if backups_dir.exists():
+            backup_files = sum(1 for f in backups_dir.iterdir() if f.is_file())
+        else:
+            backup_files = 0
+    except:
+        backup_files = 0
+    
+    text = (
+        f"🖥️ <b>Состояние системы</b>\n\n"
+        f"💾 <b>Диск:</b> {disk_info}\n"
+        f"🗄 <b>База данных:</b> {db_info}\n"
+        f"⏱ <b>Uptime:</b> {uptime_info}\n\n"
+        f"📦 <b>Архив:</b> {archive_files} файлов\n"
+        f"💾 <b>Бэкапы:</b> {backup_files} файлов"
+    )
+    
     keyboard = [[InlineKeyboardButton("◀️ Назад", callback_data="admin_refresh")]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
