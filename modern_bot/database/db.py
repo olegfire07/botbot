@@ -20,8 +20,14 @@ def _is_db_ready() -> bool:
 async def init_db() -> None:
     """Initializes the database and creates the table if it doesn't exist."""
     global db
+    
+    # Close existing connection if any
     if db is not None:
-        return
+        try:
+            await db.close()
+        except Exception:
+            pass
+        db = None
     
     try:
         db = await aiosqlite.connect(DATABASE_FILE)
