@@ -110,6 +110,21 @@
             gap: 20px;
         }
 
+        .guide-title {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .guide-btn {
+            margin-top: 24px;
+        }
+
+        .real-time-banner {
+            margin: 20px 0;
+            display: none;
+            animation: fadeInUp 0.5s ease;
+        }
+
         .guide-step {
             display: flex;
             align-items: flex-start;
@@ -1330,8 +1345,7 @@
         <div id="itemsList"></div>
 
         <!-- Total Banner (Real-time) -->
-        <div id="realTimeTotal" class="total-banner"
-            style="margin: 20px 0; display: none; animation: fadeInUp 0.5s ease;">
+        <div id="realTimeTotal" class="total-banner real-time-banner">
             <div class="total-label">💰 Итого:</div>
             <div class="total-amount" id="totalAmountDisplay">0 ₽</div>
         </div>
@@ -1402,7 +1416,7 @@
     <!-- Guide Modal -->
     <div id="guideModal" class="modal">
         <div class="modal-content">
-            <h2 class="no-margin-top" style="text-align: center; margin-bottom: 24px;">Как это работает</h2>
+            <h2 class="no-margin-top guide-title">Как это работает</h2>
 
             <div class="guide-steps">
                 <div class="guide-step">
@@ -1463,7 +1477,7 @@
                 </div>
             </div>
 
-            <button class="btn btn-primary" onclick="closeGuide()" style="margin-top: 24px;">Всё понятно</button>
+            <button class="btn btn-primary guide-btn" onclick="closeGuide()">Всё понятно</button>
         </div>
     </div>
 

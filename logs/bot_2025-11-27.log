@@ -45,3 +45,9 @@
 2025-11-27 14:27:34,048 - modern_bot - INFO - Bot started.
 2025-11-27 14:27:34,393 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
 2025-11-27 14:27:34,605 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-27 14:42:18,978 - modern_bot - INFO - Bot started.
+2025-11-27 14:42:19,192 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-27 14:42:19,431 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-27 14:43:02,453 - modern_bot - INFO - Bot started.
+2025-11-27 14:43:02,597 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-27 14:43:02,813 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
