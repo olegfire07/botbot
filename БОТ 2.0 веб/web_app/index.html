@@ -102,6 +102,50 @@
             animation: fadeInUp 0.6s ease-out 0.1s backwards;
         }
 
+        /* Guide Modal Styles */
+        .guide-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .guide-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .step-icon-wrapper {
+            background: rgba(0, 122, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .step-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--primary-color);
+        }
+
+        .step-text h3 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .step-text p {
+            margin: 0;
+            font-size: 14px;
+            color: var(--secondary-text);
+            line-height: 1.4;
+        }
+
         /* Interactive Section Hover */
         .section:hover {
             transform: translateY(-2px);
@@ -1306,10 +1350,10 @@
 
         <div class="footer-note">
             <div class="footer-author">
-                Разработано Жуковым Олегом
+                Жуков Олег
             </div>
             <div class="footer-version">
-                Version 2.5 - 2025-11-26
+                Version 2.0 - 27-11-2025
             </div>
         </div>
     </form>
@@ -1344,6 +1388,74 @@
             <button class="btn btn-primary" onclick="saveSettings()">Сохранить</button>
             <button class="btn btn-secondary btn-margin-10"
                 onclick="document.getElementById('settingsModal').style.display = 'none'">Закрыть</button>
+        </div>
+    </div>
+
+    <!-- Guide Modal -->
+    <div id="guideModal" class="modal">
+        <div class="modal-content">
+            <h2 class="no-margin-top" style="text-align: center; margin-bottom: 24px;">Как это работает</h2>
+
+            <div class="guide-steps">
+                <div class="guide-step">
+                    <div class="step-icon-wrapper">
+                        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                    </div>
+                    <div class="step-text">
+                        <h3>1. Заполните данные</h3>
+                        <p>Укажите подразделение, номер билета и дату.</p>
+                    </div>
+                </div>
+
+                <div class="guide-step">
+                    <div class="step-icon-wrapper">
+                        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                    </div>
+                    <div class="step-text">
+                        <h3>2. Добавьте предметы</h3>
+                        <p>Загрузите фото и укажите оценку для каждого предмета.</p>
+                    </div>
+                </div>
+
+                <div class="guide-step">
+                    <div class="step-icon-wrapper">
+                        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 11 12 14 22 4"></polyline>
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                        </svg>
+                    </div>
+                    <div class="step-text">
+                        <h3>3. Проверьте</h3>
+                        <p>Нажмите кнопку внизу, чтобы проверить введенные данные.</p>
+                    </div>
+                </div>
+
+                <div class="guide-step">
+                    <div class="step-icon-wrapper">
+                        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </div>
+                    <div class="step-text">
+                        <h3>4. Отправьте</h3>
+                        <p>Выберите режим (Оригинал/Черновик) и отправьте боту.</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="closeGuide()" style="margin-top: 24px;">Всё понятно</button>
         </div>
     </div>
 
@@ -1404,28 +1516,13 @@
         }
 
         function showUserGuide() {
-            const guide = `📋 ИНСТРУКЦИЯ ПО ИСПОЛЬЗОВАНИЮ
+            document.getElementById('guideModal').style.display = 'block';
+            haptic('light');
+        }
 
-1️⃣ Заполните основные поля:
-   • Подразделение (только цифры)
-   • Номер заключения
-   • Номер билета (ровно 11 цифр)
-   • Дата
-   • Регион
-
-2️⃣ Добавьте предметы:
-   • Описание без пробы и металла
-   • Оценка (только цифры)
-   • Фото (можно перетащить)
-
-3️⃣ Выберите режим:
-   • Оригинал → отправка в группу
-   • Черновик → только вам для проверки
-
-4️⃣ Нажмите "Проверить и отправить"`;
-
-            // Use alert() for browser compatibility
-            alert(guide);
+        function closeGuide() {
+            document.getElementById('guideModal').style.display = 'none';
+            haptic('light');
         }
 
         function saveSettings() {
@@ -1466,6 +1563,8 @@
         dateInput.setAttribute('max', today);
 
         let itemCount = 0;
+        let appState = 'editing'; // State: 'editing' or 'preview'
+        let autosaveTimeout; // For debounced autosave
 
         // Swipe gesture support
         let touchStartX = 0;
@@ -2070,6 +2169,15 @@
         // 5. Telegram Native UI & Haptic Feedback
         const mainButton = tg.MainButton;
 
+        // State Machine Button Handler
+        function handleMainButton() {
+            if (appState === 'editing') {
+                showPreview();
+            } else if (appState === 'preview') {
+                submitForm();
+            }
+        }
+
         function updateMainButton() {
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 // We are in Telegram
@@ -2078,7 +2186,8 @@
 
                 mainButton.setText("ПРОВЕРИТЬ И ОТПРАВИТЬ");
                 mainButton.show();
-                mainButton.onClick(showPreview);
+                // Use single state-based handler
+                mainButton.onClick(handleMainButton);
             }
         }
 
@@ -2319,11 +2428,10 @@
 
             document.getElementById('previewModal').style.display = 'block';
 
-            // Update Main Button for Submit
+            // Update state to preview mode
+            appState = 'preview';
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 mainButton.setText("ОТПРАВИТЬ");
-                mainButton.offClick(showPreview);
-                mainButton.onClick(submitForm);
             }
         }
 
@@ -2331,11 +2439,10 @@
             haptic('light');
             document.getElementById('previewModal').style.display = 'none';
 
-            // Revert Main Button
+            // Revert state to editing
+            appState = 'editing';
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 mainButton.setText("ПРОВЕРИТЬ И ОТПРАВИТЬ");
-                mainButton.offClick(submitForm);
-                mainButton.onClick(showPreview);
             }
         }
 
@@ -2531,7 +2638,11 @@
 
                     fireConfetti(); // 🎉 Celebration!
 
-                    alert("✅ Документ готов и скачан!");
+                    if (tg.showPopup) {
+                        tg.showPopup({ message: "✅ Документ готов и скачан!" });
+                    } else {
+                        alert("✅ Документ готов и скачан!");
+                    }
                     closePreview();
                     btn.disabled = false;
                     btn.textContent = "Отправить";
@@ -2546,9 +2657,17 @@
                 }
 
                 if (e.name === 'AbortError') {
-                    alert("Ошибка: Превышено время ожидания (30с). Проверьте интернет или URL бота.");
+                    if (tg.showPopup) {
+                        tg.showPopup({ message: "Ошибка: Превышено время ожидания (30с). Проверьте интернет или URL бота." });
+                    } else {
+                        alert("Ошибка: Превышено время ожидания (30с). Проверьте интернет или URL бота.");
+                    }
                 } else {
-                    alert(`Ошибка при отправке: ${e.message}`);
+                    if (tg.showPopup) {
+                        tg.showPopup({ message: `Ошибка при отправке: ${e.message}` });
+                    } else {
+                        alert(`Ошибка при отправке: ${e.message}`);
+                    }
                 }
                 btn.disabled = false;
                 btn.textContent = "Отправить";
@@ -2653,8 +2772,17 @@
             }
         }
 
-        // Auto-save every 2 seconds
-        setInterval(saveDraft, 2000);
+        // Debounced auto-save (saves 1s after last input)
+        function debouncedAutosave() {
+            clearTimeout(autosaveTimeout);
+            autosaveTimeout = setTimeout(() => {
+                saveDraft();
+            }, 1000); // Save 1 second after last change
+        }
+
+        // Attach to all input/change events
+        document.getElementById('mainForm').addEventListener('input', debouncedAutosave);
+        document.getElementById('mainForm').addEventListener('change', debouncedAutosave);
 
         // Smart Region: Load saved region
         const savedRegion = localStorage.getItem('last_region');

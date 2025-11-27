@@ -40,3 +40,8 @@
 2025-11-27 14:18:46,665 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
 2025-11-27 14:19:52,333 - modern_bot.handlers.user_management - ERROR - Error adding user 2064900: 'NoneType' object has no attribute 'execute'
 2025-11-27 14:19:52,334 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-27 14:25:11,695 - modern_bot.handlers.user_management - ERROR - Error adding user 2064900: 'NoneType' object has no attribute 'execute'
+2025-11-27 14:25:11,697 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-27 14:27:34,048 - modern_bot - INFO - Bot started.
+2025-11-27 14:27:34,393 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-27 14:27:34,605 - modern_bot.database.db - INFO - Database connection closed.
