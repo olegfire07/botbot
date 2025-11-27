@@ -8,16 +8,22 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./user_data.db:/app/user_data.db
-      - ./bot_persistence.pickle:/app/bot_persistence.pickle
+      # Persistent data - will be created automatically if missing
+      - bot_data:/app/user_data.db
+      - bot_persistence:/app/bot_persistence.pickle
       - ./logs:/app/logs
-      - ./photos:/app/photos
       - ./backups:/app/backups
       - ./config:/app/config
       - ./documents:/app/documents
       - ./documents_archive:/app/documents_archive
+      # Optional: mount photos if you want to preserve them
+      - ./photos:/app/photos
     env_file:
       - .env
     environment:
       - API_ENABLED=True
       - API_PORT=8080
+
+volumes:
+  bot_data:
+  bot_persistence:
