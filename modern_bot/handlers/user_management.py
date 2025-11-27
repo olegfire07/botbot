@@ -1,7 +1,7 @@
 import logging
 from telegram import Update
 from telegram.ext import CallbackContext
-from modern_bot.database.db import db, db_lock
+from modern_bot.database.db import get_db, db_lock
 from modern_bot.handlers.admin import is_admin
 from modern_bot.handlers.common import safe_reply
 
@@ -10,6 +10,10 @@ logger = logging.getLogger(__name__)
 async def get_all_users():
     """Get list of all registered users."""
     async with db_lock:
+        db = get_db()
+        if db is None:
+            logger.error("Database not initialized")
+            return []
         try:
             async with db.execute(
                 "SELECT user_id, username, first_name, last_name, last_active FROM users ORDER BY last_active DESC"
@@ -32,6 +36,10 @@ async def get_all_users():
 async def add_user(user_id: int, username: str = None, first_name: str = None, last_name: str = None):
     """Add or update user in the database."""
     async with db_lock:
+        db = get_db()
+        if db is None:
+            logger.error("Database not initialized")
+            return False
         try:
             await db.execute(
                 """INSERT INTO users (user_id, username, first_name, last_name, last_active)
@@ -52,6 +60,9 @@ async def add_user(user_id: int, username: str = None, first_name: str = None, l
 async def remove_user(user_id: int):
     """Remove user from database."""
     async with db_lock:
+        db = get_db()
+        if db is None:
+            return False
         try:
             await db.execute("DELETE FROM users WHERE user_id = ?", (user_id,))
             await db.commit()
@@ -63,6 +74,9 @@ async def remove_user(user_id: int):
 async def get_user_info(user_id: int):
     """Get user information."""
     async with db_lock:
+        db = get_db()
+        if db is None:
+            return None
         try:
             async with db.execute(
                 "SELECT user_id, username, first_name, last_name, last_active FROM users WHERE user_id = ?",

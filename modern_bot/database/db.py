@@ -11,6 +11,10 @@ logger = logging.getLogger(__name__)
 db: Optional[aiosqlite.Connection] = None
 db_lock = asyncio.Lock()
 
+def get_db() -> Optional[aiosqlite.Connection]:
+    """Returns the current database connection."""
+    return db
+
 def _is_db_ready() -> bool:
     if db is None:
         logger.error("Database not initialized. Call init_db() first.")
