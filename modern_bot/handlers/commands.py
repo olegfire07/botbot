@@ -14,7 +14,7 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info(f"⭐ User ID: {user.id} | Name: {user.full_name} | Is Admin: {user_is_admin}")
 
     # Web App URL (GitHub Pages)
-    web_app_url = "https://olegfire07.github.io/botbot/web_app/?v=2.2"
+    web_app_url = "https://olegfire07.github.io/botbot/web_app/?v=2.3"
 
     # Common Buttons
     keyboard = [

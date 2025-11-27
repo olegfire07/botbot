@@ -660,10 +660,18 @@
             animation: slideUp 0.3s;
             max-height: 80vh;
             /* Limit height */
-            overflow-y: auto;
-            /* Enable scroll */
+            overflow: hidden;
+            /* Disable container scroll */
             display: flex;
             flex-direction: column;
+        }
+
+        #previewContent {
+            overflow-y: auto;
+            flex: 1;
+            margin-bottom: 16px;
+            padding-right: 4px;
+            /* Prevent scrollbar overlap */
         }
 
         /* Prevent iOS Zoom on inputs */

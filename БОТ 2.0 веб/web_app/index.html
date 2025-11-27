@@ -11,6 +11,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script
         src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0/dist/cleave.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -107,6 +108,21 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+        }
+
+        .guide-title {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .guide-btn {
+            margin-top: 24px;
+        }
+
+        .real-time-banner {
+            margin: 20px 0;
+            display: none;
+            animation: fadeInUp 0.5s ease;
         }
 
         .guide-step {
@@ -1265,7 +1281,7 @@
                 <label>Номер билета</label>
                 <div class="input-wrapper">
                     <input type="tel" id="ticket" placeholder="03850006392" required maxlength="11" inputmode="numeric"
-                        pattern="[0-9]{11}">
+                        pattern="[0-9]{11}" autocomplete="off">
                     <div class="error-message"></div>
                     <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -1328,8 +1344,14 @@
         <!-- Items List (moved outside items-header) -->
         <div id="itemsList"></div>
 
-        <button type="button" class="btn btn-secondary" onclick="addItem()">
-            Добавить предмет
+        <!-- Total Banner (Real-time) -->
+        <div id="realTimeTotal" class="total-banner real-time-banner">
+            <div class="total-label">💰 Итого:</div>
+            <div class="total-amount" id="totalAmountDisplay">0 ₽</div>
+        </div>
+
+        <button type="button" class="btn btn-secondary btn-dashed" onclick="addItem()">
+            + Добавить предмет
         </button>
 
         <!-- Mode Toggle (Moved to Bottom) -->
@@ -1394,7 +1416,7 @@
     <!-- Guide Modal -->
     <div id="guideModal" class="modal">
         <div class="modal-content">
-            <h2 class="no-margin-top" style="text-align: center; margin-bottom: 24px;">Как это работает</h2>
+            <h2 class="no-margin-top guide-title">Как это работает</h2>
 
             <div class="guide-steps">
                 <div class="guide-step">
@@ -1455,7 +1477,7 @@
                 </div>
             </div>
 
-            <button class="btn btn-primary" onclick="closeGuide()" style="margin-top: 24px;">Всё понятно</button>
+            <button class="btn btn-primary guide-btn" onclick="closeGuide()">Всё понятно</button>
         </div>
     </div>
 
@@ -1612,6 +1634,25 @@
             currentCard = null;
         }
 
+        // Real-time Total Calculation
+        function updateTotalCost() {
+            let total = 0;
+            document.querySelectorAll('.eval').forEach(input => {
+                const val = input.value.replace(/\s/g, ''); // Remove spaces
+                total += parseInt(val) || 0;
+            });
+
+            const banner = document.getElementById('realTimeTotal');
+            const display = document.getElementById('totalAmountDisplay');
+
+            if (total > 0) {
+                banner.style.display = 'flex';
+                display.textContent = total.toLocaleString('ru-RU') + ' ₽';
+            } else {
+                banner.style.display = 'none';
+            }
+        }
+
         function addItem() {
             // Collapse existing items
             collapseAllItems();
@@ -1670,52 +1711,16 @@
             document.getElementById('itemsList').appendChild(div);
 
             // --- ADDED EVENT LISTENERS ---
-            // 1. Input Mask for Evaluation (Fix Cursor Jump)
+            // 1. Input Mask for Evaluation (Cleave.js)
             const evalInput = div.querySelector('.eval');
-            evalInput.addEventListener('input', function (e) {
-                const input = e.target;
-                const oldVal = input.value;
-                const oldSelectionStart = input.selectionStart;
-
-                // Remove non-digits
-                let cleanVal = oldVal.replace(/\D/g, '');
-
-                // Format with spaces
-                const newVal = formatNumberWithSpaces(cleanVal);
-
-                // Update value
-                input.value = newVal;
-
-                // Restore cursor position logic
-                // If we added a space before cursor, move cursor +1
-                // Simple heuristic: keep cursor relative to digits
-                // For now, just setting it to end is annoying, so let's try to preserve
-                // A simple way is to count non-digits before cursor
-
-                // Better approach: use a small timeout or just leave it at end if complex
-                // But user asked to fix jump. 
-                // Let's use a simple cursor preservation:
-
-                const digitsBeforeCursor = oldVal.slice(0, oldSelectionStart).replace(/\D/g, '').length;
-
-                // Find new position
-                let newPos = 0;
-                let digitsSeen = 0;
-                for (let i = 0; i < newVal.length; i++) {
-                    if (/\d/.test(newVal[i])) {
-                        digitsSeen++;
-                    }
-                    if (digitsSeen > digitsBeforeCursor) {
-                        break;
-                    }
-                    newPos = i + 1;
-                }
-
-                // Adjust if we are at a space
-                if (newPos > 0 && /\s/.test(newVal[newPos - 1])) newPos--;
-
-                input.setSelectionRange(newPos, newPos);
+            new Cleave(evalInput, {
+                numeral: true,
+                numeralThousandsGroupStyle: 'thousand',
+                delimiter: ' '
             });
+
+            // Real-time total update
+            evalInput.addEventListener('input', updateTotalCost);
 
             // 2. File Input Trigger
             const fileInput = div.querySelector('.file-input');
@@ -2023,7 +2028,7 @@
                 // Compression options
                 const options = {
                     maxSizeMB: 1,
-                    maxWidthOrHeight: 1920,
+                    maxWidthOrHeight: 1280, // Optimized for speed
                     useWebWorker: true,
                     fileType: 'image/jpeg'
                 };
@@ -2120,8 +2125,9 @@
                 throw new Error('API ключ не настроен');
             }
 
-            // Compress first
-            const compressedBlob = await compressImage(file);
+            // File is already compressed by handleFileSelect (library)
+            // const compressedBlob = await compressImage(file);
+            const compressedBlob = file; // Use directly
 
             const formData = new FormData();
             formData.append('image', compressedBlob, 'image.jpg');
