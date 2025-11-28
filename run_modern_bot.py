@@ -37,6 +37,49 @@ async def notify_admins(message: str):
     except Exception as e:
         print(f"Failed to send admin notifications: {e}")
 
+def check_lockfile():
+    """Check if another instance is already running."""
+    import signal
+    from pathlib import Path
+    
+    lockfile = Path(__file__).parent / ".bot.lock"
+    
+    if lockfile.exists():
+        try:
+            # Read PID from lockfile
+            pid = int(lockfile.read_text().strip())
+            
+            # Check if process is running (send signal 0 - doesn't kill, just checks)
+            try:
+                os.kill(pid, 0)
+                # Process exists!
+                print(f"❌ ОШИБКА: Бот уже запущен (PID {pid})")
+                print(f"   Чтобы остановить: kill {pid}")
+                print(f"   Или принудительно: pkill -f run_modern_bot.py")
+                sys.exit(1)
+            except OSError:
+                # Process doesn't exist - stale lockfile
+                print(f"⚠️  Найден старый lockfile от процесса {pid} (не запущен)")
+                lockfile.unlink()
+        except (ValueError, OSError) as e:
+            print(f"⚠️  Поврежденный lockfile, удаляю...")
+            lockfile.unlink()
+    
+    # Create lockfile with current PID
+    lockfile.write_text(str(os.getpid()))
+    print(f"🔒 Создан lockfile: PID {os.getpid()}")
+    
+    # Cleanup on exit
+    def cleanup_lockfile(signum=None, frame=None):
+        if lockfile.exists():
+            lockfile.unlink()
+            print(f"🗑️  Удален lockfile")
+    
+    import atexit
+    atexit.register(cleanup_lockfile)
+    signal.signal(signal.SIGTERM, cleanup_lockfile)
+    signal.signal(signal.SIGINT, cleanup_lockfile)
+
 def main():
     # Check if we are running in venv
     venv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".venv")
@@ -47,6 +90,9 @@ def main():
             if os.path.exists(python_bin):
                 print(f"🔄 Switching to virtual environment: {python_bin}")
                 os.execv(python_bin, [python_bin] + sys.argv)
+    
+    # Check for existing instance BEFORE any imports
+    check_lockfile()
     
     from modern_bot.main import main as bot_main
     
