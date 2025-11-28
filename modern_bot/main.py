@@ -6,7 +6,7 @@ from modern_bot.config import load_bot_token
 from modern_bot.database.db import init_db, close_db
 from modern_bot.utils.files import clean_temp_files, clean_old_archives, backup_database
 from modern_bot.handlers.common import process_network_recovery
-from modern_bot.handlers.commands import start_handler
+from modern_bot.handlers.commands import start_handler, menu_handler
 from modern_bot.handlers.help import help_handler
 from modern_bot.handlers.admin import (
     add_admin_handler, broadcast_handler, load_admin_ids
@@ -127,6 +127,7 @@ def main():
 
     # Handlers
     application.add_handler(CommandHandler("start", start_handler))
+    application.add_handler(CommandHandler("menu", menu_handler))
     application.add_handler(CommandHandler("help", help_handler))
     
     # Menu Buttons Handlers

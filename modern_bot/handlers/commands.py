@@ -63,6 +63,33 @@ async def help_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_html(text)
 
+async def menu_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Shows main menu with buttons (same as /start).
+    """
+    user = update.effective_user
+    user_is_admin = is_admin(user.id)
+    
+    # Web App URL
+    web_app_url = "https://olegfire07.github.io/botbot/web_app/?v=2.4"
+    
+    # Common Buttons
+    keyboard = [
+        [KeyboardButton("📝 Создать заключение", web_app=WebAppInfo(url=web_app_url))],
+        [KeyboardButton("ℹ️ Помощь")]
+    ]
+    
+    # Add Admin Button if user is admin
+    if user_is_admin:
+        keyboard.append([KeyboardButton("⚙️ Админ-панель")])
+    
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    
+    await update.message.reply_text(
+        "📱 Главное меню:",
+        reply_markup=reply_markup
+    )
+
 async def old_mode_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
     Handler for the 'Old Mode' button.
