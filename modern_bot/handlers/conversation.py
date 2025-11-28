@@ -318,8 +318,23 @@ async def testing_handler(update: Update, context: CallbackContext) -> int:
     await safe_reply(update, "Генерирую документ...", reply_markup=ReplyKeyboardRemove())
     
     try:
+        # CRITICAL: Validate date is not in the future
+        from datetime import datetime
+        data = await load_user_data(user_id)
+        date_str = data.get('date', '')
+        
+        try:
+            date_obj = datetime.strptime(date_str, '%d.%m.%Y')
+            today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+            
+            if date_obj > today:
+                logger.warning(f"Rejected future date in conversation: {date_str}")
+                await safe_reply(update, "⚠️ Ошибка: Нельзя выбрать будущую дату!\n\nВыберите сегодняшнюю или прошедшую дату и начните заново (/start)")
+                return ConversationHandler.END
+        except ValueError:
+            pass  # If date is invalid, let it pass for now (will be caught later)
+        
         if "финал" in mode:
-            data = await load_user_data(user_id)
             await finalize_conclusion(context.bot, user_id, update.message.from_user.full_name, data, send_to_group=True)
             await safe_reply(update, "✅ Заключение сформировано и отправлено.")
         else:
