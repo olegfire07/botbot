@@ -104,23 +104,10 @@ def main():
     logger = logging.getLogger("Restarter")
     
     restart_count = 0
-    start_time = datetime.now()
-    crash_notified = False  # Флаг: уведомление о падении отправлено
 
     while True:
         try:
             logger.info("🚀 Starting bot...")
-            
-            # Если это перезапуск после падения
-            if crash_notified:
-                logger.info("✅ Bot recovered successfully")
-                asyncio.run(notify_admins(
-                    f"🔄 <b>Бот восстановлен</b>\n"
-                    f"🕐 Время: {datetime.now().strftime('%d.%m.%Y %H:%M:%S')}\n"
-                    f"✅ Работает нормально"
-                ))
-                crash_notified = False  # Сброс флага
-            
             bot_main()
             
         except KeyboardInterrupt:
@@ -131,23 +118,8 @@ def main():
         except Exception as e:
             restart_count += 1
             error_trace = traceback.format_exc()
-            logger.error(f"⚠️ Bot crashed with error: {e}")
+            logger.error(f"⚠️ Bot crashed (attempt #{restart_count}): {e}")
             logger.error(f"Traceback:\n{error_trace}")
-            
-            # Отправить уведомление только при первом падении
-            if not crash_notified:
-                logger.warning(f"⚠️ Sending crash notification (attempt #{restart_count})")
-                try:
-                    asyncio.run(notify_admins(
-                        f"⚠️ <b>Бот упал!</b>\n\n"
-                        f"🕐 Время: {datetime.now().strftime('%d.%m.%Y %H:%M:%S')}\n"
-                        f"❌ Ошибка: <code>{str(e)[:150]}</code>\n\n"
-                        f"🔄 Попытка восстановления..."
-                    ))
-                    crash_notified = True
-                except Exception as notify_error:
-                    logger.error(f"Failed to send crash notification: {notify_error}")
-            
             logger.info("🔄 Restarting in 5 seconds...")
             time.sleep(5)
 
