@@ -2514,6 +2514,20 @@
         }
 
         async function submitForm() {
+            // ===== CRITICAL: Validate date before submission =====
+            const dateValue = document.getElementById('date').value;
+            const selectedDate = new Date(dateValue + 'T00:00:00'); // Parse as local date
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Reset time
+
+            if (selectedDate > today) {
+                tg.showAlert('⚠️ Ошибка: Нельзя выбрать будущую дату!\n\nВыберите сегодняшнюю или прошедшую дату.');
+                document.getElementById('date').value = new Date().toISOString().split('T')[0];
+                haptic('error');
+                return;
+            }
+            // ===== END DATE VALIDATION =====
+
             // Disable button
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 mainButton.showProgress();
