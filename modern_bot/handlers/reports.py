@@ -119,30 +119,24 @@ async def download_month_handler(update: Update, context: CallbackContext) -> No
 
 async def stats_handler(update: Update, context: CallbackContext) -> None:
     user_id = update.effective_user.id
-    records = await read_excel_data()
     
-    if is_admin(user_id):
-        # Admin sees overall stats
-        total = len(records)
+    # Only admins can use this command
+    if not is_admin(user_id):
+        await safe_reply(update, "❌ Эта команда доступна только администраторам.")
+        return
+    
+    records = await read_excel_data()
+    total = len(records)
+    
+    # Simple stats by region
+    regions = {}
+    for r in records:
+        reg = r[4]  # Region column
+        regions[reg] = regions.get(reg, 0) + 1
         
-        # Simple stats by region
-        regions = {}
-        for r in records:
-            reg = r[4]  # Region column
-            regions[reg] = regions.get(reg, 0) + 1
-            
-        text = f"📊 **Общая статистика**:\nВсего заключений: {total}\n\n**По регионам**:\n"
-        for reg, count in regions.items():
-            text += f"{reg}: {count}\n"
-    else:
-        # Regular user - for now just show encouragement message
-        # (User tracking is not implemented in Excel yet)
-        if not records:
-            text = "📊 **Общая статистика**:\n\nПока нет заключений в системе.\nНажмите '📝 Создать заключение' чтобы начать!"
-        else:
-            total = len(records)
-            text = f"📊 **Общая статистика**:\n\nВсего заключений в системе: {total}\n\n"
-            text += "Начните создавать свои заключения, нажав '📝 Создать заключение'!"
+    text = f"📊 **Общая статистика**:\nВсего заключений: {total}\n\n**По регионам**:\n"
+    for reg, count in regions.items():
+        text += f"{reg}: {count}\n"
             
     await safe_reply(update, text)
 

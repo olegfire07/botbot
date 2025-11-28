@@ -67,7 +67,6 @@ async def configure_bot_commands(bot):
         BotCommand("start", "📋 Создать заключение"),
         BotCommand("menu", "📱 Главное меню"),
         BotCommand("help", "💡 Помощь"),
-        BotCommand("stats", "📊 Моя статистика"),
     ]
     try:
         # Aggressive cleanup - delete ALL commands first
