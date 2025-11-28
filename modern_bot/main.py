@@ -65,11 +65,16 @@ async def configure_bot_commands(bot):
     # Commands for regular users
     default_commands = [
         BotCommand("start", "📋 Создать заключение"),
+        BotCommand("menu", "📱 Главное меню"),
         BotCommand("help", "💡 Помощь"),
         BotCommand("stats", "📊 Моя статистика"),
     ]
     try:
+        # Clear old commands first (forces update)
+        await bot.delete_my_commands(scope=BotCommandScopeDefault())
+        # Set new commands
         await bot.set_my_commands(default_commands, scope=BotCommandScopeDefault())
+        logger.info(f"✅ Set {len(default_commands)} default commands for regular users")
     except Exception as e:
         logger.warning(f"Failed to set default commands: {e}")
 
@@ -78,6 +83,7 @@ async def configure_bot_commands(bot):
         from modern_bot.handlers.admin import admin_ids
         admin_commands = [
             BotCommand("start", "📋 Создать заключение"),
+            BotCommand("menu", "📱 Главное меню"),
             BotCommand("admin", "🔧 Админ-панель"),
             BotCommand("stats", "📊 Статистика"),
             BotCommand("stats_period", "📈 Статистика за период"),
@@ -86,7 +92,12 @@ async def configure_bot_commands(bot):
             BotCommand("help", "💡 Помощь"),
         ]
         for admin_id in admin_ids:
-            await bot.set_my_commands(admin_commands, scope=BotCommandScopeChat(chat_id=admin_id))
+            try:
+                await bot.delete_my_commands(scope=BotCommandScopeChat(chat_id=admin_id))
+                await bot.set_my_commands(admin_commands, scope=BotCommandScopeChat(chat_id=admin_id))
+            except Exception as admin_err:
+                logger.warning(f"Failed to set admin commands for {admin_id}: {admin_err}")
+        logger.info(f"✅ Set {len(admin_commands)} admin commands for {len(admin_ids)} admins")
     except Exception as e:
         logger.warning(f"Failed to set admin commands: {e}")
 
