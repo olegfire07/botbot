@@ -118,22 +118,39 @@ async def download_month_handler(update: Update, context: CallbackContext) -> No
     await send_month_archive(update, context, month_text, region)
 
 async def stats_handler(update: Update, context: CallbackContext) -> None:
-    if not is_admin(update.effective_user.id):
-        return
-
+    user_id = update.effective_user.id
     records = await read_excel_data()
-    total = len(records)
     
-    # Simple stats by region
-    regions = {}
-    for r in records:
-        reg = r[4] # Region column
-        regions[reg] = regions.get(reg, 0) + 1
+    if is_admin(user_id):
+        # Admin sees overall stats
+        total = len(records)
         
-    text = f"📊 **Общая статистика**:\nВсего заключений: {total}\n\n**По регионам**:\n"
-    for reg, count in regions.items():
-        text += f"{reg}: {count}\n"
+        # Simple stats by region
+        regions = {}
+        for r in records:
+            reg = r[4]  # Region column
+            regions[reg] = regions.get(reg, 0) + 1
+            
+        text = f"📊 **Общая статистика**:\nВсего заключений: {total}\n\n**По регионам**:\n"
+        for reg, count in regions.items():
+            text += f"{reg}: {count}\n"
+    else:
+        # Regular user sees only their own stats
+        # Filter records by user (assuming column index for user_id exists)
+        # If there's no user tracking in Excel, show message
+        user_records = [r for r in records if r.get('user_id') == user_id] if records else []
         
+        if not user_records or not records:
+            text = "📊 **Моя статистика**:\n\nУ вас пока нет заключений.\nНажмите '📝 Создать заключение' чтобы начать!"
+        else:
+            total_user = len(user_records)
+            # Calculate total evaluation
+            total_eval = sum(int(r[7]) if r[7] and str(r[7]).isdigit() else 0 for r in user_records)
+            
+            text = f"📊 **Моя статистика**:\n"
+            text += f"Всего заключений: {total_user}\n"
+            text += f"Общая оценка: {total_eval:,} ₽\n"
+            
     await safe_reply(update, text)
 
 async def stats_period_handler(update: Update, context: CallbackContext) -> None:
