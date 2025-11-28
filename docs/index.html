@@ -3,12 +3,15 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Создание заключения</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0/dist/cleave.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -32,6 +35,8 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             margin: 0;
             padding: 20px;
+            padding-bottom: 100px;
+            /* Fix sticky footer overlap */
             min-height: 100vh;
             color: var(--text-color);
             background-color: #f0f2f5;
@@ -87,8 +92,8 @@
 
         .section {
             background: var(--card-bg);
-            backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
+            backdrop-filter: blur(30px);
             border-radius: var(--radius-lg);
             padding: 24px;
             margin-bottom: 24px;
@@ -96,6 +101,65 @@
             border: var(--glass-border);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             animation: fadeInUp 0.6s ease-out 0.1s backwards;
+        }
+
+        /* Guide Modal Styles */
+        .guide-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .guide-title {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .guide-btn {
+            margin-top: 24px;
+        }
+
+        .real-time-banner {
+            margin: 20px 0;
+            display: none;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .guide-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .step-icon-wrapper {
+            background: rgba(0, 122, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .step-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--primary-color);
+        }
+
+        .step-text h3 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .step-text p {
+            margin: 0;
+            font-size: 14px;
+            color: var(--secondary-text);
+            line-height: 1.4;
         }
 
         /* Interactive Section Hover */
@@ -155,8 +219,8 @@
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             color: var(--text-color);
             box-shadow: none;
-            appearance: none;
             -webkit-appearance: none;
+            appearance: none;
             /* Mobile fixes */
             box-sizing: border-box;
             max-width: 100%;
@@ -312,8 +376,8 @@
         /* Glass Button Style for Submit */
         .btn-primary {
             background: rgba(0, 122, 255, 0.85);
-            backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
             color: white;
             box-shadow: 0 8px 20px rgba(0, 122, 255, 0.25);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -404,7 +468,6 @@
             margin-top: 16px;
             border-radius: 16px;
             overflow: hidden;
-            overflow: hidden;
             background: rgba(0, 122, 255, 0.03);
             border: 2px dashed rgba(0, 0, 0, 0.1);
             position: relative;
@@ -464,8 +527,8 @@
             transition: opacity 0.3s;
         }
 
-        /* When preview is shown, hide label content but keep input clickable? 
-           Actually, we want to see "Change photo" text. 
+        /* When preview is shown, hide label content but keep input clickable?
+           Actually, we want to see "Change photo" text.
            Let's add a background to label when preview is active? */
 
         .btn-text {
@@ -532,6 +595,7 @@
             margin: 0;
             position: relative;
             z-index: 1;
+            -webkit-user-select: none;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
@@ -579,20 +643,42 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
             animation: fadeIn 0.3s;
         }
 
         .modal-content {
             background: #ffffff;
-            margin: 15% auto;
+            margin: 10% auto;
+            /* Reduced top margin */
             padding: 24px;
             border-radius: 24px;
             width: 85%;
             max-width: 400px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
             animation: slideUp 0.3s;
+            max-height: 80vh;
+            /* Limit height */
+            overflow: hidden;
+            /* Disable container scroll */
+            display: flex;
+            flex-direction: column;
+        }
+
+        #previewContent {
+            overflow-y: auto;
+            flex: 1;
+            margin-bottom: 16px;
+            padding-right: 4px;
+            /* Prevent scrollbar overlap */
+        }
+
+        /* Prevent iOS Zoom on inputs */
+        input,
+        select,
+        textarea {
+            font-size: 16px !important;
         }
 
         @keyframes fadeIn {
@@ -660,8 +746,8 @@
             right: 0;
             padding: 12px 20px;
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
             border-top: 1px solid rgba(0, 0, 0, 0.08);
             z-index: 100;
             box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
@@ -681,6 +767,30 @@
             font-size: 13px;
             margin-top: 8px;
             color: var(--secondary-text);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(0, 122, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .photo-preview-container.loading {
+            pointer-events: none;
+            opacity: 0.7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .upload-status.success {
@@ -757,15 +867,385 @@
             width: 140px;
             vertical-align: middle;
         }
+
+        .skeleton-loader {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            z-index: 10;
+            border-radius: inherit;
+            display: none;
+        }
+
+        .stats-counter {
+            text-align: center;
+            color: var(--secondary-text);
+            font-size: 13px;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .title-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .title-header h1 {
+            margin: 0;
+        }
+
+        /* Items Header Styles */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+            /* For floating label */
+        }
+
+        .form-group label:not(.floating-label) {
+            /* Legacy support for non-floating labels if any */
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-color);
+            margin-left: 4px;
+        }
+
+        .item-field {
+            width: 100%;
+            padding: 24px 16px 8px;
+            /* Increased top padding for label */
+            border: 2px solid transparent;
+            background: #f2f2f7;
+            border-radius: 14px;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            color: var(--text-color);
+            height: 56px;
+            /* Fixed height for consistency */
+        }
+
+        /* Floating Label Styles */
+        .floating-label {
+            position: absolute;
+            left: 16px;
+            top: 18px;
+            font-size: 16px;
+            color: var(--secondary-text);
+            pointer-events: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: left top;
+            z-index: 1;
+        }
+
+        /* Float State */
+        .item-field:focus~.floating-label,
+        .item-field:not(:placeholder-shown)~.floating-label {
+            transform: translateY(-10px) scale(0.75);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Error State Color */
+        .item-field.invalid~.floating-label {
+            color: var(--error-color);
+        }
+
+        /* Hide placeholder when not focused (optional, cleaner look) */
+        .item-field:not(:focus)::placeholder {
+            opacity: 0;
+        }
+
+        .item-field::placeholder {
+            transition: opacity 0.2s;
+            color: #999;
+        }
+
+        .item-field:focus {
+            background: #fff;
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.1);
+        }
+
+        .items-header {
+            margin-bottom: 16px;
+        }
+
+        .flex-space {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .items-badge {
+            background: var(--primary-color);
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 12px;
+            margin-left: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 24px;
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.25);
+        }
+
+        .badge {
+            background: var(--primary-color);
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 12px;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .footer-author {
+            opacity: 0.5;
+            font-size: 10px;
+            margin-bottom: 2px;
+        }
+
+        .footer-version {
+            font-size: 11px;
+        }
+
+        /* Premium Preview Modal Styles - Compact Version */
+        .preview-card {
+            background: #ffffff;
+            padding: 16px;
+            /* Reduced padding */
+            border-radius: 16px;
+            margin-bottom: 12px;
+            /* Reduced margin */
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            border: none;
+        }
+
+        .preview-card.mode-test {
+            background: linear-gradient(135deg, rgba(255, 165, 0, 0.1) 0%, rgba(255, 140, 0, 0.05) 100%);
+            border: 1px solid rgba(255, 165, 0, 0.2);
+        }
+
+        .preview-card.mode-final {
+            background: linear-gradient(135deg, rgba(52, 199, 89, 0.1) 0%, rgba(40, 167, 69, 0.05) 100%);
+            border: 1px solid rgba(52, 199, 89, 0.2);
+        }
+
+        .preview-section-title {
+            font-size: 11px;
+            /* Smaller font */
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--secondary-text);
+            margin-bottom: 10px;
+            /* Reduced margin */
+            opacity: 0.7;
+        }
+
+        /* Grid Layout for Data */
+        .preview-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 8px 16px;
+            /* Reduced gap */
+            align-items: baseline;
+        }
+
+        .preview-label {
+            color: var(--secondary-text);
+            font-size: 13px;
+            /* Smaller font */
+            font-weight: 500;
+        }
+
+        .preview-value {
+            color: var(--text-color);
+            font-weight: 700;
+            font-size: 14px;
+            /* Smaller font */
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+
+        }
+
+        /* Items List */
+        .preview-item {
+            padding: 10px;
+            /* Reduced padding */
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .item-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            animation: slideInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Button Press Effect */
+        .main-button:active,
+        .btn-add:active,
+        .btn-remove:active {
+            transform: scale(0.96);
+        }
+
+        /* Input Focus Effect */
+        .item-field {
+            transition: all 0.2s ease;
+        }
+
+        .item-field:focus {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.15);
+            border-color: var(--primary-color);
+        }
+
+
+
+        .preview-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .preview-image {
+            width: 40px;
+            /* Smaller image */
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .preview-item-content {
+            flex: 1;
+        }
+
+        .preview-item-desc {
+            font-weight: 700;
+            color: var(--text-color);
+            font-size: 14px;
+            /* Smaller font */
+            margin-bottom: 2px;
+            line-height: 1.3;
+        }
+
+        .preview-item-price {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        /* Total Cost Banner */
+        .total-banner {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e6f7ff 100%);
+            padding: 16px;
+            /* Reduced padding */
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            border: 1px solid rgba(0, 122, 255, 0.1);
+        }
+
+        .total-label {
+            font-size: 15px;
+            color: var(--text-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .total-amount {
+            font-size: 20px;
+            /* Smaller font */
+            font-weight: 800;
+            color: var(--primary-color);
+            letter-spacing: -0.5px;
+        }
     </style>
 </head>
 
 <body>
-    <h1 id="mainTitle" onclick="handleTitleClick()">Новое заключение</h1>
-    <div id="statsCounter"
-        style="text-align: center; color: var(--secondary-text); font-size: 13px; margin-top: -10px; margin-bottom: 20px; opacity: 0.8; display: flex; align-items: center; justify-content: center; gap: 8px;">
-        <span id="statsText"><span class="skeleton"></span></span>
-        <span class="info-icon" onclick="showStatsInfo()">i</span>
+    <div class="title-header">
+        <h1 id="mainTitle">Новое заключение</h1>
+        <span class="info-icon" onclick="showUserGuide()" title="Инструкция">i</span>
     </div>
 
     <!-- Draft Notice -->
@@ -809,7 +1289,7 @@
                 <label>Номер билета</label>
                 <div class="input-wrapper">
                     <input type="tel" id="ticket" placeholder="03850006392" required maxlength="11" inputmode="numeric"
-                        pattern="[0-9]{11}">
+                        pattern="[0-9]{11}" autocomplete="off">
                     <div class="error-message"></div>
                     <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -823,7 +1303,7 @@
             <div class="form-group">
                 <label>Дата</label>
                 <div class="input-wrapper">
-                    <input type="date" id="date" required max="">
+                    <input type="date" id="date" required placeholder="Дата" title="Дата">
                     <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -837,7 +1317,7 @@
             <div class="form-group">
                 <label>Регион</label>
                 <div class="input-wrapper">
-                    <select id="region" required>
+                    <select id="region" required aria-label="Регион">
                         <option value="" disabled selected>Выберите регион</option>
                         <option value="Санкт-Петербург">Санкт-Петербург</option>
                         <option value="Свердловская область">Свердловская область</option>
@@ -862,20 +1342,28 @@
             </div>
         </div>
 
-        <div style="margin-bottom: 16px; padding: 0 8px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <h3 style="margin:0; font-size: 20px; font-weight: 700;">Предметы</h3>
-                <span id="itemCountBadge"
-                    style="background: var(--accent-color); padding: 4px 10px; border-radius: 12px; font-size: 13px; color: white; font-weight: 600;">1</span>
-            </div>
-            <div id="itemsList"></div>
-            <button type="button" class="btn btn-secondary" onclick="addItem()">
-                Добавить предмет
-            </button>
+        <div class="items-header">
+            <h3 class="section-title">
+                Предметы
+                <span id="itemCountBadge" class="items-badge">1</span>
+            </h3>
         </div>
 
+        <!-- Items List (moved outside items-header) -->
+        <div id="itemsList"></div>
+
+        <!-- Total Banner (Real-time) -->
+        <div id="realTimeTotal" class="total-banner real-time-banner">
+            <div class="total-label">💰 Итого:</div>
+            <div class="total-amount" id="totalAmountDisplay">0 ₽</div>
+        </div>
+
+        <button type="button" class="btn btn-secondary btn-dashed" onclick="addItem()">
+            + Добавить предмет
+        </button>
+
         <!-- Mode Toggle (Moved to Bottom) -->
-        <label style="margin-left: 4px; margin-bottom: 8px;">Режим отправки</label>
+        <label class="mode-label">Режим отправки</label>
         <div class="segmented-control">
             <input type="radio" name="mode" id="mode-final" value="final" checked>
             <label for="mode-final">Оригинал (В группу)</label>
@@ -890,19 +1378,24 @@
             </button>
         </div>
 
-        <div style="text-align: center; margin-top: 20px; color: var(--secondary-text); font-size: 11px; opacity: 0.5;">
-            Version 2.3 (Auto-Key) - 2025-11-24
+        <div class="footer-note">
+            <div class="footer-author">
+                Жуков Олег
+            </div>
+            <div class="footer-version">
+                Version 2.0 - 27-11-2025
+            </div>
         </div>
     </form>
 
     <!-- Preview Modal -->
     <div id="previewModal" class="modal">
         <div class="modal-content">
-            <h2 style="margin-top:0">Проверка данных</h2>
+            <h2 class="no-margin-top">Проверка данных</h2>
             <div id="previewContent"></div>
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <div class="flex-gap">
                 <button class="btn btn-secondary" onclick="closePreview()">Назад</button>
-                <button class="btn btn-primary" style="margin-top:0" onclick="submitForm()"
+                <button class="btn btn-primary btn-no-margin" onclick="submitForm()"
                     id="finalSubmitBtn">Отправить</button>
             </div>
         </div>
@@ -911,7 +1404,7 @@
     <!-- Settings Modal -->
     <div id="settingsModal" class="modal">
         <div class="modal-content">
-            <h2 style="margin-top:0">Настройки</h2>
+            <h2 class="no-margin-top">Настройки</h2>
             <div class="form-group">
                 <label>ImgBB API Key</label>
                 <input type="text" id="apiKeyInput" placeholder="Введите ключ с api.imgbb.com">
@@ -923,8 +1416,76 @@
                 <div class="hint-text">Оставьте пустым, если используете внутри Telegram</div>
             </div>
             <button class="btn btn-primary" onclick="saveSettings()">Сохранить</button>
-            <button class="btn btn-secondary" style="margin-top:10px"
+            <button class="btn btn-secondary btn-margin-10"
                 onclick="document.getElementById('settingsModal').style.display = 'none'">Закрыть</button>
+        </div>
+    </div>
+
+    <!-- Guide Modal -->
+    <div id="guideModal" class="modal">
+        <div class="modal-content">
+            <h2 class="no-margin-top guide-title">Как это работает</h2>
+
+            <div class="guide-steps">
+                <div class="guide-step">
+                    <div class="step-icon-wrapper">
+                        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                    </div>
+                    <div class="step-text">
+                        <h3>1. Заполните данные</h3>
+                        <p>Укажите подразделение, номер билета и дату.</p>
+                    </div>
+                </div>
+
+                <div class="guide-step">
+                    <div class="step-icon-wrapper">
+                        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                    </div>
+                    <div class="step-text">
+                        <h3>2. Добавьте предметы</h3>
+                        <p>Загрузите фото и укажите оценку для каждого предмета.</p>
+                    </div>
+                </div>
+
+                <div class="guide-step">
+                    <div class="step-icon-wrapper">
+                        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 11 12 14 22 4"></polyline>
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                        </svg>
+                    </div>
+                    <div class="step-text">
+                        <h3>3. Проверьте</h3>
+                        <p>Нажмите кнопку внизу, чтобы проверить введенные данные.</p>
+                    </div>
+                </div>
+
+                <div class="guide-step">
+                    <div class="step-icon-wrapper">
+                        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </div>
+                    <div class="step-text">
+                        <h3>4. Отправьте</h3>
+                        <p>Выберите режим (Оригинал/Черновик) и отправьте боту.</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary guide-btn" onclick="closeGuide()">Всё понятно</button>
         </div>
     </div>
 
@@ -934,38 +1495,26 @@
         // --- CONFIGURATION ---
         // WARNING: These are default values for local/demo use.
         // For production, consider injecting these via environment variables or a build step.
+        // --- SECURITY: XSS PROTECTION ---
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return String(unsafe)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
         const APP_CONFIG = {
             DEFAULT_BOT_URL: window.APP_DEFAULT_BOT_URL || "",
             DEFAULT_IMGBB_KEY: window.APP_DEFAULT_IMGBB_KEY || "364e06e6ef30dffbda1950db29da2a6a"
         };
 
-        // 5. Fetch Stats
-        async function fetchStats() {
-            try {
-                const response = await fetch('/api/stats');
-                if (response.ok) {
-                    const data = await response.json();
-                    const counter = document.getElementById('statsText');
-                    if (counter) {
-                        counter.textContent = `📅 В этом месяце создано: ${data.count}`;
-                    }
-                }
-            } catch (e) {
-                console.warn("Failed to fetch stats", e);
-                document.getElementById('statsCounter').style.display = 'none';
-            }
-        }
-
-        function showStatsInfo() {
-            haptic('light');
-            tg.showAlert("Статистика показывает количество заключений, созданных в вашем подразделении за текущий месяц.");
-        }
-
         // Initialize
         tg.expand();
         // Assuming restoreDraft() exists elsewhere or will be added.
         // restoreDraft();
-        fetchStats();
 
         // Load API Key (default to the provided one if not in storage)
         let imgbbKey = localStorage.getItem('imgbb_key') || APP_CONFIG.DEFAULT_IMGBB_KEY;
@@ -994,6 +1543,16 @@
                 document.getElementById('settingsModal').style.display = 'block';
                 titleClicks = 0;
             }
+        }
+
+        function showUserGuide() {
+            document.getElementById('guideModal').style.display = 'block';
+            haptic('light');
+        }
+
+        function closeGuide() {
+            document.getElementById('guideModal').style.display = 'none';
+            haptic('light');
         }
 
         function saveSettings() {
@@ -1033,7 +1592,20 @@
         dateInput.valueAsDate = new Date();
         dateInput.setAttribute('max', today);
 
+        // Additional validation on change (for iOS compatibility)
+        dateInput.addEventListener('change', function () {
+            const selectedDate = new Date(this.value);
+            const todayDate = new Date(today);
+
+            if (selectedDate > todayDate) {
+                tg.showAlert('⚠️ Нельзя выбрать будущую дату! Выберите сегодня или прошедшую дату.');
+                this.value = today; // Reset to today
+            }
+        });
+
         let itemCount = 0;
+        let appState = 'editing'; // State: 'editing' or 'preview'
+        let autosaveTimeout; // For debounced autosave
 
         // Swipe gesture support
         let touchStartX = 0;
@@ -1042,16 +1614,6 @@
 
         function handleTouchStart(e) {
             const card = e.currentTarget.closest('.item-card');
-            if (!card) return;
-
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-            currentCard = card;
-        }
-
-        function handleTouchMove(e) {
-            if (!currentCard) return;
-
             const touchX = e.touches[0].clientX;
             const touchY = e.touches[0].clientY;
             const diffX = touchX - touchStartX;
@@ -1091,42 +1653,55 @@
             currentCard = null;
         }
 
+        // Real-time Total Calculation
+        function updateTotalCost() {
+            let total = 0;
+            document.querySelectorAll('.eval').forEach(input => {
+                const val = input.value.replace(/\s/g, ''); // Remove spaces
+                total += parseInt(val) || 0;
+            });
+
+            const banner = document.getElementById('realTimeTotal');
+            const display = document.getElementById('totalAmountDisplay');
+
+            if (total > 0) {
+                banner.style.display = 'flex';
+                display.textContent = total.toLocaleString('ru-RU') + ' ₽';
+            } else {
+                banner.style.display = 'none';
+            }
+        }
+
         function addItem() {
             // Collapse existing items
             collapseAllItems();
 
-            itemCount++;
-            updateBadge();
-
+            // Create new item
             const div = document.createElement('div');
             div.className = 'item-card';
-            div.id = `item-${itemCount}`;
+            // ID and Title will be fixed by renumberItems()
             div.innerHTML = `
                 <div class="item-header" onclick="toggleItem(this)">
                     <div class="item-header-info">
-                        <span class="item-title">Предмет #${itemCount}</span>
+                        <span class="item-title">Предмет</span>
                         <span class="item-summary"></span>
                     </div>
                     <div style="display: flex; gap: 8px;">
-                        ${itemCount > 1 ? `
-                        <button type="button" class="btn-remove" onclick="removeItem(this, event)">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                            Удалить
-                        </button>` : ''}
+                        <!-- Remove button will be added by renumberItems if needed -->
                     </div>
                 </div>
                 <div class="item-body">
                     <div class="form-group">
-                        <label>Описание</label>
-                        <input type="text" class="desc item-field" placeholder="Кольцо, металл желтого цвета" required>
+                        <input type="text" class="desc item-field" placeholder="Кольцо, металл желтого цвета" required id="desc-${itemCount}">
+                        <label class="floating-label" for="desc-${itemCount}">Описание</label>
                         <div class="error-message"></div>
                         <div class="input-hint">
                             Без указания пробы и вида металла (золото/серебро)
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Оценка (руб.)</label>
-                        <input type="tel" class="eval item-field" placeholder="Сумма" required inputmode="numeric">
+                        <input type="tel" class="eval item-field" placeholder="Сумма" required inputmode="numeric" id="eval-${itemCount}">
+                        <label class="floating-label" for="eval-${itemCount}">Оценка (руб.)</label>
                         <div class="error-message"></div>
                         <div class="input-hint">Только цифры, без пробелов</div>
                     </div>
@@ -1153,11 +1728,84 @@
                 </div>
             `;
             document.getElementById('itemsList').appendChild(div);
+
+            // --- ADDED EVENT LISTENERS ---
+            // 1. Input Mask for Evaluation (Cleave.js)
+            const evalInput = div.querySelector('.eval');
+            new Cleave(evalInput, {
+                numeral: true,
+                numeralThousandsGroupStyle: 'thousand',
+                delimiter: ' '
+            });
+
+            // Real-time total update
+            evalInput.addEventListener('input', updateTotalCost);
+
+            // 2. File Input Trigger
+            const fileInput = div.querySelector('.file-input');
+            const previewContainer = div.querySelector('.photo-preview-container');
+
+            // Handle click on container to trigger file input
+            previewContainer.onclick = (e) => {
+                // Prevent double trigger if clicking on label/input directly
+                if (e.target !== fileInput && !e.target.closest('.upload-label')) {
+                    fileInput.click();
+                }
+            };
+
+            // 3. Validation clearing
+            const inputs = div.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    input.classList.remove('invalid');
+                    const errorMsg = input.closest('.form-group')?.querySelector('.error-message');
+                    if (errorMsg) errorMsg.classList.remove('show');
+                });
+            });
+
+
+            // Fix numbering
+            document.getElementById('itemsList').appendChild(div);
+            renumberItems();
         }
 
         function removeItem(btn, event) {
             if (event) event.stopPropagation();
             btn.closest('.item-card').remove();
+            renumberItems();
+        }
+
+        function renumberItems() {
+            const items = document.querySelectorAll('.item-card');
+            items.forEach((card, index) => {
+                const num = index + 1;
+                card.id = `item-${num}`;
+
+                // Update Title
+                const title = card.querySelector('.item-title');
+                if (title) title.textContent = `Предмет #${num}`;
+
+                // Update Remove Button visibility
+                const headerBtnContainer = card.querySelector('.item-header > div:last-child');
+                if (headerBtnContainer) {
+                    if (num > 1) {
+                        // Add button if missing
+                        if (!headerBtnContainer.querySelector('.btn-remove')) {
+                            headerBtnContainer.innerHTML = `
+                                <button type="button" class="btn-remove" onclick="removeItem(this, event)">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                    Удалить
+                                </button>`;
+                        }
+                    } else {
+                        // Remove button for first item
+                        headerBtnContainer.innerHTML = '';
+                    }
+                }
+            });
+
+            // Update global counter
+            itemCount = items.length;
             updateBadge();
         }
 
@@ -1201,10 +1849,20 @@
 
         function updateBadge() {
             const count = document.getElementById('itemsList').children.length;
-            document.getElementById('itemCountBadge').textContent = count;
+            const badge = document.getElementById('itemCountBadge');
+            if (badge) {
+                badge.textContent = count;
+                // Optional: Hide badge if 0 (though we always have 1 item)
+                // badge.style.display = count > 0 ? 'inline-block' : 'none';
+            }
         }
 
         // --- UX Features ---
+
+        // Helper for formatting numbers
+        function formatNumberWithSpaces(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        }
 
         // 1. Drag & Drop
         function handleDragOver(e) {
@@ -1238,9 +1896,14 @@
             }
         }
 
-        // 3. Input Mask for Ticket (Digits only, max 11)
+        // 3. Input Mask for Ticket (Digits only, max 11) + Auto-focus
         document.getElementById('ticket').addEventListener('input', function (e) {
             e.target.value = e.target.value.replace(/\D/g, '').substring(0, 11);
+
+            // \u2705 UX: Auto-focus to date field when 11 digits entered
+            if (e.target.value.length === 11) {
+                document.getElementById('date').focus();
+            }
         });
 
         // Input Mask for Department and Issue (Digits only)
@@ -1249,6 +1912,16 @@
                 e.target.value = e.target.value.replace(/\D/g, '');
             });
         });
+
+        // Input Mask for Evaluation (Thousands Separator)
+        // Dynamically attached in addItem() but also need utility function
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        }
+
+        function cleanNumber(str) {
+            return str.replace(/\s/g, '');
+        }
 
         // Auto-save on input
         ['department', 'issue', 'ticket', 'date', 'region'].forEach(id => {
@@ -1262,7 +1935,7 @@
         // SERVICE WORKER & OFFLINE MODE
         // ============================================
         if ('serviceWorker' in navigator) {
-            const swVersion = '2303';
+            const swVersion = '2318'; // Floating Labels
             const basePath = location.pathname.endsWith('/') ? location.pathname : `${location.pathname}/`;
             const swUrl = `${basePath}service-worker.js?v=${swVersion}`;
             navigator.serviceWorker.register(swUrl)
@@ -1355,37 +2028,180 @@
             localStorage.setItem('default_region', e.target.value);
         });
 
-        function handleFileSelect(input) {
+        async function handleFileSelect(input) {
             const file = input.files[0];
             if (!file) return;
 
-            // Check file size (5MB limit)
-            const maxSize = 5 * 1024 * 1024; // 5 MB
-            if (file.size > maxSize) {
-                const sizeMB = (file.size / 1024 / 1024).toFixed(1);
-                tg.showAlert(`⚠️ Фото слишком большое (${sizeMB} МБ). Максимум 5 МБ. Оно будет сжато.`);
-                haptic('warning');
-            }
-
             const container = input.closest('.item-card');
-            const preview = container.querySelector('.photo-preview');
+            const previewContainer = container.querySelector('.photo-preview-container');
             const btnText = container.querySelector('.btn-text');
             const status = container.querySelector('.upload-status');
 
-            // Preview
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                preview.style.backgroundImage = `url(${e.target.result})`;
-                preview.style.display = 'block';
-                btnText.textContent = "Изменить фото";
-                status.textContent = file.size > maxSize ? "⚠️ Будет сжато" : "Готово к отправке";
+            // Show loading state
+            previewContainer.classList.add('loading');
+            btnText.textContent = "Сжатие...";
+            status.textContent = "⏳ Обработка фото...";
+            status.className = "upload-status";
+
+            try {
+                // Compression options
+                const options = {
+                    maxSizeMB: 1,
+                    maxWidthOrHeight: 1280, // Optimized for speed
+                    useWebWorker: true,
+                    fileType: 'image/jpeg'
+                };
+
+                console.log(`Original: ${(file.size / 1024 / 1024).toFixed(2)} MB`);
+
+                // Compress
+                const compressedFile = await imageCompression(file, options);
+
+                console.log(`Compressed: ${(compressedFile.size / 1024 / 1024).toFixed(2)} MB`);
+
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    // Create or get IMG element
+                    let img = previewContainer.querySelector('.photo-preview-img');
+                    if (!img) {
+                        img = document.createElement('img');
+                        img.className = 'photo-preview-img';
+                        img.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 10; border-radius: 16px;';
+                        previewContainer.appendChild(img);
+                    }
+
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+
+                    // Hide placeholder elements
+                    const label = previewContainer.querySelector('.upload-label');
+                    if (label) label.style.opacity = '0';
+
+                    previewContainer.classList.add('has-photo');
+                    previewContainer.classList.remove('loading');
+
+                    // Lightbox trigger
+                    img.onclick = (evt) => {
+                        evt.stopPropagation();
+                        openLightbox(e.target.result);
+                    };
+                };
+                reader.readAsDataURL(compressedFile);
+
+                // 🚀 BACKGROUND UPLOAD with Compressed File
+                btnText.textContent = "Загрузка...";
+                status.textContent = "⏳ Загрузка на сервер...";
+
+                const uploadedUrl = await uploadImageToImgBB(compressedFile);
+
+                // Store URL
+                container.dataset.photoUrl = uploadedUrl;
+
+                // Success UI
+                btnText.textContent = "✓ Загружено";
+                status.textContent = "✅ Готово к отправке";
                 status.className = "upload-status success";
-            };
-            reader.readAsDataURL(file);
+                haptic('success');
+
+            } catch (error) {
+                console.error('Processing failed:', error);
+                btnText.textContent = "❌ Ошибка";
+                status.textContent = `⚠️ ${error.message || 'Ошибка обработки'}`;
+                status.className = "upload-status";
+                haptic('error');
+
+                // Reset UI
+                input.value = '';
+                const previewDiv = previewContainer.querySelector('.photo-preview');
+                previewDiv.style.backgroundImage = ''; // Clear background image
+                previewDiv.innerHTML = ''; // Clear any content
+
+                // Restore default upload label content if it was removed/hidden
+                const uploadLabel = previewContainer.querySelector('.upload-label');
+                if (uploadLabel) {
+                    uploadLabel.style.display = 'flex'; // Ensure it's visible
+                    btnText.textContent = "Добавить фото"; // Reset text
+                    previewContainer.querySelector('.hint').style.display = 'block'; // Show hint
+                }
+
+                previewContainer.classList.remove('loading');
+                previewContainer.classList.remove('has-photo');
+                delete container.dataset.photoUrl;
+
+                // Re-attach click handler for upload
+                previewContainer.onclick = (e) => {
+                    if (e.target !== input && !e.target.closest('.upload-label')) {
+                        input.click();
+                    }
+                };
+            }
+        }
+
+        // New function to handle ImgBB upload
+        async function uploadImageToImgBB(file) {
+            if (!imgbbKey) {
+                throw new Error('API ключ не настроен');
+            }
+
+            // File is already compressed by handleFileSelect (library)
+            // const compressedBlob = await compressImage(file);
+            const compressedBlob = file; // Use directly
+
+            const formData = new FormData();
+            formData.append('image', compressedBlob, 'image.jpg');
+            formData.append('key', imgbbKey);
+
+            const response = await fetch('https://api.imgbb.com/1/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result && result.data && result.data.url) {
+                return result.data.url;
+            } else {
+                throw new Error(result.error ? result.error.message : "Неизвестная ошибка");
+            }
+        }
+
+        // Lightbox Functions
+        function openLightbox(src) {
+            const modal = document.getElementById('lightboxModal');
+            const img = document.getElementById('lightboxImage');
+            img.src = src;
+            modal.style.display = 'flex'; // Flex to center
+            modal.style.alignItems = 'center';
+            modal.style.justifyContent = 'center';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightboxModal').style.display = 'none';
+        }
+
+        // Confetti Trigger
+        function fireConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
         }
 
         // 5. Telegram Native UI & Haptic Feedback
         const mainButton = tg.MainButton;
+
+        // State Machine Button Handler
+        function handleMainButton() {
+            if (appState === 'editing') {
+                showPreview();
+            } else if (appState === 'preview') {
+                submitForm();
+            }
+        }
 
         function updateMainButton() {
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
@@ -1395,7 +2211,8 @@
 
                 mainButton.setText("ПРОВЕРИТЬ И ОТПРАВИТЬ");
                 mainButton.show();
-                mainButton.onClick(showPreview);
+                // Use single state-based handler
+                mainButton.onClick(handleMainButton);
             }
         }
 
@@ -1404,8 +2221,27 @@
 
         // Haptic Feedback Helper
         function haptic(type = 'light') {
-            if (tg.HapticFeedback) {
-                tg.HapticFeedback.impactOccurred(type);
+            if (!tg.HapticFeedback) return;
+
+            switch (type) {
+                case 'light':
+                case 'medium':
+                case 'heavy':
+                case 'rigid':
+                case 'soft':
+                    tg.HapticFeedback.impactOccurred(type);
+                    break;
+                case 'error':
+                case 'success':
+                case 'warning':
+                    tg.HapticFeedback.notificationOccurred(type);
+                    break;
+                case 'selection':
+                    tg.HapticFeedback.selectionChanged();
+                    break;
+                default:
+                    // Fallback for unknown types
+                    tg.HapticFeedback.impactOccurred('light');
             }
         }
 
@@ -1417,6 +2253,71 @@
         document.querySelectorAll('.btn').forEach(btn => {
             btn.addEventListener('click', () => haptic('medium'));
         });
+
+        function validateForm() {
+            let isValid = true;
+            let firstInvalidField = null; // Track first invalid for auto-scroll
+            const requiredIds = ['department', 'issue', 'ticket', 'date', 'region'];
+
+            requiredIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el.value.trim()) {
+                    isValid = false;
+                    el.classList.add('invalid');
+                    if (!firstInvalidField) firstInvalidField = el;
+                    // Add listener to remove invalid class on input
+                    el.addEventListener('input', () => el.classList.remove('invalid'), { once: true });
+                } else {
+                    // Specific checks
+                    if (id === 'ticket' && el.value.length !== 11) {
+                        isValid = false;
+                        el.classList.add('invalid');
+                        if (!firstInvalidField) firstInvalidField = el;
+                        el.addEventListener('input', () => el.classList.remove('invalid'), { once: true });
+                    }
+                }
+            });
+
+            // Validate item fields (description and evaluation)
+            document.querySelectorAll('.item-card').forEach((card) => {
+                const desc = card.querySelector('.desc');
+                const evalInput = card.querySelector('.eval');
+
+                if (desc && !desc.value.trim()) {
+                    isValid = false;
+                    desc.classList.add('invalid');
+                    if (!firstInvalidField) firstInvalidField = desc;
+                    desc.addEventListener('input', () => desc.classList.remove('invalid'), { once: true });
+                }
+
+                if (evalInput && !evalInput.value.trim()) {
+                    isValid = false;
+                    evalInput.classList.add('invalid');
+                    if (!firstInvalidField) firstInvalidField = evalInput;
+                    evalInput.addEventListener('input', () => evalInput.classList.remove('invalid'), { once: true });
+                }
+            });
+
+            if (!isValid) {
+                // Auto-scroll to first invalid field
+                if (firstInvalidField) {
+                    firstInvalidField.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+
+                    // Focus after scroll animation
+                    setTimeout(() => {
+                        firstInvalidField.focus();
+                    }, 500);
+                }
+
+                tg.showAlert("Пожалуйста, заполните все обязательные поля корректно.");
+                haptic('error');
+            }
+
+            return isValid;
+        }
 
         function showPreview() {
             haptic('medium');
@@ -1479,74 +2380,83 @@
             // Build items list
             let itemsList = '';
             items.forEach((item, idx) => {
+                // Get image preview URL
+                const fileInput = document.querySelectorAll('.item-card')[idx].querySelector('.file-input');
+                const file = fileInput.files[0];
+                const imgUrl = file ? URL.createObjectURL(file) : '';
+                const imgTag = imgUrl ? `<img src="${imgUrl}" class="preview-image">` : '<div class="preview-image"></div>';
+
                 itemsList += `
-                    <div style="padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.05);">
-                        <div style="font-weight: 600; color: #000;">#${idx + 1} ${item.desc}</div>
-                        <div style="color: var(--secondary-text); font-size: 14px; margin-top: 2px;">${item.price.toLocaleString('ru-RU')} ₽</div>
+                    <div class="preview-item">
+                        ${imgTag}
+                        <div class="preview-item-content">
+                            <div class="preview-item-desc">#${idx + 1} ${escapeHtml(item.desc)}</div>
+                            <div class="preview-item-price">${item.price.toLocaleString('ru-RU')} ₽</div>
+                        </div>
                     </div>
                 `;
             });
 
-            // Build preview with better structure
+            // Format Date
+            const dateValue = document.getElementById('date').value;
+            const dateParts = dateValue.split('-');
+            const formattedDate = dateParts.length === 3 ? `${dateParts[2]}.${dateParts[1]}.${dateParts[0]}` : dateValue;
+
+            // Build preview with premium structure
             const content = document.getElementById('previewContent');
             content.innerHTML = `
                 <!-- Mode Section -->
-                <div style="background: ${isTest ? 'rgba(255,165,0,0.15)' : 'rgba(52,199,89,0.15)'}; padding: 16px; border-radius: 16px; margin-bottom: 20px; border: 2px solid ${isTest ? 'rgba(255,165,0,0.3)' : 'rgba(52,199,89,0.3)'};">
-                    <div style="font-weight: 700; font-size: 15px; color: ${isTest ? '#FF8C00' : '#28a745'}; margin-bottom: 6px;">
-                        Режим: ${modeText}
+                <div class="preview-card ${isTest ? 'mode-test' : 'mode-final'}">
+                    <div class="preview-section-title" style="color: ${isTest ? '#FF8C00' : '#28a745'}; margin-bottom: 6px;">
+                        ${isTest ? '🧪' : '🚀'} Режим: ${modeText}
                     </div>
-                    <div style="font-size: 12px; color: var(--secondary-text); line-height: 1.4;">${modeExplanation}</div>
+                    <div style="font-size: 13px; color: var(--secondary-text); line-height: 1.4;">${modeExplanation}</div>
                 </div>
 
-                <!--Main Data Section-->
-                <div style="margin-bottom: 16px;">
-                    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--secondary-text); margin-bottom: 12px;">Основные данные</div>
-                    <div style="display: grid; gap: 10px;">
-                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                            <span style="color: var(--secondary-text); font-size: 13px;">Подразделение:</span>
-                            <span style="color: #000; font-weight: 600; font-size: 15px;">${document.getElementById('department').value}</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                            <span style="color: var(--secondary-text); font-size: 13px;">Регион:</span>
-                            <span style="color: #000; font-weight: 600; font-size: 15px;">${document.getElementById('region').value}</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                            <span style="color: var(--secondary-text); font-size: 13px;">Дата:</span>
-                            <span style="color: #000; font-weight: 600; font-size: 15px;">${document.getElementById('date').value}</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                            <span style="color: var(--secondary-text); font-size: 13px;">№ заключения:</span>
-                            <span style="color: #000; font-weight: 600; font-size: 15px;">${document.getElementById('issue').value}</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                            <span style="color: var(--secondary-text); font-size: 13px;">№ билета:</span>
-                            <span style="color: #000; font-weight: 600; font-size: 15px; font-family: monospace;">${ticketValue}</span>
-                        </div>
+                <!-- Main Data Section -->
+                <div class="preview-card">
+                    <div class="preview-section-title">📋 Основные данные</div>
+                    <div class="preview-grid">
+                        <span class="preview-label">Подразделение:</span>
+                        <span class="preview-value">${escapeHtml(document.getElementById('department').value)}</span>
+                        
+                        <span class="preview-label">Регион:</span>
+                        <span class="preview-value">${escapeHtml(document.getElementById('region').value)}</span>
+                        
+                        <span class="preview-label">Дата:</span>
+                        <span class="preview-value">${formattedDate}</span>
+                        
+                        <span class="preview-label">№ заключения:</span>
+                        <span class="preview-value">${escapeHtml(document.getElementById('issue').value)}</span>
+                        
+                        <span class="preview-label">№ билета:</span>
+                        <span class="preview-value">${escapeHtml(document.getElementById('ticket').value)}</span>
                     </div>
                 </div>
 
-                <!--Items Section-- >
-                <div style="margin-bottom: 16px;">
-                    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--secondary-text); margin-bottom: 12px;">Предметы (${items.length})</div>
+                <!-- Items Section -->
+                <div class="preview-card">
+                    <div class="preview-section-title">📦 Предметы (${items.length})</div>
                     ${itemsList}
-                </div>
-
-                <!--Total Section-- >
-                <div style="background: rgba(52,199,89,0.15); padding: 16px; border-radius: 16px; border: 2px solid rgba(52,199,89,0.3);">
-                    <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                        <span style="font-weight: 700; font-size: 15px; color: #000;">💰 Общая сумма:</span>
-                        <span style="font-weight: 700; font-size: 22px; color: var(--success-color);">${totalCost.toLocaleString('ru-RU')} ₽</span>
+                    
+                    <!-- Total Banner -->
+                    <div class="total-banner">
+                        <div class="total-label">
+                            💰 Общая сумма:
+                        </div>
+                        <div class="total-amount">
+                            ${totalCost.toLocaleString('ru-RU')} ₽
+                        </div>
                     </div>
                 </div>
             `;
 
             document.getElementById('previewModal').style.display = 'block';
 
-            // Update Main Button for Submit
+            // Update state to preview mode
+            appState = 'preview';
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 mainButton.setText("ОТПРАВИТЬ");
-                mainButton.offClick(showPreview);
-                mainButton.onClick(submitForm);
             }
         }
 
@@ -1554,11 +2464,10 @@
             haptic('light');
             document.getElementById('previewModal').style.display = 'none';
 
-            // Revert Main Button
+            // Revert state to editing
+            appState = 'editing';
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 mainButton.setText("ПРОВЕРИТЬ И ОТПРАВИТЬ");
-                mainButton.offClick(submitForm);
-                mainButton.onClick(showPreview);
             }
         }
 
@@ -1613,66 +2522,49 @@
 
             const btn = document.getElementById('finalSubmitBtn');
             btn.disabled = true;
-            btn.textContent = "Загрузка на ImgBB...";
+            btn.textContent = "Подготовка данных...";
 
             const items = [];
             const cards = document.querySelectorAll('.item-card');
 
-            // Upload photos one by one to ImgBB
+            // 🚀 NEW: Use pre-uploaded URLs instead of uploading again
+            let allUploaded = true;
             for (let i = 0; i < cards.length; i++) {
                 const div = cards[i];
-                const fileInput = div.querySelector('.file-input');
-                const file = fileInput.files[0];
+                const photoUrl = div.dataset.photoUrl;
 
-                // Skip if no file selected
-                if (!file) {
-                    console.warn(`Skipping item ${i + 1} - no photo selected`);
-                    continue;
+                // Check if photo was uploaded
+                if (!photoUrl) {
+                    const fileInput = div.querySelector('.file-input');
+                    if (fileInput.files && fileInput.files[0]) {
+                        // Photo selected but not uploaded yet (shouldn't happen with background upload)
+                        allUploaded = false;
+                        tg.showAlert('⏳ Дождитесь загрузки всех фотографий');
+                        btn.disabled = false;
+                        btn.textContent = "Отправить";
+
+                        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                            mainButton.hideProgress();
+                            mainButton.enable();
+                        }
+                        return;
+                    }
+                    continue; // Skip items without photos
                 }
 
-                // Update progress
-                updateProgress(i, cards.length);
-                btn.textContent = `Загрузка фото ${i + 1}/${cards.length}...`;
+                // Use pre-uploaded URL
+                items.push({
+                    description: div.querySelector('.desc').value,
+                    evaluation: div.querySelector('.eval').value,
+                    photo_url: photoUrl
+                });
+            }
 
-                try {
-                    // Compress first
-                    const compressedBlob = await compressImage(file);
-
-                    const formData = new FormData();
-                    formData.append('image', compressedBlob, 'image.jpg');
-                    formData.append('key', imgbbKey);
-
-                    const response = await fetch('https://api.imgbb.com/1/upload', {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    const result = await response.json();
-
-                    if (result && result.data && result.data.url) {
-                        items.push({
-                            description: div.querySelector('.desc').value,
-                            evaluation: div.querySelector('.eval').value,
-                            photo_url: result.data.url
-                        });
-                    } else {
-                        throw new Error("ImgBB Error: " + (result.error ? result.error.message : "Unknown error"));
-                    }
-
-                } catch (e) {
-                    console.error("Upload failed", e);
-                    tg.showAlert(`Ошибка загрузки: ${e.message || e}`);
-                    haptic('error');
-
-                    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                        mainButton.hideProgress();
-                        mainButton.enable();
-                    }
-
-                    btn.disabled = false;
-                    btn.textContent = "Отправить";
-                    return;
-                }
+            if (items.length === 0) {
+                tg.showAlert('❌ Нет загруженных фотографий');
+                btn.disabled = false;
+                btn.textContent = "Отправить";
+                return;
             }
 
             btn.textContent = "Отправка данных...";
@@ -1689,6 +2581,25 @@
                     items: items,
                     is_test: isTest
                 };
+
+                // CRITICAL: Validate date is not in the future (after formatting)
+                const dateValue = document.getElementById('date').value; // YYYY-MM-DD
+                const selectedDate = new Date(dateValue);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                selectedDate.setHours(0, 0, 0, 0);
+
+                if (selectedDate > today) {
+                    tg.showAlert('⚠️ Ошибка: Нельзя выбрать будущую дату!\n\nВыберите сегодняшнюю или прошедшую дату.');
+                    btn.disabled = false;
+                    btn.textContent = "Отправить";
+                    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                        mainButton.hideProgress();
+                        mainButton.enable();
+                    }
+                    haptic('error');
+                    return;
+                }
 
                 // Check if running in Telegram
                 // iOS Telegram 9.x bug: initData may be empty even in WebApp
@@ -1708,8 +2619,15 @@
                     btn.textContent = "Отправка в Telegram...";
                     tg.sendData(JSON.stringify(data));
                     haptic('success');
+
+                    // ✅ UX: Clear ticket for next form (always unique)
+                    document.getElementById('ticket').value = '';
+                    clearDraft();
+
+                    fireConfetti(); // 🎉 Celebration!
+
                     // Close WebApp after sending data
-                    setTimeout(() => tg.close(), 100);
+                    setTimeout(() => tg.close(), 1000);
                 } else {
                     // Standalone Mode
                     if (!botUrl) {
@@ -1757,8 +2675,18 @@
                     window.URL.revokeObjectURL(url);
                     document.body.removeChild(a);
 
-                    clearDraft(); // Add clear draft call after successful submission
-                    alert("✅ Документ готов и скачан!");
+                    clearDraft();
+
+                    // ✅ UX: Clear ticket for next form (always unique)
+                    document.getElementById('ticket').value = '';
+
+                    fireConfetti(); // 🎉 Celebration!
+
+                    if (tg.showPopup) {
+                        tg.showPopup({ message: "✅ Документ готов и скачан!" });
+                    } else {
+                        alert("✅ Документ готов и скачан!");
+                    }
                     closePreview();
                     btn.disabled = false;
                     btn.textContent = "Отправить";
@@ -1773,9 +2701,17 @@
                 }
 
                 if (e.name === 'AbortError') {
-                    alert("Ошибка: Превышено время ожидания (30с). Проверьте интернет или URL бота.");
+                    if (tg.showPopup) {
+                        tg.showPopup({ message: "Ошибка: Превышено время ожидания (30с). Проверьте интернет или URL бота." });
+                    } else {
+                        alert("Ошибка: Превышено время ожидания (30с). Проверьте интернет или URL бота.");
+                    }
                 } else {
-                    alert(`Ошибка при отправке: ${e.message}`);
+                    if (tg.showPopup) {
+                        tg.showPopup({ message: `Ошибка при отправке: ${e.message}` });
+                    } else {
+                        alert(`Ошибка при отправке: ${e.message}`);
+                    }
                 }
                 btn.disabled = false;
                 btn.textContent = "Отправить";
@@ -1792,7 +2728,7 @@
             const draft = {
                 department: document.getElementById('department').value,
                 issue: document.getElementById('issue').value,
-                ticket: document.getElementById('ticket').value,
+                // ticket: excluded - always unique per form
                 date: document.getElementById('date').value,
                 region: document.getElementById('region').value,
                 timestamp: Date.now()
@@ -1812,12 +2748,26 @@
                 return;
             }
 
-            // Restore values
+            // Restore values (ticket excluded - always unique)
             if (draft.department) document.getElementById('department').value = draft.department;
             if (draft.issue) document.getElementById('issue').value = draft.issue;
-            if (draft.ticket) document.getElementById('ticket').value = draft.ticket;
+            // if (draft.ticket) document.getElementById('ticket').value = draft.ticket;  // ❌ Never restore
             if (draft.date) document.getElementById('date').value = draft.date;
-            if (draft.region) document.getElementById('region').value = draft.region;
+
+            // Smart Auto-fill for Region
+            const regionSelect = document.getElementById('region');
+            if (draft.region) {
+                regionSelect.value = draft.region;
+            } else {
+                // Check smart history
+                const history = JSON.parse(localStorage.getItem('region_history') || '{}');
+                // Find region with > 5 consecutive uses
+                const smartRegion = Object.keys(history).find(r => history[r] >= 5);
+                if (smartRegion) {
+                    regionSelect.value = smartRegion;
+                    // Optional: Visual cue that it was auto-selected?
+                }
+            }
 
             // Show notice
             const notice = document.getElementById('draftNotice');
@@ -1828,6 +2778,22 @@
                 setTimeout(() => notice.style.display = 'none', 1000);
             }, 3000);
         }
+
+        // Track Region Selection
+        document.getElementById('region').addEventListener('change', (e) => {
+            const region = e.target.value;
+            if (!region) return;
+
+            const history = JSON.parse(localStorage.getItem('region_history') || '{}');
+
+            // Reset others, increment selected
+            Object.keys(history).forEach(key => {
+                if (key !== region) history[key] = 0;
+            });
+
+            history[region] = (history[region] || 0) + 1;
+            localStorage.setItem('region_history', JSON.stringify(history));
+        });
 
         function clearDraft() {
             localStorage.removeItem('formDraft');
@@ -1850,16 +2816,35 @@
             }
         }
 
-        // Auto-save every 2 seconds
-        setInterval(saveDraft, 2000);
+        // Debounced auto-save (saves 1s after last input)
+        function debouncedAutosave() {
+            clearTimeout(autosaveTimeout);
+            autosaveTimeout = setTimeout(() => {
+                saveDraft();
+            }, 1000); // Save 1 second after last change
+        }
+
+        // Attach to all input/change events
+        document.getElementById('mainForm').addEventListener('input', debouncedAutosave);
+        document.getElementById('mainForm').addEventListener('change', debouncedAutosave);
+
+        // Smart Region: Load saved region
+        const savedRegion = localStorage.getItem('last_region');
+        if (savedRegion) {
+            const regionSelect = document.getElementById('region');
+            if (regionSelect) {
+                regionSelect.value = savedRegion;
+            }
+        }
+
+        // Save region on change
+        document.getElementById('region').addEventListener('change', (e) => {
+            localStorage.setItem('last_region', e.target.value);
+        });
 
         // Restore draft on page load
         restoreDraft();
-
-        // Add item (with numbering)
-        let itemCounter = 1;
     </script>
-    <script src="ux-improvements.js"></script>
 </body>
 
 </html>
