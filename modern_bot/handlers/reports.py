@@ -135,21 +135,14 @@ async def stats_handler(update: Update, context: CallbackContext) -> None:
         for reg, count in regions.items():
             text += f"{reg}: {count}\n"
     else:
-        # Regular user sees only their own stats
-        # Filter records by user (assuming column index for user_id exists)
-        # If there's no user tracking in Excel, show message
-        user_records = [r for r in records if r.get('user_id') == user_id] if records else []
-        
-        if not user_records or not records:
-            text = "📊 **Моя статистика**:\n\nУ вас пока нет заключений.\nНажмите '📝 Создать заключение' чтобы начать!"
+        # Regular user - for now just show encouragement message
+        # (User tracking is not implemented in Excel yet)
+        if not records:
+            text = "📊 **Общая статистика**:\n\nПока нет заключений в системе.\nНажмите '📝 Создать заключение' чтобы начать!"
         else:
-            total_user = len(user_records)
-            # Calculate total evaluation
-            total_eval = sum(int(r[7]) if r[7] and str(r[7]).isdigit() else 0 for r in user_records)
-            
-            text = f"📊 **Моя статистика**:\n"
-            text += f"Всего заключений: {total_user}\n"
-            text += f"Общая оценка: {total_eval:,} ₽\n"
+            total = len(records)
+            text = f"📊 **Общая статистика**:\n\nВсего заключений в системе: {total}\n\n"
+            text += "Начните создавать свои заключения, нажав '📝 Создать заключение'!"
             
     await safe_reply(update, text)
 
