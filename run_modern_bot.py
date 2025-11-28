@@ -105,12 +105,22 @@ def main():
     
     restart_count = 0
     start_time = datetime.now()
-    last_notification_time = None
-    notification_cooldown = 60  # Минимум 60 секунд между уведомлениями о падениях
+    crash_notified = False  # Флаг: уведомление о падении отправлено
 
     while True:
         try:
             logger.info("🚀 Starting bot...")
+            
+            # Если это перезапуск после падения
+            if crash_notified:
+                logger.info("✅ Bot recovered successfully")
+                asyncio.run(notify_admins(
+                    f"🔄 <b>Бот восстановлен</b>\n"
+                    f"🕐 Время: {datetime.now().strftime('%d.%m.%Y %H:%M:%S')}\n"
+                    f"✅ Работает нормально"
+                ))
+                crash_notified = False  # Сброс флага
+            
             bot_main()
             
         except KeyboardInterrupt:
@@ -124,17 +134,19 @@ def main():
             logger.error(f"⚠️ Bot crashed with error: {e}")
             logger.error(f"Traceback:\n{error_trace}")
             
-            # Rate limiting для логов
-            now = datetime.now()
-            should_log = (
-                last_notification_time is None or 
-                (now - last_notification_time).total_seconds() >= notification_cooldown
-            )
-            
-            if should_log:
-                logger.warning(f"⚠️ Бот упал! Попытка #{restart_count}")
-                logger.warning(f"❌ Ошибка: {str(e)[:200]}")
-                last_notification_time = now
+            # Отправить уведомление только при первом падении
+            if not crash_notified:
+                logger.warning(f"⚠️ Sending crash notification (attempt #{restart_count})")
+                try:
+                    asyncio.run(notify_admins(
+                        f"⚠️ <b>Бот упал!</b>\n\n"
+                        f"🕐 Время: {datetime.now().strftime('%d.%m.%Y %H:%M:%S')}\n"
+                        f"❌ Ошибка: <code>{str(e)[:150]}</code>\n\n"
+                        f"🔄 Попытка восстановления..."
+                    ))
+                    crash_notified = True
+                except Exception as notify_error:
+                    logger.error(f"Failed to send crash notification: {notify_error}")
             
             logger.info("🔄 Restarting in 5 seconds...")
             time.sleep(5)
