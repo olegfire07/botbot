@@ -111,24 +111,11 @@ def main():
     while True:
         try:
             logger.info("🚀 Starting bot...")
-            
-            # Notify admins on startup (only first time)
-            if restart_count == 0:
-                asyncio.run(notify_admins(
-                    f"✅ <b>Бот запущен</b>\n"
-                    f"🕐 Время: {start_time.strftime('%d.%m.%Y %H:%M:%S')}\n"
-                    f"💻 Сервер: OK"
-                ))
-                last_notification_time = datetime.now()
-            
             bot_main()
             
         except KeyboardInterrupt:
             logger.info("🛑 Bot stopped by user.")
-            asyncio.run(notify_admins(
-                f"🛑 <b>Бот остановлен вручную</b>\n"
-                f"🕐 Время: {datetime.now().strftime('%d.%m.%Y %H:%M:%S')}"
-            ))
+            print("\n🛑 Бот остановлен пользователем")
             break
             
         except Exception as e:
@@ -137,36 +124,17 @@ def main():
             logger.error(f"⚠️ Bot crashed with error: {e}")
             logger.error(f"Traceback:\n{error_trace}")
             
-            # Rate limiting для уведомлений
+            # Rate limiting для логов
             now = datetime.now()
-            should_notify = (
+            should_log = (
                 last_notification_time is None or 
                 (now - last_notification_time).total_seconds() >= notification_cooldown
             )
             
-            # Критический случай: более 10 падений подряд — всегда уведомить
-            if restart_count >= 10:
-                should_notify = True
-                notification_cooldown = 300  # Увеличить cooldown до 5 минут
-            
-            if should_notify:
-                # Notify admins about crash
-                error_message = (
-                    f"⚠️ <b>Бот упал!</b>\n\n"
-                    f"📊 Попытка #{restart_count}\n"
-                    f"🕐 Время: {datetime.now().strftime('%d.%m.%Y %H:%M:%S')}\n"
-                    f"❌ Ошибка: <code>{str(e)[:200]}</code>\n\n"
-                    f"🔄 Перезапуск через 5 секунд..."
-                )
-                
-                # Добавить предупреждение если много падений
-                if restart_count >= 5:
-                    error_message += f"\n\n⚠️ <b>ВНИМАНИЕ:</b> {restart_count} падений подряд!"
-                
-                asyncio.run(notify_admins(error_message))
+            if should_log:
+                logger.warning(f"⚠️ Бот упал! Попытка #{restart_count}")
+                logger.warning(f"❌ Ошибка: {str(e)[:200]}")
                 last_notification_time = now
-            else:
-                logger.info(f"Уведомление пропущено (cooldown). Следующее через {notification_cooldown - (now - last_notification_time).total_seconds():.0f}с")
             
             logger.info("🔄 Restarting in 5 seconds...")
             time.sleep(5)
