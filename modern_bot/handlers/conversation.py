@@ -57,6 +57,22 @@ async def web_app_entry(update: Update, context: CallbackContext) -> int:
             'photo_desc': []
         }
         
+        # CRITICAL: Validate date is not in the future
+        from datetime import datetime
+        date_str = data.get('date', '')
+        try:
+            date_obj = datetime.strptime(date_str, '%d.%m.%Y')
+            today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+            
+            if date_obj > today:
+                logger.warning(f"Rejected future date in Web App: {date_str} from user {user_id}")
+                await safe_reply(update, "⚠️ Ошибка: Нельзя выбрать будущую дату!\n\nВыберите сегодняшнюю или прошедшую дату и попробуйте снова.")
+                return ConversationHandler.END
+        except ValueError as e:
+            logger.error(f"Invalid date format in Web App: {date_str} - {e}")
+            await safe_reply(update, "❌ Ошибка: Неверный формат даты. Используйте ДД.ММ.ГГГГ")
+            return ConversationHandler.END
+        
         # Process items and download photos
         TEMP_PHOTOS_DIR.mkdir(parents=True, exist_ok=True)
         
