@@ -2514,20 +2514,6 @@
         }
 
         async function submitForm() {
-            // ===== CRITICAL: Validate date before submission =====
-            const dateValue = document.getElementById('date').value;
-            const selectedDate = new Date(dateValue + 'T00:00:00'); // Parse as local date
-            const today = new Date();
-            today.setHours(0, 0, 0, 0); // Reset time
-
-            if (selectedDate > today) {
-                tg.showAlert('⚠️ Ошибка: Нельзя выбрать будущую дату!\n\nВыберите сегодняшнюю или прошедшую дату.');
-                document.getElementById('date').value = new Date().toISOString().split('T')[0];
-                haptic('error');
-                return;
-            }
-            // ===== END DATE VALIDATION =====
-
             // Disable button
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 mainButton.showProgress();
@@ -2595,6 +2581,25 @@
                     items: items,
                     is_test: isTest
                 };
+
+                // CRITICAL: Validate date is not in the future (after formatting)
+                const dateValue = document.getElementById('date').value; // YYYY-MM-DD
+                const selectedDate = new Date(dateValue);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                selectedDate.setHours(0, 0, 0, 0);
+
+                if (selectedDate > today) {
+                    tg.showAlert('⚠️ Ошибка: Нельзя выбрать будущую дату!\n\nВыберите сегодняшнюю или прошедшую дату.');
+                    btn.disabled = false;
+                    btn.textContent = "Отправить";
+                    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                        mainButton.hideProgress();
+                        mainButton.enable();
+                    }
+                    haptic('error');
+                    return;
+                }
 
                 // Check if running in Telegram
                 // iOS Telegram 9.x bug: initData may be empty even in WebApp
