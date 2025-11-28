@@ -7,3 +7,4 @@ Pillow
 httpx
 python-dotenv
 nest_asyncio
+APScheduler

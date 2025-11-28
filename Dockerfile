@@ -10,6 +10,7 @@ WORKDIR /app
 # Install system dependencies (if needed for Pillow or other libs)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
+    tzdata \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
