@@ -62,30 +62,28 @@ async def configure_bot_commands(bot):
     """
     Configure Telegram menu commands for users and admins separately.
     """
+    # Commands for regular users
     default_commands = [
-        BotCommand("start", "Запустить бота"),
-        BotCommand("help", "Помощь"),
-        BotCommand("start_chat", "Диалоговый режим"),
+        BotCommand("start", "📋 Создать заключение"),
+        BotCommand("help", "💡 Помощь"),
+        BotCommand("stats", "📊 Моя статистика"),
     ]
     try:
         await bot.set_my_commands(default_commands, scope=BotCommandScopeDefault())
     except Exception as e:
         logger.warning(f"Failed to set default commands: {e}")
 
-    # Admin-specific commands visible only in admin chats
+    # Admin-specific commands (user management moved to /admin panel)
     try:
         from modern_bot.handlers.admin import admin_ids
-        admin_commands = default_commands + [
-            BotCommand("admin", "Админ-панель"),
-            BotCommand("history", "История"),
-            BotCommand("download_month", "Архив за месяц"),
-            BotCommand("stats", "Статистика"),
-            BotCommand("stats_period", "Статистика за период"),
-            BotCommand("add_user", "Добавить пользователя"),
-            BotCommand("remove_user", "Удалить пользователя"),
-            BotCommand("add_admin", "Добавить админа"),
-            BotCommand("remove_admin", "Удалить админа"),
-            BotCommand("broadcast", "Рассылка"),
+        admin_commands = [
+            BotCommand("start", "📋 Создать заключение"),
+            BotCommand("admin", "🔧 Админ-панель"),
+            BotCommand("stats", "📊 Статистика"),
+            BotCommand("stats_period", "📈 Статистика за период"),
+            BotCommand("history", "📚 История заключений"),
+            BotCommand("download_month", "📥 Скачать архив"),
+            BotCommand("help", "💡 Помощь"),
         ]
         for admin_id in admin_ids:
             await bot.set_my_commands(admin_commands, scope=BotCommandScopeChat(chat_id=admin_id))
