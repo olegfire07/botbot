@@ -106,6 +106,24 @@ async def configure_bot_commands(bot):
             except Exception as admin_err:
                 logger.warning(f"Failed to set admin commands for {admin_id}: {admin_err}")
         logger.info(f"✅ Set {len(admin_commands)} admin commands for {len(admin_ids)} admins")
+        
+        # Send startup notification to all admins
+        from datetime import datetime
+        startup_message = (
+            f"✅ <b>Бот запущен</b>\n"
+            f"🕐 Время: {datetime.now().strftime('%d.%m.%Y %H:%M:%S')}\n"
+            f"💻 Сервер: OK"
+        )
+        for admin_id in admin_ids:
+            try:
+                await bot.send_message(
+                    chat_id=admin_id,
+                    text=startup_message,
+                    parse_mode="HTML"
+                )
+            except Exception as e:
+                logger.error(f"Failed to notify admin {admin_id}: {e}")
+                
     except Exception as e:
         logger.warning(f"Failed to set admin commands: {e}")
 
