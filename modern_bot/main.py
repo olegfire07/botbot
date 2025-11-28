@@ -70,7 +70,14 @@ async def configure_bot_commands(bot):
         BotCommand("stats", "📊 Моя статистика"),
     ]
     try:
-        # Don't delete commands - just set them (preserves BotFather commands)
+        # Aggressive cleanup - delete ALL commands first
+        await bot.delete_my_commands(scope=BotCommandScopeDefault())
+        logger.info("🗑 Deleted old default commands")
+        
+        # Small delay to ensure deletion propagates
+        await asyncio.sleep(0.5)
+        
+        # Set new commands
         await bot.set_my_commands(default_commands, scope=BotCommandScopeDefault())
         logger.info(f"✅ Set {len(default_commands)} default commands for regular users")
     except Exception as e:
@@ -91,7 +98,12 @@ async def configure_bot_commands(bot):
         ]
         for admin_id in admin_ids:
             try:
+                # Delete old commands first
+                await bot.delete_my_commands(scope=BotCommandScopeChat(chat_id=admin_id))
+                await asyncio.sleep(0.3)
+                # Set new commands
                 await bot.set_my_commands(admin_commands, scope=BotCommandScopeChat(chat_id=admin_id))
+                logger.info(f"✅ Set admin commands for {admin_id}")
             except Exception as admin_err:
                 logger.warning(f"Failed to set admin commands for {admin_id}: {admin_err}")
         logger.info(f"✅ Set {len(admin_commands)} admin commands for {len(admin_ids)} admins")
