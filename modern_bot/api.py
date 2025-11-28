@@ -58,6 +58,22 @@ async def handle_generate(request):
         for field in required_fields:
             if field not in data:
                 return web.json_response({'error': f'Missing field: {field}'}, status=400)
+        
+        # CRITICAL: Validate date is not in the future
+        from datetime import datetime
+        try:
+            # Parse date in DD.MM.YYYY format
+            date_str = data.get('date', '')
+            date_obj = datetime.strptime(date_str, '%d.%m.%Y')
+            today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+            
+            if date_obj > today:
+                logger.warning(f"Rejected future date: {date_str}")
+                return web.json_response({
+                    'error': 'Нельзя выбрать будущую дату! Выберите сегодняшнюю или прошедшую дату.'
+                }, status=400)
+        except ValueError:
+            return web.json_response({'error': 'Неверный формат даты. Используйте ДД.ММ.ГГГГ'}, status=400)
 
         # Delegate to ReportService
         from modern_bot.services.report import ReportService
