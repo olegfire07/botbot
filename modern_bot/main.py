@@ -179,7 +179,8 @@ def main():
     
     # Admin Reconciliation
     from modern_bot.handlers.admin_reconciliation import (
-        start_reconciliation, handle_reconciliation_file, cancel_reconciliation, WAITING_FOR_FILE
+        start_reconciliation, handle_reconciliation_file, handle_period_selection, handle_custom_dates, cancel_reconciliation, 
+        WAITING_FOR_FILE, WAITING_FOR_PERIOD, WAITING_FOR_CUSTOM_DATES
     )
     
     reconciliation_handler = ConversationHandler(
@@ -187,6 +188,12 @@ def main():
         states={
             WAITING_FOR_FILE: [
                 MessageHandler(filters.Document.ALL, handle_reconciliation_file)
+            ],
+            WAITING_FOR_PERIOD: [
+                CallbackQueryHandler(handle_period_selection, pattern="^period_")
+            ],
+            WAITING_FOR_CUSTOM_DATES: [
+                MessageHandler(filters.TEXT & ~filters.COMMAND, handle_custom_dates)
             ]
         },
         fallbacks=[CommandHandler("cancel", cancel_reconciliation)],
