@@ -39,7 +39,6 @@ async def notify_admins(message: str):
 
 def check_lockfile():
     """Check if another instance is already running."""
-    import signal
     from pathlib import Path
     
     lockfile = Path(__file__).parent / ".bot.lock"
@@ -69,16 +68,17 @@ def check_lockfile():
     lockfile.write_text(str(os.getpid()))
     print(f"🔒 Создан lockfile: PID {os.getpid()}")
     
-    # Cleanup on exit
-    def cleanup_lockfile(signum=None, frame=None):
+    # Cleanup on exit (only use atexit, no signal handlers to avoid conflicts)
+    def cleanup_lockfile():
         if lockfile.exists():
-            lockfile.unlink()
-            print(f"🗑️  Удален lockfile")
+            try:
+                lockfile.unlink()
+                print(f"🗑️  Удален lockfile")
+            except Exception:
+                pass
     
     import atexit
     atexit.register(cleanup_lockfile)
-    signal.signal(signal.SIGTERM, cleanup_lockfile)
-    signal.signal(signal.SIGINT, cleanup_lockfile)
 
 def main():
     # Check if we are running in venv
