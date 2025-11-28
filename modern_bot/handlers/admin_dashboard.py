@@ -34,13 +34,11 @@ async def admin_dashboard_handler(update: Update, context: CallbackContext) -> N
             InlineKeyboardButton("📋 История", callback_data="admin_history")
         ],
         [
-            InlineKeyboardButton("👥 Пользователи", callback_data="admin_users"),
-            InlineKeyboardButton("⚙️ Администраторы", callback_data="admin_admins")
-        ],
-        [
-            InlineKeyboardButton("📢 Рассылка", callback_data="admin_broadcast")
-        ],
-        [
+            InlineKeyboardButton("👥 Пользователи", callback_data="users_list"),
+            InlineKeyboardButton("⚙️ Администраторы", callback_data="admins_list"),
+            InlineKeyboardButton("📢 Рассылка", callback_data="admin_broadcast"),
+            InlineKeyboardButton("🔍 Сверка билетов", callback_data="admin_reconcile"),
+            InlineKeyboardButton("🔎 Поиск по билету", callback_data="admin_search_ticket"),
             InlineKeyboardButton("🖥️ Система", callback_data="admin_system")
         ],
         [
@@ -360,9 +358,12 @@ async def show_history(update: Update, context: CallbackContext) -> None:
 
 
 def get_admin_callback_handler():
-    """Return callback query handler for admin dashboard."""
-    from telegram.ext import CallbackQueryHandler
-    return CallbackQueryHandler(handle_all_callbacks, pattern="^(admin_|analytics_|users_|admins_)")
+    """Returns a CallbackQueryHandler that manages all admin actions."""
+    # Pattern excludes admin_reconcile and admin_search_ticket which have dedicated ConversationHandlers
+    return CallbackQueryHandler(
+        handle_all_callbacks,
+        pattern=r"^(?!admin_reconcile$|admin_search_ticket$)(admin_|analytics_|users_|admins_)"
+    )
 
 async def handle_all_callbacks(update: Update, context: CallbackContext) -> None:
     """Route all admin and analytics callbacks."""

@@ -217,6 +217,23 @@ def main():
         fallbacks=[CommandHandler("cancel", cancel_reconciliation)],
     )
     application.add_handler(reconciliation_handler)
+    
+    # Admin Ticket Search
+    from modern_bot.handlers.admin_search import (
+        start_ticket_search, handle_ticket_input, cancel_search,
+        WAITING_FOR_TICKET
+    )
+    
+    search_handler = ConversationHandler(
+        entry_points=[CallbackQueryHandler(start_ticket_search, pattern="^admin_search_ticket$")],
+        states={
+            WAITING_FOR_TICKET: [
+                MessageHandler(filters.TEXT & ~filters.COMMAND, handle_ticket_input)
+            ]
+        },
+        fallbacks=[CommandHandler("cancel", cancel_search)],
+    )
+    application.add_handler(search_handler)
 
     # Error Handler
     application.add_error_handler(error_handler)
