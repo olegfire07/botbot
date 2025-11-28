@@ -1592,6 +1592,17 @@
         dateInput.valueAsDate = new Date();
         dateInput.setAttribute('max', today);
 
+        // Additional validation on change (for iOS compatibility)
+        dateInput.addEventListener('change', function () {
+            const selectedDate = new Date(this.value);
+            const todayDate = new Date(today);
+
+            if (selectedDate > todayDate) {
+                tg.showAlert('⚠️ Нельзя выбрать будущую дату! Выберите сегодня или прошедшую дату.');
+                this.value = today; // Reset to today
+            }
+        });
+
         let itemCount = 0;
         let appState = 'editing'; // State: 'editing' or 'preview'
         let autosaveTimeout; // For debounced autosave
