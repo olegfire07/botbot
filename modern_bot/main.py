@@ -1,7 +1,7 @@
 import asyncio
 import logging
 from telegram import Update, BotCommand, BotCommandScopeDefault, BotCommandScopeChat
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, PicklePersistence
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, PicklePersistence, ConversationHandler, CallbackQueryHandler
 from modern_bot.config import load_bot_token
 from modern_bot.database.db import init_db, close_db
 from modern_bot.utils.files import clean_temp_files, clean_old_archives, backup_database
@@ -177,6 +177,23 @@ def main():
         handle_admin_reply
     ), group=10)
     
+    # Admin Reconciliation
+    from modern_bot.handlers.admin_reconciliation import (
+        start_reconciliation, handle_reconciliation_file, cancel_reconciliation, WAITING_FOR_FILE
+    )
+    
+    reconciliation_handler = ConversationHandler(
+        entry_points=[CallbackQueryHandler(start_reconciliation, pattern="^admin_reconcile$")],
+        states={
+            WAITING_FOR_FILE: [
+                MessageHandler(filters.Document.ALL, handle_reconciliation_file)
+            ]
+        },
+        fallbacks=[CommandHandler("cancel", cancel_reconciliation)],
+    )
+    application.add_handler(reconciliation_handler)
+
+    # Error Handler
     application.add_error_handler(error_handler)
 
     logger.info("Bot started.")
