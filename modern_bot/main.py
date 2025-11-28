@@ -62,21 +62,22 @@ async def configure_bot_commands(bot):
     """
     Configure Telegram menu commands for users and admins separately.
     """
-    # Commands for regular users
-    default_commands = [
-        BotCommand("start", "📋 Создать заключение"),
-        BotCommand("menu", "📱 Главное меню"),
-        BotCommand("help", "💡 Помощь"),
-        BotCommand("stats", "📊 Моя статистика"),
-    ]
-    try:
-        # Clear old commands first (forces update)
-        await bot.delete_my_commands(scope=BotCommandScopeDefault())
-        # Set new commands
-        await bot.set_my_commands(default_commands, scope=BotCommandScopeDefault())
-        logger.info(f"✅ Set {len(default_commands)} default commands for regular users")
-    except Exception as e:
-        logger.warning(f"Failed to set default commands: {e}")
+    # Commands for regular users - DISABLED to avoid conflict with BotFather
+    # Use BotFather to set commands: /mybots → Edit Bot → Edit Commands
+    # default_commands = [
+    #     BotCommand("start", "📋 Создать заключение"),
+    #     BotCommand("menu", "📱 Главное меню"),
+    #     BotCommand("help", "💡 Помощь"),
+    #     BotCommand("stats", "📊 Моя статистика"),
+    # ]
+    # try:
+    #     # Clear old commands first (forces update)
+    #     await bot.delete_my_commands(scope=BotCommandScopeDefault())
+    #     # Set new commands
+    #     await bot.set_my_commands(default_commands, scope=BotCommandScopeDefault())
+    #     logger.info(f"✅ Set {len(default_commands)} default commands for regular users")
+    # except Exception as e:
+    #     logger.warning(f"Failed to set default commands: {e}")
 
     # Admin-specific commands (user management moved to /admin panel)
     try:
