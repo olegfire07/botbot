@@ -23,23 +23,27 @@ async def admin_dashboard_handler(update: Update, context: CallbackContext) -> N
             InlineKeyboardButton("📝 Создать заключение (Web App)", web_app=WebAppInfo(url=web_app_url))
         ],
         [
-            InlineKeyboardButton("💬 Создать через диалог", callback_data="admin_start_dialog")
+            InlineKeyboardButton("💬 Создать через диалог", callback_data="admin_create_dialog")
         ],
         [
-            InlineKeyboardButton("📊 Статистика", callback_data="admin_stats"),
-            InlineKeyboardButton("📈 Аналитика", callback_data="admin_analytics")
+            InlineKeyboardButton("📊 Статистика", callback_data="analytics_main"),
+            InlineKeyboardButton("📈 Аналитика", callback_data="analytics_regions")
         ],
         [
-            InlineKeyboardButton("📦 Архив", callback_data="admin_download_month"),
+            InlineKeyboardButton("📦 Архив", callback_data="admin_archive"),
             InlineKeyboardButton("📋 История", callback_data="admin_history")
         ],
         [
             InlineKeyboardButton("👥 Пользователи", callback_data="users_list"),
-            InlineKeyboardButton("⚙️ Администраторы", callback_data="admins_list"),
+            InlineKeyboardButton("⚙️ Администраторы", callback_data="admins_list")
+        ],
+        [
             InlineKeyboardButton("📢 Рассылка", callback_data="admin_broadcast"),
-            InlineKeyboardButton("🔍 Сверка билетов", callback_data="admin_reconcile"),
-            InlineKeyboardButton("🔎 Поиск по билету", callback_data="admin_search_ticket"),
             InlineKeyboardButton("🖥️ Система", callback_data="admin_system")
+        ],
+        [
+            InlineKeyboardButton("🔍 Сверка билетов", callback_data="admin_reconcile"),
+            InlineKeyboardButton("🔎 Поиск по билету", callback_data="admin_search_ticket")
         ],
         [
             InlineKeyboardButton("🔄 Обновить", callback_data="admin_refresh")
