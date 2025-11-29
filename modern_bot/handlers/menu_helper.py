@@ -21,8 +21,7 @@ def get_main_menu_keyboard(user_id: int) -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
         keyboard,
         resize_keyboard=True,
-        one_time_keyboard=False,
-        is_persistent=True
+        input_field_placeholder="Выберите действие..."
     )
 
 async def show_menu_after_action(update: Update, message_text: str = None):
