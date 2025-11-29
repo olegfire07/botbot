@@ -92,6 +92,8 @@ async def admin_callback_handler(update: Update, context: CallbackContext) -> No
         await show_analytics(update, context)
     elif action == "admin_system":
         await show_system_status(update, context)
+    elif action == "admin_download_db":
+        await send_database_file(update, context)
     elif action == "admin_download_month":
         await show_download_menu(update, context)
     elif action == "admin_history":
