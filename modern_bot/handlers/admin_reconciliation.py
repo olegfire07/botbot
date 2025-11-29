@@ -51,6 +51,11 @@ async def handle_reconciliation_file(update: Update, context: CallbackContext) -
         await safe_reply(update, "❌ Поддерживаются только файлы .txt и .xlsx")
         return WAITING_FOR_FILE
 
+    # Check file size (max 10MB)
+    if document.file_size and document.file_size > 10 * 1024 * 1024:
+        await safe_reply(update, "❌ Файл слишком большой. Максимальный размер 10 МБ.")
+        return WAITING_FOR_FILE
+
     await safe_reply(update, "⏳ Обрабатываю файл...")
 
     try:
@@ -71,15 +76,22 @@ async def handle_reconciliation_file(update: Update, context: CallbackContext) -
                         uploaded_tickets.add(clean_ticket)
                         
         elif file_ext == '.xlsx':
-            wb = openpyxl.load_workbook(file_path)
-            ws = wb.active
-            for row in ws.iter_rows(values_only=True):
-                if row and row[0]:
-                    ticket = str(row[0]).strip()
-                    clean_ticket = "".join(filter(str.isdigit, ticket))
-                    if clean_ticket:
-                        uploaded_tickets.add(clean_ticket)
-            wb.close()
+            try:
+                wb = openpyxl.load_workbook(file_path)
+                ws = wb.active
+                for row in ws.iter_rows(values_only=True):
+                    if row and row[0]:
+                        ticket = str(row[0]).strip()
+                        clean_ticket = "".join(filter(str.isdigit, ticket))
+                        if clean_ticket:
+                            uploaded_tickets.add(clean_ticket)
+                wb.close()
+            except Exception as e:
+                logger.error(f"Excel parsing error: {e}")
+                await safe_reply(update, "❌ Ошибка чтения Excel файла. Убедитесь, что файл не поврежден.")
+                if file_path.exists():
+                    file_path.unlink()
+                return ConversationHandler.END
             
         # Cleanup uploaded file
         if file_path.exists():

@@ -32,8 +32,22 @@ async def handle_db_upload_message(update: Update, context: CallbackContext):
 
         # 1. Download new file
         new_file = await document.get_file()
+        
+        # Check size (max 50MB)
+        if new_file.file_size and new_file.file_size > 50 * 1024 * 1024:
+             await status_msg.edit_text("❌ Файл базы данных слишком большой (>50MB).")
+             return
+
         temp_path = BASE_DIR / "temp_upload.db"
         await new_file.download_to_drive(temp_path)
+
+        # Check Magic Bytes (SQLite header)
+        with open(temp_path, 'rb') as f:
+            header = f.read(16)
+            if header != b'SQLite format 3\x00':
+                await status_msg.edit_text("❌ Это не валидный файл SQLite базы данных.")
+                os.remove(temp_path)
+                return
 
         # 2. Backup current DB
         if DATABASE_FILE.exists():

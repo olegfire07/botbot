@@ -100,10 +100,16 @@ async def handle_admin_reply(update: Update, context: CallbackContext):
     if action == ACTION_ADD_USER:
         try:
             user_id = int(text)
+            if user_id <= 0 or user_id > 100_000_000_000: # Basic sanity check
+                raise ValueError("Invalid ID range")
         except ValueError:
-            await safe_reply(update, "❌ ID должен быть числом. Попробуйте ещё раз:")
+            await safe_reply(update, "❌ ID должен быть положительным числом. Попробуйте ещё раз:")
             return
         
+        if user_id == requester_id:
+             await safe_reply(update, "ℹ️ Вы не можете добавить самого себя (вы уже здесь).")
+             return
+
         result = await add_user_by_id(user_id, requester_id)
         await safe_reply(update, result)
         context.user_data.pop('admin_action', None)
@@ -111,8 +117,10 @@ async def handle_admin_reply(update: Update, context: CallbackContext):
     elif action == ACTION_REMOVE_USER:
         try:
             user_id = int(text)
+            if user_id <= 0:
+                raise ValueError("Invalid ID")
         except ValueError:
-            await safe_reply(update, "❌ ID должен быть числом. Попробуйте ещё раз:")
+            await safe_reply(update, "❌ ID должен быть положительным числом. Попробуйте ещё раз:")
             return
         
         result = await remove_user_by_id(user_id, requester_id)
@@ -122,8 +130,10 @@ async def handle_admin_reply(update: Update, context: CallbackContext):
     elif action == ACTION_ADD_ADMIN:
         try:
             new_admin_id = int(text)
+            if new_admin_id <= 0 or new_admin_id > 100_000_000_000:
+                raise ValueError("Invalid ID range")
         except ValueError:
-            await safe_reply(update, "❌ ID должен быть числом. Попробуйте ещё раз:")
+            await safe_reply(update, "❌ ID должен быть положительным числом. Попробуйте ещё раз:")
             return
         
         if new_admin_id in admin_ids:
@@ -138,8 +148,10 @@ async def handle_admin_reply(update: Update, context: CallbackContext):
     elif action == ACTION_REMOVE_ADMIN:
         try:
             target_id = int(text)
+            if target_id <= 0:
+                raise ValueError("Invalid ID")
         except ValueError:
-            await safe_reply(update, "❌ ID должен быть числом. Попробуйте ещё раз:")
+            await safe_reply(update, "❌ ID должен быть положительным числом. Попробуйте ещё раз:")
             return
         
         if target_id == requester_id:
@@ -158,6 +170,10 @@ async def handle_admin_reply(update: Update, context: CallbackContext):
     elif action == ACTION_BROADCAST:
         if not text:
             await safe_reply(update, "❌ Сообщение не может быть пустым. Попробуйте ещё раз:")
+            return
+            
+        if len(text) > 4000:
+            await safe_reply(update, f"❌ Сообщение слишком длинное ({len(text)} символов). Максимум 4000.")
             return
         
         users = await get_all_users()
