@@ -74,14 +74,23 @@ async def handle_backup_restore(update: Update, context: CallbackContext, action
             timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             safety_backup = BASE_DIR / "backups" / f"user_data_BEFORE_RESTORE_{timestamp}.db"
             shutil.copy2(DATABASE_FILE, safety_backup)
-            await status_msg.edit_text(f"✅ Страховочная копия создана.\n⏳ Восстанавливаю {filename}...")
+            await status_msg.edit_text(f"✅ Страховочная копия создана.\n⏳ Проверяю файл бэкапа...")
         
-        # 2. Restore
+        # 2. Validate backup file (check SQLite magic bytes)
+        with open(backup_path, 'rb') as f:
+            header = f.read(16)
+            if header != b'SQLite format 3\x00':
+                await status_msg.edit_text("❌ Ошибка: Файл бэкапа поврежден (не является SQLite базой).")
+                logger.error(f"Invalid backup file (magic bytes): {filename}")
+                return
+        
+        # 3. Restore
+        await status_msg.edit_text(f"✅ Файл валидный.\n⏳ Восстанавливаю {filename}...")
         shutil.copy2(backup_path, DATABASE_FILE)
         
         await status_msg.edit_text("✅ База успешно восстановлена!\n🔄 Перезагружаю бота...")
         
-        # 3. Restart
+        # 4. Restart
         context.application.stop_running()
         
     except Exception as e:
