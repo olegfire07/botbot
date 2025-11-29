@@ -18,7 +18,12 @@ def get_main_menu_keyboard(user_id: int) -> ReplyKeyboardMarkup:
     if is_admin(user_id):
         keyboard.append([KeyboardButton("⚙️ Админ-панель")])
     
-    return ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    return ReplyKeyboardMarkup(
+        keyboard,
+        resize_keyboard=True,
+        one_time_keyboard=False,
+        persistent=True
+    )
 
 async def show_menu_after_action(update: Update, message_text: str = None):
     """
