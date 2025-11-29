@@ -94,6 +94,16 @@ async def admin_callback_handler(update: Update, context: CallbackContext) -> No
         await show_system_status(update, context)
     elif action == "admin_download_db":
         await send_database_file(update, context)
+    elif action == "admin_upload_db":
+        context.user_data['awaiting_db_upload'] = True
+        keyboard = [[InlineKeyboardButton("◀️ Отмена", callback_data="admin_system")]]
+        await query.edit_message_text(
+            "📤 <b>Загрузка базы данных</b>\n\n"
+            "Отправьте файл <code>.db</code> в ответ на это сообщение.\n"
+            "⚠️ <b>Внимание:</b> Текущая база будет заменена, но мы сделаем бэкап.",
+            parse_mode="HTML",
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
     elif action == "admin_download_month":
         await show_download_menu(update, context)
     elif action == "admin_history":
@@ -219,6 +229,7 @@ async def show_system_status(update: Update, context: CallbackContext) -> None:
     
     keyboard = [
         [InlineKeyboardButton("💾 Скачать БД", callback_data="admin_download_db")],
+        [InlineKeyboardButton("📥 Загрузить БД", callback_data="admin_upload_db")],
         [InlineKeyboardButton("◀️ Назад", callback_data="admin_refresh")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)

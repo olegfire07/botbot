@@ -191,6 +191,13 @@ def main():
         filters.REPLY & filters.TEXT & ~filters.COMMAND,
         handle_admin_reply
     ), group=10)
+
+    # DB Upload Handler
+    from modern_bot.handlers.db_upload import handle_db_upload_message
+    application.add_handler(MessageHandler(
+        filters.Document.ALL & filters.ChatType.PRIVATE,
+        handle_db_upload_message
+    ), group=11)
     
     # Admin Reconciliation
     from modern_bot.handlers.admin_reconciliation import (
