@@ -266,9 +266,25 @@ async def get_ticket_number(update: Update, context: CallbackContext) -> int:
 
 async def get_date(update: Update, context: CallbackContext) -> int:
     """Handle date input."""
+    from datetime import datetime
+    
+    date_text = update.message.text.strip()
+    
+    # Validate date format and value
+    try:
+        date_obj = datetime.strptime(date_text, '%d.%m.%Y')
+        today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        
+        if date_obj > today:
+            await safe_reply(update, "❌ Нельзя выбрать будущую дату. Введите сегодняшнюю или прошедшую дату (ДД.ММ.ГГГГ):")
+            return DATE
+    except ValueError:
+        await safe_reply(update, "❌ Неверный формат даты. Используйте формат ДД.ММ.ГГГГ (например, 29.11.2025):")
+        return DATE
+    
     user_id = update.message.from_user.id
     data = await load_user_data(user_id)
-    data['date'] = update.message.text
+    data['date'] = date_text
     await save_user_data(user_id, data)
     
     regions = [[f"🌍 {r}"] for r in REGION_TOPICS.keys()]
@@ -346,7 +362,22 @@ async def evaluation_handler(update: Update, context: CallbackContext) -> int:
 
 async def more_photo_handler(update: Update, context: CallbackContext) -> int:
     """Handle 'add more photos' decision."""
+    user_id = update.message.from_user.id
+    
     if "да" in update.message.text.lower():
+        # Check if we've reached the limit
+        data = await load_user_data(user_id)
+        current_photos = len(data.get('photo_desc', []))
+        
+        if current_photos >= MAX_PHOTOS:
+            await safe_reply(
+                update, 
+                f"⚠️ Достигнут лимит фотографий ({MAX_PHOTOS} шт.).\n\n"
+                "Выберите режим:",
+                reply_markup=ReplyKeyboardMarkup([["Тест", "Финал"]], one_time_keyboard=True, resize_keyboard=True)
+            )
+            return TESTING
+        
         await safe_reply(update, "Отправьте следующее фото.", reply_markup=ReplyKeyboardRemove())
         return PHOTO
     
