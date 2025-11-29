@@ -1,0 +1,336 @@
+2025-11-28 08:49:04,116 - modern_bot - INFO - Bot started.
+2025-11-28 08:49:04,329 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 08:49:04,493 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 08:50:05,078 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 08:50:26,269 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 08:51:56,980 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 08:52:04,079 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 08:52:04,080 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 08:52:04,080 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 08:52:12,513 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 08:52:58,148 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 08:54:38,369 - modern_bot - INFO - Bot started.
+2025-11-28 08:54:38,496 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 08:54:38,622 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 08:54:38,826 - modern_bot - INFO - ✅ Set 7 admin commands for 2 admins
+2025-11-28 08:54:38,828 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 08:54:40,580 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 08:54:55,878 - modern_bot - INFO - Bot started.
+2025-11-28 08:54:56,003 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 08:54:56,111 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 08:54:56,458 - modern_bot - INFO - ✅ Set 7 admin commands for 2 admins
+2025-11-28 08:54:56,460 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 08:55:12,892 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 08:55:30,958 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 08:57:55,970 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 08:57:55,971 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 08:57:55,972 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 09:00:30,577 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 09:00:31,894 - modern_bot - INFO - Bot started.
+2025-11-28 09:00:32,099 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 09:00:32,205 - modern_bot - INFO - ✅ Set 4 default commands for regular users
+2025-11-28 09:00:32,413 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 09:00:32,414 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 09:01:15,894 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:03:31,862 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 09:03:31,863 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 09:03:31,864 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 09:06:59,124 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 09:07:00,375 - modern_bot - INFO - Bot started.
+2025-11-28 09:07:00,522 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 09:07:00,652 - modern_bot - INFO - ✅ Set 4 default commands for regular users
+2025-11-28 09:07:00,853 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 09:07:00,854 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 09:07:46,749 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:08:38,097 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:09:31,720 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:10:00,340 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 09:10:00,342 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 09:10:00,342 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 09:10:38,698 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:14:01,534 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:14:42,935 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7005868624 | Name: ₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ | Is Admin: False
+2025-11-28 09:17:43,500 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7005868624 | Name: ₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ | Is Admin: False
+2025-11-28 09:18:35,827 - modern_bot.handlers.commands - INFO - ⭐ User ID: 8162508833 | Name: Стас | Is Admin: False
+2025-11-28 09:19:20,482 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 09:19:22,038 - modern_bot - INFO - Bot started.
+2025-11-28 09:19:22,163 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 09:19:22,500 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 09:19:22,501 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 09:19:49,298 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:20:02,076 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:20:16,572 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:20:23,225 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7005868624 | Name: ₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ | Is Admin: False
+2025-11-28 09:20:33,084 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 09:21:05,659 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:21:47,199 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:21:58,155 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 09:22:10,136 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7005868624 | Name: ₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ | Is Admin: False
+2025-11-28 09:22:19,707 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7005868624 | Name: ₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ | Is Admin: False
+2025-11-28 09:22:22,004 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 09:22:22,004 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 09:22:22,004 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 09:22:43,704 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 09:23:12,991 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 09:23:14,205 - modern_bot - INFO - Bot started.
+2025-11-28 09:23:14,324 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 09:23:14,368 - modern_bot - INFO - ✅ Set 4 default commands for regular users
+2025-11-28 09:23:14,478 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 09:23:14,479 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 09:23:43,119 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:23:58,367 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:24:10,778 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:24:21,388 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7005868624 | Name: ₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ | Is Admin: False
+2025-11-28 09:26:14,187 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 09:26:14,187 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 09:26:14,188 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 09:31:26,776 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/385, Заключение антиквариат № 1 (билет 04084849494), Санкт-Петербург, от 28.11.2025 09-31-26.docx
+2025-11-28 09:31:27,403 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-28 09:31:28,987 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:33:02,162 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 09:33:03,743 - modern_bot - INFO - Bot started.
+2025-11-28 09:33:03,906 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 09:33:04,012 - modern_bot - INFO - ✅ Set 4 default commands for regular users
+2025-11-28 09:33:04,233 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 09:33:04,234 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 09:33:28,427 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 28, 6, 33, 28, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9172, supergroup_chat_created=False, text='/stats'), update_id=194094573) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:33:32,167 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 28, 6, 33, 32, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9173, supergroup_chat_created=False, text='/stats'), update_id=194094574) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:33:38,034 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 28, 6, 33, 38, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9174, supergroup_chat_created=False, text='/stats'), update_id=194094575) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:33:42,419 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 28, 6, 33, 42, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9175, supergroup_chat_created=False, text='/stats'), update_id=194094576) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:33:42,989 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:33:44,026 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:33:47,684 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 28, 6, 33, 47, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9180, supergroup_chat_created=False, text='/stats'), update_id=194094579) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:33:56,295 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 28, 6, 33, 56, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9181, supergroup_chat_created=False, text='/stats'), update_id=194094580) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:34:06,937 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 28, 6, 34, 6, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9182, supergroup_chat_created=False, text='/stats'), update_id=194094581) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:34:15,057 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 28, 6, 34, 15, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9185, supergroup_chat_created=False, text='/stats'), update_id=194094583) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:34:24,919 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 28, 6, 34, 24, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9186, supergroup_chat_created=False, text='/stats'), update_id=194094584) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:34:43,581 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7005868624 | Name: ₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ | Is Admin: False
+2025-11-28 09:34:45,458 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, type=<ChatType.PRIVATE>, username='vladivan4ik'), date=datetime.datetime(2025, 11, 28, 6, 34, 45, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, is_bot=False, language_code='ru', username='vladivan4ik'), group_chat_created=False, message_id=9189, supergroup_chat_created=False, text='/stats'), update_id=194094586) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:35:17,384 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, type=<ChatType.PRIVATE>, username='vladivan4ik'), date=datetime.datetime(2025, 11, 28, 6, 35, 17, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, is_bot=False, language_code='ru', username='vladivan4ik'), group_chat_created=False, message_id=9190, supergroup_chat_created=False, text='/stats'), update_id=194094587) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:35:50,652 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, type=<ChatType.PRIVATE>, username='vladivan4ik'), date=datetime.datetime(2025, 11, 28, 6, 35, 50, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, is_bot=False, language_code='ru', username='vladivan4ik'), group_chat_created=False, message_id=9191, supergroup_chat_created=False, text='/stats'), update_id=194094588) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:36:03,703 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 09:36:03,703 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 09:36:03,704 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 09:37:01,330 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 28, 6, 37, 1, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9194, supergroup_chat_created=False, text='/stats'), update_id=194094590) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:37:56,665 - modern_bot - INFO - Bot started.
+2025-11-28 09:37:56,792 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 09:37:56,841 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 09:37:57,472 - modern_bot - INFO - ✅ Set 4 default commands for regular users
+2025-11-28 09:37:57,615 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 09:37:57,977 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 09:37:58,444 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 09:37:58,444 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 09:37:58,445 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 09:38:37,831 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 09:39:00,485 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:39:02,948 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 28, 6, 39, 2, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9203, supergroup_chat_created=False, text='/stats'), update_id=194094595) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:40:17,254 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, type=<ChatType.PRIVATE>, username='vladivan4ik'), date=datetime.datetime(2025, 11, 28, 6, 40, 17, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, is_bot=False, language_code='ru', username='vladivan4ik'), group_chat_created=False, message_id=9204, supergroup_chat_created=False, text='/stats'), update_id=194094596) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:40:18,745 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, type=<ChatType.PRIVATE>, username='vladivan4ik'), date=datetime.datetime(2025, 11, 28, 6, 40, 18, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, is_bot=False, language_code='ru', username='vladivan4ik'), group_chat_created=False, message_id=9205, supergroup_chat_created=False, text='/stats'), update_id=194094597) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:40:20,711 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7005868624 | Name: ₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ | Is Admin: False
+2025-11-28 09:40:21,875 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, type=<ChatType.PRIVATE>, username='vladivan4ik'), date=datetime.datetime(2025, 11, 28, 6, 40, 21, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, is_bot=False, language_code='ru', username='vladivan4ik'), group_chat_created=False, message_id=9208, supergroup_chat_created=False, text='/stats'), update_id=194094599) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:40:56,124 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 09:40:57,497 - modern_bot - INFO - Bot started.
+2025-11-28 09:40:57,622 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 09:40:57,670 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 09:40:58,220 - modern_bot - INFO - ✅ Set 4 default commands for regular users
+2025-11-28 09:40:58,712 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 09:40:59,200 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 09:40:59,200 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 09:40:59,200 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 09:41:31,631 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:43:05,915 - modern_bot - INFO - Bot started.
+2025-11-28 09:43:06,042 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 09:43:06,108 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 09:43:06,660 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 09:43:07,065 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 09:43:07,466 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 09:43:07,466 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 09:43:07,467 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 09:43:07,927 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 09:43:30,950 - modern_bot - INFO - Bot started.
+2025-11-28 09:43:31,077 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 09:43:31,163 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 09:43:31,712 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 09:43:32,111 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 09:43:32,521 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 09:43:32,521 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 09:43:32,522 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 09:44:50,148 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7005868624 | Name: ₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ | Is Admin: False
+2025-11-28 09:45:14,798 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7005868624 | Name: ₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ | Is Admin: False
+2025-11-28 09:46:30,931 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 09:46:30,931 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 09:46:30,931 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 09:46:43,258 - modern_bot.handlers.commands - INFO - ⭐ User ID: 8162508833 | Name: Стас | Is Admin: False
+2025-11-28 09:46:53,618 - modern_bot.handlers.commands - INFO - ⭐ User ID: 8162508833 | Name: Стас | Is Admin: False
+2025-11-28 09:48:31,911 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:52:31,107 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False

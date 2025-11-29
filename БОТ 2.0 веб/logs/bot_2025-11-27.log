@@ -85,3 +85,33 @@
 2025-11-27 14:54:47,604 - modern_bot.handlers.user_management - ERROR - Error adding user 2064900: 'NoneType' object has no attribute 'execute'
 2025-11-27 14:54:49,673 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/385, Заключение антиквариат № 1 (билет 80484848444), Санкт-Петербург, от 27.11.2025 14-54-49.docx
 2025-11-27 14:54:52,044 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-27 15:09:13,838 - modern_bot.handlers.user_management - ERROR - Error adding user 1489952928: 'NoneType' object has no attribute 'execute'
+2025-11-27 15:09:13,840 - modern_bot.handlers.commands - INFO - ⭐ User ID: 1489952928 | Name: Дмитрий Щанкин | Is Admin: False
+2025-11-27 15:11:42,235 - modern_bot.handlers.user_management - ERROR - Error adding user 7582914139: 'NoneType' object has no attribute 'execute'
+2025-11-27 15:11:42,235 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7582914139 | Name: Максим Высокин (г.Челябинск) | Is Admin: False
+2025-11-27 15:12:10,560 - modern_bot - INFO - Bot started.
+2025-11-27 15:12:10,793 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-27 15:12:10,990 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-27 15:13:20,180 - modern_bot.handlers.user_management - ERROR - Error adding user 7582914139: 'NoneType' object has no attribute 'execute'
+2025-11-27 15:13:20,180 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7582914139 | Name: Максим Высокин (г.Челябинск) | Is Admin: False
+2025-11-27 15:14:57,611 - modern_bot.handlers.user_management - ERROR - Error adding user 7582914139: 'NoneType' object has no attribute 'execute'
+2025-11-27 15:14:57,612 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7582914139 | Name: Максим Высокин (г.Челябинск) | Is Admin: False
+2025-11-27 15:17:36,833 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-27 15:17:37,807 - modern_bot - INFO - Bot started.
+2025-11-27 15:17:37,983 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-27 15:17:38,210 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-27 15:20:22,084 - modern_bot.handlers.user_management - ERROR - Error adding user 2064900: 'NoneType' object has no attribute 'execute'
+2025-11-27 15:20:22,086 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-27 15:20:37,787 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-27.db
+2025-11-27 15:20:37,788 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-27.pickle
+2025-11-27 15:20:37,788 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-27 15:20:52,101 - modern_bot.handlers.user_management - ERROR - Error adding user 2064900: 'NoneType' object has no attribute 'execute'
+2025-11-27 15:20:52,102 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-27 15:21:17,748 - modern_bot.handlers.user_management - ERROR - Error adding user 2064900: 'NoneType' object has no attribute 'execute'
+2025-11-27 15:21:18,796 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/111, Заключение антиквариат № 1 (билет 87989869696), Санкт-Петербург, от 27.11.2025 15-21-18.docx
+2025-11-27 15:21:20,118 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-27 15:22:18,069 - modern_bot.handlers.user_management - ERROR - Error adding user 2064900: 'NoneType' object has no attribute 'execute'
+2025-11-27 15:22:18,069 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-27 15:23:17,360 - modern_bot.handlers.user_management - ERROR - Error adding user 1489952928: 'NoneType' object has no attribute 'execute'
+2025-11-27 15:23:17,865 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/385, Заключение антиквариат № 1 (билет 11111111111), Магнитогорск, от 27.11.2025 15-23-17.docx
+2025-11-27 15:23:18,371 - modern_bot.services.excel - INFO - Excel file updated.

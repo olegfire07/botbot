@@ -1,0 +1,950 @@
+2025-11-28 08:49:04,116 - modern_bot - INFO - Bot started.
+2025-11-28 08:49:04,329 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 08:49:04,493 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 08:50:05,078 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 08:50:26,269 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 08:51:56,980 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 08:52:04,079 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 08:52:04,080 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 08:52:04,080 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 08:52:12,513 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 08:52:58,148 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 08:54:38,369 - modern_bot - INFO - Bot started.
+2025-11-28 08:54:38,496 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 08:54:38,622 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 08:54:38,826 - modern_bot - INFO - ✅ Set 7 admin commands for 2 admins
+2025-11-28 08:54:38,828 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 08:54:40,580 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 08:54:55,878 - modern_bot - INFO - Bot started.
+2025-11-28 08:54:56,003 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 08:54:56,111 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 08:54:56,458 - modern_bot - INFO - ✅ Set 7 admin commands for 2 admins
+2025-11-28 08:54:56,460 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 08:55:12,892 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 08:55:30,958 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 08:57:55,970 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 08:57:55,971 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 08:57:55,972 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 09:00:30,577 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 09:00:31,894 - modern_bot - INFO - Bot started.
+2025-11-28 09:00:32,099 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 09:00:32,205 - modern_bot - INFO - ✅ Set 4 default commands for regular users
+2025-11-28 09:00:32,413 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 09:00:32,414 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 09:01:15,894 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:03:31,862 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 09:03:31,863 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 09:03:31,864 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 09:06:59,124 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 09:07:00,375 - modern_bot - INFO - Bot started.
+2025-11-28 09:07:00,522 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 09:07:00,652 - modern_bot - INFO - ✅ Set 4 default commands for regular users
+2025-11-28 09:07:00,853 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 09:07:00,854 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 09:07:46,749 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:08:38,097 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:09:31,720 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:10:00,340 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 09:10:00,342 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 09:10:00,342 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 09:10:38,698 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:14:01,534 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:14:42,935 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7005868624 | Name: ₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ | Is Admin: False
+2025-11-28 09:17:43,500 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7005868624 | Name: ₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ | Is Admin: False
+2025-11-28 09:18:35,827 - modern_bot.handlers.commands - INFO - ⭐ User ID: 8162508833 | Name: Стас | Is Admin: False
+2025-11-28 09:19:20,482 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 09:19:22,038 - modern_bot - INFO - Bot started.
+2025-11-28 09:19:22,163 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 09:19:22,500 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 09:19:22,501 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 09:19:49,298 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:20:02,076 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:20:16,572 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:20:23,225 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7005868624 | Name: ₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ | Is Admin: False
+2025-11-28 09:20:33,084 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 09:21:05,659 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:21:47,199 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:21:58,155 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 09:22:10,136 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7005868624 | Name: ₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ | Is Admin: False
+2025-11-28 09:22:19,707 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7005868624 | Name: ₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ | Is Admin: False
+2025-11-28 09:22:22,004 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 09:22:22,004 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 09:22:22,004 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 09:22:43,704 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 09:23:12,991 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 09:23:14,205 - modern_bot - INFO - Bot started.
+2025-11-28 09:23:14,324 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 09:23:14,368 - modern_bot - INFO - ✅ Set 4 default commands for regular users
+2025-11-28 09:23:14,478 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 09:23:14,479 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 09:23:43,119 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:23:58,367 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:24:10,778 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:24:21,388 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7005868624 | Name: ₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ | Is Admin: False
+2025-11-28 09:26:14,187 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 09:26:14,187 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 09:26:14,188 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 09:31:26,776 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/385, Заключение антиквариат № 1 (билет 04084849494), Санкт-Петербург, от 28.11.2025 09-31-26.docx
+2025-11-28 09:31:27,403 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-28 09:31:28,987 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:33:02,162 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 09:33:03,743 - modern_bot - INFO - Bot started.
+2025-11-28 09:33:03,906 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 09:33:04,012 - modern_bot - INFO - ✅ Set 4 default commands for regular users
+2025-11-28 09:33:04,233 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 09:33:04,234 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 09:33:28,427 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 28, 6, 33, 28, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9172, supergroup_chat_created=False, text='/stats'), update_id=194094573) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:33:32,167 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 28, 6, 33, 32, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9173, supergroup_chat_created=False, text='/stats'), update_id=194094574) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:33:38,034 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 28, 6, 33, 38, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9174, supergroup_chat_created=False, text='/stats'), update_id=194094575) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:33:42,419 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 28, 6, 33, 42, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9175, supergroup_chat_created=False, text='/stats'), update_id=194094576) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:33:42,989 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:33:44,026 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:33:47,684 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 28, 6, 33, 47, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9180, supergroup_chat_created=False, text='/stats'), update_id=194094579) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:33:56,295 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 28, 6, 33, 56, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9181, supergroup_chat_created=False, text='/stats'), update_id=194094580) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:34:06,937 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 28, 6, 34, 6, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9182, supergroup_chat_created=False, text='/stats'), update_id=194094581) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:34:15,057 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 28, 6, 34, 15, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9185, supergroup_chat_created=False, text='/stats'), update_id=194094583) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:34:24,919 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 28, 6, 34, 24, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9186, supergroup_chat_created=False, text='/stats'), update_id=194094584) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:34:43,581 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7005868624 | Name: ₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ | Is Admin: False
+2025-11-28 09:34:45,458 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, type=<ChatType.PRIVATE>, username='vladivan4ik'), date=datetime.datetime(2025, 11, 28, 6, 34, 45, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, is_bot=False, language_code='ru', username='vladivan4ik'), group_chat_created=False, message_id=9189, supergroup_chat_created=False, text='/stats'), update_id=194094586) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:35:17,384 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, type=<ChatType.PRIVATE>, username='vladivan4ik'), date=datetime.datetime(2025, 11, 28, 6, 35, 17, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, is_bot=False, language_code='ru', username='vladivan4ik'), group_chat_created=False, message_id=9190, supergroup_chat_created=False, text='/stats'), update_id=194094587) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:35:50,652 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, type=<ChatType.PRIVATE>, username='vladivan4ik'), date=datetime.datetime(2025, 11, 28, 6, 35, 50, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, is_bot=False, language_code='ru', username='vladivan4ik'), group_chat_created=False, message_id=9191, supergroup_chat_created=False, text='/stats'), update_id=194094588) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:36:03,703 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 09:36:03,703 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 09:36:03,704 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 09:37:01,330 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 28, 6, 37, 1, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9194, supergroup_chat_created=False, text='/stats'), update_id=194094590) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:37:56,665 - modern_bot - INFO - Bot started.
+2025-11-28 09:37:56,792 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 09:37:56,841 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 09:37:57,472 - modern_bot - INFO - ✅ Set 4 default commands for regular users
+2025-11-28 09:37:57,615 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 09:37:57,977 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 09:37:58,444 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 09:37:58,444 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 09:37:58,445 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 09:38:37,831 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 09:39:00,485 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:39:02,948 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 28, 6, 39, 2, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9203, supergroup_chat_created=False, text='/stats'), update_id=194094595) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:40:17,254 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, type=<ChatType.PRIVATE>, username='vladivan4ik'), date=datetime.datetime(2025, 11, 28, 6, 40, 17, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, is_bot=False, language_code='ru', username='vladivan4ik'), group_chat_created=False, message_id=9204, supergroup_chat_created=False, text='/stats'), update_id=194094596) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:40:18,745 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, type=<ChatType.PRIVATE>, username='vladivan4ik'), date=datetime.datetime(2025, 11, 28, 6, 40, 18, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, is_bot=False, language_code='ru', username='vladivan4ik'), group_chat_created=False, message_id=9205, supergroup_chat_created=False, text='/stats'), update_id=194094597) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:40:20,711 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7005868624 | Name: ₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ | Is Admin: False
+2025-11-28 09:40:21,875 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, type=<ChatType.PRIVATE>, username='vladivan4ik'), date=datetime.datetime(2025, 11, 28, 6, 40, 21, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ', id=7005868624, is_bot=False, language_code='ru', username='vladivan4ik'), group_chat_created=False, message_id=9208, supergroup_chat_created=False, text='/stats'), update_id=194094599) caused error 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/reports.py", line 141, in stats_handler
+    user_records = [r for r in records if r.get('user_id') == user_id] if records else []
+                                          ^^^^^
+AttributeError: 'list' object has no attribute 'get'
+2025-11-28 09:40:56,124 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 09:40:57,497 - modern_bot - INFO - Bot started.
+2025-11-28 09:40:57,622 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 09:40:57,670 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 09:40:58,220 - modern_bot - INFO - ✅ Set 4 default commands for regular users
+2025-11-28 09:40:58,712 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 09:40:59,200 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 09:40:59,200 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 09:40:59,200 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 09:41:31,631 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:43:05,915 - modern_bot - INFO - Bot started.
+2025-11-28 09:43:06,042 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 09:43:06,108 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 09:43:06,660 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 09:43:07,065 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 09:43:07,466 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 09:43:07,466 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 09:43:07,467 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 09:43:07,927 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 09:43:30,950 - modern_bot - INFO - Bot started.
+2025-11-28 09:43:31,077 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 09:43:31,163 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 09:43:31,712 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 09:43:32,111 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 09:43:32,521 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 09:43:32,521 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 09:43:32,522 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 09:44:50,148 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7005868624 | Name: ₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ | Is Admin: False
+2025-11-28 09:45:14,798 - modern_bot.handlers.commands - INFO - ⭐ User ID: 7005868624 | Name: ₵ⱤØ₩₦Ʉ₱₴₵₳ⱠɆ | Is Admin: False
+2025-11-28 09:46:30,931 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 09:46:30,931 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 09:46:30,931 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 09:46:43,258 - modern_bot.handlers.commands - INFO - ⭐ User ID: 8162508833 | Name: Стас | Is Admin: False
+2025-11-28 09:46:53,618 - modern_bot.handlers.commands - INFO - ⭐ User ID: 8162508833 | Name: Стас | Is Admin: False
+2025-11-28 09:48:31,911 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 09:52:31,107 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 10:44:30,933 - modern_bot.utils.files - INFO - Removed temp file: LZIAgxmXuY2b3ymO.jpg
+2025-11-28 13:30:59,279 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/111, Заключение антиквариат № 1 (билет 11111111111), Санкт-Петербург, от 29.11.2025 13-30-59.docx
+2025-11-28 13:30:59,966 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-28 13:58:07,135 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 14:44:30,934 - modern_bot.utils.files - INFO - Removed temp file: 7DJwQW677m6087pr.jpg
+2025-11-28 15:52:37,706 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 15:58:10,244 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 15:58:36,675 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 16:02:42,720 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 16:05:29,135 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/385, Заключение антиквариат № 1 (билет 09878754545), Санкт-Петербург, от 29.11.2025 16-05-29.docx
+2025-11-28 16:05:30,415 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-28 16:06:11,986 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 16:06:13,271 - modern_bot - INFO - Bot started.
+2025-11-28 16:06:13,538 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 16:06:13,609 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 16:06:14,190 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 16:06:14,663 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 16:06:15,130 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 16:06:15,130 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 16:06:15,131 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 16:06:56,660 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 16:07:24,071 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/385, Заключение антиквариат № 1 (билет 04084848494), Санкт-Петербург, от 29.11.2025 16-07-24.docx
+2025-11-28 16:07:25,079 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-28 16:09:13,227 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 16:09:13,228 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 16:09:13,228 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 16:10:35,972 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 16:11:04,731 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/385, Заключение антиквариат № 1 (билет 04884848484), Санкт-Петербург, от 29.11.2025 16-11-04.docx
+2025-11-28 16:11:06,279 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-28 16:12:43,190 - modern_bot.api - WARNING - Rejected future date: 29.11.2025
+2025-11-28 16:13:13,261 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 16:13:22,108 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 16:13:44,627 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/385, Заключение антиквариат № 1 (билет 08485454545), Санкт-Петербург, от 29.11.2025 16-13-44.docx
+2025-11-28 16:13:45,527 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-28 16:16:13,094 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 16:16:14,527 - modern_bot - INFO - Bot started.
+2025-11-28 16:16:14,734 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 16:16:14,787 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 16:16:15,351 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 16:16:15,778 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 16:16:16,223 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 16:16:16,223 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 16:16:16,223 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 16:16:38,038 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 16:17:08,462 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/385, Заключение антиквариат № 1 (билет 08494664646), Санкт-Петербург, от 29.11.2025 16-17-08.docx
+2025-11-28 16:17:09,289 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-28 16:17:49,500 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 16:18:17,148 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/385, Заключение антиквариат № 1 (билет 94465646644), Санкт-Петербург, от 29.11.2025 16-18-17.docx
+2025-11-28 16:18:17,978 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-28 16:19:14,485 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 16:19:14,486 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 16:19:14,487 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 16:19:54,387 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-28 16:20:21,414 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/385, Заключение антиквариат № 10 (билет 10010181848), Санкт-Петербург, от 29.11.2025 16-20-21.docx
+2025-11-28 16:20:23,043 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-28 16:21:00,131 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 16:24:12,438 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 16:24:40,945 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/385, Заключение антиквариат № 1 (билет 04884848484), Санкт-Петербург, от 29.11.2025 16-24-40.docx
+2025-11-28 16:24:41,723 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-28 16:27:51,032 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 16:28:17,777 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/385, Заключение антиквариат № 1 (билет 88558888856), Санкт-Петербург, от 29.11.2025 16-28-17.docx
+2025-11-28 16:28:18,809 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-28 16:30:27,001 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 16:30:28,536 - modern_bot - INFO - Bot started.
+2025-11-28 16:30:28,721 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 16:30:28,799 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 16:30:29,416 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 16:30:29,915 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 16:30:30,345 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 16:30:30,345 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 16:30:30,345 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 16:30:50,580 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 16:31:14,997 - modern_bot.handlers.conversation - WARNING - Rejected future date in Web App: 29.11.2025 from user 2064900
+2025-11-28 16:32:49,687 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 16:33:28,496 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 16:33:28,497 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 16:33:28,497 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 16:42:38,433 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 16:56:23,252 - modern_bot - INFO - Bot started.
+2025-11-28 16:56:23,544 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 16:56:23,742 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 16:56:24,483 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 16:56:25,143 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 16:56:25,625 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 16:56:25,625 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 16:56:25,626 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 16:56:26,291 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 16:57:31,132 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 16:59:23,216 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 16:59:23,218 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 16:59:23,218 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 17:00:36,462 - modern_bot - INFO - Bot started.
+2025-11-28 17:00:36,833 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 17:00:36,901 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 17:00:37,473 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 17:00:37,951 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 17:00:38,425 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 17:00:38,425 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 17:00:38,428 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 17:02:58,743 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 17:57:23,223 - modern_bot.utils.files - INFO - Removed temp file: yumAWgBFuQDTrA1t.jpg
+2025-11-28 17:57:23,224 - modern_bot.utils.files - INFO - Removed temp file: FjUeLqfu296yDiZK.jpg
+2025-11-28 17:57:23,224 - modern_bot.utils.files - INFO - Removed temp file: uP3gwsRlaXM0Rgmb.jpg
+2025-11-28 17:57:23,225 - modern_bot.utils.files - INFO - Removed temp file: hCuiJhJHEdUr2a38.jpg
+2025-11-28 17:57:23,225 - modern_bot.utils.files - INFO - Removed temp file: 1CttC6jgBKBN1eeY.jpg
+2025-11-28 17:57:23,225 - modern_bot.utils.files - INFO - Removed temp file: 8VfblEjTBELVx1FP.jpg
+2025-11-28 17:57:23,226 - modern_bot.utils.files - INFO - Removed temp file: lrGS9R5FlEdtYIBl.jpg
+2025-11-28 17:57:23,226 - modern_bot.utils.files - INFO - Removed temp file: M1yq9bTNAW5oMgAf.jpg
+2025-11-28 17:57:23,226 - modern_bot.utils.files - INFO - Removed temp file: JWNUQmRCbSW9UHAc.jpg
+2025-11-28 18:41:19,875 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 18:41:22,015 - modern_bot - INFO - Bot started.
+2025-11-28 18:41:22,303 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 18:41:22,421 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 18:41:23,067 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 18:41:23,546 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 18:41:24,050 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 18:41:24,050 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 18:41:24,050 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 18:44:21,974 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 18:44:21,975 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 18:44:21,975 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 18:45:02,943 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 18:45:03,458 - modern_bot - INFO - Bot started.
+2025-11-28 18:45:03,615 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 18:45:03,748 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 18:45:04,378 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 18:45:04,866 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 18:45:05,355 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 18:45:05,355 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 18:45:05,355 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 18:48:03,422 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 18:48:03,423 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 18:48:03,423 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 18:49:36,485 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 18:50:44,600 - modern_bot - INFO - Bot started.
+2025-11-28 18:50:44,811 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 18:50:45,006 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 18:50:45,683 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 18:50:46,244 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 18:50:46,655 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 18:50:46,655 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 18:50:46,658 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 18:50:46,909 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 18:54:07,750 - modern_bot - INFO - Bot started.
+2025-11-28 18:54:07,941 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 18:54:08,027 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 18:54:08,619 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 18:54:09,103 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 18:54:09,627 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 18:54:09,627 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 18:54:09,628 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 18:55:55,040 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 18:55:57,007 - modern_bot - INFO - Bot started.
+2025-11-28 18:55:57,307 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 18:55:57,393 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 18:55:58,027 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 18:55:58,643 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 18:55:59,468 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 18:55:59,468 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 18:55:59,468 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 18:58:40,757 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 18:58:41,277 - modern_bot - INFO - Bot started.
+2025-11-28 18:58:41,556 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 18:58:41,614 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 18:58:42,213 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 18:58:42,730 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 18:58:43,185 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 18:58:43,185 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 18:58:43,186 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 19:01:41,230 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 19:01:41,231 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 19:01:41,231 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 19:15:44,816 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 19:15:46,219 - modern_bot - INFO - Bot started.
+2025-11-28 19:15:46,709 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 19:15:46,893 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 19:15:47,534 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 19:15:48,458 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 19:15:49,081 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 19:15:49,081 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 19:15:49,082 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 19:16:33,637 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 19:17:54,416 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 19:18:46,172 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 19:18:46,172 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 19:18:46,173 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 19:19:06,167 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 19:19:06,933 - modern_bot - INFO - Bot started.
+2025-11-28 19:19:07,131 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 19:19:07,203 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 19:19:07,865 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 19:19:08,298 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 19:19:08,823 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 19:19:08,824 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 19:19:08,824 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 19:20:59,800 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 19:21:16,916 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 19:22:06,900 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 19:22:06,901 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 19:22:06,901 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 19:22:42,986 - modern_bot - INFO - Bot started.
+2025-11-28 19:22:43,446 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 19:22:43,541 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 19:22:44,152 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 19:22:44,888 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 19:22:45,407 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 19:22:45,407 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 19:22:45,410 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 19:22:54,977 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 19:23:44,227 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-28 19:25:09,920 - modern_bot - INFO - Bot started.
+2025-11-28 19:25:10,313 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-28 19:25:10,436 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-28 19:25:11,144 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-28 19:25:11,743 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-28 19:25:12,278 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-28 19:25:12,278 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-28 19:25:12,279 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-28 19:25:12,850 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 19:25:13,410 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 19:25:13,633 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-28 19:28:09,878 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-28.db
+2025-11-28 19:28:09,879 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-28.pickle
+2025-11-28 19:28:09,879 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-28 19:56:54,206 - modern_bot - ERROR - Update None caused error httpx.RemoteProtocolError: Server disconnected without sending a response.
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/connection_pool.py", line 236, in handle_async_request
+    response = await connection.handle_async_request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        pool_request.request
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/connection.py", line 103, in handle_async_request
+    return await self._connection.handle_async_request(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 136, in handle_async_request
+    raise exc
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 106, in handle_async_request
+    ) = await self._receive_response_headers(**kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 177, in _receive_response_headers
+    event = await self._receive_event(timeout=timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 231, in _receive_event
+    raise RemoteProtocolError(msg)
+httpcore.RemoteProtocolError: Server disconnected without sending a response.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_httpxrequest.py", line 279, in do_request
+    res = await self._client.request(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.RemoteProtocolError: Server disconnected without sending a response.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_utils/networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_utils/networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_baserequest.py", line 305, in _request_wrapper
+    code, payload = await self.do_request(
+                    ^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_httpxrequest.py", line 303, in do_request
+    raise NetworkError(f"httpx.{err.__class__.__name__}: {err}") from err
+telegram.error.NetworkError: httpx.RemoteProtocolError: Server disconnected without sending a response.
+2025-11-28 20:14:45,189 - modern_bot - ERROR - Update None caused error httpx.RemoteProtocolError: Server disconnected without sending a response.
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/connection_pool.py", line 236, in handle_async_request
+    response = await connection.handle_async_request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        pool_request.request
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/connection.py", line 103, in handle_async_request
+    return await self._connection.handle_async_request(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 136, in handle_async_request
+    raise exc
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 106, in handle_async_request
+    ) = await self._receive_response_headers(**kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 177, in _receive_response_headers
+    event = await self._receive_event(timeout=timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 231, in _receive_event
+    raise RemoteProtocolError(msg)
+httpcore.RemoteProtocolError: Server disconnected without sending a response.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_httpxrequest.py", line 279, in do_request
+    res = await self._client.request(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.RemoteProtocolError: Server disconnected without sending a response.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_utils/networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_utils/networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_baserequest.py", line 305, in _request_wrapper
+    code, payload = await self.do_request(
+                    ^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_httpxrequest.py", line 303, in do_request
+    raise NetworkError(f"httpx.{err.__class__.__name__}: {err}") from err
+telegram.error.NetworkError: httpx.RemoteProtocolError: Server disconnected without sending a response.
+2025-11-28 20:32:25,430 - modern_bot - ERROR - Update None caused error httpx.RemoteProtocolError: Server disconnected without sending a response.
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/connection_pool.py", line 236, in handle_async_request
+    response = await connection.handle_async_request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        pool_request.request
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/connection.py", line 103, in handle_async_request
+    return await self._connection.handle_async_request(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 136, in handle_async_request
+    raise exc
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 106, in handle_async_request
+    ) = await self._receive_response_headers(**kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 177, in _receive_response_headers
+    event = await self._receive_event(timeout=timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 231, in _receive_event
+    raise RemoteProtocolError(msg)
+httpcore.RemoteProtocolError: Server disconnected without sending a response.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_httpxrequest.py", line 279, in do_request
+    res = await self._client.request(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.RemoteProtocolError: Server disconnected without sending a response.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_utils/networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_utils/networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_baserequest.py", line 305, in _request_wrapper
+    code, payload = await self.do_request(
+                    ^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_httpxrequest.py", line 303, in do_request
+    raise NetworkError(f"httpx.{err.__class__.__name__}: {err}") from err
+telegram.error.NetworkError: httpx.RemoteProtocolError: Server disconnected without sending a response.

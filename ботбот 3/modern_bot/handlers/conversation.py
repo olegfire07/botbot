@@ -1,0 +1,361 @@
+import logging
+import json
+import httpx
+from pathlib import Path
+from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove, InputMediaPhoto
+from telegram.ext import CallbackContext, ConversationHandler, CommandHandler, MessageHandler, filters
+from modern_bot.config import (
+    PROGRESS_STEPS, TOTAL_STEPS, MAX_PHOTOS, MAX_PHOTO_SIZE_MB, 
+    PHOTO_REQUIREMENTS_MESSAGE, REGION_TOPICS, MAIN_GROUP_CHAT_ID, TEMP_PHOTOS_DIR
+)
+from modern_bot.utils.validators import is_digit, is_valid_ticket_number, normalize_region_input
+from modern_bot.utils.files import generate_unique_filename, compress_image, is_image_too_large
+from modern_bot.database.db import save_user_data, load_user_data, delete_user_data
+from modern_bot.services.docx_gen import create_document
+from modern_bot.services.excel import update_excel
+from modern_bot.services.archive import archive_document
+from modern_bot.handlers.common import safe_reply, send_document_from_path
+from modern_bot.services.flow import finalize_conclusion
+
+logger = logging.getLogger(__name__)
+
+(DEPARTMENT, ISSUE_NUMBER, TICKET_NUMBER, DATE, REGION, PHOTO, DESCRIPTION, EVALUATION,
+ MORE_PHOTO, CONFIRMATION, TESTING, WEB_APP_PHOTO) = range(12)
+
+def format_progress(stage: str) -> str:
+    """Format the progress step string."""
+    step = PROGRESS_STEPS.get(stage)
+    return f"Шаг {step}/{TOTAL_STEPS}" if step else ""
+
+async def start_conversation(update: Update, context: CallbackContext) -> int:
+    """Start the conversation flow."""
+    user = update.effective_user
+    await delete_user_data(user.id)
+    await save_user_data(user.id, {'photo_desc': []})
+    
+    await safe_reply(
+        update,
+        f"👋 Привет! Начнем создание нового заключения.\n\n"
+        f"🟡 {format_progress('department')}\nВведите номер подразделения:"
+    )
+    return DEPARTMENT
+
+async def web_app_entry(update: Update, context: CallbackContext) -> int:
+    """Handle data received from the Web App."""
+    try:
+        data = json.loads(update.effective_message.web_app_data.data)
+        user_id = update.effective_user.id
+        user_name = update.effective_user.full_name
+        
+        # Prepare data structure
+        db_data = {
+            'department_number': data['department_number'],
+            'issue_number': data['issue_number'],
+            'ticket_number': data['ticket_number'],
+            'date': data['date'],
+            'region': data['region'],
+            'photo_desc': []
+        }
+        
+        # Process items and download photos
+        TEMP_PHOTOS_DIR.mkdir(parents=True, exist_ok=True)
+        
+        items = data.get('items', [])
+        if len(items) > MAX_PHOTOS:
+            logger.warning("Received %s items, trimming to MAX_PHOTOS=%s", len(items), MAX_PHOTOS)
+            items = items[:MAX_PHOTOS]
+
+        max_photo_bytes = MAX_PHOTO_SIZE_MB * 1024 * 1024
+        http_timeout = httpx.Timeout(10.0)
+        http_limits = httpx.Limits(max_connections=4, max_keepalive_connections=2)
+
+        async with httpx.AsyncClient(timeout=http_timeout, limits=http_limits) as client:
+            for item in items:
+                photo_url = item.get('photo_url')
+                description = item.get('description')
+                evaluation = item.get('evaluation')
+                
+                if photo_url:
+                    try:
+                        response = await client.get(photo_url)
+                        content_type = response.headers.get("Content-Type", "")
+                        content_length = response.headers.get("Content-Length")
+
+                        if response.status_code != 200:
+                            logger.error(f"Failed to download photo from {photo_url}: {response.status_code}")
+                            continue
+                        if not content_type.startswith("image/"):
+                            logger.error(f"Invalid content type for {photo_url}: {content_type}")
+                            continue
+                        if content_length and int(content_length) > max_photo_bytes:
+                            logger.error(f"Photo too large (header) {photo_url}: {content_length} bytes")
+                            continue
+                        if len(response.content) > max_photo_bytes:
+                            logger.error(f"Photo too large (body) {photo_url}: {len(response.content)} bytes")
+                            continue
+
+                        unique_name = generate_unique_filename()
+                        file_path = TEMP_PHOTOS_DIR / unique_name
+
+                        with open(file_path, 'wb') as f:
+                            f.write(response.content)
+                            
+                        db_data['photo_desc'].append({
+                            'photo': str(file_path),
+                            'description': description,
+                            'evaluation': evaluation
+                        })
+                    except Exception as e:
+                        logger.error(f"Error downloading photo: {e}")
+                else:
+                    logger.warning("No photo URL for item")
+        
+        await save_user_data(user_id, db_data)
+        
+        # Finalize immediately
+        is_test = data.get('is_test', False)
+        await safe_reply(update, f"✅ Данные получены! Формирую документ... {'(Тестовый режим)' if is_test else ''}")
+        await finalize_conclusion(context.bot, user_id, user_name, db_data, send_to_group=(not is_test))
+        return ConversationHandler.END
+
+    except Exception as e:
+        logger.error(f"Error processing Web App data: {e}", exc_info=True)
+        await safe_reply(update, "❌ Произошла ошибка при обработке данных. Попробуйте еще раз.")
+        return ConversationHandler.END
+
+async def web_app_photo_handler(update: Update, context: CallbackContext) -> int:
+    """Handle photos uploaded via Web App (legacy flow)."""
+    user_id = update.effective_user.id
+    data = await load_user_data(user_id)
+    
+    items = data.get('temp_items', [])
+    current_photos = data.get('photo_desc', [])
+    
+    current_index = len(current_photos)
+    
+    if current_index >= len(items):
+        # Should not happen ideally
+        await finalize_conclusion(context.bot, user_id, update.effective_user.full_name, data, send_to_group=True)
+        return ConversationHandler.END
+
+    # Process photo
+    photo_file = await update.message.photo[-1].get_file()
+    TEMP_PHOTOS_DIR.mkdir(parents=True, exist_ok=True)
+    unique_name = generate_unique_filename()
+    orig_path = TEMP_PHOTOS_DIR / f"orig_{unique_name}"
+    comp_path = TEMP_PHOTOS_DIR / unique_name
+    
+    await photo_file.download_to_drive(orig_path)
+    compress_image(orig_path, comp_path)
+    if orig_path.exists():
+        orig_path.unlink()
+        
+    # Add to photo_desc
+    current_item = items[current_index]
+    data['photo_desc'].append({
+        'photo': str(comp_path),
+        'description': current_item['description'],
+        'evaluation': current_item['evaluation']
+    })
+    
+    await save_user_data(user_id, data)
+    
+    # Check if we need more photos
+    next_index = current_index + 1
+    if next_index < len(items):
+        next_item = items[next_index]
+        await safe_reply(
+            update, 
+            f"✅ Фото принято.\n\n"
+            f"📸 Отправьте фото для предмета №{next_index + 1}:\n"
+            f"<b>{next_item['description']}</b> ({next_item['evaluation']} руб.)",
+            parse_mode="HTML"
+        )
+        return WEB_APP_PHOTO
+    else:
+        # All photos received
+        await safe_reply(update, "✅ Все фото получены! Формирую документ...")
+        await finalize_conclusion(context.bot, user_id, update.effective_user.full_name, data, send_to_group=True)
+        return ConversationHandler.END
+
+async def get_department(update: Update, context: CallbackContext) -> int:
+    """Handle department number input."""
+    if not is_digit(update.message.text):
+        await safe_reply(update, "Только цифры, пожалуйста.")
+        return DEPARTMENT
+    
+    user_id = update.message.from_user.id
+    data = await load_user_data(user_id)
+    data['department_number'] = update.message.text
+    await save_user_data(user_id, data)
+    
+    await safe_reply(update, f"✅ Сохранено.\n\n🟡 {format_progress('issue')}\nВведите номер заключения:")
+    return ISSUE_NUMBER
+
+async def get_issue_number(update: Update, context: CallbackContext) -> int:
+    """Handle issue number input."""
+    if not is_digit(update.message.text):
+        await safe_reply(update, "Только цифры, пожалуйста.")
+        return ISSUE_NUMBER
+        
+    user_id = update.message.from_user.id
+    data = await load_user_data(user_id)
+    data['issue_number'] = update.message.text
+    await save_user_data(user_id, data)
+    
+    await safe_reply(update, f"✅ Сохранено.\n\n🟡 {format_progress('ticket')}\nВведите номер билета:")
+    return TICKET_NUMBER
+
+async def get_ticket_number(update: Update, context: CallbackContext) -> int:
+    """Handle ticket number input."""
+    if not is_valid_ticket_number(update.message.text):
+        await safe_reply(update, "Неверный формат номера билета.")
+        return TICKET_NUMBER
+        
+    user_id = update.message.from_user.id
+    data = await load_user_data(user_id)
+    data['ticket_number'] = update.message.text
+    await save_user_data(user_id, data)
+    
+    await safe_reply(update, f"✅ Сохранено.\n\n🟡 {format_progress('date')}\nВведите дату (ДД.ММ.ГГГГ):")
+    return DATE
+
+async def get_date(update: Update, context: CallbackContext) -> int:
+    """Handle date input."""
+    user_id = update.message.from_user.id
+    data = await load_user_data(user_id)
+    data['date'] = update.message.text
+    await save_user_data(user_id, data)
+    
+    regions = [[f"🌍 {r}"] for r in REGION_TOPICS.keys()]
+    markup = ReplyKeyboardMarkup(regions, one_time_keyboard=True, resize_keyboard=True)
+    await safe_reply(update, f"✅ Сохранено.\n\n🟡 {format_progress('region')}\nВыберите регион:", reply_markup=markup)
+    return REGION
+
+async def get_region(update: Update, context: CallbackContext) -> int:
+    """Handle region selection."""
+    region = normalize_region_input(update.message.text)
+    if not region:
+        await safe_reply(update, "Пожалуйста, выберите корректный регион.")
+        return REGION
+        
+    user_id = update.message.from_user.id
+    data = await load_user_data(user_id)
+    data['region'] = region
+    await save_user_data(user_id, data)
+    
+    await safe_reply(
+        update, 
+        f"✅ Сохранено.\n\n🟡 {format_progress('photo')}\nОтправьте фото.\n{PHOTO_REQUIREMENTS_MESSAGE}",
+        reply_markup=ReplyKeyboardRemove()
+    )
+    return PHOTO
+
+async def photo_handler(update: Update, context: CallbackContext) -> int:
+    """Handle photo upload."""
+    user_id = update.message.from_user.id
+    photo_file = await update.message.photo[-1].get_file()
+    
+    TEMP_PHOTOS_DIR.mkdir(parents=True, exist_ok=True)
+    unique_name = generate_unique_filename()
+    orig_path = TEMP_PHOTOS_DIR / f"orig_{unique_name}"
+    comp_path = TEMP_PHOTOS_DIR / unique_name
+    
+    await photo_file.download_to_drive(orig_path)
+    compress_image(orig_path, comp_path)
+    if orig_path.exists():
+        orig_path.unlink()
+        
+    data = await load_user_data(user_id)
+    data.setdefault('photo_desc', []).append({'photo': str(comp_path), 'description': '', 'evaluation': ''})
+    await save_user_data(user_id, data)
+    
+    await safe_reply(update, f"✅ Фото получено.\n\n✏️ Введите описание:")
+    return DESCRIPTION
+
+async def description_handler(update: Update, context: CallbackContext) -> int:
+    """Handle item description input."""
+    user_id = update.message.from_user.id
+    data = await load_user_data(user_id)
+    if data.get('photo_desc'):
+        data['photo_desc'][-1]['description'] = update.message.text
+    await save_user_data(user_id, data)
+    
+    await safe_reply(update, f"✅ Сохранено.\n\n💰 Введите оценку (цифры):")
+    return EVALUATION
+
+async def evaluation_handler(update: Update, context: CallbackContext) -> int:
+    """Handle item evaluation (price) input."""
+    if not is_digit(update.message.text):
+        await safe_reply(update, "Только цифры.")
+        return EVALUATION
+        
+    user_id = update.message.from_user.id
+    data = await load_user_data(user_id)
+    if data.get('photo_desc'):
+        data['photo_desc'][-1]['evaluation'] = update.message.text
+    await save_user_data(user_id, data)
+    
+    markup = ReplyKeyboardMarkup([["Да", "Нет"]], one_time_keyboard=True, resize_keyboard=True)
+    await safe_reply(update, "Добавить еще фото?", reply_markup=markup)
+    return MORE_PHOTO
+
+async def more_photo_handler(update: Update, context: CallbackContext) -> int:
+    """Handle 'add more photos' decision."""
+    if "да" in update.message.text.lower():
+        await safe_reply(update, "Отправьте следующее фото.", reply_markup=ReplyKeyboardRemove())
+        return PHOTO
+    
+    markup = ReplyKeyboardMarkup([["Тест", "Финал"]], one_time_keyboard=True, resize_keyboard=True)
+    await safe_reply(update, "Выберите режим:", reply_markup=markup)
+    return TESTING
+
+async def testing_handler(update: Update, context: CallbackContext) -> int:
+    """Handle final mode selection (Test/Final)."""
+    user_id = update.message.from_user.id
+    mode = update.message.text.lower()
+    
+    await safe_reply(update, "Генерирую документ...", reply_markup=ReplyKeyboardRemove())
+    
+    try:
+        if "финал" in mode:
+            data = await load_user_data(user_id)
+            await finalize_conclusion(context.bot, user_id, update.message.from_user.full_name, data, send_to_group=True)
+            await safe_reply(update, "✅ Заключение сформировано и отправлено.")
+        else:
+            path = await create_document(user_id, update.message.from_user.full_name)
+            await send_document_from_path(context.bot, user_id, path, caption="🧪 Тестовый документ")
+            if path.exists():
+                path.unlink()
+            
+    except Exception as e:
+        logger.error(f"Error: {e}")
+        await safe_reply(update, "Ошибка генерации документа.")
+        
+    return ConversationHandler.END
+
+async def cancel_handler(update: Update, context: CallbackContext) -> int:
+    await safe_reply(update, "Отменено.", reply_markup=ReplyKeyboardRemove())
+    return ConversationHandler.END
+
+def get_conversation_handler():
+    return ConversationHandler(
+        entry_points=[
+            CommandHandler("start_chat", start_conversation),
+            MessageHandler(filters.StatusUpdate.WEB_APP_DATA, web_app_entry)
+        ],
+        states={
+            DEPARTMENT: [MessageHandler(filters.TEXT & ~filters.COMMAND, get_department)],
+            ISSUE_NUMBER: [MessageHandler(filters.TEXT & ~filters.COMMAND, get_issue_number)],
+            TICKET_NUMBER: [MessageHandler(filters.TEXT & ~filters.COMMAND, get_ticket_number)],
+            DATE: [MessageHandler(filters.TEXT & ~filters.COMMAND, get_date)],
+            REGION: [MessageHandler(filters.TEXT & ~filters.COMMAND, get_region)],
+            PHOTO: [MessageHandler(filters.PHOTO, photo_handler)],
+            DESCRIPTION: [MessageHandler(filters.TEXT & ~filters.COMMAND, description_handler)],
+            EVALUATION: [MessageHandler(filters.TEXT & ~filters.COMMAND, evaluation_handler)],
+            MORE_PHOTO: [MessageHandler(filters.TEXT & ~filters.COMMAND, more_photo_handler)],
+            TESTING: [MessageHandler(filters.TEXT & ~filters.COMMAND, testing_handler)],
+            WEB_APP_PHOTO: [MessageHandler(filters.PHOTO, web_app_photo_handler)],
+        },
+        fallbacks=[CommandHandler("cancel", cancel_handler)]
+    )
