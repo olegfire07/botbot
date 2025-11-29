@@ -217,7 +217,10 @@ async def show_system_status(update: Update, context: CallbackContext) -> None:
         f"💾 <b>Бэкапы:</b> {backup_files} файлов"
     )
     
-    keyboard = [[InlineKeyboardButton("◀️ Назад", callback_data="admin_refresh")]]
+    keyboard = [
+        [InlineKeyboardButton("💾 Скачать БД", callback_data="admin_download_db")],
+        [InlineKeyboardButton("◀️ Назад", callback_data="admin_refresh")]
+    ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     await update.callback_query.edit_message_text(
@@ -225,6 +228,36 @@ async def show_system_status(update: Update, context: CallbackContext) -> None:
         parse_mode="HTML",
         reply_markup=reply_markup
     )
+
+async def send_database_file(update: Update, context: CallbackContext) -> None:
+    """Send database file to admin."""
+    from modern_bot.config import DATABASE_FILE
+    from datetime import datetime
+    import os
+    
+    if not DATABASE_FILE.exists():
+        await update.callback_query.answer("❌ Файл базы данных не найден!", show_alert=True)
+        return
+    
+    await update.callback_query.answer("📤 Отправляю базу данных...")
+    
+    try:
+        # Send database file
+        with open(DATABASE_FILE, 'rb') as db_file:
+            await update.callback_query.message.reply_document(
+                document=db_file,
+                filename=f"user_data_{datetime.now().strftime('%Y-%m-%d_%H-%M')}.db",
+                caption=f"💾 <b>База данных</b>\n\n"
+                        f"📊 Размер: {os.path.getsize(DATABASE_FILE) / 1024:.1f} KB\n"
+                        f"🕐 Время: {datetime.now().strftime('%d.%m.%Y %H:%M')}",
+                parse_mode="HTML"
+            )
+        logger.info(f"Database sent to admin {update.effective_user.id}")
+    except Exception as e:
+        logger.error(f"Failed to send database: {e}")
+        await update.callback_query.message.reply_text(
+            f"❌ Ошибка при отправке базы данных: {e}"
+        )
 
 async def show_analytics(update: Update, context: CallbackContext) -> None:
     """Show analytics menu."""
