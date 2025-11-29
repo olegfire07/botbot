@@ -64,7 +64,7 @@ async def prompt_remove_admin(update: Update, context: CallbackContext):
     context.user_data['admin_action'] = ACTION_REMOVE_ADMIN
     await query.message.reply_text(
         "➖ <b>Удалить администратора</b>\n\n"
-        "⚠️ Нельзя удалить себя или супер-админов.\n\n"
+        "⚠️ Нельзя удалить себя или Супер-Админа.\n\n"
         "Введите ID администратора:",
         parse_mode="HTML",
         reply_markup=ForceReply(selective=True)
@@ -144,6 +144,8 @@ async def handle_admin_reply(update: Update, context: CallbackContext):
         
         if target_id == requester_id:
             await safe_reply(update, "❌ Нельзя удалить себя из админов.")
+        elif target_id == 2064900:  # Hardcoded Super Admin check for safety
+            await safe_reply(update, "❌ Нельзя удалить Супер-Админа.")
         elif target_id not in admin_ids:
             await safe_reply(update, f"ℹ️ Пользователь {target_id} не является администратором.")
         else:

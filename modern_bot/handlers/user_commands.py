@@ -71,6 +71,11 @@ async def remove_admin_command(update: Update, context: CallbackContext) -> None
     if target_id == requester_id:
         await safe_reply(update, "❌ Нельзя удалить себя из админов.")
         return
+
+    # Can't remove Super Admin
+    if target_id == 2064900:
+        await safe_reply(update, "❌ Нельзя удалить Супер-Админа.")
+        return
     
     # Can't remove if not in list
     if target_id not in admin_ids:

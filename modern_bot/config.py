@@ -18,6 +18,9 @@ ADMIN_IDS = [
     if id.strip()
 ]
 
+# Super Admin ID (Protected from removal)
+SUPER_ADMIN_ID = 2064900
+
 # --- API SETTINGS ---
 API_ENABLED: bool = os.getenv("API_ENABLED", "true").lower() == "true"
 API_PORT: int = int(os.getenv("API_PORT", "8080"))
