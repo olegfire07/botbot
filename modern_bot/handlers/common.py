@@ -96,42 +96,50 @@ async def process_network_recovery(bot, min_interval: float = NETWORK_RECOVERY_I
 
 async def safe_reply(update: Update, text: str, retries: int = 3, base_delay: float = 2.0, **kwargs):
     """
-    Safe reply that also works for callback queries (effective_message) and falls back to bot.send_message.
+    Safely send a reply with retry logic and automatic menu keyboard.
     """
-    chat_id = update.effective_chat.id if update.effective_chat else None
-    target_message = update.effective_message
-    kwargs_copy = dict(kwargs)
-    last_error: Optional[Exception] = None
+    from modern_bot.handlers.menu_helper import get_main_menu_keyboard
+    
+    # Add menu keyboard if not explicitly set
+    if 'reply_markup' not in kwargs:
+        try:
+            user_id = update.effective_user.id
+            kwargs['reply_markup'] = get_main_menu_keyboard(user_id)
+        except:
+            pass  # If fails, just send without keyboard
+    
     last_recoverable = False
+    chat_id = None
+    kwargs_copy = kwargs.copy()
 
     for attempt in range(retries):
         try:
-            if target_message:
-                return await target_message.reply_text(text, **kwargs)
-            if chat_id is not None:
-                return await update.get_bot().send_message(chat_id=chat_id, text=text, **kwargs)
-            last_error = RuntimeError("No chat to reply to")
-            break
-        except RetryAfter as error:
-            last_error = error
+            if update.callback_query:
+                await update.callback_query.message.reply_text(text, **kwargs)
+            elif update.message:
+                await update.message.reply_text(text, **kwargs)
+            else:
+                return
+            return
+        except RetryAfter as e:
+            wait_time = e.retry_after + (attempt * base_delay)
+            logger.warning(f"Rate limited. Retrying in {wait_time}s (attempt {attempt+1}/{retries})")
+            await asyncio.sleep(wait_time)
+        except (NetworkError, asyncio.TimeoutError) as e:
             last_recoverable = True
-            delay = getattr(error, "retry_after", base_delay * (attempt + 1))
+            if update.effective_chat:
+                chat_id = update.effective_chat.id
+            delay = base_delay * (2 ** attempt)
+            logger.warning(f"Network issue: {e}. Retrying in {delay}s (attempt {attempt+1}/{retries})")
             await asyncio.sleep(delay)
-        except (NetworkError, asyncio.TimeoutError) as error:
-            last_error = error
-            last_recoverable = True
-            delay = base_delay * (attempt + 1)
-            await asyncio.sleep(delay)
-        except TelegramError as error:
-            last_error = error
-            last_recoverable = False
-            break
+        except Exception as e:
+            logger.error(f"Failed to send message: {e}")
+            return
 
     if last_recoverable and chat_id is not None:
         await mark_network_issue(chat_id, text, kwargs_copy)
         await process_network_recovery(update.get_bot())
 
-    if last_error:
         logger.error(f"Failed to send message: {last_error}")
     return None
 
