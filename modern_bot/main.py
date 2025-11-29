@@ -7,7 +7,8 @@ from modern_bot.database.db import init_db, close_db
 from modern_bot.utils.files import clean_temp_files, clean_old_archives, backup_database
 from modern_bot.handlers.common import process_network_recovery
 from modern_bot.handlers.admin import add_admin_handler, broadcast_handler, is_admin, load_admin_ids
-from modern_bot.handlers.commands import start_handler, menu_handler, help_handler
+from modern_bot.handlers.commands import start_handler, menu_handler
+from modern_bot.handlers.help import help_handler
 from modern_bot.handlers.reports import (
     history_handler, download_month_handler, stats_handler, stats_period_handler
 )
