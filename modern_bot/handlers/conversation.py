@@ -43,15 +43,43 @@ async def start_conversation(update: Update, context: CallbackContext) -> int:
 async def web_app_entry(update: Update, context: CallbackContext) -> int:
     """Handle data received from the Web App."""
     try:
-        data = json.loads(update.effective_message.web_app_data.data)
+        try:
+            data = json.loads(update.effective_message.web_app_data.data)
+        except json.JSONDecodeError as e:
+            logger.error(f"JSON Decode Error in Web App data: {e}")
+            await safe_reply(update, "❌ Ошибка: Некорректные данные от приложения (JSON Error).")
+            return ConversationHandler.END
+            
         user_id = update.effective_user.id
         user_name = update.effective_user.full_name
         
+        # Validate required fields
+        required_fields = ['department_number', 'issue_number', 'ticket_number', 'date', 'region', 'items']
+        missing_fields = [field for field in required_fields if field not in data]
+        if missing_fields:
+            logger.error(f"Web App data missing fields: {missing_fields}")
+            await safe_reply(update, f"❌ Ошибка: Неполные данные. Отсутствуют: {', '.join(missing_fields)}")
+            return ConversationHandler.END
+
+        # Validate types/values
+        if not str(data['department_number']).isdigit():
+             await safe_reply(update, "❌ Ошибка: Номер подразделения должен быть числом.")
+             return ConversationHandler.END
+             
+        if not str(data['issue_number']).isdigit():
+             await safe_reply(update, "❌ Ошибка: Номер заключения должен быть числом.")
+             return ConversationHandler.END
+
+        # Validate region
+        if data['region'] not in REGION_TOPICS:
+             await safe_reply(update, "❌ Ошибка: Некорректный регион.")
+             return ConversationHandler.END
+
         # Prepare data structure
         db_data = {
-            'department_number': data['department_number'],
-            'issue_number': data['issue_number'],
-            'ticket_number': data['ticket_number'],
+            'department_number': str(data['department_number']),
+            'issue_number': str(data['issue_number']),
+            'ticket_number': str(data['ticket_number']),
             'date': data['date'],
             'region': data['region'],
             'photo_desc': []
