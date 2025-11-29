@@ -118,8 +118,8 @@ def backup_database() -> None:
         except Exception as e:
             logger.error(f"Failed to backup persistence: {e}")
     
-    # Clean old backups (keep last 7 days)
-    max_age_seconds = 7 * 24 * 3600
+    # Clean old backups (keep last 90 days)
+    max_age_seconds = 90 * 24 * 3600
     now = time.time()
     for file in backups_dir.glob('*'):
         if not file.is_file():
