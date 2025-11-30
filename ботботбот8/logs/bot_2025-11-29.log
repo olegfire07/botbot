@@ -1,0 +1,304 @@
+2025-11-29 12:45:28,914 - modern_bot - INFO - Bot started.
+2025-11-29 12:45:29,051 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 12:45:29,168 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 12:45:29,847 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 12:45:30,395 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 12:45:30,813 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 12:45:30,813 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 12:45:30,958 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 12:45:31,202 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-29 12:50:56,200 - modern_bot - INFO - Bot started.
+2025-11-29 12:50:56,369 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 12:50:56,417 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 12:50:56,996 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 12:50:57,416 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 12:50:57,830 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 12:50:57,830 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 12:50:58,060 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 12:51:55,146 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-29 12:52:58,235 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/385, Заключение антиквариат № 1 (билет 54654545494), Санкт-Петербург, от 29.11.2025 12-52-58.docx
+2025-11-29 12:52:59,055 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-29 12:53:56,160 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-29.db
+2025-11-29 12:53:56,161 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-29.pickle
+2025-11-29 12:53:56,161 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-29 12:55:42,807 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 12:55:42,820 - modern_bot - INFO - Bot started.
+2025-11-29 12:55:47,845 - modern_bot - INFO - Bot started.
+2025-11-29 12:55:52,862 - modern_bot - INFO - Bot started.
+2025-11-29 12:55:57,875 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:02,892 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:07,909 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:12,927 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:17,942 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:22,956 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:27,973 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:32,986 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:38,000 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:43,015 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:48,027 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:53,044 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:58,057 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:03,072 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:08,087 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:13,104 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:18,119 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:23,132 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:28,149 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:33,165 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:38,178 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:43,194 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:48,211 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:53,227 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:58,244 - modern_bot - INFO - Bot started.
+2025-11-29 12:58:03,258 - modern_bot - INFO - Bot started.
+2025-11-29 12:58:08,275 - modern_bot - INFO - Bot started.
+2025-11-29 12:58:13,291 - modern_bot - INFO - Bot started.
+2025-11-29 12:58:18,307 - modern_bot - INFO - Bot started.
+2025-11-29 12:58:23,320 - modern_bot - INFO - Bot started.
+2025-11-29 12:58:28,561 - modern_bot - INFO - Bot started.
+2025-11-29 12:58:28,753 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 12:58:28,814 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 12:58:29,373 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 12:58:29,796 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 12:58:30,197 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 12:58:30,197 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 12:58:30,409 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 12:58:30,601 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-29 12:58:30,602 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 29, 9, 55, 47, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9786, supergroup_chat_created=False, text='/start'), update_id=194094815) caused error ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/commands.py", line 17, in start_handler
+    reply_markup = get_main_menu_keyboard(user.id)
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/menu_helper.py", line 21, in get_main_menu_keyboard
+    return ReplyKeyboardMarkup(
+        keyboard,
+    ...<2 lines>...
+        persistent=True
+    )
+TypeError: ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+2025-11-29 12:58:30,605 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-29 12:58:30,605 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 29, 9, 56, 17, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9787, supergroup_chat_created=False, text='/start'), update_id=194094816) caused error ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/commands.py", line 17, in start_handler
+    reply_markup = get_main_menu_keyboard(user.id)
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/menu_helper.py", line 21, in get_main_menu_keyboard
+    return ReplyKeyboardMarkup(
+        keyboard,
+    ...<2 lines>...
+        persistent=True
+    )
+TypeError: ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+2025-11-29 12:58:30,606 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-29 12:58:30,606 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 29, 9, 56, 25, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9788, supergroup_chat_created=False, text='/start'), update_id=194094817) caused error ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/commands.py", line 17, in start_handler
+    reply_markup = get_main_menu_keyboard(user.id)
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/menu_helper.py", line 21, in get_main_menu_keyboard
+    return ReplyKeyboardMarkup(
+        keyboard,
+    ...<2 lines>...
+        persistent=True
+    )
+TypeError: ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+2025-11-29 12:58:30,606 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-29 12:58:30,606 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 29, 9, 56, 35, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9789, supergroup_chat_created=False, text='/start'), update_id=194094818) caused error ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/commands.py", line 17, in start_handler
+    reply_markup = get_main_menu_keyboard(user.id)
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/menu_helper.py", line 21, in get_main_menu_keyboard
+    return ReplyKeyboardMarkup(
+        keyboard,
+    ...<2 lines>...
+        persistent=True
+    )
+TypeError: ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+2025-11-29 12:58:30,607 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 29, 9, 56, 37, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=5, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9790, supergroup_chat_created=False, text='/menu'), update_id=194094819) caused error ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/commands.py", line 59, in menu_handler
+    reply_markup = get_main_menu_keyboard(update.effective_user.id)
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/menu_helper.py", line 21, in get_main_menu_keyboard
+    return ReplyKeyboardMarkup(
+        keyboard,
+    ...<2 lines>...
+        persistent=True
+    )
+TypeError: ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+2025-11-29 12:58:30,608 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-29 12:58:30,608 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 29, 9, 56, 42, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9791, supergroup_chat_created=False, text='/start'), update_id=194094820) caused error ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/commands.py", line 17, in start_handler
+    reply_markup = get_main_menu_keyboard(user.id)
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/menu_helper.py", line 21, in get_main_menu_keyboard
+    return ReplyKeyboardMarkup(
+        keyboard,
+    ...<2 lines>...
+        persistent=True
+    )
+TypeError: ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+2025-11-29 12:58:30,608 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-29 12:58:30,608 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Oleg', id=2064900, type=<ChatType.PRIVATE>, username='olegfire'), date=datetime.datetime(2025, 11, 29, 9, 56, 49, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Oleg', id=2064900, is_bot=False, language_code='ru', username='olegfire'), group_chat_created=False, message_id=9792, supergroup_chat_created=False, text='/start'), update_id=194094821) caused error ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/commands.py", line 17, in start_handler
+    reply_markup = get_main_menu_keyboard(user.id)
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/menu_helper.py", line 21, in get_main_menu_keyboard
+    return ReplyKeyboardMarkup(
+        keyboard,
+    ...<2 lines>...
+        persistent=True
+    )
+TypeError: ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+2025-11-29 12:58:30,609 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-29 12:58:30,609 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 29, 9, 57, 33, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9793, supergroup_chat_created=False, text='/start'), update_id=194094822) caused error ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/commands.py", line 17, in start_handler
+    reply_markup = get_main_menu_keyboard(user.id)
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/menu_helper.py", line 21, in get_main_menu_keyboard
+    return ReplyKeyboardMarkup(
+        keyboard,
+    ...<2 lines>...
+        persistent=True
+    )
+TypeError: ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+2025-11-29 12:59:26,403 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 12:59:26,415 - modern_bot - INFO - Bot started.
+2025-11-29 12:59:31,431 - modern_bot - INFO - Bot started.
+2025-11-29 12:59:36,448 - modern_bot - INFO - Bot started.
+2025-11-29 12:59:41,466 - modern_bot - INFO - Bot started.
+2025-11-29 12:59:46,483 - modern_bot - INFO - Bot started.
+2025-11-29 12:59:51,499 - modern_bot - INFO - Bot started.
+2025-11-29 12:59:56,512 - modern_bot - INFO - Bot started.
+2025-11-29 13:00:01,529 - modern_bot - INFO - Bot started.
+2025-11-29 13:00:06,546 - modern_bot - INFO - Bot started.
+2025-11-29 13:00:11,559 - modern_bot - INFO - Bot started.
+2025-11-29 13:00:16,576 - modern_bot - INFO - Bot started.
+2025-11-29 13:00:21,634 - modern_bot - INFO - Bot started.
+2025-11-29 13:00:26,651 - modern_bot - INFO - Bot started.
+2025-11-29 13:00:31,668 - modern_bot - INFO - Bot started.
+2025-11-29 13:00:36,713 - modern_bot - INFO - Bot started.
+2025-11-29 13:00:41,752 - modern_bot - INFO - Bot started.
+2025-11-29 13:00:52,988 - modern_bot - INFO - Bot started.
+2025-11-29 13:00:53,207 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 13:00:53,319 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 13:00:53,909 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 13:00:54,415 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 13:00:54,891 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 13:00:54,891 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 13:00:55,035 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 13:01:02,745 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-29 13:01:31,612 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/385, Заключение антиквариат № 1 (билет 68383838686), Санкт-Петербург, от 29.11.2025 13-01-31.docx
+2025-11-29 13:01:32,320 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-29 13:02:26,903 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-29 13:03:35,297 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 13:03:35,335 - modern_bot - INFO - Bot started.
+2025-11-29 13:04:12,663 - modern_bot - INFO - Bot started.
+2025-11-29 13:04:12,850 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 13:04:13,120 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 13:04:13,699 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 13:04:14,214 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 13:04:14,631 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 13:04:14,631 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 13:04:14,803 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 13:05:13,448 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-29 13:05:44,770 - modern_bot.handlers.commands - INFO - ⭐ User ID: 8162508833 | Name: Стас | Is Admin: False
+2025-11-29 13:06:16,151 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/258, Заключение антиквариат № 1 (билет 68383838833), Санкт-Петербург, от 29.11.2025 13-06-16.docx
+2025-11-29 13:06:16,934 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-29 13:07:12,689 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-29.db
+2025-11-29 13:07:12,690 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-29.pickle
+2025-11-29 13:07:12,690 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-29 13:07:55,949 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 13:07:56,090 - modern_bot - INFO - Bot started.
+2025-11-29 13:08:01,113 - modern_bot - INFO - Bot started.
+2025-11-29 13:08:06,130 - modern_bot - INFO - Bot started.
+2025-11-29 13:08:11,149 - modern_bot - INFO - Bot started.
+2025-11-29 13:08:16,163 - modern_bot - INFO - Bot started.
+2025-11-29 13:08:21,181 - modern_bot - INFO - Bot started.
+2025-11-29 13:08:26,197 - modern_bot - INFO - Bot started.
+2025-11-29 13:08:31,214 - modern_bot - INFO - Bot started.
+2025-11-29 13:08:36,231 - modern_bot - INFO - Bot started.
+2025-11-29 13:08:41,246 - modern_bot - INFO - Bot started.
+2025-11-29 13:08:52,087 - modern_bot - INFO - Bot started.
+2025-11-29 13:08:52,262 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 13:08:52,310 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 13:08:52,857 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 13:08:53,269 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 13:08:53,757 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 13:08:53,757 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 13:08:53,936 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 13:09:10,116 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-29 13:09:28,099 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-29 13:09:59,927 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 13:09:59,939 - modern_bot - INFO - Bot started.
+2025-11-29 13:12:12,339 - modern_bot - INFO - Bot started.
+2025-11-29 13:12:12,517 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 13:12:12,596 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 13:12:13,146 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 13:12:13,688 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 13:12:14,200 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 13:12:14,200 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 13:12:14,352 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 13:13:22,112 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-29 13:14:01,814 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/258, Заключение антиквариат № 1 (билет 08555555555), Санкт-Петербург, от 29.11.2025 13-14-01.docx
+2025-11-29 13:14:02,574 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-29 13:15:12,304 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-29.db
+2025-11-29 13:15:12,306 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-29.pickle
+2025-11-29 13:15:12,306 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-29 13:15:23,309 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 13:15:23,321 - modern_bot - INFO - Bot started.
+2025-11-29 13:15:28,341 - modern_bot - INFO - Bot started.
+2025-11-29 13:15:33,359 - modern_bot - INFO - Bot started.
+2025-11-29 13:15:38,376 - modern_bot - INFO - Bot started.
+2025-11-29 13:15:43,393 - modern_bot - INFO - Bot started.
+2025-11-29 13:15:48,409 - modern_bot - INFO - Bot started.
+2025-11-29 13:15:53,426 - modern_bot - INFO - Bot started.
+2025-11-29 13:15:58,440 - modern_bot - INFO - Bot started.
+2025-11-29 13:16:03,454 - modern_bot - INFO - Bot started.
+2025-11-29 13:16:08,466 - modern_bot - INFO - Bot started.
+2025-11-29 13:16:19,580 - modern_bot - INFO - Bot started.
+2025-11-29 13:16:19,831 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 13:16:19,880 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 13:16:20,449 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 13:16:20,964 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 13:16:21,448 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 13:16:21,448 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 13:16:21,614 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 13:16:33,561 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 13:16:33,572 - modern_bot - INFO - Bot started.

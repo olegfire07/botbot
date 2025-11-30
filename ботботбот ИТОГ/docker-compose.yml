@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    container_name: modern_bot
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      # Persistent data - mount host directories for easy access
+      - ./user_data.db:/app/user_data.db
+      - ./bot_persistence.pickle:/app/bot_persistence.pickle
+      - ./logs:/app/logs
+      - ./backups:/app/backups
+      - ./config:/app/config
+      - ./documents:/app/documents
+      - ./documents_archive:/app/documents_archive
+      - ./photos:/app/photos
+    env_file:
+      - .env
+    environment:
+      - TZ=Europe/Moscow
+      - API_ENABLED=True
+      - API_PORT=8080
+
+# No named volumes needed - using bind mounts for transparency
