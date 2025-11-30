@@ -1303,7 +1303,7 @@
             <div class="form-group">
                 <label>Дата</label>
                 <div class="input-wrapper">
-                    <input type="date" id="date" required placeholder="Дата" title="Дата">
+                    <input type="date" id="date" required max="" placeholder="Дата" title="Дата">
                     <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -1351,7 +1351,6 @@
 
         <!-- Items List (moved outside items-header) -->
         <div id="itemsList"></div>
-
         <!-- Total Banner (Real-time) -->
         <div id="realTimeTotal" class="total-banner real-time-banner">
             <div class="total-label">💰 Итого:</div>
@@ -1591,17 +1590,6 @@
         const dateInput = document.getElementById('date');
         dateInput.valueAsDate = new Date();
         dateInput.setAttribute('max', today);
-
-        // Additional validation on change (for iOS compatibility)
-        dateInput.addEventListener('change', function () {
-            const selectedDate = new Date(this.value);
-            const todayDate = new Date(today);
-
-            if (selectedDate > todayDate) {
-                tg.showAlert('⚠️ Нельзя выбрать будущую дату! Выберите сегодня или прошедшую дату.');
-                this.value = today; // Reset to today
-            }
-        });
 
         let itemCount = 0;
         let appState = 'editing'; // State: 'editing' or 'preview'
@@ -2581,25 +2569,6 @@
                     items: items,
                     is_test: isTest
                 };
-
-                // CRITICAL: Validate date is not in the future (after formatting)
-                const dateValue = document.getElementById('date').value; // YYYY-MM-DD
-                const selectedDate = new Date(dateValue);
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                selectedDate.setHours(0, 0, 0, 0);
-
-                if (selectedDate > today) {
-                    tg.showAlert('⚠️ Ошибка: Нельзя выбрать будущую дату!\n\nВыберите сегодняшнюю или прошедшую дату.');
-                    btn.disabled = false;
-                    btn.textContent = "Отправить";
-                    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                        mainButton.hideProgress();
-                        mainButton.enable();
-                    }
-                    haptic('error');
-                    return;
-                }
 
                 // Check if running in Telegram
                 // iOS Telegram 9.x bug: initData may be empty even in WebApp
