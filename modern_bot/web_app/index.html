@@ -641,6 +641,37 @@
             margin: 0;
         }
 
+        /* Input Icons Fix */
+        .input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 22px;
+            height: 22px;
+            color: var(--secondary-text);
+            pointer-events: none;
+            transition: color 0.2s;
+            z-index: 2;
+        }
+
+        /* Add padding to inputs with icons */
+        .input-wrapper input,
+        .input-wrapper select {
+            padding-left: 48px !important;
+        }
+
+        /* Focus state for icon */
+        .input-wrapper input:focus+.input-icon,
+        .input-wrapper select:focus+.input-icon {
+            color: var(--primary-color);
+        }
+
         /* Items Header Styles */
         .form-group {
             margin-bottom: 20px;
