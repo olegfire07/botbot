@@ -15,13 +15,21 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info(f"⭐ User ID: {user.id} | Name: {user.full_name} | Is Admin: {user_is_admin}")
 
     reply_markup = get_main_menu_keyboard(user.id)
-
-    await update.message.reply_text(
-        f"Привет, {user.full_name}! 👋\n\n"
-        "Я бот для создания заключений. \n"
-        "Нажмите кнопку ниже, чтобы открыть форму.",
-        reply_markup=reply_markup
-    )
+    
+    # Only send keyboard in private chats to avoid "Web app buttons can be used in private chats only" error
+    if update.effective_chat.type == "private":
+        await update.message.reply_text(
+            f"Привет, {user.full_name}! 👋\n\n"
+            "Я бот для создания заключений. \n"
+            "Нажмите кнопку ниже, чтобы открыть форму.",
+            reply_markup=reply_markup
+        )
+    else:
+        await update.message.reply_text(
+            f"Привет, {user.full_name}! 👋\n\n"
+            "Я бот для создания заключений. \n"
+            "Пожалуйста, напишите мне в личные сообщения для работы с формой."
+        )
 
 async def help_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
@@ -56,6 +64,10 @@ async def menu_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
     Shows main menu with buttons (same as /start).
     """
+    if update.effective_chat.type != "private":
+        await update.message.reply_text("Меню доступно только в личных сообщениях.")
+        return
+
     reply_markup = get_main_menu_keyboard(update.effective_user.id)
     await update.message.reply_text(
         "📱 Главное меню:",

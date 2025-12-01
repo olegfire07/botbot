@@ -1,0 +1,233 @@
+2025-12-01 14:39:11,337 - modern_bot - INFO - Bot started.
+2025-12-01 14:39:11,814 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/prod bot/user_data.db
+2025-12-01 14:39:11,940 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-12-01 14:39:12,566 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-12-01 14:39:13,007 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-12-01 14:39:13,574 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-12-01 14:39:13,577 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-12-01 14:39:14,186 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-12-01 14:39:14,409 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-12-01 14:39:14,577 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(id=-1002381542769, is_forum=True, title='ЗАКЛЮЧЕНИЯ АНТИКВАРИАТ', type=<ChatType.SUPERGROUP>), date=datetime.datetime(2025, 12, 1, 10, 48, 2, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=25, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='👹 Дренов', id=625352555, is_bot=False, last_name='Дмитрий', username='Drenov_04'), group_chat_created=False, message_id=2912, supergroup_chat_created=False, text='/menu@zakluchenie_testbot'), update_id=194094935) caused error Web app buttons can be used in private chats only
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/prod bot/modern_bot/handlers/commands.py", line 60, in menu_handler
+    await update.message.reply_text(
+    ...<2 lines>...
+    )
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/_message.py", line 2060, in reply_text
+    return await self.get_bot().send_message(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<21 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 3107, in send_message
+    return await super().send_message(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<23 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/_bot.py", line 1118, in send_message
+    return await self._send_message(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<21 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 634, in _send_message
+    result = await super()._send_message(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<23 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/_bot.py", line 819, in _send_message
+    result = await self._post(
+             ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.BadRequest: Web app buttons can be used in private chats only
+2025-12-01 14:42:01,802 - modern_bot.database.db - INFO - Database connection closed.
+2025-12-01 14:42:01,826 - modern_bot - INFO - Bot started.
+2025-12-01 14:42:06,867 - modern_bot - INFO - Bot started.
+2025-12-01 14:42:11,887 - modern_bot - INFO - Bot started.
+2025-12-01 14:42:16,904 - modern_bot - INFO - Bot started.
+2025-12-01 14:42:19,851 - modern_bot - INFO - Bot started.
+2025-12-01 14:42:20,138 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/prod bot/user_data.db
+2025-12-01 14:42:20,423 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-12-01 14:42:21,014 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-12-01 14:42:21,534 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-12-01 14:42:22,047 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-12-01 14:42:22,047 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-12-01 14:42:22,392 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-12-01 14:45:19,812 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/prod bot/backups/user_data_2025-12-01.db
+2025-12-01 14:45:19,814 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/prod bot/backups/persistence_2025-12-01.pickle
+2025-12-01 14:45:19,814 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-12-01 14:46:09,333 - modern_bot.handlers.conversation - WARNING - Rejected future date in Web App: 02.12.2025 from user 2064900
+2025-12-01 15:27:27,477 - modern_bot - ERROR - Update None caused error httpx.ConnectError: [Errno 8] nodename nor servname provided, or not known
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/httpcore/_async/connection_pool.py", line 236, in handle_async_request
+    response = await connection.handle_async_request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        pool_request.request
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/httpcore/_async/connection.py", line 101, in handle_async_request
+    raise exc
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/httpcore/_async/connection.py", line 78, in handle_async_request
+    stream = await self._connect(request)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/httpcore/_async/connection.py", line 124, in _connect
+    stream = await self._network_backend.connect_tcp(**kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/httpcore/_backends/auto.py", line 31, in connect_tcp
+    return await self._backend.connect_tcp(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/httpcore/_backends/anyio.py", line 113, in connect_tcp
+    with map_exceptions(exc_map):
+         ~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectError: [Errno 8] nodename nor servname provided, or not known
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/request/_httpxrequest.py", line 279, in do_request
+    res = await self._client.request(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectError: [Errno 8] nodename nor servname provided, or not known
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/ext/_utils/networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/ext/_utils/networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/request/_baserequest.py", line 305, in _request_wrapper
+    code, payload = await self.do_request(
+                    ^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/prod bot/venv/lib/python3.13/site-packages/telegram/request/_httpxrequest.py", line 303, in do_request
+    raise NetworkError(f"httpx.{err.__class__.__name__}: {err}") from err
+telegram.error.NetworkError: httpx.ConnectError: [Errno 8] nodename nor servname provided, or not known
