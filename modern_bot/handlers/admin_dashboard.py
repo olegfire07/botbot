@@ -16,7 +16,7 @@ async def admin_dashboard_handler(update: Update, context: CallbackContext) -> N
         return
     
     # WebApp URL from config
-    web_app_url = "https://olegfire07.github.io/botbot/?v=2.9"
+    web_app_url = "https://olegfire07.github.io/botbot/?v=3.0"
     
     keyboard = [
         [

@@ -8,7 +8,7 @@ def get_main_menu_keyboard(user_id: int) -> ReplyKeyboardMarkup:
     """
     Returns the main menu keyboard based on user permissions.
     """
-    web_app_url = "https://olegfire07.github.io/botbot/?v=2.9"
+    web_app_url = "https://olegfire07.github.io/botbot/?v=3.0"
     
     keyboard = [
         [KeyboardButton("📝 Создать заключение", web_app=WebAppInfo(url=web_app_url))],
