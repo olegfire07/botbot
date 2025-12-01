@@ -23,7 +23,17 @@ function validateField(field, errorMessage) {
 function clearFieldError(field) {
     field.classList.remove('input-error');
 
-    const errorDiv = field.nextElementSibling;
+    // Try to find error message in next sibling
+    let errorDiv = field.nextElementSibling;
+
+    // If not found or not an error message, try finding it within the parent container
+    if (!errorDiv || !errorDiv.classList.contains('error-message')) {
+        const parent = field.closest('.input-wrapper') || field.parentElement;
+        if (parent) {
+            errorDiv = parent.querySelector('.error-message');
+        }
+    }
+
     if (errorDiv && errorDiv.classList.contains('error-message')) {
         errorDiv.classList.remove('show');
     }
@@ -117,6 +127,14 @@ function validateForm() {
 
 // Remove highlight while the user is editing the field
 document.addEventListener('input', function (e) {
+    const target = e.target;
+    if (!(target instanceof HTMLElement)) return;
+    if (target.matches('input, select, textarea')) {
+        clearFieldError(target);
+    }
+}, true);
+
+document.addEventListener('focus', function (e) {
     const target = e.target;
     if (!(target instanceof HTMLElement)) return;
     if (target.matches('input, select, textarea')) {
