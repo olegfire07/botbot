@@ -401,6 +401,8 @@
             }
         }
 
+        < !-- MARKER -->
+
         /* Validation Error */
         .invalid {
             border-color: var(--danger-color) !important;
@@ -1351,6 +1353,7 @@
 
         <!-- Items List (moved outside items-header) -->
         <div id="itemsList"></div>
+
         <!-- Total Banner (Real-time) -->
         <div id="realTimeTotal" class="total-banner real-time-banner">
             <div class="total-label">💰 Итого:</div>
@@ -1923,7 +1926,7 @@
         // SERVICE WORKER & OFFLINE MODE
         // ============================================
         if ('serviceWorker' in navigator) {
-            const swVersion = '2318'; // Floating Labels
+            const swVersion = 'v2.4.5'; // Updated version
             const basePath = location.pathname.endsWith('/') ? location.pathname : `${location.pathname}/`;
             const swUrl = `${basePath}service-worker.js?v=${swVersion}`;
             navigator.serviceWorker.register(swUrl)
