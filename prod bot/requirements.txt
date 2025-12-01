@@ -1,0 +1,10 @@
+python-telegram-bot
+aiohttp
+aiosqlite
+openpyxl
+python-docx
+Pillow
+httpx
+python-dotenv
+nest_asyncio
+APScheduler

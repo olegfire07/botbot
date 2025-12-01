@@ -1,0 +1,1154 @@
+2025-11-29 12:45:28,914 - modern_bot - INFO - Bot started.
+2025-11-29 12:45:29,051 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 12:45:29,168 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 12:45:29,847 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 12:45:30,395 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 12:45:30,813 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 12:45:30,813 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 12:45:30,958 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 12:45:31,202 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-29 12:50:56,200 - modern_bot - INFO - Bot started.
+2025-11-29 12:50:56,369 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 12:50:56,417 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 12:50:56,996 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 12:50:57,416 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 12:50:57,830 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 12:50:57,830 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 12:50:58,060 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 12:51:55,146 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-29 12:52:58,235 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/385, Заключение антиквариат № 1 (билет 54654545494), Санкт-Петербург, от 29.11.2025 12-52-58.docx
+2025-11-29 12:52:59,055 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-29 12:53:56,160 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-29.db
+2025-11-29 12:53:56,161 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-29.pickle
+2025-11-29 12:53:56,161 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-29 12:55:42,807 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 12:55:42,820 - modern_bot - INFO - Bot started.
+2025-11-29 12:55:47,845 - modern_bot - INFO - Bot started.
+2025-11-29 12:55:52,862 - modern_bot - INFO - Bot started.
+2025-11-29 12:55:57,875 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:02,892 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:07,909 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:12,927 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:17,942 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:22,956 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:27,973 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:32,986 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:38,000 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:43,015 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:48,027 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:53,044 - modern_bot - INFO - Bot started.
+2025-11-29 12:56:58,057 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:03,072 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:08,087 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:13,104 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:18,119 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:23,132 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:28,149 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:33,165 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:38,178 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:43,194 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:48,211 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:53,227 - modern_bot - INFO - Bot started.
+2025-11-29 12:57:58,244 - modern_bot - INFO - Bot started.
+2025-11-29 12:58:03,258 - modern_bot - INFO - Bot started.
+2025-11-29 12:58:08,275 - modern_bot - INFO - Bot started.
+2025-11-29 12:58:13,291 - modern_bot - INFO - Bot started.
+2025-11-29 12:58:18,307 - modern_bot - INFO - Bot started.
+2025-11-29 12:58:23,320 - modern_bot - INFO - Bot started.
+2025-11-29 12:58:28,561 - modern_bot - INFO - Bot started.
+2025-11-29 12:58:28,753 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 12:58:28,814 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 12:58:29,373 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 12:58:29,796 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 12:58:30,197 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 12:58:30,197 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 12:58:30,409 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 12:58:30,601 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-29 12:58:30,602 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 29, 9, 55, 47, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9786, supergroup_chat_created=False, text='/start'), update_id=194094815) caused error ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/commands.py", line 17, in start_handler
+    reply_markup = get_main_menu_keyboard(user.id)
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/menu_helper.py", line 21, in get_main_menu_keyboard
+    return ReplyKeyboardMarkup(
+        keyboard,
+    ...<2 lines>...
+        persistent=True
+    )
+TypeError: ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+2025-11-29 12:58:30,605 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-29 12:58:30,605 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 29, 9, 56, 17, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9787, supergroup_chat_created=False, text='/start'), update_id=194094816) caused error ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/commands.py", line 17, in start_handler
+    reply_markup = get_main_menu_keyboard(user.id)
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/menu_helper.py", line 21, in get_main_menu_keyboard
+    return ReplyKeyboardMarkup(
+        keyboard,
+    ...<2 lines>...
+        persistent=True
+    )
+TypeError: ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+2025-11-29 12:58:30,606 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-29 12:58:30,606 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 29, 9, 56, 25, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9788, supergroup_chat_created=False, text='/start'), update_id=194094817) caused error ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/commands.py", line 17, in start_handler
+    reply_markup = get_main_menu_keyboard(user.id)
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/menu_helper.py", line 21, in get_main_menu_keyboard
+    return ReplyKeyboardMarkup(
+        keyboard,
+    ...<2 lines>...
+        persistent=True
+    )
+TypeError: ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+2025-11-29 12:58:30,606 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-29 12:58:30,606 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 29, 9, 56, 35, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9789, supergroup_chat_created=False, text='/start'), update_id=194094818) caused error ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/commands.py", line 17, in start_handler
+    reply_markup = get_main_menu_keyboard(user.id)
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/menu_helper.py", line 21, in get_main_menu_keyboard
+    return ReplyKeyboardMarkup(
+        keyboard,
+    ...<2 lines>...
+        persistent=True
+    )
+TypeError: ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+2025-11-29 12:58:30,607 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 29, 9, 56, 37, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=5, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9790, supergroup_chat_created=False, text='/menu'), update_id=194094819) caused error ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/commands.py", line 59, in menu_handler
+    reply_markup = get_main_menu_keyboard(update.effective_user.id)
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/menu_helper.py", line 21, in get_main_menu_keyboard
+    return ReplyKeyboardMarkup(
+        keyboard,
+    ...<2 lines>...
+        persistent=True
+    )
+TypeError: ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+2025-11-29 12:58:30,608 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-29 12:58:30,608 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 29, 9, 56, 42, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9791, supergroup_chat_created=False, text='/start'), update_id=194094820) caused error ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/commands.py", line 17, in start_handler
+    reply_markup = get_main_menu_keyboard(user.id)
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/menu_helper.py", line 21, in get_main_menu_keyboard
+    return ReplyKeyboardMarkup(
+        keyboard,
+    ...<2 lines>...
+        persistent=True
+    )
+TypeError: ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+2025-11-29 12:58:30,608 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-29 12:58:30,608 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Oleg', id=2064900, type=<ChatType.PRIVATE>, username='olegfire'), date=datetime.datetime(2025, 11, 29, 9, 56, 49, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Oleg', id=2064900, is_bot=False, language_code='ru', username='olegfire'), group_chat_created=False, message_id=9792, supergroup_chat_created=False, text='/start'), update_id=194094821) caused error ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/commands.py", line 17, in start_handler
+    reply_markup = get_main_menu_keyboard(user.id)
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/menu_helper.py", line 21, in get_main_menu_keyboard
+    return ReplyKeyboardMarkup(
+        keyboard,
+    ...<2 lines>...
+        persistent=True
+    )
+TypeError: ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+2025-11-29 12:58:30,609 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-29 12:58:30,609 - modern_bot - ERROR - Update Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Стас', id=5072505586, type=<ChatType.PRIVATE>, username='melodydepply'), date=datetime.datetime(2025, 11, 29, 9, 57, 33, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Стас', id=5072505586, is_bot=False, language_code='ru', username='melodydepply'), group_chat_created=False, message_id=9793, supergroup_chat_created=False, text='/start'), update_id=194094822) caused error ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/commands.py", line 17, in start_handler
+    reply_markup = get_main_menu_keyboard(user.id)
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/menu_helper.py", line 21, in get_main_menu_keyboard
+    return ReplyKeyboardMarkup(
+        keyboard,
+    ...<2 lines>...
+        persistent=True
+    )
+TypeError: ReplyKeyboardMarkup.__init__() got an unexpected keyword argument 'persistent'. Did you mean 'is_persistent'?
+2025-11-29 12:59:26,403 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 12:59:26,415 - modern_bot - INFO - Bot started.
+2025-11-29 12:59:31,431 - modern_bot - INFO - Bot started.
+2025-11-29 12:59:36,448 - modern_bot - INFO - Bot started.
+2025-11-29 12:59:41,466 - modern_bot - INFO - Bot started.
+2025-11-29 12:59:46,483 - modern_bot - INFO - Bot started.
+2025-11-29 12:59:51,499 - modern_bot - INFO - Bot started.
+2025-11-29 12:59:56,512 - modern_bot - INFO - Bot started.
+2025-11-29 13:00:01,529 - modern_bot - INFO - Bot started.
+2025-11-29 13:00:06,546 - modern_bot - INFO - Bot started.
+2025-11-29 13:00:11,559 - modern_bot - INFO - Bot started.
+2025-11-29 13:00:16,576 - modern_bot - INFO - Bot started.
+2025-11-29 13:00:21,634 - modern_bot - INFO - Bot started.
+2025-11-29 13:00:26,651 - modern_bot - INFO - Bot started.
+2025-11-29 13:00:31,668 - modern_bot - INFO - Bot started.
+2025-11-29 13:00:36,713 - modern_bot - INFO - Bot started.
+2025-11-29 13:00:41,752 - modern_bot - INFO - Bot started.
+2025-11-29 13:00:52,988 - modern_bot - INFO - Bot started.
+2025-11-29 13:00:53,207 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 13:00:53,319 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 13:00:53,909 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 13:00:54,415 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 13:00:54,891 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 13:00:54,891 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 13:00:55,035 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 13:01:02,745 - modern_bot.handlers.commands - INFO - ⭐ User ID: 5072505586 | Name: Стас | Is Admin: False
+2025-11-29 13:01:31,612 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/385, Заключение антиквариат № 1 (билет 68383838686), Санкт-Петербург, от 29.11.2025 13-01-31.docx
+2025-11-29 13:01:32,320 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-29 13:02:26,903 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-29 13:03:35,297 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 13:03:35,335 - modern_bot - INFO - Bot started.
+2025-11-29 13:04:12,663 - modern_bot - INFO - Bot started.
+2025-11-29 13:04:12,850 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 13:04:13,120 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 13:04:13,699 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 13:04:14,214 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 13:04:14,631 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 13:04:14,631 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 13:04:14,803 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 13:05:13,448 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-29 13:05:44,770 - modern_bot.handlers.commands - INFO - ⭐ User ID: 8162508833 | Name: Стас | Is Admin: False
+2025-11-29 13:06:16,151 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/258, Заключение антиквариат № 1 (билет 68383838833), Санкт-Петербург, от 29.11.2025 13-06-16.docx
+2025-11-29 13:06:16,934 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-29 13:07:12,689 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-29.db
+2025-11-29 13:07:12,690 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-29.pickle
+2025-11-29 13:07:12,690 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-29 13:07:55,949 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 13:07:56,090 - modern_bot - INFO - Bot started.
+2025-11-29 13:08:01,113 - modern_bot - INFO - Bot started.
+2025-11-29 13:08:06,130 - modern_bot - INFO - Bot started.
+2025-11-29 13:08:11,149 - modern_bot - INFO - Bot started.
+2025-11-29 13:08:16,163 - modern_bot - INFO - Bot started.
+2025-11-29 13:08:21,181 - modern_bot - INFO - Bot started.
+2025-11-29 13:08:26,197 - modern_bot - INFO - Bot started.
+2025-11-29 13:08:31,214 - modern_bot - INFO - Bot started.
+2025-11-29 13:08:36,231 - modern_bot - INFO - Bot started.
+2025-11-29 13:08:41,246 - modern_bot - INFO - Bot started.
+2025-11-29 13:08:52,087 - modern_bot - INFO - Bot started.
+2025-11-29 13:08:52,262 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 13:08:52,310 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 13:08:52,857 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 13:08:53,269 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 13:08:53,757 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 13:08:53,757 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 13:08:53,936 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 13:09:10,116 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-29 13:09:28,099 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-29 13:09:59,927 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 13:09:59,939 - modern_bot - INFO - Bot started.
+2025-11-29 13:12:12,339 - modern_bot - INFO - Bot started.
+2025-11-29 13:12:12,517 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 13:12:12,596 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 13:12:13,146 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 13:12:13,688 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 13:12:14,200 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 13:12:14,200 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 13:12:14,352 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 13:13:22,112 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-29 13:14:01,814 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/258, Заключение антиквариат № 1 (билет 08555555555), Санкт-Петербург, от 29.11.2025 13-14-01.docx
+2025-11-29 13:14:02,574 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-29 13:15:12,304 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-29.db
+2025-11-29 13:15:12,306 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-29.pickle
+2025-11-29 13:15:12,306 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-29 13:15:23,309 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 13:15:23,321 - modern_bot - INFO - Bot started.
+2025-11-29 13:15:28,341 - modern_bot - INFO - Bot started.
+2025-11-29 13:15:33,359 - modern_bot - INFO - Bot started.
+2025-11-29 13:15:38,376 - modern_bot - INFO - Bot started.
+2025-11-29 13:15:43,393 - modern_bot - INFO - Bot started.
+2025-11-29 13:15:48,409 - modern_bot - INFO - Bot started.
+2025-11-29 13:15:53,426 - modern_bot - INFO - Bot started.
+2025-11-29 13:15:58,440 - modern_bot - INFO - Bot started.
+2025-11-29 13:16:03,454 - modern_bot - INFO - Bot started.
+2025-11-29 13:16:08,466 - modern_bot - INFO - Bot started.
+2025-11-29 13:16:19,580 - modern_bot - INFO - Bot started.
+2025-11-29 13:16:19,831 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 13:16:19,880 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 13:16:20,449 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 13:16:20,964 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 13:16:21,448 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 13:16:21,448 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 13:16:21,614 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 13:16:33,561 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 13:16:33,572 - modern_bot - INFO - Bot started.
+2025-11-29 13:23:43,759 - modern_bot - INFO - Bot started.
+2025-11-29 13:23:44,040 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 13:23:44,112 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 13:23:44,665 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 13:23:45,108 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 13:23:45,515 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 13:23:45,515 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 13:23:45,682 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 13:23:46,023 - modern_bot - ERROR - Update Update(callback_query=CallbackQuery(chat_instance='3346206253984165518', data='admin_system', from_user=User(first_name='Oleg', id=2064900, is_bot=False, language_code='ru', username='olegfire'), id='8868679554275160', message=Message(channel_chat_created=False, chat=Chat(first_name='Oleg', id=2064900, type=<ChatType.PRIVATE>, username='olegfire'), date=datetime.datetime(2025, 11, 29, 10, 16, 28, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=21, offset=3, type=<MessageEntityType.BOLD>),), from_user=User(first_name='zakluchenie_test', id=7514668293, is_bot=True, username='zakluchenie_testbot'), group_chat_created=False, message_id=9857, reply_markup=InlineKeyboardMarkup(inline_keyboard=((InlineKeyboardButton(text='📝 Создать заключение (Web App)', web_app=WebAppInfo(url='https://olegfire07.github.io/botbot/web_app/?v=2.8')),), (InlineKeyboardButton(callback_data='admin_create_dialog', text='💬 Создать через диалог'),), (InlineKeyboardButton(callback_data='analytics_main', text='📊 Статистика'), InlineKeyboardButton(callback_data='analytics_regions', text='📈 Аналитика')), (InlineKeyboardButton(callback_data='admin_archive', text='📦 Архив'), InlineKeyboardButton(callback_data='admin_history', text='📋 История')), (InlineKeyboardButton(callback_data='users_list', text='👥 Пользователи'), InlineKeyboardButton(callback_data='admins_list', text='⚙️ Администраторы')), (InlineKeyboardButton(callback_data='admin_broadcast', text='📢 Рассылка'), InlineKeyboardButton(callback_data='admin_system', text='🖥️ Система')), (InlineKeyboardButton(callback_data='admin_reconcile', text='🔍 Сверка билетов'), InlineKeyboardButton(callback_data='admin_search_ticket', text='🔎 Поиск по билету')), (InlineKeyboardButton(callback_data='admin_refresh', text='🔄 Обновить'),))), supergroup_chat_created=False, text='🎛 Панель администратора\n\nВыберите действие:')), update_id=194094858) caused error Query is too old and response timeout expired or query id is invalid
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/admin_dashboard.py", line 383, in handle_all_callbacks
+    await admin_callback_handler(update, context)
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/admin_dashboard.py", line 76, in admin_callback_handler
+    await query.answer()
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_callbackquery.py", line 189, in answer
+    return await self.get_bot().answer_callback_query(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<10 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 972, in answer_callback_query
+    return await super().answer_callback_query(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<10 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 4360, in answer_callback_query
+    return await self._post(
+           ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.BadRequest: Query is too old and response timeout expired or query id is invalid
+2025-11-29 13:23:46,166 - modern_bot - ERROR - Update Update(callback_query=CallbackQuery(chat_instance='3346206253984165518', data='admin_system', from_user=User(first_name='Oleg', id=2064900, is_bot=False, language_code='ru', username='olegfire'), id='8868680384815989', message=Message(channel_chat_created=False, chat=Chat(first_name='Oleg', id=2064900, type=<ChatType.PRIVATE>, username='olegfire'), date=datetime.datetime(2025, 11, 29, 10, 16, 28, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=21, offset=3, type=<MessageEntityType.BOLD>),), from_user=User(first_name='zakluchenie_test', id=7514668293, is_bot=True, username='zakluchenie_testbot'), group_chat_created=False, message_id=9857, reply_markup=InlineKeyboardMarkup(inline_keyboard=((InlineKeyboardButton(text='📝 Создать заключение (Web App)', web_app=WebAppInfo(url='https://olegfire07.github.io/botbot/web_app/?v=2.8')),), (InlineKeyboardButton(callback_data='admin_create_dialog', text='💬 Создать через диалог'),), (InlineKeyboardButton(callback_data='analytics_main', text='📊 Статистика'), InlineKeyboardButton(callback_data='analytics_regions', text='📈 Аналитика')), (InlineKeyboardButton(callback_data='admin_archive', text='📦 Архив'), InlineKeyboardButton(callback_data='admin_history', text='📋 История')), (InlineKeyboardButton(callback_data='users_list', text='👥 Пользователи'), InlineKeyboardButton(callback_data='admins_list', text='⚙️ Администраторы')), (InlineKeyboardButton(callback_data='admin_broadcast', text='📢 Рассылка'), InlineKeyboardButton(callback_data='admin_system', text='🖥️ Система')), (InlineKeyboardButton(callback_data='admin_reconcile', text='🔍 Сверка билетов'), InlineKeyboardButton(callback_data='admin_search_ticket', text='🔎 Поиск по билету')), (InlineKeyboardButton(callback_data='admin_refresh', text='🔄 Обновить'),))), supergroup_chat_created=False, text='🎛 Панель администратора\n\nВыберите действие:')), update_id=194094859) caused error Query is too old and response timeout expired or query id is invalid
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/admin_dashboard.py", line 383, in handle_all_callbacks
+    await admin_callback_handler(update, context)
+  File "/Users/oleg/Project_SKLAD/modern_bot/handlers/admin_dashboard.py", line 76, in admin_callback_handler
+    await query.answer()
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_callbackquery.py", line 189, in answer
+    return await self.get_bot().answer_callback_query(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<10 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 972, in answer_callback_query
+    return await super().answer_callback_query(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<10 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 4360, in answer_callback_query
+    return await self._post(
+           ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.BadRequest: Query is too old and response timeout expired or query id is invalid
+2025-11-29 13:23:46,168 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-29 13:24:14,445 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-29 13:25:44,946 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 13:25:44,959 - modern_bot - INFO - Bot started.
+2025-11-29 13:25:49,978 - modern_bot - INFO - Bot started.
+2025-11-29 13:25:54,996 - modern_bot - INFO - Bot started.
+2025-11-29 13:26:00,012 - modern_bot - INFO - Bot started.
+2025-11-29 13:26:05,029 - modern_bot - INFO - Bot started.
+2025-11-29 13:26:10,045 - modern_bot - INFO - Bot started.
+2025-11-29 13:26:15,063 - modern_bot - INFO - Bot started.
+2025-11-29 13:26:20,085 - modern_bot - INFO - Bot started.
+2025-11-29 13:26:37,317 - modern_bot - INFO - Bot started.
+2025-11-29 13:26:37,543 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 13:26:37,708 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 13:26:38,257 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 13:26:38,709 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 13:26:39,149 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 13:26:39,149 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 13:26:39,318 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 13:27:03,171 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-29 13:28:09,754 - modern_bot.handlers.admin_dashboard - INFO - Database sent to admin 2064900
+2025-11-29 13:29:37,282 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-29.db
+2025-11-29 13:29:37,283 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-29.pickle
+2025-11-29 13:29:37,283 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-29 13:31:23,865 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 13:31:23,878 - modern_bot - INFO - Bot started.
+2025-11-29 13:31:28,902 - modern_bot - INFO - Bot started.
+2025-11-29 13:31:33,916 - modern_bot - INFO - Bot started.
+2025-11-29 13:31:38,930 - modern_bot - INFO - Bot started.
+2025-11-29 13:31:43,948 - modern_bot - INFO - Bot started.
+2025-11-29 13:31:48,964 - modern_bot - INFO - Bot started.
+2025-11-29 13:31:53,981 - modern_bot - INFO - Bot started.
+2025-11-29 13:31:58,998 - modern_bot - INFO - Bot started.
+2025-11-29 13:32:04,015 - modern_bot - INFO - Bot started.
+2025-11-29 13:32:09,031 - modern_bot - INFO - Bot started.
+2025-11-29 13:32:14,046 - modern_bot - INFO - Bot started.
+2025-11-29 13:32:19,064 - modern_bot - INFO - Bot started.
+2025-11-29 13:32:24,080 - modern_bot - INFO - Bot started.
+2025-11-29 13:32:40,169 - modern_bot - INFO - Bot started.
+2025-11-29 13:32:40,521 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 13:32:40,602 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 13:32:41,171 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 13:32:41,603 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 13:32:42,095 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 13:32:42,095 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 13:32:42,327 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 13:34:43,658 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 13:34:43,670 - modern_bot - INFO - Bot started.
+2025-11-29 13:38:11,728 - modern_bot - INFO - Bot started.
+2025-11-29 13:38:11,946 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 13:38:12,007 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 13:38:12,594 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 13:38:13,027 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 13:38:13,446 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 13:38:13,447 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 13:38:13,618 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 13:39:55,801 - modern_bot.handlers.admin_dashboard - INFO - Database sent to admin 2064900
+2025-11-29 13:40:06,721 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-29 13:41:11,694 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-29.db
+2025-11-29 13:41:11,695 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-29.pickle
+2025-11-29 13:41:11,695 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-29 13:44:16,276 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 13:44:16,289 - modern_bot - INFO - Bot started.
+2025-11-29 13:44:21,311 - modern_bot - INFO - Bot started.
+2025-11-29 13:44:26,328 - modern_bot - INFO - Bot started.
+2025-11-29 13:44:31,343 - modern_bot - INFO - Bot started.
+2025-11-29 13:44:36,360 - modern_bot - INFO - Bot started.
+2025-11-29 13:44:38,742 - modern_bot - INFO - Bot started.
+2025-11-29 13:44:38,870 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 13:44:38,915 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 13:44:39,476 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 13:44:39,901 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 13:44:40,410 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 13:44:40,410 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 13:44:40,670 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 13:47:16,565 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 13:47:16,578 - modern_bot - INFO - Bot started.
+2025-11-29 13:47:21,592 - modern_bot - INFO - Bot started.
+2025-11-29 13:47:26,601 - modern_bot - INFO - Bot started.
+2025-11-29 13:47:31,609 - modern_bot - INFO - Bot started.
+2025-11-29 13:47:37,322 - modern_bot - INFO - Bot started.
+2025-11-29 13:47:37,559 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 13:47:37,618 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 13:47:38,182 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 13:47:38,614 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 13:47:39,096 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 13:47:39,096 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 13:47:39,267 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 13:48:14,185 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-29 13:50:26,069 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 13:50:26,080 - modern_bot - INFO - Bot started.
+2025-11-29 13:50:31,101 - modern_bot - INFO - Bot started.
+2025-11-29 13:50:36,117 - modern_bot - INFO - Bot started.
+2025-11-29 13:50:41,131 - modern_bot - INFO - Bot started.
+2025-11-29 13:50:46,143 - modern_bot - INFO - Bot started.
+2025-11-29 13:50:52,278 - modern_bot - INFO - Bot started.
+2025-11-29 13:50:52,497 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 13:50:52,636 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 13:50:53,275 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 13:50:53,771 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 13:50:54,365 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 13:50:54,365 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 13:50:54,614 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 13:53:52,160 - modern_bot.handlers.commands - INFO - ⭐ User ID: 2064900 | Name: Oleg | Is Admin: True
+2025-11-29 13:53:52,236 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-29.db
+2025-11-29 13:53:52,237 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-29.pickle
+2025-11-29 13:53:52,237 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-29 14:04:17,077 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 14:04:17,089 - modern_bot - INFO - Bot started.
+2025-11-29 14:04:22,111 - modern_bot - INFO - Bot started.
+2025-11-29 14:04:27,128 - modern_bot - INFO - Bot started.
+2025-11-29 14:04:32,144 - modern_bot - INFO - Bot started.
+2025-11-29 14:04:37,159 - modern_bot - INFO - Bot started.
+2025-11-29 14:04:42,176 - modern_bot - INFO - Bot started.
+2025-11-29 14:04:47,189 - modern_bot - INFO - Bot started.
+2025-11-29 14:04:49,852 - modern_bot - INFO - Bot started.
+2025-11-29 14:04:50,266 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 14:04:50,348 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 14:04:51,019 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 14:04:51,511 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 14:04:52,169 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 14:04:52,169 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 14:04:52,790 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 14:05:49,816 - modern_bot.utils.files - INFO - Removed temp file: E9ulFU9iFTl66lVO.jpg
+2025-11-29 14:05:49,816 - modern_bot.utils.files - INFO - Removed temp file: 1isiCAvoAnR4m47t.jpg
+2025-11-29 14:07:49,816 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-29.db
+2025-11-29 14:07:49,817 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-29.pickle
+2025-11-29 14:07:49,817 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-29 14:10:16,983 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 14:10:16,995 - modern_bot - INFO - Bot started.
+2025-11-29 14:10:22,017 - modern_bot - INFO - Bot started.
+2025-11-29 14:10:27,034 - modern_bot - INFO - Bot started.
+2025-11-29 14:10:32,050 - modern_bot - INFO - Bot started.
+2025-11-29 14:10:37,067 - modern_bot - INFO - Bot started.
+2025-11-29 14:10:42,080 - modern_bot - INFO - Bot started.
+2025-11-29 14:10:47,091 - modern_bot - INFO - Bot started.
+2025-11-29 14:10:49,204 - modern_bot - INFO - Bot started.
+2025-11-29 14:10:49,362 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 14:10:49,462 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 14:10:50,077 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 14:10:50,614 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 14:10:51,149 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 14:10:51,149 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 14:10:51,641 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 14:11:49,160 - modern_bot.utils.files - INFO - Removed temp file: T4wx3WKDq8AfA5HJ.jpg
+2025-11-29 14:13:49,161 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-29.db
+2025-11-29 14:13:49,162 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-29.pickle
+2025-11-29 14:13:49,162 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-29 14:16:05,527 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 14:16:05,538 - modern_bot - INFO - Bot started.
+2025-11-29 14:16:10,561 - modern_bot - INFO - Bot started.
+2025-11-29 14:16:15,576 - modern_bot - INFO - Bot started.
+2025-11-29 14:16:20,590 - modern_bot - INFO - Bot started.
+2025-11-29 14:16:25,606 - modern_bot - INFO - Bot started.
+2025-11-29 14:16:30,622 - modern_bot - INFO - Bot started.
+2025-11-29 14:16:35,635 - modern_bot - INFO - Bot started.
+2025-11-29 14:16:40,651 - modern_bot - INFO - Bot started.
+2025-11-29 14:16:45,665 - modern_bot - INFO - Bot started.
+2025-11-29 14:16:50,681 - modern_bot - INFO - Bot started.
+2025-11-29 14:16:53,915 - modern_bot - INFO - Bot started.
+2025-11-29 14:16:54,523 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 14:16:54,599 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 14:16:55,297 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 14:16:55,860 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 14:16:56,512 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 14:16:56,512 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 14:16:56,759 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 14:17:53,872 - modern_bot.utils.files - INFO - Removed temp file: RzBcf6R2yCQXGgkc.jpg
+2025-11-29 14:17:59,833 - modern_bot.services.docx_gen - INFO - Document saved: /Users/oleg/Project_SKLAD/documents/385, Заключение антиквариат № 1 (билет 84946466464), Санкт-Петербург, от 29.11.2025 14-17-59.docx
+2025-11-29 14:18:00,552 - modern_bot.services.excel - INFO - Excel file updated.
+2025-11-29 14:19:53,902 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-29.db
+2025-11-29 14:19:53,903 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-29.pickle
+2025-11-29 14:19:53,904 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-29 14:37:31,168 - modern_bot - ERROR - Update None caused error httpx.RemoteProtocolError: Server disconnected without sending a response.
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/connection_pool.py", line 236, in handle_async_request
+    response = await connection.handle_async_request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        pool_request.request
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/connection.py", line 103, in handle_async_request
+    return await self._connection.handle_async_request(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 136, in handle_async_request
+    raise exc
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 106, in handle_async_request
+    ) = await self._receive_response_headers(**kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 177, in _receive_response_headers
+    event = await self._receive_event(timeout=timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 231, in _receive_event
+    raise RemoteProtocolError(msg)
+httpcore.RemoteProtocolError: Server disconnected without sending a response.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_httpxrequest.py", line 279, in do_request
+    res = await self._client.request(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.RemoteProtocolError: Server disconnected without sending a response.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_utils/networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_utils/networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_baserequest.py", line 305, in _request_wrapper
+    code, payload = await self.do_request(
+                    ^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_httpxrequest.py", line 303, in do_request
+    raise NetworkError(f"httpx.{err.__class__.__name__}: {err}") from err
+telegram.error.NetworkError: httpx.RemoteProtocolError: Server disconnected without sending a response.
+2025-11-29 15:23:34,614 - modern_bot - ERROR - Update None caused error httpx.RemoteProtocolError: Server disconnected without sending a response.
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/connection_pool.py", line 236, in handle_async_request
+    response = await connection.handle_async_request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        pool_request.request
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/connection.py", line 103, in handle_async_request
+    return await self._connection.handle_async_request(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 136, in handle_async_request
+    raise exc
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 106, in handle_async_request
+    ) = await self._receive_response_headers(**kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 177, in _receive_response_headers
+    event = await self._receive_event(timeout=timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 231, in _receive_event
+    raise RemoteProtocolError(msg)
+httpcore.RemoteProtocolError: Server disconnected without sending a response.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_httpxrequest.py", line 279, in do_request
+    res = await self._client.request(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.RemoteProtocolError: Server disconnected without sending a response.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_utils/networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_utils/networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_baserequest.py", line 305, in _request_wrapper
+    code, payload = await self.do_request(
+                    ^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_httpxrequest.py", line 303, in do_request
+    raise NetworkError(f"httpx.{err.__class__.__name__}: {err}") from err
+telegram.error.NetworkError: httpx.RemoteProtocolError: Server disconnected without sending a response.
+2025-11-29 15:40:31,156 - modern_bot - ERROR - Update None caused error httpx.RemoteProtocolError: Server disconnected without sending a response.
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/connection_pool.py", line 236, in handle_async_request
+    response = await connection.handle_async_request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        pool_request.request
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/connection.py", line 103, in handle_async_request
+    return await self._connection.handle_async_request(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 136, in handle_async_request
+    raise exc
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 106, in handle_async_request
+    ) = await self._receive_response_headers(**kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 177, in _receive_response_headers
+    event = await self._receive_event(timeout=timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 231, in _receive_event
+    raise RemoteProtocolError(msg)
+httpcore.RemoteProtocolError: Server disconnected without sending a response.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_httpxrequest.py", line 279, in do_request
+    res = await self._client.request(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.RemoteProtocolError: Server disconnected without sending a response.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_utils/networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_utils/networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_baserequest.py", line 305, in _request_wrapper
+    code, payload = await self.do_request(
+                    ^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_httpxrequest.py", line 303, in do_request
+    raise NetworkError(f"httpx.{err.__class__.__name__}: {err}") from err
+telegram.error.NetworkError: httpx.RemoteProtocolError: Server disconnected without sending a response.
+2025-11-29 15:57:00,151 - modern_bot - ERROR - Update None caused error httpx.RemoteProtocolError: Server disconnected without sending a response.
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/connection_pool.py", line 236, in handle_async_request
+    response = await connection.handle_async_request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        pool_request.request
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/connection.py", line 103, in handle_async_request
+    return await self._connection.handle_async_request(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 136, in handle_async_request
+    raise exc
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 106, in handle_async_request
+    ) = await self._receive_response_headers(**kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 177, in _receive_response_headers
+    event = await self._receive_event(timeout=timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py", line 231, in _receive_event
+    raise RemoteProtocolError(msg)
+httpcore.RemoteProtocolError: Server disconnected without sending a response.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_httpxrequest.py", line 279, in do_request
+    res = await self._client.request(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.RemoteProtocolError: Server disconnected without sending a response.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_utils/networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_utils/networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/ext/_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_baserequest.py", line 305, in _request_wrapper
+    code, payload = await self.do_request(
+                    ^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Users/oleg/Project_SKLAD/.venv/lib/python3.13/site-packages/telegram/request/_httpxrequest.py", line 303, in do_request
+    raise NetworkError(f"httpx.{err.__class__.__name__}: {err}") from err
+telegram.error.NetworkError: httpx.RemoteProtocolError: Server disconnected without sending a response.
+2025-11-29 17:17:53,877 - modern_bot.utils.files - INFO - Removed temp file: JSCWhK9jRiGTXB9d.jpg
+2025-11-29 17:46:26,077 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 17:46:26,091 - modern_bot - INFO - Bot started.
+2025-11-29 17:46:31,112 - modern_bot - INFO - Bot started.
+2025-11-29 17:46:36,128 - modern_bot - INFO - Bot started.
+2025-11-29 17:46:41,146 - modern_bot - INFO - Bot started.
+2025-11-29 17:46:46,165 - modern_bot - INFO - Bot started.
+2025-11-29 17:46:51,182 - modern_bot - INFO - Bot started.
+2025-11-29 17:46:56,196 - modern_bot - INFO - Bot started.
+2025-11-29 17:47:01,845 - modern_bot - INFO - Bot started.
+2025-11-29 17:47:02,615 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 17:47:02,749 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 17:47:03,405 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 17:47:04,135 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 17:47:05,606 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 17:47:05,606 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 17:47:05,927 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 17:50:01,804 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-29.db
+2025-11-29 17:50:01,806 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-29.pickle
+2025-11-29 17:50:01,806 - modern_bot.utils.files - INFO - Backup completed: 2 files
+2025-11-29 17:50:55,140 - modern_bot.database.db - INFO - Database connection closed.
+2025-11-29 17:50:55,152 - modern_bot - INFO - Bot started.
+2025-11-29 17:51:00,171 - modern_bot - INFO - Bot started.
+2025-11-29 17:51:05,186 - modern_bot - INFO - Bot started.
+2025-11-29 17:51:10,199 - modern_bot - INFO - Bot started.
+2025-11-29 17:51:15,230 - modern_bot - INFO - Bot started.
+2025-11-29 17:51:20,365 - modern_bot - INFO - Bot started.
+2025-11-29 17:51:20,743 - modern_bot.database.db - INFO - Database initialized at /Users/oleg/Project_SKLAD/user_data.db
+2025-11-29 17:51:21,165 - modern_bot - INFO - 🗑 Deleted old default commands
+2025-11-29 17:51:21,923 - modern_bot - INFO - ✅ Set 3 default commands for regular users
+2025-11-29 17:51:22,832 - modern_bot - INFO - ✅ Set admin commands for 2064900
+2025-11-29 17:51:23,457 - modern_bot - INFO - ✅ Set admin commands for 5950486494
+2025-11-29 17:51:23,457 - modern_bot - INFO - ✅ Set 8 admin commands for 2 admins
+2025-11-29 17:51:23,851 - modern_bot.api - INFO - API Server started on http://127.0.0.1:8080 (max 2097152 bytes)
+2025-11-29 17:54:20,326 - modern_bot.utils.files - INFO - Database backed up to /Users/oleg/Project_SKLAD/backups/user_data_2025-11-29.db
+2025-11-29 17:54:20,327 - modern_bot.utils.files - INFO - Persistence backed up to /Users/oleg/Project_SKLAD/backups/persistence_2025-11-29.pickle
+2025-11-29 17:54:20,327 - modern_bot.utils.files - INFO - Backup completed: 2 files
