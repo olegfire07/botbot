@@ -1,0 +1,12 @@
+venv/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+user_data.db
+backups/
+logs/
+documents/
+documents_archive/
+photos/
+.bot.lock
