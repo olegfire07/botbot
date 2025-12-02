@@ -2840,6 +2840,27 @@
             localStorage.setItem('last_region', e.target.value);
         });
 
+        // 🛡️ ЗАЩИТА ОТ БУДУЩИХ ДАТ (Fool-proof Date Validation)
+        // Добавляем в конец скрипта, когда все элементы уже загружены
+        const dateInputField = document.getElementById('date');
+        if (dateInputField) {
+            const todayMaxDate = new Date().toISOString().split('T')[0];
+            dateInputField.setAttribute('max', todayMaxDate);
+
+            dateInputField.addEventListener('change', function () {
+                const selectedDate = this.value;
+                if (selectedDate > todayMaxDate) {
+                    tg.showAlert("⚠️ Нельзя выбрать будущую дату!");
+                    this.value = todayMaxDate;
+                    haptic('warning');
+                }
+            });
+
+            console.log('✅ Date validation initialized, max date:', todayMaxDate);
+        } else {
+            console.warn('⚠️ Date input field not found');
+        }
+
         // Restore draft on page load
         restoreDraft();
     </script>
