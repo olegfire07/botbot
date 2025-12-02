@@ -89,11 +89,21 @@ def main():
         os.path.abspath(os.path.join(script_dir, "..", ".venv")),
     ]
     for venv_path in venv_candidates:
-        python_bin = os.path.join(venv_path, "bin", "python3")
+        # Support both Windows (Scripts/python.exe) and Unix (bin/python3)
+        if os.name == 'nt':  # Windows
+            python_bin = os.path.join(venv_path, "Scripts", "python.exe")
+        else:  # Unix/Linux/macOS
+            python_bin = os.path.join(venv_path, "bin", "python3")
+        
         if os.path.exists(python_bin):
             if os.path.realpath(sys.prefix) != os.path.realpath(venv_path):
                 print(f"🔄 Switching to virtual environment: {python_bin}")
-                os.execv(python_bin, [python_bin] + sys.argv)
+                if os.name == 'nt':
+                    # On Windows, use subprocess instead of execv
+                    import subprocess
+                    sys.exit(subprocess.call([python_bin] + sys.argv))
+                else:
+                    os.execv(python_bin, [python_bin] + sys.argv)
             break
     
     # Check for existing instance BEFORE any imports

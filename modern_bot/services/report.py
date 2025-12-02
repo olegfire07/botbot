@@ -42,6 +42,7 @@ class ReportService:
         # 2. Download Photos (Parallel)
         TEMP_PHOTOS_DIR.mkdir(parents=True, exist_ok=True)
         items = data.get('items', [])
+        logger.info(f"ReportService: Processing {len(items)} items")
         if len(items) > MAX_PHOTOS:
             logger.warning("Received %s items, trimming to MAX_PHOTOS=%s", len(items), MAX_PHOTOS)
             items = items[:MAX_PHOTOS]
@@ -53,8 +54,10 @@ class ReportService:
         async def download_item(client, item):
             photo_url = item.get('photo_url')
             if not photo_url:
+                logger.warning("Item has no photo_url")
                 return None
             try:
+                logger.info(f"Downloading photo from {photo_url}")
                 response = await client.get(photo_url)
                 content_type = response.headers.get("Content-Type", "")
                 content_length = response.headers.get("Content-Length")
@@ -74,24 +77,29 @@ class ReportService:
 
                 unique_name = generate_unique_filename()
                 file_path = TEMP_PHOTOS_DIR / unique_name
+                logger.info(f"Saving photo to {file_path}")
                 await asyncio.to_thread(file_path.write_bytes, response.content)
-                return {
+                logger.info(f"Photo saved successfully, size: {file_path.stat().st_size} bytes")
+                photo_entry = {
                     'photo': str(file_path),
                     'description': item.get('description'),
                     'evaluation': item.get('evaluation')
                 }
+                logger.info(f"Created photo entry: {photo_entry}")
+                return photo_entry
             except httpx.HTTPError as e:
                 logger.error(f"HTTP error downloading photo: {e}")
             except IOError as e:
                 logger.error(f"IO error saving photo: {e}")
             except Exception as e:
-                logger.error(f"Unexpected error downloading photo: {e}")
+                logger.error(f"Unexpected error downloading photo: {e}", exc_info=True)
             return None
 
         async with httpx.AsyncClient(timeout=http_timeout, limits=http_limits) as client:
             tasks = [download_item(client, item) for item in items]
             results = await asyncio.gather(*tasks)
             db_data['photo_desc'] = [r for r in results if r is not None]
+            logger.info(f"Downloaded {len(db_data['photo_desc'])} photos successfully out of {len(items)} items")
 
         # 3. Generate Document
         user_id = 0 # Web User

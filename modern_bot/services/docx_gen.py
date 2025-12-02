@@ -57,7 +57,10 @@ def populate_table_with_data(doc: Document, data: Dict[str, Any]) -> None:
         logger.error("No tables found in document.")
         return
     table = doc.tables[0]
-    for i, item in enumerate(data.get('photo_desc', []), 1):
+    photo_desc = data.get('photo_desc', [])
+    logger.info(f"Populating table with {len(photo_desc)} photo entries")
+    
+    for i, item in enumerate(photo_desc, 1):
         try:
             new_row = table.add_row()
             row_cells = new_row.cells
@@ -66,11 +69,16 @@ def populate_table_with_data(doc: Document, data: Dict[str, Any]) -> None:
                 continue
 
             photo_path = Path(item.get('photo', ""))
+            logger.info(f"Processing item {i}: photo_path={photo_path}, exists={photo_path.is_file()}")
+            
             row_cells[0].text = str(i)
             if photo_path.is_file():
+                logger.info(f"Adding photo to document: {photo_path}")
                 p = row_cells[2].paragraphs[0] if row_cells[2].paragraphs else row_cells[2].add_paragraph()
                 p.add_run().add_picture(str(photo_path), width=Inches(1.0))
+                logger.info(f"Photo added successfully")
             else:
+                logger.warning(f"Photo file not found: {photo_path}")
                 row_cells[2].text = 'Фото отсутствует'
 
             description = item.get('description') or 'Нет описания'
@@ -80,7 +88,7 @@ def populate_table_with_data(doc: Document, data: Dict[str, Any]) -> None:
             row_cells[6].text = evaluation_value
             row_cells[7].text = 'да'
         except Exception as e:
-            logger.error(f"Error populating table: {e}")
+            logger.error(f"Error populating table row {i}: {e}", exc_info=True)
     add_borders_to_table(table)
 
 # Cache template bytes to avoid disk I/O on every request

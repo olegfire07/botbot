@@ -113,14 +113,18 @@ async def web_app_entry(update: Update, context: CallbackContext) -> int:
         http_timeout = httpx.Timeout(10.0)
         http_limits = httpx.Limits(max_connections=4, max_keepalive_connections=2)
 
+        logger.info(f"Processing {len(items)} items with photos from Web App")
         async with httpx.AsyncClient(timeout=http_timeout, limits=http_limits) as client:
-            for item in items:
+            for idx, item in enumerate(items, 1):
                 photo_url = item.get('photo_url')
                 description = item.get('description')
                 evaluation = item.get('evaluation')
                 
+                logger.info(f"Item {idx}/{len(items)}: photo_url={photo_url[:50] if photo_url else 'None'}..., description={description}, evaluation={evaluation}")
+                
                 if photo_url:
                     try:
+                        logger.info(f"Downloading photo from {photo_url}")
                         response = await client.get(photo_url)
                         content_type = response.headers.get("Content-Type", "")
                         content_length = response.headers.get("Content-Length")
@@ -141,18 +145,23 @@ async def web_app_entry(update: Update, context: CallbackContext) -> int:
                         unique_name = generate_unique_filename()
                         file_path = TEMP_PHOTOS_DIR / unique_name
 
+                        logger.info(f"Saving photo to {file_path}")
                         with open(file_path, 'wb') as f:
                             f.write(response.content)
-                            
-                        db_data['photo_desc'].append({
+                        
+                        logger.info(f"Photo saved successfully, size: {file_path.stat().st_size} bytes")
+                        
+                        photo_entry = {
                             'photo': str(file_path),
                             'description': description,
                             'evaluation': evaluation
-                        })
+                        }
+                        db_data['photo_desc'].append(photo_entry)
+                        logger.info(f"Added photo entry to db_data: {photo_entry}")
                     except Exception as e:
-                        logger.error(f"Error downloading photo: {e}")
+                        logger.error(f"Error downloading photo: {e}", exc_info=True)
                 else:
-                    logger.warning("No photo URL for item")
+                    logger.warning(f"No photo URL for item {idx}")
         
         await save_user_data(user_id, db_data)
         
