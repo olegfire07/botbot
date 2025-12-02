@@ -89,8 +89,8 @@ async def handle_generate(request):
             # Cleanup
             try:
                 await asyncio.to_thread(path.unlink)
-            except:
-                pass
+            except Exception as e:
+                logger.warning(f"Failed to delete temporary file: {e}")
                 
             return web.Response(
                 body=content,

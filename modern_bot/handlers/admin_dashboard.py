@@ -178,14 +178,16 @@ async def show_system_status(update: Update, context: CallbackContext) -> None:
         free_gb = free / (1024**3)
         used_percent = (used / total) * 100
         disk_info = f"{free_gb:.1f} GB  / {total_gb:.1f} GB ({used_percent:.0f}% used)"
-    except:
+    except Exception as e:
+        logger.warning(f"Failed to get disk usage: {e}")
         disk_info = "N/A"
     
     # Database size
     try:
         db_size_mb = DATABASE_FILE.stat().st_size / (1024**2)
         db_info = f"{db_size_mb:.2f} MB"
-    except:
+    except Exception as e:
+        logger.warning(f"Failed to get DB size: {e}")
         db_info = "N/A"
     
     # Uptime (estimate from bot start)
@@ -199,7 +201,8 @@ async def show_system_status(update: Update, context: CallbackContext) -> None:
             archive_files = sum(1 for f in archive_dir.rglob('*') if f.is_file() and f.name != 'index.json')
         else:
             archive_files = 0
-    except:
+    except Exception as e:
+        logger.warning(f"Failed to count archive files: {e}")
         archive_files = 0
     
     # Backup stats  
@@ -209,7 +212,8 @@ async def show_system_status(update: Update, context: CallbackContext) -> None:
             backup_files = sum(1 for f in backups_dir.iterdir() if f.is_file())
         else:
             backup_files = 0
-    except:
+    except Exception as e:
+        logger.warning(f"Failed to count backup files: {e}")
         backup_files = 0
     
     text = (

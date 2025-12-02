@@ -105,8 +105,8 @@ async def safe_reply(update: Update, text: str, retries: int = 3, base_delay: fl
         try:
             user_id = update.effective_user.id
             kwargs['reply_markup'] = get_main_menu_keyboard(user_id)
-        except:
-            pass  # If fails, just send without keyboard
+        except Exception as e:
+            logger.warning(f"Failed to add menu keyboard: {e}")
     
     last_recoverable = False
     chat_id = None

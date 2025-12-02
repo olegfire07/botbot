@@ -224,7 +224,7 @@ async def handle_admin_reply(update: Update, context: CallbackContext):
                 success_count += 1
             else:
                 fail_count += 1
-            await asyncio.sleep(0.05)  # throttle to reduce flood risks
+            await asyncio.sleep(0.15)  # Increased from 0.05 to avoid Telegram flood limits
 
         await safe_reply(
             update,
