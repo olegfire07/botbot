@@ -123,7 +123,7 @@ async def admin_callback_handler(update: Update, context: CallbackContext) -> No
         await show_region_menu(update, context, month)
     elif action.startswith("admin_dl_region|"):
         await handle_region_choice(update, context, action)
-    elif action == "admin_start_dialog":
+    elif action == "admin_create_dialog":
         # Send the /start_chat command to the admin to start dialog mode
         await query.edit_message_text(
             "🗨️ Запускаем диалоговое создание заключения...",
@@ -135,6 +135,10 @@ async def admin_callback_handler(update: Update, context: CallbackContext) -> No
             text="/start_chat"
         )
         # No further processing needed
+
+    elif action == "admin_archive":
+        await show_download_menu(update, context)
+
 
 
 async def show_stats(update: Update, context: CallbackContext) -> None:
@@ -300,6 +304,10 @@ async def analytics_callback_handler(update: Update, context: CallbackContext) -
     keyboard = [[InlineKeyboardButton("◀️ Назад к аналитике", callback_data="admin_analytics")]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
+    if action == "analytics_main":
+        await show_analytics(update, context)
+        return
+
     if action == "analytics_regions":
         stats = await AnalyticsService.get_region_stats()
         report = AnalyticsService.format_region_report(stats)
@@ -507,7 +515,7 @@ async def admins_management_callback_handler(update: Update, context: CallbackCo
     
     action = query.data
     
-    if action == "admins_refresh":
+    if action == "admins_list" or action == "admins_refresh":
         await show_admins_menu(update, context)
     
     elif action == "admins_add":
