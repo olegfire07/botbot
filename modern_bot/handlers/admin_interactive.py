@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from html import escape as html_escape
 from telegram import Update, ForceReply
 from telegram.ext import CallbackContext
 from telegram.error import RetryAfter, TimedOut, NetworkError, TelegramError
@@ -191,16 +192,22 @@ async def handle_admin_reply(update: Update, context: CallbackContext):
             for attempt in range(3):
                 try:
                     if photo:
+                        # Escape HTML to prevent parse errors
+                        safe_text = html_escape(text) if text else None
+                        caption_text = f"{prefix}{safe_text}" if safe_text else prefix.rstrip()
+                        
                         await context.bot.send_photo(
                             chat_id=chat_id,
                             photo=photo[-1].file_id,
-                            caption=f"{prefix}{text}" if text else None,
+                            caption=caption_text,
                             parse_mode="HTML"
                         )
                     else:
+                        # Escape HTML to prevent parse errors
+                        safe_text = html_escape(text)
                         await context.bot.send_message(
                             chat_id=chat_id,
-                            text=f"{prefix}{text}",
+                            text=f"{prefix}{safe_text}",
                             parse_mode="HTML"
                         )
                     return True
