@@ -120,6 +120,7 @@ async def handle_health(request):
     import time
     from pathlib import Path
     from modern_bot.config import DATABASE_FILE, BASE_DIR
+    from modern_bot.version import __version__
     
     # Calculate uptime
     start_time = request.app.get('start_time', time.time())
@@ -134,7 +135,7 @@ async def handle_health(request):
         "bot": "running",
         "database": db_status,
         "uptime": uptime_str,
-        "version": "1.0.0"
+        "version": __version__
     }
     
     return web.json_response(health_data, headers=_get_cors_headers(request))
