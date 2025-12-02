@@ -189,7 +189,7 @@ def main():
     # Interactive Admin Reply Handler
     from modern_bot.handlers.admin_interactive import handle_admin_reply
     application.add_handler(MessageHandler(
-        filters.REPLY & filters.TEXT & ~filters.COMMAND,
+        filters.REPLY & (filters.TEXT | filters.PHOTO) & ~filters.COMMAND,
         handle_admin_reply
     ), group=10)
 

@@ -2045,6 +2045,19 @@
             localStorage.setItem('default_region', e.target.value);
         });
 
+        // 🛡️ Date Validation (Fool-proof)
+        const dateInput = document.getElementById('date');
+        const todayDate = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('max', todayDate);
+
+        dateInput.addEventListener('change', function () {
+            if (this.value > todayDate) {
+                tg.showAlert("⚠️ Нельзя выбрать будущую дату!");
+                this.value = todayDate;
+                haptic('warning');
+            }
+        });
+
         async function handleFileSelect(input) {
             const file = input.files[0];
             if (!file) return;

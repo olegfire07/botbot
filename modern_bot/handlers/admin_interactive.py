@@ -78,7 +78,7 @@ async def prompt_broadcast(update: Update, context: CallbackContext):
     context.user_data['admin_action'] = ACTION_BROADCAST
     await query.message.reply_text(
         "📢 <b>Рассылка</b>\n\n"
-        "Введите текст сообщения для рассылки всем пользователям:",
+        "Отправьте <b>текст</b> или <b>фотографию</b> (можно с подписью) для рассылки всем пользователям:",
         parse_mode="HTML",
         reply_markup=ForceReply(selective=True)
     )
@@ -95,7 +95,10 @@ async def handle_admin_reply(update: Update, context: CallbackContext):
     if not action:
         return
     
-    text = update.message.text.strip()
+    # Check for text or caption (if photo)
+    text = update.message.text or update.message.caption or ""
+    text = text.strip()
+    photo = update.message.photo
     
     if action == ACTION_ADD_USER:
         try:
@@ -168,12 +171,16 @@ async def handle_admin_reply(update: Update, context: CallbackContext):
         context.user_data.pop('admin_action', None)
     
     elif action == ACTION_BROADCAST:
-        if not text:
-            await safe_reply(update, "❌ Сообщение не может быть пустым. Попробуйте ещё раз:")
+        if not text and not photo:
+            await safe_reply(update, "❌ Сообщение не может быть пустым. Отправьте текст или фото.")
             return
             
-        if len(text) > 4000:
-            await safe_reply(update, f"❌ Сообщение слишком длинное ({len(text)} символов). Максимум 4000.")
+        # Check limits
+        prefix = "📢 <b>Рассылка от администрации:</b>\n\n"
+        max_len = 1024 if photo else 4096
+        
+        if len(text) + len(prefix) > max_len:
+            await safe_reply(update, f"❌ Сообщение слишком длинное. Максимум {max_len - len(prefix)} символов.")
             return
         
         users = await get_all_users()
@@ -183,11 +190,19 @@ async def handle_admin_reply(update: Update, context: CallbackContext):
         async def send_with_backoff(chat_id: int) -> bool:
             for attempt in range(3):
                 try:
-                    await context.bot.send_message(
-                        chat_id=chat_id,
-                        text=f"📢 <b>Рассылка от администрации:</b>\n\n{text}",
-                        parse_mode="HTML"
-                    )
+                    if photo:
+                        await context.bot.send_photo(
+                            chat_id=chat_id,
+                            photo=photo[-1].file_id,
+                            caption=f"{prefix}{text}" if text else None,
+                            parse_mode="HTML"
+                        )
+                    else:
+                        await context.bot.send_message(
+                            chat_id=chat_id,
+                            text=f"{prefix}{text}",
+                            parse_mode="HTML"
+                        )
                     return True
                 except RetryAfter as e:
                     await asyncio.sleep(getattr(e, "retry_after", 1) + 0.5)
@@ -200,6 +215,9 @@ async def handle_admin_reply(update: Update, context: CallbackContext):
                     logger.error(f"Unexpected error sending broadcast to {chat_id}: {e}")
                     return False
             return False
+
+        # Notify admin start
+        await safe_reply(update, f"🚀 Начинаю рассылку для {len(users)} пользователей...")
 
         for user in users:
             if await send_with_backoff(user['user_id']):
