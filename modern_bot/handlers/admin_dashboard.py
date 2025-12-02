@@ -138,7 +138,22 @@ async def admin_callback_handler(update: Update, context: CallbackContext) -> No
 
     elif action == "admin_archive":
         await show_download_menu(update, context)
-
+    
+    elif action.startswith("admin_archive_period|"):
+        from modern_bot.utils.date_helper import DateFilter
+        from modern_bot.handlers.reports import send_period_archive
+        from modern_bot.handlers.admin_interactive import prompt_archive_custom_dates
+        
+        start_date, end_date = DateFilter.process_callback(action)
+        
+        if start_date and end_date:
+            await query.edit_message_text(f"⏳ Формирую архив за {start_date.strftime('%d.%m.%Y')} - {end_date.strftime('%d.%m.%Y')}...")
+            await send_period_archive(update, context, start_date, end_date)
+        elif "custom" in action:
+             await prompt_archive_custom_dates(update, context)
+        else:
+             # Should not happen if DateFilter works correctly
+             await query.answer("Ошибка выбора даты", show_alert=True)
 
 
 async def show_stats(update: Update, context: CallbackContext) -> None:
@@ -261,8 +276,8 @@ async def send_database_file(update: Update, context: CallbackContext) -> None:
                 document=db_file,
                 filename=f"user_data_{datetime.now().strftime('%Y-%m-%d_%H-%M')}.db",
                 caption=f"💾 <b>База данных</b>\n\n"
-                        f"📊 Размер: {os.path.getsize(DATABASE_FILE) / 1024:.1f} KB\n"
-                        f"🕐 Время: {datetime.now().strftime('%d.%m.%Y %H:%M')}",
+                f"📊 Размер: {os.path.getsize(DATABASE_FILE) / 1024:.1f} KB\n"
+                f"🕐 Время: {datetime.now().strftime('%d.%m.%Y %H:%M')}",
                 parse_mode="HTML"
             )
         logger.info(f"Database sent to admin {update.effective_user.id}")
@@ -281,6 +296,7 @@ async def show_analytics(update: Update, context: CallbackContext) -> None:
         [InlineKeyboardButton("📈 По подразделениям", callback_data="analytics_departments")],
         [InlineKeyboardButton("👥 Топ пользователей", callback_data="analytics_top_users")],
         [InlineKeyboardButton("📅 По дням", callback_data="analytics_daily")],
+        [InlineKeyboardButton("🗓 За период", callback_data="analytics_select_period")],
         [InlineKeyboardButton("◀️ Назад", callback_data="admin_refresh")]
     ]
     
@@ -295,6 +311,8 @@ async def show_analytics(update: Update, context: CallbackContext) -> None:
 async def analytics_callback_handler(update: Update, context: CallbackContext) -> None:
     """Handle analytics callbacks."""
     from modern_bot.services.analytics import AnalyticsService
+    from modern_bot.utils.date_helper import DateFilter
+    from modern_bot.handlers.admin_interactive import prompt_analytics_custom_dates
     
     query = update.callback_query
     await query.answer()
@@ -328,24 +346,41 @@ async def analytics_callback_handler(update: Update, context: CallbackContext) -
         chart = AnalyticsService.create_simple_chart(stats)
         text = f"📅 <b>Документы по дням (последние 30 дней)</b>\n\n{chart}"
         await query.edit_message_text(text, parse_mode="HTML", reply_markup=reply_markup)
+        
+    elif action == "analytics_select_period":
+        # Show DateFilter keyboard
+        keyboard = DateFilter.get_keyboard("analytics_period")
+        keyboard.append([InlineKeyboardButton("◀️ Назад", callback_data="analytics_main")])
+        await query.edit_message_text(
+            "📅 <b>Выберите период для аналитики:</b>",
+            parse_mode="HTML",
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+        
+    elif action.startswith("analytics_period|"):
+        start_date, end_date = DateFilter.process_callback(action)
+        
+        if start_date and end_date:
+            await query.edit_message_text(f"⏳ Считаю статистику за {start_date.strftime('%d.%m.%Y')} - {end_date.strftime('%d.%m.%Y')}...")
+            stats = await AnalyticsService.get_period_stats(start_date, end_date)
+            report = AnalyticsService.format_period_report(stats, start_date, end_date)
+            await query.edit_message_text(report, parse_mode="HTML", reply_markup=reply_markup)
+        elif "custom" in action:
+             await prompt_analytics_custom_dates(update, context)
+        else:
+             await query.answer("Ошибка выбора даты", show_alert=True)
 
 async def show_download_menu(update: Update, context: CallbackContext) -> None:
     """Show download month instruction."""
-    from datetime import datetime, timedelta
-    now = datetime.now()
-    curr_month = now.strftime("%m.%Y")
-    last_month = (now.replace(day=1) - timedelta(days=1)).strftime("%m.%Y")
-
-    keyboard = [
-        [InlineKeyboardButton(f"📅 Текущий ({curr_month})", callback_data="admin_dl_current")],
-        [InlineKeyboardButton(f"📅 Прошлый ({last_month})", callback_data="admin_dl_last")],
-        [InlineKeyboardButton("◀️ Назад", callback_data="admin_refresh")]
-    ]
+    from modern_bot.utils.date_helper import DateFilter
+    
+    keyboard = DateFilter.get_keyboard("admin_archive_period")
+    keyboard.append([InlineKeyboardButton("◀️ Назад", callback_data="admin_refresh")])
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     await update.callback_query.edit_message_text(
-        "📦 <b>Скачать архив за месяц</b>\n\n"
-        "Выберите месяц или используйте команду:\n"
+        "📦 <b>Скачать архив</b>\n\n"
+        "Выберите период или используйте команду:\n"
         "<code>/download_month ММ.ГГГГ [Регион]</code>",
         parse_mode="HTML",
         reply_markup=reply_markup
@@ -411,7 +446,7 @@ async def show_history(update: Update, context: CallbackContext) -> None:
         parse_mode="HTML",
         reply_markup=reply_markup
     )
-    
+
 
 
 
@@ -420,11 +455,14 @@ def get_admin_callback_handler():
     # Pattern excludes admin_reconcile and admin_search_ticket which have dedicated ConversationHandlers
     return CallbackQueryHandler(
         handle_all_callbacks,
-        pattern=r"^(?!admin_reconcile$|admin_search_ticket$)(admin_|analytics_|users_|admins_)"
+        pattern=r"^(?!admin_reconcile$|admin_search_ticket$)(admin_|analytics_|users_|admins_|broadcast_)"
     )
 
 async def handle_all_callbacks(update: Update, context: CallbackContext) -> None:
     """Route all admin and analytics callbacks."""
+    # Reset DB upload flag to prevent stuck state
+    context.user_data['awaiting_db_upload'] = False
+    
     action = update.callback_query.data
     
     if action.startswith("analytics_"):
@@ -433,6 +471,8 @@ async def handle_all_callbacks(update: Update, context: CallbackContext) -> None
         await users_management_callback_handler(update, context)
     elif action.startswith("admins_"):
         await admins_management_callback_handler(update, context)
+    elif action.startswith("broadcast_"):
+        await broadcast_callback_handler(update, context)
     elif action.startswith("admin_"):
         await admin_callback_handler(update, context)
 
@@ -527,3 +567,22 @@ async def admins_management_callback_handler(update: Update, context: CallbackCo
         from modern_bot.handlers.admin_interactive import prompt_remove_admin
         await query.edit_message_text("➖ Удаление администратора...")
         await prompt_remove_admin(update, context)
+
+async def broadcast_callback_handler(update: Update, context: CallbackContext) -> None:
+    """Handle broadcast callbacks."""
+    from modern_bot.handlers.admin_interactive import prompt_broadcast_content, prompt_broadcast_region
+    
+    query = update.callback_query
+    await query.answer()
+    
+    action = query.data
+    
+    if action == "broadcast_all":
+        await prompt_broadcast_content(update, context, region=None)
+        
+    elif action == "broadcast_region":
+        await prompt_broadcast_region(update, context)
+        
+    elif action.startswith("broadcast_target|"):
+        _, region = action.split("|", 1)
+        await prompt_broadcast_content(update, context, region=region)

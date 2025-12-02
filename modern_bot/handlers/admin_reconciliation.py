@@ -35,6 +35,8 @@ async def start_reconciliation(update: Update, context: CallbackContext) -> int:
     )
     return WAITING_FOR_FILE
 
+from modern_bot.utils.date_helper import DateFilter
+
 async def handle_reconciliation_file(update: Update, context: CallbackContext) -> int:
     """Handle the uploaded file and ask for period."""
     user = update.effective_user
@@ -104,13 +106,9 @@ async def handle_reconciliation_file(update: Update, context: CallbackContext) -
         # Save tickets to context
         context.user_data['reconcile_tickets'] = uploaded_tickets
         
-        # Ask for period
-        keyboard = [
-            [InlineKeyboardButton("📅 За все время", callback_data="period_all")],
-            [InlineKeyboardButton("🗓 Текущий месяц", callback_data="period_current")],
-            [InlineKeyboardButton("⏮ Прошлый месяц", callback_data="period_last")],
-            [InlineKeyboardButton("✏️ Указать даты", callback_data="period_custom")]
-        ]
+        # Ask for period using DateFilter
+        keyboard = DateFilter.get_keyboard("period")
+        keyboard.append([InlineKeyboardButton("◀️ Отмена", callback_data="cancel_reconcile")]) # Add cancel button explicitly if needed or rely on conversation exit
         reply_markup = InlineKeyboardMarkup(keyboard)
         
         await safe_reply(
@@ -131,34 +129,31 @@ async def handle_period_selection(update: Update, context: CallbackContext) -> i
     query = update.callback_query
     await query.answer()
     
-    period_type = query.data
+    data = query.data
+    # Expected format: period|PRESET
     
-    if period_type == "period_custom":
+    if "|" not in data:
+        # Fallback for old buttons if any
+        return ConversationHandler.END
+        
+    _, selection = data.split("|", 1)
+    
+    if selection == DateFilter.PRESET_CUSTOM:
         await query.edit_message_text(
             "✏️ <b>Введите период для сверки</b>\n\n"
-            "Формат: ДД.ММ.ГГГГ-ДД.ММ.ГГГГ\n"
-            "Пример: <code>01.11.2025-15.11.2025</code>",
+            "Формат: ДД.ММ.ГГГГ - ДД.ММ.ГГГГ\n"
+            "Пример: <code>01.11.2025 - 15.11.2025</code>",
             parse_mode="HTML"
         )
         return WAITING_FOR_CUSTOM_DATES
     
-    # Standard periods
-    start_date = None
-    end_date = None
-    now = datetime.now()
-    period_name = "За все время"
+    start_date, end_date, period_name = DateFilter.parse_selection(selection)
     
-    if period_type == "period_current":
-        start_date = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-        end_date = now
-        period_name = "Текущий месяц"
-    elif period_type == "period_last":
-        last_month_end = now.replace(day=1) - timedelta(days=1)
-        start_date = last_month_end.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-        end_date = last_month_end.replace(hour=23, minute=59, second=59)
-        period_name = "Прошлый месяц"
+    if not start_date:
+        await safe_reply(update, "❌ Ошибка выбора периода.")
+        return ConversationHandler.END
         
-    await query.edit_message_text("⏳ Сверяю данные...")
+    await query.edit_message_text(f"⏳ Сверяю данные ({period_name})...")
     await _perform_reconciliation(update, context, start_date, end_date, period_name)
     return ConversationHandler.END
 
@@ -166,36 +161,22 @@ async def handle_custom_dates(update: Update, context: CallbackContext) -> int:
     """Handle custom date range input."""
     text = update.message.text.strip()
     
-    try:
-        # Parse dates
-        if '-' not in text:
-            raise ValueError("No separator")
-            
-        start_str, end_str = text.split('-')
-        start_date = datetime.strptime(start_str.strip(), "%d.%m.%Y")
-        end_date = datetime.strptime(end_str.strip(), "%d.%m.%Y")
-        
-        # Set end date to end of day
-        end_date = end_date.replace(hour=23, minute=59, second=59)
-        
-        if start_date > end_date:
-            await safe_reply(update, "❌ Дата начала не может быть позже даты окончания.")
-            return WAITING_FOR_CUSTOM_DATES
-            
-        period_name = f"{start_str.strip()} - {end_str.strip()}"
-        
-        await safe_reply(update, "⏳ Сверяю данные...")
-        await _perform_reconciliation(update, context, start_date, end_date, period_name)
-        return ConversationHandler.END
-        
-    except ValueError:
+    start_date, end_date = DateFilter.parse_custom_range(text)
+    
+    if not start_date:
         await safe_reply(
             update, 
             "❌ Неверный формат даты.\n"
-            "Используйте формат: ДД.ММ.ГГГГ-ДД.ММ.ГГГГ\n"
-            "Пример: 01.11.2025-15.11.2025"
+            "Используйте формат: ДД.ММ.ГГГГ - ДД.ММ.ГГГГ\n"
+            "Пример: 01.11.2025 - 15.11.2025"
         )
         return WAITING_FOR_CUSTOM_DATES
+        
+    period_name = f"{start_date.strftime('%d.%m.%Y')} - {end_date.strftime('%d.%m.%Y')}"
+    
+    await safe_reply(update, f"⏳ Сверяю данные ({period_name})...")
+    await _perform_reconciliation(update, context, start_date, end_date, period_name)
+    return ConversationHandler.END
 
 async def _perform_reconciliation(update: Update, context: CallbackContext, start_date, end_date, period_name):
     """Internal function to perform the reconciliation logic."""

@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 from telegram import Update
 from telegram.ext import CallbackContext
 from modern_bot.handlers.common import safe_reply, send_document_from_path
@@ -94,6 +95,64 @@ async def send_month_archive(update: Update, context: CallbackContext, month_tex
             if zip_path.exists():
                 zip_path.unlink()
                 logger.info(f"Cleaned up ZIP file: {zip_path}")
+        except Exception as e:
+            logger.error(f"Failed to cleanup ZIP: {e}")
+
+async def send_period_archive(update: Update, context: CallbackContext, start: datetime, end: datetime, region: str = None) -> None:
+    """Helper to send archive for a specific period."""
+    from datetime import datetime
+    
+    chat_id = update.effective_user.id if update.effective_user else (update.effective_chat.id if update.effective_chat else None)
+    query = getattr(update, "callback_query", None)
+
+    async def notify(text: str, alert: bool = False):
+        if query:
+            try:
+                await query.answer(text if alert else None, show_alert=alert)
+            except Exception as e:
+                logger.error(f"Failed to answer callback query: {e}")
+        sent = await safe_reply(update, text)
+        if not sent and chat_id:
+            try:
+                await context.bot.send_message(chat_id=chat_id, text=text)
+            except Exception as e:
+                logger.error(f"Failed to send message: {e}")
+
+    paths = await get_archive_paths(start, end, region)
+    
+    period_str = f"{start.strftime('%d.%m.%Y')}-{end.strftime('%d.%m.%Y')}"
+    
+    if not paths:
+        await notify(f"Архивы за {period_str}" + (f" ({region})" if region else "") + " не найдены.", alert=True)
+        return
+
+    await notify(f"⏳ Формирую архив за {period_str} ({len(paths)} файлов)...")
+    try:
+        filename_prefix = f"archive_{period_str}" + (f"_{region}" if region else "")
+        zip_path = await create_archive_zip(paths, filename_prefix)
+    except Exception as e:
+        logger.error(f"Failed to create archive: {e}", exc_info=True)
+        await notify(f"❌ Не удалось сформировать архив: {e}")
+        return
+
+    if not chat_id:
+        await notify("❌ Не удалось определить чат для отправки архива.")
+        return
+
+    try:
+        await send_document_from_path(
+            context.bot,
+            chat_id,
+            zip_path,
+            caption=f"📦 Архив {period_str}" + (f" ({region})" if region else "")
+        )
+    except Exception as e:
+        logger.error(f"Failed to send archive: {e}", exc_info=True)
+        await notify(f"❌ Ошибка отправки архива: {e}")
+    finally:
+        try:
+            if zip_path.exists():
+                zip_path.unlink()
         except Exception as e:
             logger.error(f"Failed to cleanup ZIP: {e}")
 

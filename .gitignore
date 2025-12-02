@@ -1,3 +1,7 @@
+v*.db
+*.db-wal
+*.db-shm
+*.pickle
 venv/
 __pycache__/
 *.pyc

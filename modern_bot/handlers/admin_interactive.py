@@ -16,6 +16,8 @@ ACTION_REMOVE_USER = 'remove_user'
 ACTION_ADD_ADMIN = 'add_admin'
 ACTION_REMOVE_ADMIN = 'remove_admin'
 ACTION_BROADCAST = 'broadcast'
+ACTION_ARCHIVE_CUSTOM = 'archive_custom'
+ACTION_ANALYTICS_CUSTOM = 'analytics_custom'
 
 # Interactive handlers
 async def prompt_add_user(update: Update, context: CallbackContext):
@@ -71,15 +73,97 @@ async def prompt_remove_admin(update: Update, context: CallbackContext):
         reply_markup=ForceReply(selective=True)
     )
 
+async def prompt_archive_custom_dates(update: Update, context: CallbackContext):
+    """Prompt for custom dates for archive."""
+    query = update.callback_query
+    await query.answer()
+    
+    context.user_data['admin_action'] = ACTION_ARCHIVE_CUSTOM
+    await query.message.reply_text(
+        "📦 <b>Архив за период</b>\n\n"
+        "Введите даты в формате: ДД.ММ.ГГГГ - ДД.ММ.ГГГГ\n"
+        "Пример: <code>01.11.2025 - 15.11.2025</code>",
+        parse_mode="HTML",
+        reply_markup=ForceReply(selective=True)
+    )
+
+async def prompt_analytics_custom_dates(update: Update, context: CallbackContext):
+    """Prompt for custom dates for analytics."""
+    query = update.callback_query
+    await query.answer()
+    
+    context.user_data['admin_action'] = ACTION_ANALYTICS_CUSTOM
+    await query.message.reply_text(
+        "📈 <b>Аналитика за период</b>\n\n"
+        "Введите даты в формате: ДД.ММ.ГГГГ - ДД.ММ.ГГГГ\n"
+        "Пример: <code>01.11.2025 - 15.11.2025</code>",
+        parse_mode="HTML",
+        reply_markup=ForceReply(selective=True)
+    )
+
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from modern_bot.config import REGION_TOPICS
+
 async def prompt_broadcast(update: Update, context: CallbackContext):
-    """Prompt for broadcast message."""
+    """Prompt for broadcast type."""
+    keyboard = [
+        [InlineKeyboardButton("📢 Всем пользователям", callback_data="broadcast_all")],
+        [InlineKeyboardButton("🌍 По региону", callback_data="broadcast_region")],
+        [InlineKeyboardButton("◀️ Отмена", callback_data="admin_refresh")]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    # If called from callback
+    if update.callback_query:
+        await update.callback_query.edit_message_text(
+            "📢 <b>Рассылка</b>\n\nВыберите получателей:",
+            parse_mode="HTML",
+            reply_markup=reply_markup
+        )
+    else:
+        await update.message.reply_text(
+            "📢 <b>Рассылка</b>\n\nВыберите получателей:",
+            parse_mode="HTML",
+            reply_markup=reply_markup
+        )
+
+async def prompt_broadcast_region(update: Update, context: CallbackContext):
+    """Show region selection for broadcast."""
+    query = update.callback_query
+    await query.answer()
+    
+    keyboard = []
+    regions = list(REGION_TOPICS.keys())
+    
+    # Group regions by 2
+    for i in range(0, len(regions), 2):
+        row = [InlineKeyboardButton(regions[i], callback_data=f"broadcast_target|{regions[i]}")]
+        if i + 1 < len(regions):
+            row.append(InlineKeyboardButton(regions[i+1], callback_data=f"broadcast_target|{regions[i+1]}"))
+        keyboard.append(row)
+        
+    keyboard.append([InlineKeyboardButton("◀️ Назад", callback_data="admin_broadcast")])
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    await query.edit_message_text(
+        "🌍 <b>Выберите регион для рассылки:</b>",
+        parse_mode="HTML",
+        reply_markup=reply_markup
+    )
+
+async def prompt_broadcast_content(update: Update, context: CallbackContext, region: str = None):
+    """Ask for content."""
     query = update.callback_query
     await query.answer()
     
     context.user_data['admin_action'] = ACTION_BROADCAST
+    context.user_data['broadcast_region'] = region
+    
+    target_text = f"региону <b>{region}</b>" if region else "<b>всем пользователям</b>"
+    
     await query.message.reply_text(
-        "📢 <b>Рассылка</b>\n\n"
-        "Отправьте <b>текст</b> или <b>фотографию</b> (можно с подписью) для рассылки всем пользователям:",
+        f"📢 <b>Рассылка по {target_text}</b>\n\n"
+        "Отправьте <b>текст</b> или <b>фотографию</b> (можно с подписью) для отправки:",
         parse_mode="HTML",
         reply_markup=ForceReply(selective=True)
     )
@@ -170,6 +254,36 @@ async def handle_admin_reply(update: Update, context: CallbackContext):
             await safe_reply(update, f"✅ Администратор {target_id} удалён.")
         
         context.user_data.pop('admin_action', None)
+
+    elif action == ACTION_ARCHIVE_CUSTOM:
+        from modern_bot.utils.date_helper import DateFilter
+        from modern_bot.handlers.reports import send_period_archive
+        
+        start_date, end_date = DateFilter.parse_custom_range(text)
+        if not start_date:
+            await safe_reply(update, "❌ Неверный формат даты. Используйте ДД.ММ.ГГГГ - ДД.ММ.ГГГГ")
+            return
+            
+        await safe_reply(update, f"⏳ Формирую архив за {text}...")
+        await send_period_archive(update, context, start_date, end_date)
+        context.user_data.pop('admin_action', None)
+
+    elif action == ACTION_ANALYTICS_CUSTOM:
+        from modern_bot.utils.date_helper import DateFilter
+        from modern_bot.services.analytics import AnalyticsService
+        
+        start_date, end_date = DateFilter.parse_custom_range(text)
+        if not start_date:
+            await safe_reply(update, "❌ Неверный формат даты. Используйте ДД.ММ.ГГГГ - ДД.ММ.ГГГГ")
+            return
+            
+        await safe_reply(update, f"⏳ Считаю статистику за {text}...")
+        stats = await AnalyticsService.get_period_stats(start_date, end_date)
+        report = AnalyticsService.format_period_report(stats, start_date, end_date)
+        
+        keyboard = [[InlineKeyboardButton("◀️ Назад к аналитике", callback_data="admin_analytics")]]
+        await safe_reply(update, report, parse_mode="HTML", reply_markup=InlineKeyboardMarkup(keyboard))
+        context.user_data.pop('admin_action', None)
     
     elif action == ACTION_BROADCAST:
         if not text and not photo:
@@ -177,14 +291,46 @@ async def handle_admin_reply(update: Update, context: CallbackContext):
             return
             
         # Check limits
-        prefix = "📢 <b>Рассылка от администрации:</b>\n\n"
+        target_region = context.user_data.get('broadcast_region')
+        prefix = f"📢 <b>Рассылка ({target_region if target_region else 'Всем'}):</b>\n\n"
         max_len = 1024 if photo else 4096
         
         if len(text) + len(prefix) > max_len:
             await safe_reply(update, f"❌ Сообщение слишком длинное. Максимум {max_len - len(prefix)} символов.")
             return
         
-        users = await get_all_users()
+        # Get users
+        all_users = await get_all_users()
+        users_to_send = []
+        
+        if target_region:
+            # Filter by region
+            from modern_bot.database.db import get_db
+            db = get_db()
+            if db:
+                try:
+                    async with db.execute(
+                        "SELECT user_id FROM user_data WHERE region = ?", 
+                        (target_region,)
+                    ) as cursor:
+                        rows = await cursor.fetchall()
+                        target_ids = {row[0] for row in rows}
+                        users_to_send = [u for u in all_users if u['user_id'] in target_ids]
+                except Exception as e:
+                    logger.error(f"Error filtering users by region: {e}")
+                    await safe_reply(update, "❌ Ошибка при фильтрации пользователей.")
+                    return
+            else:
+                 await safe_reply(update, "❌ Ошибка БД.")
+                 return
+        else:
+            users_to_send = all_users
+            
+        if not users_to_send:
+            await safe_reply(update, f"❌ Нет пользователей для рассылки (Регион: {target_region or 'Все'}).")
+            context.user_data.pop('admin_action', None)
+            return
+
         success_count = 0
         fail_count = 0
 
@@ -224,9 +370,9 @@ async def handle_admin_reply(update: Update, context: CallbackContext):
             return False
 
         # Notify admin start
-        await safe_reply(update, f"🚀 Начинаю рассылку для {len(users)} пользователей...")
+        await safe_reply(update, f"🚀 Начинаю рассылку для {len(users_to_send)} пользователей...")
 
-        for user in users:
+        for user in users_to_send:
             if await send_with_backoff(user['user_id']):
                 success_count += 1
             else:
@@ -236,7 +382,9 @@ async def handle_admin_reply(update: Update, context: CallbackContext):
         await safe_reply(
             update,
             f"✅ Рассылка завершена!\n\n"
+            f"🎯 Цель: {target_region or 'Все'}\n"
             f"Успешно: {success_count}\n"
             f"Ошибок: {fail_count}"
         )
         context.user_data.pop('admin_action', None)
+        context.user_data.pop('broadcast_region', None)

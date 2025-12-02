@@ -132,3 +132,55 @@ class AnalyticsService:
             lines.append(f"<code>{key}</code> {bar} {value}")
         
         return "\n".join(lines)
+
+    @staticmethod
+    async def get_period_stats(start_date: datetime, end_date: datetime) -> Dict[str, Any]:
+        """Get statistics for a specific period."""
+        rows = await read_excel_data()
+        if not rows:
+            return {}
+            
+        total_count = 0
+        region_stats = Counter()
+        dept_stats = Counter()
+        
+        # Ensure end_date covers the whole day
+        end_date = end_date.replace(hour=23, minute=59, second=59)
+        
+        for row in rows:
+            if len(row) > 3 and row[3]:
+                dt = parse_date_str(row[3])
+                if dt and start_date <= dt <= end_date:
+                    total_count += 1
+                    if len(row) > 4 and row[4]:
+                        region_stats[row[4]] += 1
+                    if len(row) > 2 and row[2]:
+                        dept_stats[str(row[2])] += 1
+                        
+        return {
+            "total": total_count,
+            "regions": dict(region_stats),
+            "departments": dict(dept_stats)
+        }
+
+    @staticmethod
+    def format_period_report(stats: Dict[str, Any], start: datetime, end: datetime) -> str:
+        """Format period statistics report."""
+        if not stats or stats.get("total", 0) == 0:
+            return f"📊 <b>Отчет за период</b>\n{start.strftime('%d.%m.%Y')} - {end.strftime('%d.%m.%Y')}\n\nНет данных."
+            
+        lines = [
+            f"📊 <b>Отчет за период</b>",
+            f"📅 {start.strftime('%d.%m.%Y')} - {end.strftime('%d.%m.%Y')}",
+            f"\n<b>Всего заключений:</b> {stats['total']}\n",
+            "<b>По регионам:</b>"
+        ]
+        
+        for region, count in sorted(stats['regions'].items(), key=lambda x: x[1], reverse=True):
+            lines.append(f"• {region}: {count}")
+            
+        lines.append("\n<b>По подразделениям (топ 5):</b>")
+        for dept, count in sorted(stats['departments'].items(), key=lambda x: x[1], reverse=True)[:5]:
+            lines.append(f"• {dept}: {count}")
+            
+        return "\n".join(lines)
