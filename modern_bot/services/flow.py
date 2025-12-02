@@ -45,7 +45,7 @@ async def finalize_conclusion(bot: Bot, user_id: int, user_name: str, data: Dict
                 # Send to the specific topic if found, otherwise to the main group (general topic)
                 # Format: Заключение от п. 385, билет: 03850006392, от 22.11.2025
                 caption = (
-                    f"📄 Заключение от п. {data.get('department_number')}, "
+                    f"📄 Заключение №{data.get('issue_number')} от п. {data.get('department_number')}, "
                     f"билет: {data.get('ticket_number')}, "
                     f"от {data.get('date')}\n"
                     f"🌍 Регион: {region}"

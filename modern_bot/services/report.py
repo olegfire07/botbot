@@ -111,7 +111,7 @@ class ReportService:
             region = data.get('region')
             topic_id = REGION_TOPICS.get(region)
             caption = (
-                f"📄 Заключение от п. {data.get('department_number')}, "
+                f"📄 Заключение №{data.get('issue_number')} от п. {data.get('department_number')}, "
                 f"билет: {data.get('ticket_number')}, "
                 f"от {data.get('date')}\n"
                 f"🌍 Регион: {region}\n"
