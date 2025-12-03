@@ -1,5 +1,6 @@
 import logging
 import json
+import asyncio
 import httpx
 from pathlib import Path
 from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove, InputMediaPhoto
@@ -112,9 +113,12 @@ async def web_app_entry(update: Update, context: CallbackContext) -> int:
         max_photo_bytes = MAX_PHOTO_SIZE_MB * 1024 * 1024
         http_timeout = httpx.Timeout(10.0)
         http_limits = httpx.Limits(max_connections=4, max_keepalive_connections=2)
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        }
 
         logger.info(f"Processing {len(items)} items with photos from Web App")
-        async with httpx.AsyncClient(timeout=http_timeout, limits=http_limits) as client:
+        async with httpx.AsyncClient(timeout=http_timeout, limits=http_limits, headers=headers, follow_redirects=True) as client:
             for idx, item in enumerate(items, 1):
                 photo_url = item.get('photo_url')
                 description = item.get('description')
@@ -123,43 +127,61 @@ async def web_app_entry(update: Update, context: CallbackContext) -> int:
                 logger.info(f"Item {idx}/{len(items)}: photo_url={photo_url[:50] if photo_url else 'None'}..., description={description}, evaluation={evaluation}")
                 
                 if photo_url:
-                    try:
-                        logger.info(f"Downloading photo from {photo_url}")
-                        response = await client.get(photo_url)
-                        content_type = response.headers.get("Content-Type", "")
-                        content_length = response.headers.get("Content-Length")
+                    # Retry logic
+                    for attempt in range(3):
+                        try:
+                            logger.info(f"Downloading photo from {photo_url} (Attempt {attempt+1}/3)")
+                            response = await client.get(photo_url)
+                            
+                            if response.status_code != 200:
+                                logger.error(f"Failed to download photo from {photo_url}: {response.status_code}")
+                                if attempt < 2:
+                                    await asyncio.sleep(1)
+                                    continue
+                                break
 
-                        if response.status_code != 200:
-                            logger.error(f"Failed to download photo from {photo_url}: {response.status_code}")
-                            continue
-                        if not content_type.startswith("image/"):
-                            logger.error(f"Invalid content type for {photo_url}: {content_type}")
-                            continue
-                        if content_length and int(content_length) > max_photo_bytes:
-                            logger.error(f"Photo too large (header) {photo_url}: {content_length} bytes")
-                            continue
-                        if len(response.content) > max_photo_bytes:
-                            logger.error(f"Photo too large (body) {photo_url}: {len(response.content)} bytes")
-                            continue
+                            content_type = response.headers.get("Content-Type", "")
+                            content_length = response.headers.get("Content-Length")
 
-                        unique_name = generate_unique_filename()
-                        file_path = TEMP_PHOTOS_DIR / unique_name
+                            if not content_type.startswith("image/"):
+                                logger.error(f"Invalid content type for {photo_url}: {content_type}")
+                                break
+                            
+                            if content_length and int(content_length) > max_photo_bytes:
+                                logger.error(f"Photo too large (header) {photo_url}: {content_length} bytes")
+                                break
+                                
+                            if len(response.content) > max_photo_bytes:
+                                logger.error(f"Photo too large (body) {photo_url}: {len(response.content)} bytes")
+                                break
 
-                        logger.info(f"Saving photo to {file_path}")
-                        with open(file_path, 'wb') as f:
-                            f.write(response.content)
-                        
-                        logger.info(f"Photo saved successfully, size: {file_path.stat().st_size} bytes")
-                        
-                        photo_entry = {
-                            'photo': str(file_path),
-                            'description': description,
-                            'evaluation': evaluation
-                        }
-                        db_data['photo_desc'].append(photo_entry)
-                        logger.info(f"Added photo entry to db_data: {photo_entry}")
-                    except Exception as e:
-                        logger.error(f"Error downloading photo: {e}", exc_info=True)
+                            unique_name = generate_unique_filename()
+                            file_path = TEMP_PHOTOS_DIR / unique_name
+
+                            # Asynchronous file write
+                            await asyncio.to_thread(file_path.write_bytes, response.content)
+                            
+                            logger.info(f"Photo saved successfully, size: {file_path.stat().st_size} bytes")
+                            
+                            photo_entry = {
+                                'photo': str(file_path),
+                                'description': description,
+                                'evaluation': evaluation
+                            }
+                            db_data['photo_desc'].append(photo_entry)
+                            logger.info(f"Added photo entry to db_data: {photo_entry}")
+                            break # Success, exit retry loop
+                            
+                        except httpx.TimeoutException as e:
+                            logger.error(f"Timeout downloading photo (Attempt {attempt+1}/3): {e}")
+                            if attempt < 2:
+                                await asyncio.sleep(2)
+                                continue
+                        except Exception as e:
+                            logger.error(f"Error downloading photo (Attempt {attempt+1}/3): {e}", exc_info=True)
+                            if attempt < 2:
+                                await asyncio.sleep(1)
+                                continue
                 else:
                     logger.warning(f"No photo URL for item {idx}")
         

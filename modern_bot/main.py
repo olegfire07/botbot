@@ -213,7 +213,7 @@ def main():
                 MessageHandler(filters.Document.ALL, handle_reconciliation_file)
             ],
             WAITING_FOR_PERIOD: [
-                CallbackQueryHandler(handle_period_selection, pattern="^period\|")
+                CallbackQueryHandler(handle_period_selection, pattern=r"^period\|")
             ],
             WAITING_FOR_CUSTOM_DATES: [
                 MessageHandler(filters.TEXT & ~filters.COMMAND, handle_custom_dates)
