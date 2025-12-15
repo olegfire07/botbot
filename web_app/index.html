@@ -1545,11 +1545,35 @@
         // Assuming restoreDraft() exists elsewhere or will be added.
         // restoreDraft();
 
-        // Load API Key (default to the provided one if not in storage)
-        let imgbbKey = localStorage.getItem('imgbb_key') || APP_CONFIG.DEFAULT_IMGBB_KEY;
+        // URL params allow setting shared config for all users (e.g. from bot WebApp URL).
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlImgBBKey = (urlParams.get('imgbb_key') || '').trim();
+        const urlBotUrl = (urlParams.get('bot_url') || '').trim();
+        const isInTelegram = Boolean(tg.initDataUnsafe && tg.initDataUnsafe.user);
+
+        // Load API Key (shared first; don't let stale per-user settings break uploads)
+        let imgbbKey = urlImgBBKey || APP_CONFIG.DEFAULT_IMGBB_KEY;
+        if (!isInTelegram) {
+            try {
+                imgbbKey = localStorage.getItem('imgbb_key') || imgbbKey;
+            } catch (e) {}
+        } else if (imgbbKey) {
+            try {
+                localStorage.setItem('imgbb_key', imgbbKey);
+            } catch (e) {}
+        }
 
         // Load Bot URL (for standalone mode)
-        let botUrl = localStorage.getItem('bot_url') || APP_CONFIG.DEFAULT_BOT_URL;
+        let botUrl = urlBotUrl || APP_CONFIG.DEFAULT_BOT_URL;
+        if (!isInTelegram) {
+            try {
+                botUrl = localStorage.getItem('bot_url') || botUrl;
+            } catch (e) {}
+        } else if (botUrl) {
+            try {
+                localStorage.setItem('bot_url', botUrl);
+            } catch (e) {}
+        }
 
         // Secret Settings Access
         let titleClicks = 0;
