@@ -572,8 +572,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <script>
   // ─── Tab navigation ───
-  const tabButtons = document.querySelectorAll('[data-admin-tab]');
-  const tabPanels = document.querySelectorAll('[data-admin-panel]');
+  var tabButtons = document.querySelectorAll('[data-admin-tab]');
+  var tabPanels = document.querySelectorAll('[data-admin-panel]');
 
   function activateAdminTab(name) {
     tabButtons.forEach(b => b.classList.toggle('is-active', b.dataset.adminTab === name));
@@ -581,15 +581,15 @@
     if (location.hash.replace('#', '') !== name) history.replaceState(null, '', `#${name}`);
   }
   tabButtons.forEach(b => b.addEventListener('click', () => activateAdminTab(b.dataset.adminTab)));
-  const initialTab = location.hash.replace('#', '');
+  var initialTab = location.hash.replace('#', '');
   if (initialTab && document.querySelector(`[data-admin-tab="${initialTab}"]`)) activateAdminTab(initialTab);
 
   // ─── Filter search ───
   document.querySelectorAll('[data-filter-target]').forEach(input => {
-    const target = document.getElementById(input.dataset.filterTarget);
+    var target = document.getElementById(input.dataset.filterTarget);
     if (!target) return;
     input.addEventListener('input', () => {
-      const q = input.value.trim().toLowerCase();
+      var q = input.value.trim().toLowerCase();
       target.querySelectorAll('[data-filter-row]').forEach(row => {
         row.hidden = q && !row.dataset.search.toLowerCase().includes(q);
       });
@@ -597,23 +597,23 @@
   });
 
   // ─── Date presets ───
-  function setPreset(days) {
-    const df = document.getElementById('date_from');
-    const dt = document.getElementById('date_to');
+  window.setPreset = function(days) {
+    var df = document.getElementById('date_from');
+    var dt = document.getElementById('date_to');
     if (days === 0) { df.value = ''; dt.value = ''; return; }
-    const now = new Date();
+    var now = new Date();
     dt.value = now.toISOString().slice(0, 10);
-    const from = new Date(now);
+    var from = new Date(now);
     from.setDate(from.getDate() - days);
     df.value = from.toISOString().slice(0, 10);
   }
 
   // ─── Excel download ───
-  function downloadXlsx(type) {
-    const df = document.getElementById('date_from').value;
-    const dt = document.getElementById('date_to').value;
-    let url = `/admin/export/${type}.xlsx`;
-    const params = [];
+  window.downloadXlsx = function(type) {
+    var df = document.getElementById('date_from').value;
+    var dt = document.getElementById('date_to').value;
+    var url = `/admin/export/${type}.xlsx`;
+    var params = [];
     if (df) params.push(`date_from=${df}`);
     if (dt) params.push(`date_to=${dt}`);
     if (params.length) url += '?' + params.join('&');
@@ -621,52 +621,60 @@
   }
 
   // ─── Charts ───
-  const chartLabels = {{ chart_labels | tojson }};
-  const chartRequests = {{ chart_requests | tojson }};
-  const chartDeliveries = {{ chart_deliveries | tojson }};
+  var chartLabels = {{ chart_labels | tojson }};
+  var chartRequests = {{ chart_requests | tojson }};
+  var chartDeliveries = {{ chart_deliveries | tojson }};
 
-  const activityCtx = document.getElementById('activityChart').getContext('2d');
-  new Chart(activityCtx, {
-    type: 'line',
-    data: {
-      labels: chartLabels,
-      datasets: [
-        {
-          label: 'Заявки',
-          data: chartRequests,
-          borderColor: '#6366f1',
-          backgroundColor: 'rgba(99,102,241,.08)',
-          fill: true,
-          tension: .35,
-          pointRadius: 2,
-          pointHoverRadius: 5,
-        },
-        {
-          label: 'Визиты',
-          data: chartDeliveries,
-          borderColor: '#22c55e',
-          backgroundColor: 'rgba(34,197,94,.08)',
-          fill: true,
-          tension: .35,
-          pointRadius: 2,
-          pointHoverRadius: 5,
+  // Only init chart if canvas exists to avoid errors on HTMX swap
+  var activityCanvas = document.getElementById('activityChart');
+  if (activityCanvas) {
+    var activityCtx = activityCanvas.getContext('2d');
+    if (window.activityChartInstance) window.activityChartInstance.destroy();
+    window.activityChartInstance = new Chart(activityCtx, {
+      type: 'line',
+      data: {
+        labels: chartLabels,
+        datasets: [
+          {
+            label: 'Заявки',
+            data: chartRequests,
+            borderColor: '#6366f1',
+            backgroundColor: 'rgba(99,102,241,.08)',
+            fill: true,
+            tension: .35,
+            pointRadius: 2,
+            pointHoverRadius: 5,
+          },
+          {
+            label: 'Визиты',
+            data: chartDeliveries,
+            borderColor: '#22c55e',
+            backgroundColor: 'rgba(34,197,94,.08)',
+            fill: true,
+            tension: .35,
+            pointRadius: 2,
+            pointHoverRadius: 5,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { intersect: false, mode: 'index' },
+        plugins: { legend: { position: 'top', labels: { font: { family: 'Inter', weight: 600 }, usePointStyle: true } } },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 11 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 10 } },
+          y: { beginAtZero: true, grid: { color: 'rgba(100,116,139,.08)' }, ticks: { font: { size: 11 }, stepSize: 1 } }
         }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { intersect: false, mode: 'index' },
-      plugins: { legend: { position: 'top', labels: { font: { family: 'Inter', weight: 600 }, usePointStyle: true } } },
-      scales: {
-        x: { grid: { display: false }, ticks: { font: { size: 11 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 10 } },
-        y: { beginAtZero: true, grid: { color: 'rgba(100,116,139,.08)' }, ticks: { font: { size: 11 }, stepSize: 1 } }
       }
-    }
-  });
+    });
+  }
 
-  const ratioCtx = document.getElementById('ratioChart').getContext('2d');
-  new Chart(ratioCtx, {
+  var ratioCanvas = document.getElementById('ratioChart');
+  if (ratioCanvas) {
+    var ratioCtx = ratioCanvas.getContext('2d');
+    if (window.ratioChartInstance) window.ratioChartInstance.destroy();
+    window.ratioChartInstance = new Chart(ratioCtx, {
     type: 'doughnut',
     data: {
       labels: ['Запрошено', 'Доставлено', 'Остаток'],
@@ -689,6 +697,8 @@
         legend: { position: 'bottom', labels: { font: { family: 'Inter', weight: 600, size: 12 }, padding: 12, usePointStyle: true } }
       }
     }
+    }
   });
+  }
 </script>
 {% endblock %}
