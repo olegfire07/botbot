@@ -10,6 +10,8 @@ from app.database import Base, PROJECT_ROOT, SessionLocal, apply_lightweight_mig
 from app.models import DemandStatus, DeliveryResultStatus, DeliverySessionStatus, RequestStatus
 from app.routers import admin, appraiser, driver, home
 from app.seed import seed_data
+from app.services.websocket_service import manager
+from fastapi import WebSocket, WebSocketDisconnect
 
 
 def _session_secret() -> str:
@@ -84,6 +86,37 @@ for templates in (home.templates, appraiser.templates, driver.templates, admin.t
 @app.exception_handler(AuthRedirect)
 def auth_redirect_handler(request, exc: AuthRedirect):
     return RedirectResponse(exc.url, status_code=303)
+
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    session = websocket.session
+    if not session or not session.get("user_id"):
+        await websocket.close(code=1008)
+        return
+        
+    db = SessionLocal()
+    try:
+        from app.models import User
+        user_id = int(session["user_id"])
+        user = db.get(User, user_id)
+        if not user or not user.is_active or user.is_deleted:
+            await websocket.close(code=1008)
+            return
+        role = user.role.value
+    except Exception:
+        db.close()
+        await websocket.close(code=1008)
+        return
+    finally:
+        db.close()
+
+    await manager.connect(websocket, role)
+    try:
+        while True:
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        manager.disconnect(websocket, role)
 
 
 @app.on_event("startup")

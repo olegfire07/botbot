@@ -13,6 +13,8 @@ from app.models import Branch, Item, Request as GoodsRequest, RequestLine, User,
 from app.schemas import RequestLineInput
 from app.services.demand_service import get_active_demand_lines
 from app.services.request_service import RequestValidationError, create_request
+from app.services.websocket_service import manager
+import asyncio
 
 
 router = APIRouter(prefix="/appraiser", tags=["appraiser"])
@@ -252,6 +254,12 @@ async def submit_request(
 
     try:
         create_request(db, user_id, branch_id, comment, lines)
+        branch = db.get(Branch, branch_id)
+        if branch:
+            asyncio.create_task(manager.broadcast_to_roles(
+                ["driver", "admin"], 
+                {"type": "new_request", "branch_id": branch.id, "message": f"Новая заявка: {branch.name}"}
+            ))
     except RequestValidationError as exc:
         return RedirectResponse(
             f"/appraiser/requests/new?user_id={user_id}&branch_id={branch_id}&error={quote(str(exc))}",

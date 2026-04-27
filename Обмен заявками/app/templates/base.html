@@ -46,6 +46,9 @@
   </nav>
 
   <main class="container py-4 app-main">
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055" id="toast-container"></div>
+
     {% if message %}
       <div class="alert alert-success alert-dismissible fade show" role="alert">
         ✅ {{ message }}
@@ -94,6 +97,53 @@
         if (button !== submitter) button.disabled = true;
       });
     });
+
+    // WebSocket Notifications
+    function connectWebSocket() {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
+      
+      ws.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        if (data.type === 'new_request') {
+          showToast('🔔 Новая заявка', data.message, 'success');
+          // If HTMX is present, we could optionally trigger a reload of a specific div
+          // document.body.dispatchEvent(new Event('refresh-dashboard'));
+        }
+      };
+
+      ws.onclose = function() {
+        setTimeout(connectWebSocket, 5000); // Reconnect after 5 seconds
+      };
+    }
+
+    function showToast(title, message, type='primary') {
+      const container = document.getElementById('toast-container');
+      const toastEl = document.createElement('div');
+      toastEl.className = `toast align-items-center text-bg-${type} border-0`;
+      toastEl.setAttribute('role', 'alert');
+      toastEl.setAttribute('aria-live', 'assertive');
+      toastEl.setAttribute('aria-atomic', 'true');
+      toastEl.innerHTML = `
+        <div class="d-flex">
+          <div class="toast-body">
+            <strong>${title}</strong><br>${message}
+            <div class="mt-2 pt-2 border-top border-light">
+              <a href="/" class="btn btn-sm btn-light p-1 px-2">Обновить страницу</a>
+            </div>
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Закрыть"></button>
+        </div>
+      `;
+      container.appendChild(toastEl);
+      const toast = new bootstrap.Toast(toastEl, { delay: 10000 });
+      toast.show();
+      toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+    }
+
+    {% if current_user is defined and current_user %}
+      connectWebSocket();
+    {% endif %}
   </script>
   {% block scripts %}{% endblock %}
 </body>
