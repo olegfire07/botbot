@@ -36,6 +36,7 @@ from app.services.excel_service import (
     build_requests_xlsx,
     build_summary_xlsx,
 )
+from starlette.concurrency import run_in_threadpool
 
 
 router = APIRouter(
@@ -1112,9 +1113,9 @@ async def update_request(
 
     goods_request.comment = str(form.get("comment") or "").strip() or None
     goods_request.status = RequestStatus.processed
-    _recalculate_all_demand(db)
-    _audit(db, current_user, "update", "request", request_id, "Заявка обновлена")
-    db.commit()
+    await run_in_threadpool(_recalculate_all_demand, db)
+    await run_in_threadpool(_audit, db, current_user, "update", "request", request_id, "Заявка обновлена")
+    await run_in_threadpool(db.commit)
     return RedirectResponse(
         f"/admin?message={quote('Заявка обновлена')}#history", status_code=303
     )
@@ -1206,9 +1207,9 @@ async def update_delivery_session(
             f"/admin?error={quote(str(exc))}#history", status_code=303
         )
 
-    _recalculate_all_demand(db)
-    _audit(db, current_user, "update", "delivery_session", session_id, "Визит обновлён")
-    db.commit()
+    await run_in_threadpool(_recalculate_all_demand, db)
+    await run_in_threadpool(_audit, db, current_user, "update", "delivery_session", session_id, "Визит обновлён")
+    await run_in_threadpool(db.commit)
     return RedirectResponse(
         f"/admin?message={quote('Визит обновлён')}#history", status_code=303
     )

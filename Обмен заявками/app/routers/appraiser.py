@@ -15,6 +15,7 @@ from app.services.demand_service import get_active_demand_lines
 from app.services.request_service import RequestValidationError, create_request
 from app.services.websocket_service import manager
 import asyncio
+from starlette.concurrency import run_in_threadpool
 
 
 router = APIRouter(prefix="/appraiser", tags=["appraiser"])
@@ -253,8 +254,8 @@ async def submit_request(
         )
 
     try:
-        create_request(db, user_id, branch_id, comment, lines)
-        branch = db.get(Branch, branch_id)
+        await run_in_threadpool(create_request, db, user_id, branch_id, comment, lines)
+        branch = await run_in_threadpool(db.get, Branch, branch_id)
         if branch:
             asyncio.create_task(manager.broadcast_to_roles(
                 ["driver", "admin"], 

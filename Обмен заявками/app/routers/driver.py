@@ -27,6 +27,7 @@ from app.services.delivery_service import (
     save_delivery_result,
 )
 from app.services.demand_service import get_active_demand_lines
+from starlette.concurrency import run_in_threadpool
 
 
 router = APIRouter(prefix="/driver", tags=["driver"])
@@ -269,7 +270,7 @@ async def save_visit_result(
                 status_code=303,
             )
     try:
-        save_delivery_result(db, session_id, lines)
+        await run_in_threadpool(save_delivery_result, db, session_id, lines)
     except DeliveryValidationError as exc:
         return RedirectResponse(
             f"/driver/branch/{branch_id}?driver_id={driver_id}&session_id={session_id}&error={quote(str(exc))}",
