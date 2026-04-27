@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+*.pyc
+sklad_requests.db
+sklad_requests_backup_*.db
+.DS_Store

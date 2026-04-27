@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}Создать заявку{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-start mb-4">
+  <div>
+    <h1 class="h3 mb-1">📝 Новая заявка</h1>
+    <p class="text-muted mb-0">{{ appraiser.full_name }}</p>
+  </div>
+  <a class="btn btn-outline-secondary" href="/appraiser{% if is_admin %}?user_id={{ appraiser.id }}&branch_id={{ selected_branch_id }}&branch_q={{ branch_q }}{% endif %}">← Назад</a>
+</div>
+
+{% if is_admin %}
+  <div class="toolbar mb-3">
+    <div class="row g-3">
+      <div class="col-lg-6">
+        <label class="form-label" for="branch_search">🔍 Поиск подразделения</label>
+        <form id="branch-filter-form" method="get" action="/appraiser/requests/new" class="input-group">
+          <input type="hidden" name="user_id" value="{{ appraiser.id }}">
+          <input type="hidden" name="search_mode" value="search">
+          <input class="form-control" id="branch_search" name="branch_q" value="{{ branch_q }}" placeholder="номер, улица, район…">
+          <button class="btn btn-outline-primary" type="submit">Найти</button>
+        </form>
+      </div>
+    </div>
+    {% if branch_q %}
+      <div class="toolbar-actions">
+        <a class="btn btn-outline-secondary" href="/appraiser/requests/new?user_id={{ appraiser.id }}&branch_id={{ selected_branch_id }}">Сбросить</a>
+      </div>
+      <div class="search-hint">
+        {% if branch_results_count %}
+          Найдено: <strong>{{ branch_results_count }}</strong>. Выбрано: <strong>{{ branches[0].name if branches else "не выбрано" }}</strong>.
+        {% else %}
+          По запросу «{{ branch_q }}» ничего не найдено.
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+{% endif %}
+
+<form method="post" action="/appraiser/requests" class="request-form">
+  <input type="hidden" name="user_id" value="{{ appraiser.id }}">
+  <input type="hidden" name="form_token" value="{{ form_token }}">
+  <div class="mb-3">
+    <label class="form-label" for="branch_id">📍 Подразделение</label>
+    <select class="form-select" id="branch_id" name="branch_id" required {% if not branches %}disabled{% endif %}>
+      {% for branch in branches %}
+        <option value="{{ branch.id }}" {% if branch.id == selected_branch_id %}selected{% endif %}>
+          {{ branch.name }}{% if branch.address %} — {{ branch.address }}{% endif %}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="comment">💬 Общий комментарий</label>
+    <textarea class="form-control" id="comment" name="comment" rows="2" placeholder="Необязательно"></textarea>
+  </div>
+
+  <div class="section-heading">
+    <h2 class="h5 mb-0">📦 Строки заявки</h2>
+    <button class="btn btn-outline-primary btn-sm" type="button" onclick="addLine()">＋ Добавить</button>
+  </div>
+
+  <div id="lines" class="vstack gap-3">
+    <div class="request-line">
+      <div>
+        <label class="form-label">Позиция</label>
+        <select class="form-select item-select" name="item_id" required onchange="syncSelectedItem(this)" oninput="syncSelectedItem(this)">
+          <option value="">Выберите позицию</option>
+          {% for item in items %}
+            <option value="{{ item.id }}">{{ item.name }} ({{ item.unit }})</option>
+          {% endfor %}
+        </select>
+        <div class="selected-item-preview text-muted small mt-1">Позиция не выбрана</div>
+      </div>
+      <div>
+        <label class="form-label">Кол-во</label>
+        <input class="form-control" name="qty_requested" type="number" min="0.001" step="0.001" inputmode="decimal" required>
+      </div>
+      <div>
+        <label class="form-label">Комментарий</label>
+        <input class="form-control" name="line_comment" type="text" placeholder="Необязательно">
+      </div>
+      <div style="align-self:end">
+        <button class="btn btn-outline-danger" type="button" onclick="removeLine(this)">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <button class="btn btn-primary btn-lg" type="submit" data-submitting-text="Отправляем заявку..." {% if not branches %}disabled{% endif %}>💾 Сохранить заявку</button>
+  </div>
+</form>
+{% endblock %}
+{% block scripts %}
+<script>
+  function addLine() {
+    const lines = document.getElementById('lines');
+    const clone = lines.querySelector('.request-line').cloneNode(true);
+    clone.querySelectorAll('input').forEach(i => i.value = '');
+    const select = clone.querySelector('select');
+    select.value = '';
+    syncSelectedItem(select);
+    lines.appendChild(clone);
+    clone.style.opacity = '0';
+    clone.style.transform = 'translateY(8px)';
+    requestAnimationFrame(() => {
+      clone.style.transition = 'opacity .25s ease, transform .25s ease';
+      clone.style.opacity = '1';
+      clone.style.transform = 'translateY(0)';
+    });
+  }
+  function removeLine(button) {
+    const lines = document.getElementById('lines');
+    if (lines.children.length > 1) {
+      const line = button.closest('.request-line');
+      line.style.transition = 'opacity .2s ease, transform .2s ease';
+      line.style.opacity = '0';
+      line.style.transform = 'translateY(-8px)';
+      setTimeout(() => line.remove(), 200);
+    }
+  }
+  function syncSelectedItem(select) {
+    const preview = select.closest('.request-line').querySelector('.selected-item-preview');
+    const selected = select.options[select.selectedIndex];
+    preview.textContent = selected && selected.value ? selected.textContent.trim() : 'Позиция не выбрана';
+    preview.classList.toggle('text-muted', !selected || !selected.value);
+    preview.classList.toggle('text-primary', Boolean(selected && selected.value));
+  }
+  document.querySelectorAll('.item-select').forEach(syncSelectedItem);
+</script>
+{% endblock %}

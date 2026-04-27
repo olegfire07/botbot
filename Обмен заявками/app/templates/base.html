@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Фианит Снаб{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="{{ url_for('static', path='/bootstrap.min.css') }}?v=20260424-1" rel="stylesheet">
+  <link href="{{ url_for('static', path='/styles.css') }}?v=20260425-fix-overlap3" rel="stylesheet">
+</head>
+<body hx-boost="true" hx-indicator="#loading-indicator">
+  <div id="loading-indicator" class="htmx-indicator"></div>
+  <nav class="navbar navbar-expand-lg app-navbar sticky-top">
+    <div class="container">
+      <a class="navbar-brand brand-lockup" href="/">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>Фианит Снаб</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div id="nav" class="collapse navbar-collapse">
+        <div class="navbar-nav ms-auto">
+          {% if current_user is defined and current_user %}
+            {% if current_user.role.value in ["appraiser", "admin"] %}
+              <a class="nav-link" href="/appraiser">📋 Товаровед</a>
+            {% endif %}
+            {% if current_user.role.value in ["driver", "admin"] %}
+              <a class="nav-link" href="/driver">🚛 Водитель</a>
+            {% endif %}
+            {% if current_user.role.value == "admin" %}
+              <a class="nav-link" href="/admin">⚙️ Администратор</a>
+            {% endif %}
+            <a class="nav-link text-muted" href="/password">{{ current_user.full_name }}</a>
+            <form method="post" action="/logout" class="d-flex">
+              <button class="btn btn-sm btn-outline-secondary" type="submit">Выйти</button>
+            </form>
+          {% else %}
+            <a class="nav-link" href="/login">Войти</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4 app-main">
+    {% if message %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        ✅ {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+      </div>
+    {% endif %}
+    {% if error %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        ⚠️ {{ error }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+      </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="{{ url_for('static', path='/bootstrap.bundle.min.js') }}?v=20260424-1"></script>
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  <script>
+    const csrfToken = {{ csrf_token(request) | tojson }};
+    document.addEventListener('submit', (event) => {
+      const form = event.target;
+      if (!(form instanceof HTMLFormElement) || form.dataset.noSubmitLock === 'true') return;
+      if ((form.method || '').toLowerCase() === 'post' && csrfToken && !form.querySelector('input[name="csrf_token"]')) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'csrf_token';
+        input.value = csrfToken;
+        form.appendChild(input);
+      }
+      if (form.dataset.submitted === 'true') {
+        event.preventDefault();
+        return;
+      }
+      form.dataset.submitted = 'true';
+      const submitter = event.submitter || form.querySelector('button[type="submit"], input[type="submit"]');
+      if (submitter && !submitter.disabled) {
+        submitter.dataset.originalText = submitter.textContent || submitter.value || '';
+        if (submitter.tagName === 'BUTTON') {
+          submitter.textContent = submitter.dataset.submittingText || 'Сохраняем...';
+        } else {
+          submitter.value = submitter.dataset.submittingText || 'Сохраняем...';
+        }
+        submitter.disabled = true;
+      }
+      form.querySelectorAll('button[type="submit"]').forEach((button) => {
+        if (button !== submitter) button.disabled = true;
+      });
+    });
+  </script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

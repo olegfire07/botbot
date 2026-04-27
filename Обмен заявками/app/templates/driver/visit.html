@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}Визит — {{ branch.name }}{% endblock %}
+{% block content %}
+<div class="d-flex flex-column flex-lg-row justify-content-between gap-2 mb-3">
+  <div>
+    <h1 class="h4 mb-1">🏢 {{ branch.name }}</h1>
+    <p class="text-muted mb-0" style="font-size:.84rem">Водитель: {{ driver.full_name }}</p>
+  </div>
+  <a class="btn btn-outline-secondary btn-sm align-self-start" href="/driver{% if is_admin %}?driver_id={{ driver.id }}{% endif %}">← Назад к списку</a>
+</div>
+
+<!-- Статус визита -->
+{% if not session %}
+  <div class="section-block mb-3" style="text-align:center; padding:1.5rem">
+    <p class="mb-2" style="font-size:.92rem; color:var(--ink2)">Визит ещё не начат. Откройте визит чтобы отмечать доставку.</p>
+    <form method="post" action="/driver/branch/{{ branch.id }}/open">
+      <input type="hidden" name="driver_id" value="{{ driver.id }}">
+      <button class="btn btn-primary btn-lg" type="submit" data-submitting-text="Открываем визит...">🚀 Начать визит</button>
+    </form>
+  </div>
+{% else %}
+  <div class="visit-status mb-3">
+    <div class="d-flex align-items-center gap-2">
+      {% if session.status.value == 'open' %}
+        <span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block"></span>
+      {% else %}
+        <span style="width:8px;height:8px;border-radius:50%;background:#94a3b8;display:inline-block"></span>
+      {% endif %}
+      <strong style="font-size:.9rem">Визит №{{ session.id }}</strong>
+      <span class="text-muted" style="font-size:.84rem">от {{ session.started_at|dt }}</span>
+    </div>
+    <span class="badge {% if session.status.value == 'open' %}text-bg-success{% else %}text-bg-secondary{% endif %}">
+      {{ session.status|status_label }}
+    </span>
+  </div>
+{% endif %}
+
+<!-- Позиции доставки -->
+{% if active_demand %}
+  <form method="post" action="/driver/sessions/{{ session.id if session else 0 }}/save">
+    <input type="hidden" name="driver_id" value="{{ driver.id }}">
+    <input type="hidden" name="branch_id" value="{{ branch.id }}">
+    {% if form_token %}
+      <input type="hidden" name="form_token" value="{{ form_token }}">
+    {% endif %}
+
+    <div class="vstack gap-2">
+      {% for line in active_demand %}
+        {% set saved_line = saved_delivery_by_demand.get(line.id) %}
+        <div class="delivery-line">
+          {% if not saved_line %}
+            <input type="hidden" name="demand_line_id" value="{{ line.id }}">
+          {% endif %}
+          <div>
+            <div class="d-flex align-items-baseline gap-2">
+              <h2 class="h6 mb-0" style="font-size:.92rem">{{ line.item.name }}</h2>
+              <span class="text-muted" style="font-size:.78rem">{{ line.item.unit }}</span>
+            </div>
+            <div class="delivery-metrics mt-2">
+              <span>Запр: <strong>{{ line.qty_total_requested|qty }}</strong></span>
+              <span>Дост: <strong>{{ line.qty_total_delivered|qty }}</strong></span>
+              <span>Ост: <strong class="text-danger">{{ line.qty_remaining|qty }}</strong></span>
+            </div>
+          </div>
+          <div>
+            {% if saved_line %}
+              <div class="saved-delivery">
+                ✅ Сохранено: <strong>{{ saved_line.qty_delivered_now|qty }}</strong> {{ line.item.unit }}
+              </div>
+            {% else %}
+              <label class="form-label" for="qty_{{ line.id }}">Доставлено сейчас</label>
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  id="qty_{{ line.id }}"
+                  name="qty_delivered_now"
+                  type="number"
+                  min="0"
+                  max="{{ line.qty_remaining|qty }}"
+                  step="0.001"
+                  inputmode="decimal"
+                  placeholder="0"
+                  {% if not session or session.status.value == 'closed' %}disabled{% endif %}
+                >
+                <button class="btn btn-outline-success btn-sm" type="button" onclick="setQty('qty_{{ line.id }}', '{{ line.qty_remaining|qty }}')" {% if not session or session.status.value == 'closed' %}disabled{% endif %}>всё</button>
+                <button class="btn btn-outline-secondary btn-sm" type="button" onclick="setQty('qty_{{ line.id }}', '0')" {% if not session or session.status.value == 'closed' %}disabled{% endif %}>0</button>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Кнопки действий -->
+    {% if session and session.status.value == 'open' %}
+      <div class="driver-actions d-flex gap-2 flex-wrap">
+        <button class="btn btn-primary btn-lg" type="submit" data-submitting-text="Сохраняем доставку...">
+          💾 Сохранить доставку
+        </button>
+      </div>
+    {% endif %}
+  </form>
+{% else %}
+  <div class="empty-state">Активной потребности по этому подразделению нет</div>
+{% endif %}
+
+<!-- Закрытие визита — отдельный блок -->
+{% if session and session.status.value == 'open' %}
+  <div class="section-block mt-3" style="border-color:rgba(239,68,68,.2); background:rgba(239,68,68,.03)">
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2">
+      <div>
+        <h3 class="h6 mb-1" style="color:var(--red)">🔒 Завершить визит</h3>
+        <p class="text-muted mb-0" style="font-size:.82rem">После закрытия нельзя добавлять доставку в этот визит</p>
+      </div>
+      <form method="post" action="/driver/sessions/{{ session.id }}/close">
+        <input type="hidden" name="driver_id" value="{{ driver.id }}">
+        <input type="hidden" name="branch_id" value="{{ branch.id }}">
+        <button class="btn btn-danger" type="submit" data-submitting-text="Закрываем визит..." onclick="return confirm('Закрыть визит? Добавить доставку будет нельзя.')">
+          🔒 Закрыть визит
+        </button>
+      </form>
+    </div>
+  </div>
+{% elif session and session.status.value == 'closed' %}
+  <div class="section-block mt-3" style="background:rgba(100,116,139,.04)">
+    <div class="d-flex align-items-center gap-2">
+      <span style="font-size:1.1rem">✅</span>
+      <span style="font-size:.88rem; color:var(--ink2)"><strong>Визит завершён.</strong> Результаты сохранены.</span>
+    </div>
+  </div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function setQty(id, value) {
+    document.getElementById(id).value = value;
+  }
+</script>
+{% endblock %}

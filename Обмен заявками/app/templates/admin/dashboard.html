@@ -1,0 +1,694 @@
+{% extends "base.html" %}
+{% block title %}Администратор{% endblock %}
+{% block content %}
+<div class="admin-hero">
+  <div>
+    <p class="eyebrow mb-1">Панель управления</p>
+    <h1 class="h3 mb-1">⚙️ Администратор</h1>
+    <p class="text-muted mb-0">Аналитика, выгрузки по датам, справочники и история.</p>
+  </div>
+</div>
+
+<!-- ═══ Date range filter + Export ═══ -->
+<div class="section-block mb-4">
+  <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-end">
+    <div>
+      <h2 class="h6 mb-2">📅 Период выгрузки</h2>
+      <div class="d-flex flex-wrap gap-2 align-items-end">
+        <div>
+          <label class="form-label" for="date_from">С даты</label>
+          <input class="form-control" type="date" id="date_from">
+        </div>
+        <div>
+          <label class="form-label" for="date_to">По дату</label>
+          <input class="form-control" type="date" id="date_to">
+        </div>
+        <div class="d-flex gap-1 flex-wrap">
+          <button class="btn btn-outline-secondary btn-sm" onclick="setPreset(7)">7 дней</button>
+          <button class="btn btn-outline-secondary btn-sm" onclick="setPreset(30)">30 дней</button>
+          <button class="btn btn-outline-secondary btn-sm" onclick="setPreset(90)">90 дней</button>
+          <button class="btn btn-outline-secondary btn-sm" onclick="setPreset(0)">Всё время</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <p class="form-label">Скачать Excel</p>
+      <div class="export-actions">
+        <button class="btn btn-outline-primary btn-sm" onclick="downloadXlsx('requests')">📋 Заявки</button>
+        <button class="btn btn-outline-primary btn-sm" onclick="downloadXlsx('deliveries')">🚛 Доставки</button>
+        <button class="btn btn-outline-primary btn-sm" onclick="downloadXlsx('active-demand')">📦 Потребность</button>
+        <button class="btn btn-outline-primary btn-sm" onclick="downloadXlsx('summary')">📊 Сводка</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Metrics ═══ -->
+<section class="analytics-grid admin-summary">
+  <div class="metric-card">
+    <span>Филиалов с потребностью</span>
+    <strong>{{ analytics.active_branches }}</strong>
+  </div>
+  <div class="metric-card">
+    <span>Активных позиций</span>
+    <strong>{{ analytics.active_positions }}</strong>
+  </div>
+  <div class="metric-card">
+    <span>Остаток к доставке</span>
+    <strong>{{ analytics.active_qty|qty }}</strong>
+  </div>
+  <div class="metric-card metric-money">
+    <span>Оценка потребности</span>
+    <strong>{{ analytics.active_cost|money }} ₽</strong>
+  </div>
+  <div class="metric-card">
+    <span>Запрошено всего</span>
+    <strong>{{ analytics.requested_qty|qty }}</strong>
+    <small>{{ analytics.requested_cost|money }} ₽</small>
+  </div>
+  <div class="metric-card">
+    <span>Доставлено всего</span>
+    <strong>{{ analytics.delivered_qty|qty }}</strong>
+    <small>{{ analytics.delivered_cost|money }} ₽</small>
+  </div>
+</section>
+
+<!-- ═══ Charts ═══ -->
+<div class="row g-3 mb-4">
+  <div class="col-lg-8">
+    <div class="section-block" style="padding:1rem">
+      <h3 class="h6 mb-3">📈 Активность за 30 дней</h3>
+      <div style="position:relative; height:240px; max-height:240px">
+        <canvas id="activityChart"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="section-block" style="padding:1rem">
+      <h3 class="h6 mb-3">⚖️ Запрошено / Доставлено</h3>
+      <div style="position:relative; height:240px; max-height:240px">
+        <canvas id="ratioChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Admin Workspace ═══ -->
+<div class="admin-workspace">
+  <aside class="admin-sidebar" aria-label="Разделы администратора">
+    <button class="admin-nav-button is-active" type="button" data-admin-tab="overview">📊 Обзор</button>
+    <button class="admin-nav-button" type="button" data-admin-tab="items">🏷️ Позиции</button>
+    <button class="admin-nav-button" type="button" data-admin-tab="directories">📁 Справочники</button>
+    <button class="admin-nav-button" type="button" data-admin-tab="demand">📦 Потребности</button>
+    <button class="admin-nav-button" type="button" data-admin-tab="history">📜 История</button>
+    {% if is_super_admin %}
+      <button class="admin-nav-button" type="button" data-admin-tab="super">🛡️ Супер</button>
+    {% endif %}
+  </aside>
+
+  <div class="admin-panels">
+    <section class="admin-panel is-active" data-admin-panel="overview">
+      <div class="panel-title">
+        <div>
+          <h2 class="h5 mb-1">Обзор</h2>
+          <p class="text-muted mb-0">Самые нагруженные подразделения и позиции.</p>
+        </div>
+      </div>
+      <div class="row g-3">
+        <div class="col-12">
+          <div class="soft-panel">
+            <h3 class="h6 mb-3">🏢 Топ подразделений</h3>
+            {% for row in analytics.branch_rows %}
+              <div class="bar-row">
+                <div class="bar-row-head">
+                  <strong>{{ row.branch.name }}</strong>
+                  <span>{{ row.cost|money }} ₽ · {{ row.qty|qty }} ед.</span>
+                </div>
+                <div class="small text-muted">{{ row.branch.address or "" }}</div>
+                <div class="bar-track"><div class="bar-fill" style="width: {{ row.percent }}%"></div></div>
+              </div>
+            {% else %}
+              <div class="empty-state">Активной потребности нет</div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="soft-panel">
+            <h3 class="h6 mb-3">🏷️ Топ позиций по затратам</h3>
+            {% for row in analytics.item_rows %}
+              <div class="bar-row">
+                <div class="bar-row-head">
+                  <strong>{{ row.item.name }}</strong>
+                  <span>{{ row.cost|money }} ₽ · {{ row.qty|qty }} {{ row.item.unit }}</span>
+                </div>
+                <div class="small text-muted">Филиалов: {{ row.branches_count }} · цена {{ row.item.unit_cost|money }} ₽ / {{ row.item.unit }}</div>
+                <div class="bar-track"><div class="bar-fill bar-fill-green" style="width: {{ row.percent }}%"></div></div>
+              </div>
+            {% else %}
+              <div class="empty-state">Активной потребности нет</div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="admin-panel" data-admin-panel="items">
+      <div class="panel-title">
+        <div>
+          <h2 class="h5 mb-1">Позиции и ориентировочные цены</h2>
+          <p class="text-muted mb-0">Всего позиций: {{ items|length }}. Цена нужна для управленческой оценки затрат.</p>
+        </div>
+      </div>
+      <form class="admin-inline-form" method="post" action="/admin/items">
+        <input class="form-control" name="name" placeholder="Название" required>
+        <input class="form-control" name="unit" placeholder="Ед. изм." required>
+        <input class="form-control" name="unit_cost" type="number" min="0" step="0.01" placeholder="Цена за ед.">
+        <button class="btn btn-primary" type="submit">Добавить</button>
+      </form>
+      <div class="directory-tools">
+        <input class="form-control" data-filter-target="items-window" placeholder="🔍 Найти позицию">
+      </div>
+      <div id="items-window" class="scroll-pane item-pane">
+        {% for item in items %}
+          <div class="admin-row item-row" data-filter-row data-search="{{ item.name }} {{ item.unit }}">
+            <form class="directory-edit-form item-edit-form" method="post" action="/admin/items/{{ item.id }}">
+              <input class="form-control form-control-sm" name="name" value="{{ item.name }}" required>
+              <input class="form-control form-control-sm" name="unit" value="{{ item.unit }}" required>
+              <input class="form-control form-control-sm" name="unit_cost" type="number" min="0" step="0.01" value="{{ item.unit_cost|qty }}">
+              <button class="btn btn-sm btn-outline-primary" type="submit">Сохранить</button>
+            </form>
+            <div class="row-actions">
+              <span class="status-dot {% if item.is_active %}is-active{% endif %}" title="{{ 'активно' if item.is_active else 'отключено' }}"></span>
+              <form method="post" action="/admin/items/{{ item.id }}/toggle">
+                <button class="btn btn-sm btn-outline-secondary" type="submit">{{ "Отключить" if item.is_active else "Включить" }}</button>
+              </form>
+              {% if is_super_admin %}
+                <form method="post" action="/admin/items/{{ item.id }}/delete">
+                  <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Удалить позицию «{{ item.name }}» из рабочих списков? Активные потребности по ней будут отменены.')">Удалить</button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="admin-panel" data-admin-panel="directories">
+      <div class="panel-title">
+        <div>
+          <h2 class="h5 mb-1">Справочники</h2>
+          <p class="text-muted mb-0">Подразделения и пользователи.</p>
+        </div>
+      </div>
+      <div class="row g-3">
+        <div class="col-12">
+          <div class="soft-panel">
+            <div class="panel-title compact">
+              <div>
+                <h3 class="h6 mb-1">🏢 Подразделения</h3>
+                <div class="small text-muted">Всего: {{ branches|length }}</div>
+              </div>
+            </div>
+            <form class="admin-inline-form compact-form" method="post" action="/admin/branches">
+              <input class="form-control" name="name" placeholder="Название" required>
+              <input class="form-control" name="address" placeholder="Адрес">
+              <button class="btn btn-primary" type="submit">Добавить</button>
+            </form>
+            <div class="directory-tools">
+              <input class="form-control" data-filter-target="branches-window" placeholder="🔍 Найти">
+            </div>
+            <div id="branches-window" class="scroll-pane directory-pane">
+              {% for branch in branches %}
+                <div class="admin-row" data-filter-row data-search="{{ branch.name }} {{ branch.address or '' }}">
+                  <form class="directory-edit-form branch-edit-form" method="post" action="/admin/branches/{{ branch.id }}">
+                    <input class="form-control form-control-sm" name="name" value="{{ branch.name }}" required>
+                    <input class="form-control form-control-sm" name="address" value="{{ branch.address or '' }}" placeholder="Адрес">
+                    <button class="btn btn-sm btn-outline-primary" type="submit">Сохранить</button>
+                  </form>
+                  <div class="row-actions">
+                    <span class="status-dot {% if branch.is_active %}is-active{% endif %}"></span>
+                    <form method="post" action="/admin/branches/{{ branch.id }}/toggle">
+                      <button class="btn btn-sm btn-outline-secondary" type="submit">{{ "Отключить" if branch.is_active else "Включить" }}</button>
+                    </form>
+                    {% if is_super_admin %}
+                      <form method="post" action="/admin/branches/{{ branch.id }}/delete">
+                        <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Удалить подразделение «{{ branch.name }}» из рабочих списков? Активные потребности будут отменены.')">Удалить</button>
+                      </form>
+                    {% endif %}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="soft-panel">
+            <div class="panel-title compact">
+              <div>
+                <h3 class="h6 mb-1">👤 Пользователи</h3>
+                <div class="small text-muted">Всего: {{ users|length }}</div>
+              </div>
+            </div>
+            <form class="admin-inline-form user-form" method="post" action="/admin/users">
+              <input class="form-control" name="full_name" placeholder="ФИО" required>
+              <input class="form-control" name="login" placeholder="Логин" required>
+              <input class="form-control" name="password" type="password" placeholder="Пароль" required>
+              <select class="form-select" name="role">
+                <option value="appraiser">товаровед</option>
+                <option value="driver">водитель</option>
+                <option value="admin">администратор</option>
+              </select>
+              <select class="form-select" name="branch_id">
+                <option value="">Без подразделения</option>
+                {% for branch in branches if branch.is_active %}
+                  <option value="{{ branch.id }}">{{ branch.name }}</option>
+                {% endfor %}
+              </select>
+              <button class="btn btn-primary" type="submit">Добавить</button>
+            </form>
+            <div class="directory-tools">
+              <input class="form-control" data-filter-target="users-window" placeholder="🔍 Найти">
+            </div>
+            <div id="users-window" class="scroll-pane directory-pane">
+              {% for user in users %}
+                <div class="admin-row user-admin-row" data-filter-row data-search="{{ user.full_name }} {{ user.login or '' }} {{ user.role.value }} {{ user.branch.name if user.branch else '' }}">
+                  <form class="user-edit-card" method="post" action="/admin/users/{{ user.id }}">
+                    <div class="user-edit-head">
+                      <div>
+                        <div class="row-title">{{ user.full_name }}</div>
+                        <div class="small text-muted">{{ user.login or "без логина" }} · {{ user.role.value }}{% if user.is_super_admin %} · super{% endif %} · {{ user.branch.name if user.branch else "без подразделения" }}</div>
+                      </div>
+                      <span class="status-pill {% if user.is_active %}is-active{% endif %}">{{ "активен" if user.is_active else "отключён" }}</span>
+                    </div>
+                    <div class="user-edit-fields">
+                      <label>
+                        <span>ФИО</span>
+                        <input class="form-control form-control-sm" name="full_name" value="{{ user.full_name }}" required>
+                      </label>
+                      <label>
+                        <span>Логин</span>
+                        <input class="form-control form-control-sm" name="login" value="{{ user.login or '' }}" required>
+                      </label>
+                      <label>
+                        <span>Роль</span>
+                        <select class="form-select form-select-sm" name="role">
+                          <option value="appraiser" {% if user.role.value == "appraiser" %}selected{% endif %}>товаровед</option>
+                          <option value="driver" {% if user.role.value == "driver" %}selected{% endif %}>водитель</option>
+                          <option value="admin" {% if user.role.value == "admin" %}selected{% endif %}>администратор</option>
+                        </select>
+                      </label>
+                      <label>
+                        <span>Подразделение</span>
+                        <select class="form-select form-select-sm" name="branch_id">
+                          <option value="">Без подразделения</option>
+                          {% for branch in branches if branch.is_active or (user.branch and branch.id == user.branch.id) %}
+                            <option value="{{ branch.id }}" {% if user.branch and branch.id == user.branch.id %}selected{% endif %}>{{ branch.name }}</option>
+                          {% endfor %}
+                        </select>
+                      </label>
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary" type="submit">Сохранить изменения</button>
+                  </form>
+                  <div class="user-action-card">
+                    <form class="password-reset-form" method="post" action="/admin/users/{{ user.id }}/password">
+                      <input class="form-control form-control-sm" name="password" type="password" placeholder="Новый пароль" required>
+                      <button class="btn btn-sm btn-outline-primary" type="submit">Сбросить</button>
+                    </form>
+                    <form method="post" action="/admin/users/{{ user.id }}/toggle">
+                      <button class="btn btn-sm btn-outline-secondary" type="submit">{{ "Отключить" if user.is_active else "Включить" }}</button>
+                    </form>
+                    {% if is_super_admin and user.id != current_user.id %}
+                      <form method="post" action="/admin/users/{{ user.id }}/delete">
+                        <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Удалить пользователя «{{ user.full_name }}»? Войти под ним больше нельзя будет.')">Удалить</button>
+                      </form>
+                    {% endif %}
+                    {% if is_super_admin and user.id != current_user.id %}
+                      <form method="post" action="/admin/users/{{ user.id }}/super-toggle">
+                        <button class="btn btn-sm btn-outline-secondary" type="submit">{{ "Снять super" if user.is_super_admin else "Дать super" }}</button>
+                      </form>
+                    {% endif %}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="admin-panel" data-admin-panel="demand">
+      <div class="panel-title">
+        <div>
+          <h2 class="h5 mb-1">Активные потребности</h2>
+          <p class="text-muted mb-0">Сводный остаток, который видит водитель.</p>
+        </div>
+      </div>
+      <div class="scroll-pane table-pane table-responsive">
+        <table class="table align-middle compact-table">
+          <thead><tr><th>Подразделение</th><th>Позиция</th><th>Запрошено</th><th>Доставлено</th><th>Остаток</th><th>Оценка</th><th>Статус</th>{% if is_super_admin %}<th></th>{% endif %}</tr></thead>
+          <tbody>
+          {% for line in demand_lines %}
+            <tr>
+              <td>{{ line.branch.name }}</td>
+              <td>{{ line.item.name }}</td>
+              <td>{{ line.qty_total_requested|qty }}</td>
+              <td>{{ line.qty_total_delivered|qty }}</td>
+              <td><strong class="{% if line.qty_remaining %}text-danger{% endif %}">{{ line.qty_remaining|qty }}</strong></td>
+              <td>{{ (line.qty_remaining * line.item.unit_cost)|money }} ₽</td>
+              <td>{{ line.status|status_label }}</td>
+              {% if is_super_admin %}
+                <td>
+                  <form method="post" action="/admin/demand-lines/{{ line.id }}/delete">
+                    <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Удалить эту активную потребность? Водитель перестанет её видеть.')">Удалить</button>
+                  </form>
+                </td>
+              {% endif %}
+            </tr>
+          {% else %}
+            <tr><td colspan="{{ 8 if is_super_admin else 7 }}" class="text-muted">Активной потребности нет.</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="admin-panel" data-admin-panel="history">
+      <div class="panel-title">
+        <div>
+          <h2 class="h5 mb-1">История</h2>
+          <p class="text-muted mb-0">Последние заявки и визиты водителей.</p>
+        </div>
+      </div>
+      <div class="row g-3">
+        <div class="col-xl-6">
+          <div class="soft-panel">
+            <div class="history-panel-head">
+              <h3 class="h6 mb-0">📋 Последние заявки</h3>
+              <span class="small text-muted">Редактирование и удаление исключают записи из отчётов</span>
+            </div>
+            <div class="scroll-pane history-pane">
+              {% for req in requests[:40] %}
+                <div class="history-row request-history-row">
+                  <form class="request-edit-form" method="post" action="/admin/requests/{{ req.id }}">
+                    <div>
+                      <strong>№{{ req.id }} · {{ req.branch.name }}</strong>
+                      <div class="small text-muted">{{ req.created_by.full_name }} · {{ req.created_at|dt }} · {{ req.status|status_label }}</div>
+                    </div>
+                    <label class="request-comment-field">
+                      <span>Комментарий</span>
+                      <input class="form-control form-control-sm" name="comment" value="{{ req.comment or '' }}" placeholder="Комментарий заявки">
+                    </label>
+                    <div class="request-lines-editor">
+                      {% for line in req.lines %}
+                        <div class="request-line-editor">
+                          <input type="hidden" name="line_id" value="{{ line.id }}">
+                          <div class="small">{{ line.item.name }} <span class="text-muted">{{ line.item.unit }}</span></div>
+                          <input class="form-control form-control-sm" name="qty_requested" type="number" min="0.001" step="0.001" value="{{ line.qty_requested|qty }}" required>
+                          <input class="form-control form-control-sm" name="line_comment" value="{{ line.comment or '' }}" placeholder="Комментарий строки">
+                        </div>
+                      {% endfor %}
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary" type="submit">Сохранить</button>
+                  </form>
+                  <form method="post" action="/admin/requests/{{ req.id }}/delete">
+                    <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Удалить заявку №{{ req.id }}? Остатки будут пересчитаны.')">Удалить</button>
+                  </form>
+                </div>
+              {% else %}
+                <div class="empty-state">Заявок нет</div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-6">
+          <div class="soft-panel">
+            <div class="history-panel-head">
+              <h3 class="h6 mb-0">🚛 Последние визиты</h3>
+              <span class="small text-muted">Можно изменить доставленное количество или удалить визит</span>
+            </div>
+            <div class="scroll-pane history-pane">
+              {% for session in sessions[:40] %}
+                <div class="history-row request-history-row">
+                  <form class="request-edit-form delivery-edit-form" method="post" action="/admin/delivery-sessions/{{ session.id }}">
+                    <div>
+                      <strong>Визит №{{ session.id }} · {{ session.branch.name }}</strong>
+                      <div class="small text-muted">{{ session.driver.full_name }} · {{ session.started_at|dt }} · {{ session.status|status_label }}</div>
+                    </div>
+                    <div class="request-lines-editor">
+                      {% for line in session.lines %}
+                        <div class="delivery-line-editor">
+                          <input type="hidden" name="line_id" value="{{ line.id }}">
+                          <div class="small">{{ line.item.name }} <span class="text-muted">{{ line.item.unit }}</span></div>
+                          <input class="form-control form-control-sm" name="qty_delivered_now" type="number" min="0" max="{{ line.qty_before|qty }}" step="0.001" value="{{ line.qty_delivered_now|qty }}" required>
+                          <span class="small text-muted">{{ line.result_status|status_label }}</span>
+                        </div>
+                      {% endfor %}
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary" type="submit">Сохранить</button>
+                  </form>
+                  <form method="post" action="/admin/delivery-sessions/{{ session.id }}/delete">
+                    <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Удалить визит №{{ session.id }} из истории и отчётов? Остатки будут пересчитаны.')">Удалить</button>
+                  </form>
+                </div>
+              {% else %}
+                <div class="empty-state">Визитов нет</div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    {% if is_super_admin %}
+      <section class="admin-panel" data-admin-panel="super">
+        <div class="panel-title">
+          <div>
+            <h2 class="h5 mb-1">Суперадмин</h2>
+            <p class="text-muted mb-0">Восстановление, окончательное удаление, обслуживание базы и аудит.</p>
+          </div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-xl-6">
+            <div class="soft-panel">
+              <h3 class="h6 mb-3">🧰 Обслуживание</h3>
+              <div class="super-actions">
+                <a class="btn btn-outline-primary" href="/admin/super/backup">Скачать бэкап БД</a>
+                <form method="post" action="/admin/super/recalculate">
+                  <button class="btn btn-outline-primary" type="submit">Пересчитать потребности</button>
+                </form>
+              </div>
+              <form class="cleanup-form mt-3" method="post" action="/admin/super/cleanup">
+                <label>
+                  <span>С даты</span>
+                  <input class="form-control form-control-sm" name="date_from" type="date">
+                </label>
+                <label>
+                  <span>По дату</span>
+                  <input class="form-control form-control-sm" name="date_to" type="date">
+                </label>
+                <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Скрыть все заявки и визиты за выбранный период из истории и отчётов?')">Очистить период</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="col-xl-6">
+            <div class="soft-panel">
+              <h3 class="h6 mb-3">🧾 Журнал действий</h3>
+              <div class="scroll-pane audit-pane">
+                {% for log in audit_logs %}
+                  <div class="audit-row">
+                    <div>
+                      <strong>{{ log.action }}</strong>
+                      <span class="text-muted">{{ log.entity_type }}{% if log.entity_id %} #{{ log.entity_id }}{% endif %}</span>
+                    </div>
+                    <div class="small text-muted">{{ log.actor.full_name if log.actor else "система" }} · {{ log.created_at|dt }}</div>
+                    {% if log.details %}<div class="small">{{ log.details }}</div>{% endif %}
+                  </div>
+                {% else %}
+                  <div class="empty-state">Журнал пока пуст</div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-6">
+            <div class="soft-panel">
+              <h3 class="h6 mb-3">🗂️ Удалённые заявки</h3>
+              <div class="scroll-pane history-pane">
+                {% for req in deleted_requests %}
+                  <div class="deleted-row">
+                    <div>
+                      <strong>№{{ req.id }} · {{ req.branch.name }}</strong>
+                      <div class="small text-muted">{{ req.created_by.full_name }} · {{ req.created_at|dt }}</div>
+                    </div>
+                    <div class="deleted-actions">
+                      <form method="post" action="/admin/requests/{{ req.id }}/restore">
+                        <button class="btn btn-sm btn-outline-primary" type="submit">Восстановить</button>
+                      </form>
+                      <form method="post" action="/admin/requests/{{ req.id }}/purge">
+                        <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Удалить заявку №{{ req.id }} навсегда?')">Навсегда</button>
+                      </form>
+                    </div>
+                  </div>
+                {% else %}
+                  <div class="empty-state">Удалённых заявок нет</div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-6">
+            <div class="soft-panel">
+              <h3 class="h6 mb-3">🗂️ Удалённые визиты</h3>
+              <div class="scroll-pane history-pane">
+                {% for session in deleted_sessions %}
+                  <div class="deleted-row">
+                    <div>
+                      <strong>Визит №{{ session.id }} · {{ session.branch.name }}</strong>
+                      <div class="small text-muted">{{ session.driver.full_name }} · {{ session.started_at|dt }}</div>
+                    </div>
+                    <div class="deleted-actions">
+                      <form method="post" action="/admin/delivery-sessions/{{ session.id }}/restore">
+                        <button class="btn btn-sm btn-outline-primary" type="submit">Восстановить</button>
+                      </form>
+                      <form method="post" action="/admin/delivery-sessions/{{ session.id }}/purge">
+                        <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Удалить визит №{{ session.id }} навсегда?')">Навсегда</button>
+                      </form>
+                    </div>
+                  </div>
+                {% else %}
+                  <div class="empty-state">Удалённых визитов нет</div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+  // ─── Tab navigation ───
+  const tabButtons = document.querySelectorAll('[data-admin-tab]');
+  const tabPanels = document.querySelectorAll('[data-admin-panel]');
+
+  function activateAdminTab(name) {
+    tabButtons.forEach(b => b.classList.toggle('is-active', b.dataset.adminTab === name));
+    tabPanels.forEach(p => p.classList.toggle('is-active', p.dataset.adminPanel === name));
+    if (location.hash.replace('#', '') !== name) history.replaceState(null, '', `#${name}`);
+  }
+  tabButtons.forEach(b => b.addEventListener('click', () => activateAdminTab(b.dataset.adminTab)));
+  const initialTab = location.hash.replace('#', '');
+  if (initialTab && document.querySelector(`[data-admin-tab="${initialTab}"]`)) activateAdminTab(initialTab);
+
+  // ─── Filter search ───
+  document.querySelectorAll('[data-filter-target]').forEach(input => {
+    const target = document.getElementById(input.dataset.filterTarget);
+    if (!target) return;
+    input.addEventListener('input', () => {
+      const q = input.value.trim().toLowerCase();
+      target.querySelectorAll('[data-filter-row]').forEach(row => {
+        row.hidden = q && !row.dataset.search.toLowerCase().includes(q);
+      });
+    });
+  });
+
+  // ─── Date presets ───
+  function setPreset(days) {
+    const df = document.getElementById('date_from');
+    const dt = document.getElementById('date_to');
+    if (days === 0) { df.value = ''; dt.value = ''; return; }
+    const now = new Date();
+    dt.value = now.toISOString().slice(0, 10);
+    const from = new Date(now);
+    from.setDate(from.getDate() - days);
+    df.value = from.toISOString().slice(0, 10);
+  }
+
+  // ─── Excel download ───
+  function downloadXlsx(type) {
+    const df = document.getElementById('date_from').value;
+    const dt = document.getElementById('date_to').value;
+    let url = `/admin/export/${type}.xlsx`;
+    const params = [];
+    if (df) params.push(`date_from=${df}`);
+    if (dt) params.push(`date_to=${dt}`);
+    if (params.length) url += '?' + params.join('&');
+    window.location.href = url;
+  }
+
+  // ─── Charts ───
+  const chartLabels = {{ chart_labels | tojson }};
+  const chartRequests = {{ chart_requests | tojson }};
+  const chartDeliveries = {{ chart_deliveries | tojson }};
+
+  const activityCtx = document.getElementById('activityChart').getContext('2d');
+  new Chart(activityCtx, {
+    type: 'line',
+    data: {
+      labels: chartLabels,
+      datasets: [
+        {
+          label: 'Заявки',
+          data: chartRequests,
+          borderColor: '#6366f1',
+          backgroundColor: 'rgba(99,102,241,.08)',
+          fill: true,
+          tension: .35,
+          pointRadius: 2,
+          pointHoverRadius: 5,
+        },
+        {
+          label: 'Визиты',
+          data: chartDeliveries,
+          borderColor: '#22c55e',
+          backgroundColor: 'rgba(34,197,94,.08)',
+          fill: true,
+          tension: .35,
+          pointRadius: 2,
+          pointHoverRadius: 5,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { intersect: false, mode: 'index' },
+      plugins: { legend: { position: 'top', labels: { font: { family: 'Inter', weight: 600 }, usePointStyle: true } } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 11 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 10 } },
+        y: { beginAtZero: true, grid: { color: 'rgba(100,116,139,.08)' }, ticks: { font: { size: 11 }, stepSize: 1 } }
+      }
+    }
+  });
+
+  const ratioCtx = document.getElementById('ratioChart').getContext('2d');
+  new Chart(ratioCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Запрошено', 'Доставлено', 'Остаток'],
+      datasets: [{
+        data: [
+          {{ analytics.requested_qty|qty }},
+          {{ analytics.delivered_qty|qty }},
+          {{ analytics.active_qty|qty }}
+        ],
+        backgroundColor: ['#6366f1', '#22c55e', '#f59e0b'],
+        borderWidth: 0,
+        hoverOffset: 8,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '65%',
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { family: 'Inter', weight: 600, size: 12 }, padding: 12, usePointStyle: true } }
+      }
+    }
+  });
+</script>
+{% endblock %}

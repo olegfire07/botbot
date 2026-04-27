@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Водитель{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="h4 mb-1">🚛 Маршрутный лист</h1>
+    <p class="text-muted mb-0" style="font-size:.84rem">Подразделения с активной потребностью к доставке</p>
+  </div>
+</div>
+
+<form class="toolbar mb-3" method="get" action="/driver">
+  <div class="row g-2 align-items-end">
+    <div class="col-lg-3">
+      {% if is_admin %}
+        <label class="form-label" for="driver_id">👤 Водитель</label>
+        <select class="form-select" id="driver_id" name="driver_id" onchange="this.form.submit()">
+          {% for user in drivers %}
+            <option value="{{ user.id }}" {% if selected and user.id == selected.id %}selected{% endif %}>{{ user.full_name }}</option>
+          {% endfor %}
+        </select>
+      {% else %}
+        <label class="form-label">👤 Водитель</label>
+        <div class="form-control bg-light">{{ selected.full_name if selected else "—" }}</div>
+      {% endif %}
+    </div>
+    <div class="col-lg-4">
+      <label class="form-label" for="q">🔍 Поиск</label>
+      <input class="form-control" id="q" name="q" value="{{ q }}" placeholder="номер или адрес подразделения">
+    </div>
+    <div class="col-lg-3">
+      <div class="form-check" style="margin-top:1.6rem">
+        <input class="form-check-input" type="checkbox" value="true" id="show_all" name="show_all" {% if show_all %}checked{% endif %} onchange="this.form.submit()">
+        <label class="form-check-label" for="show_all" style="font-size:.85rem">Показать все подразделения</label>
+      </div>
+    </div>
+    <div class="col-lg-2">
+      <button class="btn btn-primary w-100" type="submit">Найти</button>
+    </div>
+  </div>
+  {% if q or show_all %}
+    <div class="mt-2">
+      <a class="btn btn-outline-secondary btn-sm" href="/driver?driver_id={{ selected.id if selected else '' }}">✕ Сбросить фильтр</a>
+    </div>
+  {% endif %}
+</form>
+
+{% if open_session %}
+  <div class="alert alert-warning d-flex align-items-center gap-2" style="font-size:.88rem">
+    <span>🔔</span>
+    <span>Открыт визит: <strong>{{ open_session.branch.name }}</strong></span>
+    <a class="btn btn-sm btn-dark ms-auto" href="/driver/branch/{{ open_session.branch_id }}?driver_id={{ selected.id }}&session_id={{ open_session.id }}">Перейти →</a>
+  </div>
+{% endif %}
+
+<!-- Сводка -->
+<div class="route-summary">
+  <div>
+    <span>Филиалов</span>
+    <strong>{{ total_active_branches }}</strong>
+  </div>
+  <div>
+    <span>Позиций</span>
+    <strong>{{ total_active_positions }}</strong>
+  </div>
+  <div>
+    <span>К доставке</span>
+    <strong>{{ total_active_qty|qty }} ед.</strong>
+  </div>
+</div>
+
+<!-- Карточки подразделений -->
+<div class="row g-2">
+  {% for branch in branches %}
+    {% set s = demand_summary.get(branch.id, {"positions": 0, "qty": 0}) %}
+    <div class="col-md-6 col-xl-4">
+      <div class="branch-card {% if s.positions %}branch-card-active{% endif %}">
+        <div class="d-flex justify-content-between align-items-start gap-2">
+          <div>
+            <h2 class="h6 mb-0" style="font-size:.92rem">{{ branch.name }}</h2>
+            <div class="text-muted" style="font-size:.78rem">{{ branch.address or "—" }}</div>
+          </div>
+          {% if s.positions %}
+            <span class="badge text-bg-danger" style="font-size:.7rem">{{ s.positions }} поз. · {{ s.qty|qty }} ед.</span>
+          {% else %}
+            <span class="badge text-bg-light" style="font-size:.7rem">нет потребности</span>
+          {% endif %}
+        </div>
+        {% if selected %}
+          <a class="btn {% if s.positions %}btn-dark{% else %}btn-outline-secondary{% endif %} w-100 mt-auto" href="/driver/branch/{{ branch.id }}{% if is_admin %}?driver_id={{ selected.id }}{% endif %}" style="font-size:.85rem">
+            {% if s.positions %}📦 Открыть доставку{% else %}Посмотреть{% endif %}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  {% else %}
+    <div class="col-12">
+      <div class="empty-state">
+        Подразделений не найдено. {% if not show_all %}Включите «Показать все» чтобы увидеть без потребности.{% endif %}
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

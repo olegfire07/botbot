@@ -1,0 +1,21 @@
+[Unit]
+Description=Fianit Sklad FastAPI application
+After=network.target
+
+[Service]
+Type=simple
+User=sklad
+Group=sklad
+WorkingDirectory=/opt/sklad
+EnvironmentFile=/etc/sklad/sklad.env
+ExecStart=/opt/sklad/.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --proxy-headers --forwarded-allow-ips=127.0.0.1
+Restart=always
+RestartSec=5
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=/var/lib/sklad /var/backups/sklad
+
+[Install]
+WantedBy=multi-user.target

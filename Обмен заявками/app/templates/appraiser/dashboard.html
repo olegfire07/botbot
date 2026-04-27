@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block title %}Товаровед{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="h4 mb-1">📋 Товаровед</h1>
+    <p class="text-muted mb-0" style="font-size:.84rem">Заявка увеличивает активную потребность подразделения</p>
+  </div>
+  {% if selected and selected_branch %}
+    <a class="btn btn-primary" href="/appraiser/requests/new{% if is_admin %}?user_id={{ selected.id }}&branch_id={{ selected_branch.id if selected_branch else '' }}&branch_q={{ branch_q }}{% endif %}">
+      ＋ Создать заявку
+    </a>
+  {% endif %}
+</div>
+
+<!-- Фильтры -->
+<form class="toolbar" method="get" action="/appraiser">
+  <input type="hidden" id="appraiser_search_mode" name="search_mode" value="select">
+  <div class="row g-2">
+    <div class="col-lg-4">
+      {% if is_admin %}
+        <label class="form-label" for="user_id">👤 Товаровед</label>
+        <select class="form-select" id="user_id" name="user_id" onchange="setMode('select'); this.form.submit()">
+          {% for user in appraisers %}
+            <option value="{{ user.id }}" {% if selected and user.id == selected.id %}selected{% endif %}>{{ user.full_name }}</option>
+          {% endfor %}
+        </select>
+      {% else %}
+        <label class="form-label">👤 Товаровед</label>
+        <div class="form-control bg-light">{{ selected.full_name if selected else "—" }}</div>
+      {% endif %}
+    </div>
+    <div class="col-lg-4">
+      {% if is_admin %}
+        <label class="form-label" for="branch_q">🔍 Поиск подразделения</label>
+        <input class="form-control" id="branch_q" name="branch_q" value="{{ branch_q }}" placeholder="номер, улица, район" onkeydown="onEnter(event)">
+      {% else %}
+        <label class="form-label">Роль</label>
+        <div class="form-control bg-light">товаровед</div>
+      {% endif %}
+    </div>
+    <div class="col-lg-4">
+      <label class="form-label" for="branch_id">🏢 Подразделение</label>
+      <select class="form-select" id="branch_id" name="branch_id" onchange="setMode('select'); this.form.submit()" {% if not branches %}disabled{% endif %}>
+        {% for branch in branches %}
+          <option value="{{ branch.id }}" {% if selected_branch and branch.id == selected_branch.id %}selected{% endif %}>
+            {{ branch.name }}{% if branch.address %} — {{ branch.address }}{% endif %}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+  <div class="toolbar-actions">
+    {% if is_admin %}
+      <button class="btn btn-outline-primary btn-sm" type="submit" onclick="setMode('search')">Найти</button>
+    {% endif %}
+    {% if branch_q %}
+      <a class="btn btn-outline-secondary btn-sm" href="/appraiser?user_id={{ selected.id if selected else '' }}&branch_id={{ selected_branch.id if selected_branch else '' }}">✕ Сбросить</a>
+    {% endif %}
+  </div>
+  {% if branch_q %}
+    <div class="search-hint" style="font-size:.82rem">
+      {% if branch_results_count %}
+        Найдено: <strong>{{ branch_results_count }}</strong> · Выбрано: <strong>{{ selected_branch.name if selected_branch else "—" }}</strong>
+      {% else %}
+        По запросу «{{ branch_q }}» ничего не найдено
+      {% endif %}
+    </div>
+  {% endif %}
+  {% if selected_branch %}
+    <div class="branch-pill">📍 {{ selected_branch.name }}{% if selected_branch.address %} <span class="text-muted">· {{ selected_branch.address }}</span>{% endif %}</div>
+  {% endif %}
+</form>
+
+<!-- Активная потребность -->
+<section class="section-block">
+  <div class="section-heading">
+    <h2 class="h6 mb-0">📦 Активная потребность</h2>
+  </div>
+  {% if active_demand %}
+    <div class="row g-2">
+      {% for line in active_demand %}
+        <div class="col-md-6 col-xl-4">
+          <div class="demand-card">
+            <div class="d-flex justify-content-between gap-2 align-items-start">
+              <div>
+                <strong style="font-size:.9rem">{{ line.item.name }}</strong>
+                <span class="text-muted" style="font-size:.78rem"> · {{ line.item.unit }}</span>
+              </div>
+              <span class="badge text-bg-warning">{{ line.status|status_label }}</span>
+            </div>
+            <div class="demand-grid mt-2">
+              <div><span>Запрошено</span><strong>{{ line.qty_total_requested|qty }}</strong></div>
+              <div><span>Доставлено</span><strong>{{ line.qty_total_delivered|qty }}</strong></div>
+              <div><span>Осталось</span><strong class="text-danger">{{ line.qty_remaining|qty }}</strong></div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">Потребности нет</div>
+  {% endif %}
+</section>
+
+<!-- История -->
+<section class="section-block">
+  <div class="section-heading">
+    <h2 class="h6 mb-0">📜 История заявок</h2>
+  </div>
+  {% if requests %}
+    <div class="list-group">
+      {% for req in requests %}
+        <div class="list-group-item">
+          <div class="d-flex flex-column flex-md-row justify-content-between gap-1">
+            <div>
+              <strong style="font-size:.88rem">№{{ req.id }}</strong>
+              <span class="text-muted" style="font-size:.82rem">{{ req.created_at|dt }} · {{ req.branch.name }}</span>
+              {% if req.comment %}<div class="text-muted" style="font-size:.8rem">{{ req.comment }}</div>{% endif %}
+            </div>
+            <span class="badge text-bg-secondary align-self-start">{{ req.status|status_label }}</span>
+          </div>
+          <div class="mt-1">
+            {% for line in req.lines %}
+              <span class="line-chip">{{ line.item.name }}: {{ line.qty_requested|qty }} {{ line.item.unit }}</span>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">Заявок пока нет</div>
+  {% endif %}
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+  function setMode(m) { document.getElementById('appraiser_search_mode').value = m; }
+  function onEnter(e) { if (e.key === 'Enter') { e.preventDefault(); setMode('search'); e.currentTarget.form.submit(); } }
+</script>
+{% endblock %}
