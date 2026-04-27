@@ -68,6 +68,14 @@
   <script src="https://unpkg.com/htmx.org@1.9.10"></script>
   <script>
     const csrfToken = {{ csrf_token(request) | tojson }};
+    
+    // Add CSRF token to all HTMX requests
+    document.body.addEventListener('htmx:configRequest', function(evt) {
+      if (csrfToken) {
+        evt.detail.headers['x-csrf-token'] = csrfToken;
+      }
+    });
+
     document.addEventListener('submit', (event) => {
       const form = event.target;
       if (!(form instanceof HTMLFormElement) || form.dataset.noSubmitLock === 'true') return;
@@ -96,6 +104,22 @@
       form.querySelectorAll('button[type="submit"]').forEach((button) => {
         if (button !== submitter) button.disabled = true;
       });
+    });
+
+    // Handle HTMX errors
+    document.body.addEventListener('htmx:responseError', function(evt) {
+      const submitter = evt.detail.elt.querySelector ? evt.detail.elt.querySelector('[data-submitted="true"]') || evt.detail.elt : null;
+      if (evt.detail.elt.tagName === 'FORM') {
+        evt.detail.elt.dataset.submitted = 'false';
+        evt.detail.elt.querySelectorAll('button, input[type="submit"]').forEach(b => {
+          b.disabled = false;
+          if (b.dataset.originalText) {
+            if (b.tagName === 'BUTTON') b.textContent = b.dataset.originalText;
+            else b.value = b.dataset.originalText;
+          }
+        });
+      }
+      showToast('Ошибка', `Сервер вернул ошибку: ${evt.detail.xhr.status}`, 'danger');
     });
 
     // WebSocket Notifications
