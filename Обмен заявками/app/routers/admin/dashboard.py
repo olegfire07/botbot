@@ -194,184 +194,7 @@ def admin_dashboard(
     if history_date_to and not history_to_dt:
         history_date_to = ""
 
-    branches = list(
-        db.scalars(select(Branch).where(Branch.is_deleted.is_(False)).order_by(Branch.name)).all()
-    )
-    users = list(
-        db.scalars(
-            select(User)
-            .where(User.is_deleted.is_(False))
-            .options(selectinload(User.branch))
-            .order_by(User.full_name)
-        ).all()
-    )
-    items = list(
-        db.scalars(select(Item).where(Item.is_deleted.is_(False)).order_by(Item.name)).all()
-    )
-    request_ids = (
-        select(GoodsRequest.id)
-        .select_from(GoodsRequest)
-        .join(Branch, Branch.id == GoodsRequest.branch_id)
-        .join(User, User.id == GoodsRequest.created_by_user_id)
-        .outerjoin(RequestLine, RequestLine.request_id == GoodsRequest.id)
-        .outerjoin(Item, Item.id == RequestLine.item_id)
-        .where(
-            GoodsRequest.is_deleted.is_(False),
-            Branch.is_deleted.is_(False),
-            User.is_deleted.is_(False),
-            or_(Item.id.is_(None), Item.is_deleted.is_(False)),
-        )
-        .group_by(GoodsRequest.id)
-    )
-    if history_from_dt:
-        request_ids = request_ids.where(GoodsRequest.created_at >= history_from_dt)
-    if history_to_dt:
-        request_ids = request_ids.where(GoodsRequest.created_at < history_to_dt + timedelta(days=1))
-    if history_q:
-        request_number = _numeric_filter(history_q)
-        request_conditions = [
-            _text_contains(Branch.name, history_q),
-            _text_contains(Branch.address, history_q),
-            _text_contains(User.full_name, history_q),
-            _text_contains(User.login, history_q),
-            _text_contains(GoodsRequest.comment, history_q),
-            _text_contains(Item.name, history_q),
-            _text_contains(RequestLine.comment, history_q),
-        ]
-        if request_number is not None:
-            request_conditions.append(GoodsRequest.id == request_number)
-        request_ids = request_ids.where(or_(*request_conditions))
 
-    requests = list(
-        db.scalars(
-            select(GoodsRequest)
-            .where(GoodsRequest.id.in_(request_ids))
-            .options(
-                selectinload(GoodsRequest.branch),
-                selectinload(GoodsRequest.created_by),
-                selectinload(GoodsRequest.lines).selectinload(RequestLine.item),
-            )
-            .order_by(GoodsRequest.created_at.desc())
-            .limit(100)
-        ).all()
-    )
-    demand_query = (
-        select(DemandLine)
-        .join(Branch)
-        .join(Item)
-        .where(DemandLine.status.in_((DemandStatus.active, DemandStatus.partially_delivered)))
-        .options(selectinload(DemandLine.branch), selectinload(DemandLine.item))
-        .where(Branch.is_deleted.is_(False), Item.is_deleted.is_(False))
-    )
-    if demand_q:
-        demand_number = _numeric_filter(demand_q)
-        demand_conditions = [
-            _text_contains(Branch.name, demand_q),
-            _text_contains(Branch.address, demand_q),
-            _text_contains(Item.name, demand_q),
-            _text_contains(Item.unit, demand_q),
-        ]
-        if demand_number is not None:
-            demand_conditions.append(DemandLine.id == demand_number)
-        demand_query = demand_query.where(or_(*demand_conditions))
-
-    demand_lines = list(
-        db.scalars(
-            demand_query
-            .order_by(DemandLine.last_updated_at.desc())
-            .limit(100)
-        ).all()
-    )
-    session_ids = (
-        select(DeliverySession.id)
-        .select_from(DeliverySession)
-        .join(Branch, Branch.id == DeliverySession.branch_id)
-        .join(User, User.id == DeliverySession.driver_id)
-        .outerjoin(
-            DeliverySessionLine,
-            DeliverySessionLine.delivery_session_id == DeliverySession.id,
-        )
-        .outerjoin(Item, Item.id == DeliverySessionLine.item_id)
-        .where(
-            DeliverySession.is_deleted.is_(False),
-            Branch.is_deleted.is_(False),
-            User.is_deleted.is_(False),
-            or_(Item.id.is_(None), Item.is_deleted.is_(False)),
-        )
-        .group_by(DeliverySession.id)
-    )
-    if history_from_dt:
-        session_ids = session_ids.where(DeliverySession.started_at >= history_from_dt)
-    if history_to_dt:
-        session_ids = session_ids.where(DeliverySession.started_at < history_to_dt + timedelta(days=1))
-    if history_q:
-        session_number = _numeric_filter(history_q)
-        session_conditions = [
-            _text_contains(Branch.name, history_q),
-            _text_contains(Branch.address, history_q),
-            _text_contains(User.full_name, history_q),
-            _text_contains(User.login, history_q),
-            _text_contains(Item.name, history_q),
-            _text_contains(Item.unit, history_q),
-            _text_contains(DeliverySessionLine.shortage_reason, history_q),
-        ]
-        if session_number is not None:
-            session_conditions.append(DeliverySession.id == session_number)
-        session_ids = session_ids.where(or_(*session_conditions))
-
-    sessions = list(
-        db.scalars(
-            select(DeliverySession)
-            .where(DeliverySession.id.in_(session_ids))
-            .options(
-                selectinload(DeliverySession.branch),
-                selectinload(DeliverySession.driver),
-                selectinload(DeliverySession.lines).selectinload(DeliverySessionLine.item),
-            )
-            .order_by(DeliverySession.started_at.desc())
-            .limit(100)
-        ).all()
-    )
-
-
-    deleted_requests = []
-    deleted_sessions = []
-    audit_logs = []
-    if current_user and current_user.is_super_admin:
-        deleted_requests = list(
-            db.scalars(
-                select(GoodsRequest)
-                .where(GoodsRequest.is_deleted.is_(True))
-                .options(
-                    selectinload(GoodsRequest.branch),
-                    selectinload(GoodsRequest.created_by),
-                    selectinload(GoodsRequest.lines).selectinload(RequestLine.item),
-                )
-                .order_by(GoodsRequest.created_at.desc())
-                .limit(50)
-            ).all()
-        )
-        deleted_sessions = list(
-            db.scalars(
-                select(DeliverySession)
-                .where(DeliverySession.is_deleted.is_(True))
-                .options(
-                    selectinload(DeliverySession.branch),
-                    selectinload(DeliverySession.driver),
-                    selectinload(DeliverySession.lines).selectinload(DeliverySessionLine.item),
-                )
-                .order_by(DeliverySession.started_at.desc())
-                .limit(50)
-            ).all()
-        )
-        audit_logs = list(
-            db.scalars(
-                select(AuditLog)
-                .options(selectinload(AuditLog.actor))
-                .order_by(AuditLog.created_at.desc(), AuditLog.id.desc())
-                .limit(80)
-            ).all()
-        )
     analytics = _analytics(db)
 
     # Chart data: requests per day (last 30 days) using SQL
@@ -413,15 +236,6 @@ def admin_dashboard(
             "request": request,
             "current_user": current_user,
             "is_super_admin": current_user.is_super_admin if current_user else False,
-            "branches": branches,
-            "users": users,
-            "items": items,
-            "requests": requests,
-            "demand_lines": demand_lines,
-            "sessions": sessions,
-            "deleted_requests": deleted_requests,
-            "deleted_sessions": deleted_sessions,
-            "audit_logs": audit_logs,
             "analytics": analytics,
             "roles": UserRole,
             "message": message,
@@ -429,10 +243,6 @@ def admin_dashboard(
             "chart_labels": chart_labels,
             "chart_requests": chart_requests,
             "chart_deliveries": chart_deliveries,
-            "demand_q": demand_q,
-            "history_q": history_q,
-            "history_date_from": history_date_from,
-            "history_date_to": history_date_to,
-            "history_filters_active": bool(history_q or history_date_from or history_date_to),
+            "history_filters_active": False,
         },
     )

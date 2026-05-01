@@ -1,0 +1,103 @@
+<div class="panel-title">
+  <div>
+    <h2 class="h5 mb-1">Суперадмин</h2>
+    <p class="text-muted mb-0">Восстановление, окончательное удаление, обслуживание базы и аудит.</p>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-xl-6">
+    <div class="soft-panel">
+      <h3 class="h6 mb-3">Обслуживание</h3>
+      <div class="super-actions">
+        <a class="btn btn-outline-primary" href="/admin/super/backup">Скачать бэкап БД</a>
+        <form method="post" action="/admin/super/recalculate">
+          <button class="btn btn-outline-primary" type="submit">Пересчитать потребности</button>
+        </form>
+      </div>
+      <form class="cleanup-form mt-3" method="post" action="/admin/super/cleanup">
+        <label>
+          <span>С даты</span>
+          <input class="form-control form-control-sm" name="date_from" type="date">
+        </label>
+        <label>
+          <span>По дату</span>
+          <input class="form-control form-control-sm" name="date_to" type="date">
+        </label>
+        <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Скрыть все заявки и визиты за выбранный период из истории и отчётов?')">Очистить период</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-xl-6">
+    <div class="soft-panel">
+      <h3 class="h6 mb-3">Журнал действий</h3>
+      <div class="scroll-pane audit-pane">
+        {% for log in audit_logs %}
+          <div class="audit-row">
+            <div>
+              <strong>{{ log.action }}</strong>
+              <span class="text-muted">{{ log.entity_type }}{% if log.entity_id %} #{{ log.entity_id }}{% endif %}</span>
+            </div>
+            <div class="small text-muted">{{ log.actor.full_name if log.actor else "система" }} · {{ log.created_at|dt }}</div>
+            {% if log.details %}<div class="small">{{ log.details }}</div>{% endif %}
+          </div>
+        {% else %}
+          <div class="empty-state">Журнал пока пуст</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6">
+    <div class="soft-panel">
+      <h3 class="h6 mb-3">Удалённые заявки</h3>
+      <div class="scroll-pane history-pane">
+        {% for req in deleted_requests %}
+          <div class="deleted-row">
+            <div>
+              <strong>№{{ req.id }} · {{ req.branch.name }}</strong>
+              <div class="small text-muted">{{ req.created_by.full_name }} · {{ req.created_at|dt }}</div>
+            </div>
+            <div class="deleted-actions">
+              <form method="post" action="/admin/requests/{{ req.id }}/restore">
+                <button class="btn btn-sm btn-outline-primary" type="submit">Восстановить</button>
+              </form>
+              <form method="post" action="/admin/requests/{{ req.id }}/purge">
+                <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Удалить заявку №{{ req.id }} навсегда?')">Навсегда</button>
+              </form>
+            </div>
+          </div>
+        {% else %}
+          <div class="empty-state">Удалённых заявок нет</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6">
+    <div class="soft-panel">
+      <h3 class="h6 mb-3">Удалённые визиты</h3>
+      <div class="scroll-pane history-pane">
+        {% for session in deleted_sessions %}
+          <div class="deleted-row">
+            <div>
+              <strong>Визит №{{ session.id }} · {{ session.branch.name }}</strong>
+              <div class="small text-muted">{{ session.driver.full_name }} · {{ session.started_at|dt }}</div>
+            </div>
+            <div class="deleted-actions">
+              <form method="post" action="/admin/delivery-sessions/{{ session.id }}/restore">
+                <button class="btn btn-sm btn-outline-primary" type="submit">Восстановить</button>
+              </form>
+              <form method="post" action="/admin/delivery-sessions/{{ session.id }}/purge">
+                <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Удалить визит №{{ session.id }} навсегда?')">Навсегда</button>
+              </form>
+            </div>
+          </div>
+        {% else %}
+          <div class="empty-state">Удалённых визитов нет</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>

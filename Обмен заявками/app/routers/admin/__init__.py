@@ -30,3 +30,4 @@ from app.routers.admin import demand  # noqa: E402, F401
 from app.routers.admin import exports  # noqa: E402, F401
 from app.routers.admin import history  # noqa: E402, F401
 from app.routers.admin import super_admin  # noqa: E402, F401
+from app.routers.admin import tabs  # noqa: E402, F401

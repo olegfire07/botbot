@@ -1,0 +1,176 @@
+<div class="panel-title">
+  <div>
+    <h2 class="h5 mb-1">История</h2>
+    <p class="text-muted mb-0">Заявки и визиты водителей за выбранный период.</p>
+  </div>
+</div>
+<form class="admin-history-filter history-filter-panel" hx-get="/admin/tabs/history" hx-target="#history" hx-swap="innerHTML">
+  <label class="history-search-field">
+    <span>Поиск</span>
+    <input class="form-control form-control-sm" name="history_q" value="{{ history_q }}" placeholder="№, филиал, пользователь, позиция или причина">
+  </label>
+  <label>
+    <span>С даты</span>
+    <input class="form-control form-control-sm" name="history_date_from" type="date" value="{{ history_date_from }}">
+  </label>
+  <label>
+    <span>По дату</span>
+    <input class="form-control form-control-sm" name="history_date_to" type="date" value="{{ history_date_to }}">
+  </label>
+  <div class="history-filter-actions">
+    <button class="btn btn-sm btn-outline-primary" type="submit">Применить</button>
+    {% if history_filters_active %}
+      <button class="btn btn-sm btn-outline-secondary" type="button" hx-get="/admin/tabs/history" hx-target="#history">Сбросить</button>
+    {% endif %}
+  </div>
+</form>
+{% if history_filters_active %}
+  <div class="history-filter-summary">
+    <strong>Фильтр активен</strong>
+    {% if history_q %}<span>поиск: {{ history_q }}</span>{% endif %}
+    {% if history_date_from or history_date_to %}
+      <span>период: {{ history_date_from or "начало" }} — {{ history_date_to or "сегодня" }}</span>
+    {% endif %}
+  </div>
+{% endif %}
+<div class="row g-3">
+  <div class="col-xl-6">
+    <div class="soft-panel">
+      <div class="history-panel-head">
+        <div>
+          <h3 class="h6 mb-0">Заявки</h3>
+          <span class="small text-muted">Редактирование заявки пересчитывает активные остатки.</span>
+        </div>
+        <span class="history-count">Показано: {{ requests|length }}</span>
+      </div>
+      <div class="scroll-pane history-pane">
+        {% for req in requests %}
+          <div class="history-record history-record-request">
+            <form class="request-edit-form history-record-main" method="post" action="/admin/requests/{{ req.id }}">
+              <div class="history-record-head">
+                <div>
+                  <div class="history-record-title">
+                    <strong>Заявка №{{ req.id }}</strong>
+                    <span class="status-pill">{{ req.status|status_label }}</span>
+                  </div>
+                  <div class="history-record-branch">{{ req.branch.name }}</div>
+                </div>
+                <div class="history-record-meta">
+                  <span>{{ req.created_by.full_name }}</span>
+                  <span>{{ req.created_at|dt }}</span>
+                  <span>{{ req.lines|length }} поз.</span>
+                </div>
+              </div>
+              <label class="request-comment-field history-field">
+                <span>Комментарий</span>
+                <input class="form-control form-control-sm" name="comment" value="{{ req.comment or '' }}" placeholder="Комментарий заявки">
+              </label>
+              <div class="request-lines-editor history-lines-editor">
+                {% for line in req.lines %}
+                  <div class="request-line-editor history-line-editor">
+                    <input type="hidden" name="line_id" value="{{ line.id }}">
+                    <div class="history-line-name">
+                      <strong>{{ line.item.name }}</strong>
+                      <span>{{ line.item.unit }}</span>
+                    </div>
+                    <label class="history-field history-qty-field">
+                      <span>Запрошено</span>
+                      <input class="form-control form-control-sm" name="qty_requested" type="number" min="0.001" step="0.001" value="{{ line.qty_requested|qty }}" required>
+                    </label>
+                    <label class="history-field history-comment-inline">
+                      <span>Комментарий строки</span>
+                      <input class="form-control form-control-sm" name="line_comment" value="{{ line.comment or '' }}" placeholder="Без комментария">
+                    </label>
+                  </div>
+                {% endfor %}
+              </div>
+              <div class="history-record-actions">
+                <button class="btn btn-sm btn-outline-primary" type="submit">Сохранить изменения</button>
+              </div>
+            </form>
+            <form class="history-record-delete" method="post" action="/admin/requests/{{ req.id }}/delete">
+              <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Удалить заявку №{{ req.id }}? Остатки будут пересчитаны.')">Удалить заявку</button>
+            </form>
+          </div>
+        {% else %}
+          <div class="empty-state empty-state-rich">
+            <strong>{% if history_filters_active %}Заявок по фильтру нет{% else %}Заявок пока нет{% endif %}</strong>
+            <span>{% if history_filters_active %}Измените поиск или период.{% else %}Когда товаровед создаст заявку, она появится здесь.{% endif %}</span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-6">
+    <div class="soft-panel">
+      <div class="history-panel-head">
+        <div>
+          <h3 class="h6 mb-0">Визиты</h3>
+          <span class="small text-muted">Редактирование визита пересчитывает доставку и остатки.</span>
+        </div>
+        <span class="history-count">Показано: {{ sessions|length }}</span>
+      </div>
+      <div class="scroll-pane history-pane">
+        {% for session in sessions %}
+          <div class="history-record history-record-visit">
+            <form class="request-edit-form delivery-edit-form history-record-main" method="post" action="/admin/delivery-sessions/{{ session.id }}">
+              <div class="history-record-head">
+                <div>
+                  <div class="history-record-title">
+                    <strong>Визит №{{ session.id }}</strong>
+                    <span class="status-pill">{{ session.status|status_label }}</span>
+                  </div>
+                  <div class="history-record-branch">{{ session.branch.name }}</div>
+                </div>
+                <div class="history-record-meta">
+                  <span>{{ session.driver.full_name }}</span>
+                  <span>{{ session.started_at|dt }}</span>
+                  <span>{{ session.lines|length }} поз.</span>
+                </div>
+              </div>
+              <div class="request-lines-editor history-lines-editor">
+                {% for line in session.lines %}
+                  <div class="delivery-line-editor history-line-editor">
+                    <input type="hidden" name="line_id" value="{{ line.id }}">
+                    <div class="history-line-name">
+                      <strong>{{ line.item.name }}</strong>
+                      <span>{{ line.item.unit }} · было {{ line.qty_before|qty }} · осталось {{ line.qty_after|qty }}</span>
+                    </div>
+                    <label class="history-field history-qty-field">
+                      <span>Доставлено</span>
+                      <input class="form-control form-control-sm" name="qty_delivered_now" type="number" min="0" max="{{ line.qty_before|qty }}" step="0.001" value="{{ line.qty_delivered_now|qty }}" required>
+                    </label>
+                    <span class="history-result-pill">{{ line.result_status|status_label }}</span>
+                    <label class="history-field history-delivery-reason">
+                      <span>Причина недовоза</span>
+                      <input class="form-control form-control-sm delivery-reason-admin" name="shortage_reason" value="{{ line.shortage_reason or '' }}" maxlength="500" placeholder="Если доставили не всё">
+                    </label>
+                  </div>
+                {% endfor %}
+              </div>
+              <div class="history-record-actions">
+                <button class="btn btn-sm btn-outline-primary" type="submit">Сохранить изменения</button>
+              </div>
+            </form>
+            <form class="history-record-delete" method="post" action="/admin/delivery-sessions/{{ session.id }}/delete">
+              <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Удалить визит №{{ session.id }} из истории и отчётов? Остатки будут пересчитаны.')">Удалить визит</button>
+            </form>
+          </div>
+        {% else %}
+          <div class="empty-state empty-state-rich">
+            <strong>{% if history_filters_active %}Визитов по фильтру нет{% else %}Визитов пока нет{% endif %}</strong>
+            <span>{% if history_filters_active %}Измените поиск или период.{% else %}Когда водитель откроет визит, он появится здесь.{% endif %}</span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% if has_more %}
+<div class="text-center mt-3 mb-4">
+  <button class="btn btn-outline-primary" hx-get="/admin/tabs/history?limit={{ limit + 100 }}&history_q={{ history_q or '' }}&history_date_from={{ history_date_from or '' }}&history_date_to={{ history_date_to or '' }}" hx-target="#history" hx-indicator="this">
+    <span class="htmx-indicator spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+    Показать ещё
+  </button>
+</div>
+{% endif %}

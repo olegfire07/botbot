@@ -1,0 +1,140 @@
+<div class="panel-title">
+  <div>
+    <h2 class="h5 mb-1">Справочники</h2>
+    <p class="text-muted mb-0">Подразделения и пользователи.</p>
+  </div>
+</div>
+<div class="row g-3">
+  <div class="col-12">
+    <div class="soft-panel">
+      <div class="panel-title compact">
+        <div>
+          <h3 class="h6 mb-1">Подразделения</h3>
+          <div class="small text-muted">Всего: {{ branches|length }}</div>
+        </div>
+      </div>
+      <form class="admin-inline-form compact-form" method="post" action="/admin/branches">
+        <input class="form-control" name="name" placeholder="Название" required>
+        <input class="form-control" name="address" placeholder="Адрес">
+        <button class="btn btn-primary" type="submit">Добавить</button>
+      </form>
+      <div class="directory-tools">
+        <input class="form-control" data-filter-target="branches-window" placeholder="Найти подразделение">
+      </div>
+      <div id="branches-window" class="scroll-pane directory-pane">
+        {% for branch in branches %}
+          <div class="admin-row" data-filter-row data-search="{{ branch.name }} {{ branch.address or '' }}">
+            <form class="directory-edit-form branch-edit-form" method="post" action="/admin/branches/{{ branch.id }}">
+              <input class="form-control form-control-sm" name="name" value="{{ branch.name }}" required>
+              <input class="form-control form-control-sm" name="address" value="{{ branch.address or '' }}" placeholder="Адрес">
+              <button class="btn btn-sm btn-outline-primary" type="submit">Сохранить</button>
+            </form>
+            <div class="row-actions">
+              <span class="status-dot {% if branch.is_active %}is-active{% endif %}"></span>
+              <form method="post" action="/admin/branches/{{ branch.id }}/toggle">
+                <button class="btn btn-sm btn-outline-secondary" type="submit">{{ "Отключить" if branch.is_active else "Включить" }}</button>
+              </form>
+              {% if is_super_admin %}
+                <form method="post" action="/admin/branches/{{ branch.id }}/delete">
+                  <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Удалить подразделение «{{ branch.name }}» из рабочих списков? Активные потребности будут отменены.')">Удалить</button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="soft-panel">
+      <div class="panel-title compact">
+        <div>
+          <h3 class="h6 mb-1">Пользователи</h3>
+          <div class="small text-muted">Всего: {{ users|length }}</div>
+        </div>
+      </div>
+      <form class="admin-inline-form user-form" method="post" action="/admin/users">
+        <input class="form-control" name="full_name" placeholder="ФИО" required>
+        <input class="form-control" name="login" placeholder="Логин" required>
+        <input class="form-control" name="password" type="password" placeholder="Пароль" required>
+        <select class="form-select" name="role">
+          <option value="appraiser">товаровед</option>
+          <option value="driver">водитель</option>
+          <option value="admin">администратор</option>
+        </select>
+        <select class="form-select" name="branch_id">
+          <option value="">Без подразделения</option>
+          {% for branch in branches if branch.is_active %}
+            <option value="{{ branch.id }}">{{ branch.name }}</option>
+          {% endfor %}
+        </select>
+        <button class="btn btn-primary" type="submit">Добавить</button>
+      </form>
+      <div class="directory-tools">
+        <input class="form-control" data-filter-target="users-window" placeholder="Найти пользователя">
+      </div>
+      <div id="users-window" class="scroll-pane directory-pane">
+        {% for user in users %}
+          <div class="admin-row user-admin-row" data-filter-row data-search="{{ user.full_name }} {{ user.login or '' }} {{ user.role.value }} {{ user.branch.name if user.branch else '' }}">
+            <form class="user-edit-card" method="post" action="/admin/users/{{ user.id }}">
+              <div class="user-edit-head">
+                <div>
+                  <div class="row-title">{{ user.full_name }}</div>
+                  <div class="small text-muted">{{ user.login or "без логина" }} · {{ user.role.value }}{% if user.is_super_admin %} · super{% endif %} · {{ user.branch.name if user.branch else "без подразделения" }}</div>
+                </div>
+                <span class="status-pill {% if user.is_active %}is-active{% endif %}">{{ "активен" if user.is_active else "отключён" }}</span>
+              </div>
+              <div class="user-edit-fields">
+                <label>
+                  <span>ФИО</span>
+                  <input class="form-control form-control-sm" name="full_name" value="{{ user.full_name }}" required>
+                </label>
+                <label>
+                  <span>Логин</span>
+                  <input class="form-control form-control-sm" name="login" value="{{ user.login or '' }}" required>
+                </label>
+                <label>
+                  <span>Роль</span>
+                  <select class="form-select form-select-sm" name="role">
+                    <option value="appraiser" {% if user.role.value == "appraiser" %}selected{% endif %}>товаровед</option>
+                    <option value="driver" {% if user.role.value == "driver" %}selected{% endif %}>водитель</option>
+                    <option value="admin" {% if user.role.value == "admin" %}selected{% endif %}>администратор</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Подразделение</span>
+                  <select class="form-select form-select-sm" name="branch_id">
+                    <option value="">Без подразделения</option>
+                    {% for branch in branches if branch.is_active or (user.branch and branch.id == user.branch.id) %}
+                      <option value="{{ branch.id }}" {% if user.branch and branch.id == user.branch.id %}selected{% endif %}>{{ branch.name }}</option>
+                    {% endfor %}
+                  </select>
+                </label>
+              </div>
+              <button class="btn btn-sm btn-outline-primary" type="submit">Сохранить изменения</button>
+            </form>
+            <div class="user-action-card">
+              <form class="password-reset-form" method="post" action="/admin/users/{{ user.id }}/password">
+                <input class="form-control form-control-sm" name="password" type="password" placeholder="Новый пароль" required>
+                <button class="btn btn-sm btn-outline-primary" type="submit">Сбросить</button>
+              </form>
+              <form method="post" action="/admin/users/{{ user.id }}/toggle">
+                <button class="btn btn-sm btn-outline-secondary" type="submit">{{ "Отключить" if user.is_active else "Включить" }}</button>
+              </form>
+              {% if is_super_admin and user.id != current_user.id %}
+                <form method="post" action="/admin/users/{{ user.id }}/delete">
+                  <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Удалить пользователя «{{ user.full_name }}»? Войти под ним больше нельзя будет.')">Удалить</button>
+                </form>
+              {% endif %}
+              {% if is_super_admin and user.id != current_user.id %}
+                <form method="post" action="/admin/users/{{ user.id }}/super-toggle">
+                  <button class="btn btn-sm btn-outline-secondary" type="submit">{{ "Снять super" if user.is_super_admin else "Дать super" }}</button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>

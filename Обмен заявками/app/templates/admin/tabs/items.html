@@ -1,0 +1,38 @@
+<div class="panel-title">
+  <div>
+    <h2 class="h5 mb-1">Позиции и ориентировочные цены</h2>
+    <p class="text-muted mb-0">Всего позиций: {{ items|length }}. Цена нужна для управленческой оценки затрат.</p>
+  </div>
+</div>
+<form class="admin-inline-form" method="post" action="/admin/items">
+  <input class="form-control" name="name" placeholder="Название" required>
+  <input class="form-control" name="unit" placeholder="Ед. изм." required>
+  <input class="form-control" name="unit_cost" type="number" min="0" step="0.01" placeholder="Цена за ед.">
+  <button class="btn btn-primary" type="submit">Добавить</button>
+</form>
+<div class="directory-tools">
+  <input class="form-control" data-filter-target="items-window" placeholder="Найти позицию">
+</div>
+<div id="items-window" class="scroll-pane item-pane">
+  {% for item in items %}
+    <div class="admin-row item-row" data-filter-row data-search="{{ item.name }} {{ item.unit }}">
+      <form class="directory-edit-form item-edit-form" method="post" action="/admin/items/{{ item.id }}">
+        <input class="form-control form-control-sm" name="name" value="{{ item.name }}" required>
+        <input class="form-control form-control-sm" name="unit" value="{{ item.unit }}" required>
+        <input class="form-control form-control-sm" name="unit_cost" type="number" min="0" step="0.01" value="{{ item.unit_cost|qty }}">
+        <button class="btn btn-sm btn-outline-primary" type="submit">Сохранить</button>
+      </form>
+      <div class="row-actions">
+        <span class="status-dot {% if item.is_active %}is-active{% endif %}" title="{{ 'активно' if item.is_active else 'отключено' }}"></span>
+        <form method="post" action="/admin/items/{{ item.id }}/toggle">
+          <button class="btn btn-sm btn-outline-secondary" type="submit">{{ "Отключить" if item.is_active else "Включить" }}</button>
+        </form>
+        {% if is_super_admin %}
+          <form method="post" action="/admin/items/{{ item.id }}/delete">
+            <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Удалить позицию «{{ item.name }}» из рабочих списков? Активные потребности по ней будут отменены.')">Удалить</button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  {% endfor %}
+</div>

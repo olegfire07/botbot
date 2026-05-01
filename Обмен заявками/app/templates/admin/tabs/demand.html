@@ -1,0 +1,44 @@
+<div class="panel-title">
+  <div>
+    <h2 class="h5 mb-1">Активные потребности</h2>
+    <p class="text-muted mb-0">Сводный остаток, который видит водитель.</p>
+  </div>
+  <form class="admin-filter-form" hx-get="/admin/tabs/demand" hx-target="#demand" hx-swap="innerHTML">
+    <input class="form-control form-control-sm" name="demand_q" value="{{ demand_q }}" placeholder="Филиал, адрес или позиция">
+    <button class="btn btn-sm btn-outline-primary" type="submit">Найти</button>
+    {% if demand_q %}
+      <button class="btn btn-sm btn-outline-secondary" type="button" hx-get="/admin/tabs/demand" hx-target="#demand">Сбросить</button>
+    {% endif %}
+  </form>
+</div>
+<div class="scroll-pane table-pane table-responsive">
+  <table class="table align-middle compact-table">
+    <thead><tr><th>Подразделение</th><th>Позиция</th><th>Запрошено</th><th>Доставлено</th><th>Остаток</th><th>Оценка</th><th>Статус</th>{% if is_super_admin %}<th></th>{% endif %}</tr></thead>
+    <tbody>
+    {% for line in demand_lines %}
+      <tr>
+        <td>{{ line.branch.name }}</td>
+        <td>{{ line.item.name }}</td>
+        <td>{{ line.qty_total_requested|qty }}</td>
+        <td>{{ line.qty_total_delivered|qty }}</td>
+        <td><strong class="{% if line.qty_remaining %}text-danger{% endif %}">{{ line.qty_remaining|qty }}</strong></td>
+        <td>{{ (line.qty_remaining * line.item.unit_cost)|money }} ₽</td>
+        <td>{{ line.status|status_label }}</td>
+        {% if is_super_admin %}
+          <td>
+            <form method="post" action="/admin/demand-lines/{{ line.id }}/delete">
+              <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Удалить эту активную потребность? Водитель перестанет её видеть.')">Удалить</button>
+            </form>
+          </td>
+        {% endif %}
+      </tr>
+    {% else %}
+      <tr>
+        <td colspan="{{ 8 if is_super_admin else 7 }}" class="text-muted">
+          {% if demand_q %}По запросу «{{ demand_q }}» активной потребности нет.{% else %}Активной потребности нет.{% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
