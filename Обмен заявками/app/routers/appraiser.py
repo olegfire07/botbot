@@ -1,8 +1,9 @@
+import logging
 import secrets
 from decimal import Decimal, InvalidOperation
 from urllib.parse import quote
 
-from fastapi import APIRouter, Depends, Form, Request
+from fastapi import APIRouter, BackgroundTasks, Depends, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import or_, select
@@ -15,7 +16,8 @@ from app.schemas import RequestLineInput
 from app.services.demand_service import get_active_demand_lines
 from app.services.request_service import RequestValidationError, create_request
 from app.services.websocket_service import manager
-import asyncio
+
+logger = logging.getLogger(__name__)
 
 
 router = APIRouter(prefix="/appraiser", tags=["appraiser"])
@@ -240,6 +242,7 @@ def new_request_form(
 @router.post("/requests", response_class=HTMLResponse)
 async def submit_request(
     request: Request,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: User = Depends(require_roles(UserRole.appraiser)),
     _: None = Depends(require_csrf),
@@ -281,13 +284,15 @@ async def submit_request(
         )
 
     try:
-        create_request(db, user_id, branch_id, comment, lines)
+        new_request = create_request(db, user_id, branch_id, comment, lines)
+        logger.info("Request #%d created by user %d for branch %d", new_request.id, user_id, branch_id)
         branch = db.get(Branch, branch_id)
         if branch:
-            asyncio.create_task(manager.broadcast_to_roles(
-                ["driver", "admin"], 
-                {"type": "new_request", "branch_id": branch.id, "message": f"Новая заявка: {branch.name}"}
-            ))
+            background_tasks.add_task(
+                manager.broadcast_to_roles,
+                ["driver", "admin"],
+                {"type": "new_request", "branch_id": branch.id, "message": f"Новая заявка: {branch.name}"},
+            )
     except RequestValidationError as exc:
         return RedirectResponse(
             f"/appraiser/requests/new?user_id={user_id}&branch_id={branch_id}&error={quote(str(exc))}",

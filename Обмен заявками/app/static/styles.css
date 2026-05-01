@@ -1038,10 +1038,10 @@ h1,h2,h3,h4,h5,h6 {
   font-weight: 800;
 }
 .history-record {
-  display: grid;
-  grid-template-columns: minmax(0,1fr) auto;
+  display: flex;
+  flex-wrap: wrap;
   gap: .65rem;
-  align-items: end;
+  align-items: flex-end;
   margin-bottom: .55rem;
   padding: .75rem;
   border: 1px solid var(--line);
@@ -1054,20 +1054,24 @@ h1,h2,h3,h4,h5,h6 {
   box-shadow: var(--shadow);
 }
 .history-record-main {
+  flex: 1 1 260px;
   min-width: 0;
-  overflow: hidden;
 }
 .history-record-delete {
-  align-self: end;
+  flex: 0 0 auto;
+  align-self: flex-end;
   margin: 0;
 }
 .history-record-head {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: .6rem;
-  align-items: start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem .6rem;
+  align-items: flex-start;
   min-width: 0;
-  overflow: hidden;
+}
+.history-record-head > div:first-child {
+  flex: 1 1 160px;
+  min-width: 0;
 }
 .history-record-title {
   display: flex;
@@ -1084,9 +1088,9 @@ h1,h2,h3,h4,h5,h6 {
   font-size: .84rem;
   overflow-wrap: break-word;
   word-break: normal;
-  min-width: 0;
 }
 .history-record-meta {
+  flex: 0 1 auto;
   display: flex;
   justify-content: flex-end;
   gap: .25rem;
@@ -1099,7 +1103,6 @@ h1,h2,h3,h4,h5,h6 {
   color: var(--ink2);
   font-size: .7rem;
   font-weight: 700;
-  white-space: nowrap;
 }
 .request-edit-form {
   display: grid;
@@ -1341,10 +1344,6 @@ h1,h2,h3,h4,h5,h6 {
   .history-filter-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .history-panel-head { flex-direction: column; gap: .35rem; }
   .history-count { align-self: flex-start; }
-  .history-record,
-  .history-record-head {
-    grid-template-columns: 1fr;
-  }
   .history-record-delete .btn,
   .history-record-actions .btn {
     width: 100%;

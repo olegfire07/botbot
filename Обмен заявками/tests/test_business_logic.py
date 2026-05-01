@@ -16,7 +16,8 @@ from app.models import (
     User,
     UserRole,
 )
-from app.routers.admin import _adjust_active_demand, _request_has_delivery
+from app.routers.admin.demand import _adjust_active_demand
+from app.routers.admin._helpers import _request_has_delivery
 from app.schemas import DeliveryLineInput, RequestLineInput
 from app.services.delivery_service import (
     DeliveryValidationError,

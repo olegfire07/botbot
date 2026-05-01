@@ -1,4 +1,6 @@
+import logging
 import os
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse, RedirectResponse
@@ -8,10 +10,18 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from app.auth import AuthRedirect, csrf_token
 from app.database import Base, PROJECT_ROOT, SessionLocal, apply_lightweight_migrations, engine
-from app.models import DemandStatus, DeliveryResultStatus, DeliverySessionStatus, RequestStatus
+from app.models import (
+    DemandStatus,
+    DeliveryResultStatus,
+    DeliverySessionStatus,
+    RequestStatus,
+    User,
+)
 from app.routers import admin, appraiser, driver, home
 from app.seed import seed_data
 from app.services.websocket_service import manager
+
+logger = logging.getLogger(__name__)
 
 
 def _session_secret() -> str:
@@ -24,7 +34,21 @@ def _session_secret() -> str:
     return "local-dev-change-me"
 
 
-app = FastAPI(title="Фианит Снаб")
+@asynccontextmanager
+async def lifespan(app_instance: FastAPI):
+    logger.info("Starting up: creating tables and applying migrations")
+    Base.metadata.create_all(bind=engine)
+    apply_lightweight_migrations()
+    db = SessionLocal()
+    try:
+        seed_data(db)
+    finally:
+        db.close()
+    logger.info("Startup complete")
+    yield
+
+
+app = FastAPI(title="Фианит Снаб", lifespan=lifespan)
 app.add_middleware(
     SessionMiddleware,
     secret_key=_session_secret(),
@@ -114,10 +138,9 @@ async def websocket_endpoint(websocket: WebSocket):
     if not session or not session.get("user_id"):
         await websocket.close(code=1008)
         return
-        
+
     db = SessionLocal()
     try:
-        from app.models import User
         user_id = int(session["user_id"])
         user = db.get(User, user_id)
         if not user or not user.is_active or user.is_deleted:
@@ -132,19 +155,10 @@ async def websocket_endpoint(websocket: WebSocket):
         db.close()
 
     await manager.connect(websocket, role)
+    logger.debug("WebSocket connected: user_id=%s role=%s", user_id, role)
     try:
         while True:
             await websocket.receive_text()
     except WebSocketDisconnect:
         manager.disconnect(websocket, role)
-
-
-@app.on_event("startup")
-def on_startup() -> None:
-    Base.metadata.create_all(bind=engine)
-    apply_lightweight_migrations()
-    db = SessionLocal()
-    try:
-        seed_data(db)
-    finally:
-        db.close()
+        logger.debug("WebSocket disconnected: user_id=%s role=%s", user_id, role)
