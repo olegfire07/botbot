@@ -1,4 +1,5 @@
 import secrets
+from decimal import Decimal, InvalidOperation
 from urllib.parse import quote
 
 from fastapi import APIRouter, Depends, Form, Request
@@ -15,7 +16,6 @@ from app.services.demand_service import get_active_demand_lines
 from app.services.request_service import RequestValidationError, create_request
 from app.services.websocket_service import manager
 import asyncio
-from starlette.concurrency import run_in_threadpool
 
 
 router = APIRouter(prefix="/appraiser", tags=["appraiser"])
@@ -78,12 +78,14 @@ def appraiser_dashboard(
     else:
         selected_branch_id = selected.branch_id if selected else None
         selected_branch_for_list = db.get(Branch, selected_branch_id) if selected_branch_id else None
-        if selected_branch_for_list and selected_branch_for_list.is_deleted:
+        if selected_branch_for_list and (
+            selected_branch_for_list.is_deleted or not selected_branch_for_list.is_active
+        ):
             selected_branch_for_list = None
         branches = [selected_branch_for_list] if selected_branch_for_list else []
 
     selected_branch = db.get(Branch, selected_branch_id) if selected_branch_id else None
-    if selected_branch and selected_branch.is_deleted:
+    if selected_branch and (selected_branch.is_deleted or not selected_branch.is_active):
         selected_branch = None
         selected_branch_id = None
     if (
@@ -137,6 +139,7 @@ def new_request_form(
     request: Request,
     user_id: int | None = None,
     branch_id: int | None = None,
+    repeat_request_id: int | None = None,
     branch_q: str = "",
     search_mode: str = "select",
     error: str | None = None,
@@ -170,13 +173,30 @@ def new_request_form(
         branch_q = ""
         selected_branch_id = appraiser.branch_id
         selected_branch_for_list = db.get(Branch, selected_branch_id) if selected_branch_id else None
-        if selected_branch_for_list and selected_branch_for_list.is_deleted:
+        if selected_branch_for_list and (
+            selected_branch_for_list.is_deleted or not selected_branch_for_list.is_active
+        ):
             selected_branch_for_list = None
         branches = [selected_branch_for_list] if selected_branch_for_list else []
     selected_branch = db.get(Branch, selected_branch_id) if selected_branch_id else None
-    if selected_branch and selected_branch.is_deleted:
+    if selected_branch and (selected_branch.is_deleted or not selected_branch.is_active):
         selected_branch = None
         selected_branch_id = None
+    repeat_request = None
+    if repeat_request_id:
+        repeat_query = (
+            select(GoodsRequest)
+            .where(
+                GoodsRequest.id == repeat_request_id,
+                GoodsRequest.is_deleted.is_(False),
+            )
+            .options(selectinload(GoodsRequest.lines).selectinload(RequestLine.item))
+        )
+        if not is_admin:
+            repeat_query = repeat_query.where(GoodsRequest.created_by_user_id == current_user.id)
+        repeat_request = db.scalar(repeat_query)
+        if repeat_request and repeat_request.branch_id != selected_branch_id:
+            repeat_request = None
     if (
         is_admin
         and selected_branch
@@ -184,6 +204,10 @@ def new_request_form(
         and search_mode != "search"
     ):
         branches.insert(0, selected_branch)
+    active_demand_by_item = {
+        line.item_id: line
+        for line in (get_active_demand_lines(db, selected_branch_id) if selected_branch_id else [])
+    }
     items = list(
         db.scalars(
             select(Item)
@@ -204,6 +228,9 @@ def new_request_form(
             "branch_q": branch_q,
             "search_mode": search_mode,
             "items": items,
+            "active_demand_by_item": active_demand_by_item,
+            "repeat_request": repeat_request,
+            "repeat_lines": repeat_request.lines if repeat_request else [],
             "form_token": form_token,
             "error": error,
         },
@@ -239,8 +266,8 @@ async def submit_request(
             continue
         try:
             item_id = int(item_id_raw or 0)
-            qty = float(str(qty_raw or "0").replace(",", "."))
-        except ValueError:
+            qty_decimal = Decimal(str(qty_raw or "0").replace(",", "."))
+        except (ValueError, InvalidOperation):
             return RedirectResponse(
                 f"/appraiser/requests/new?user_id={user_id}&branch_id={branch_id}&error={quote('Количество должно быть числом')}",
                 status_code=303,
@@ -248,14 +275,14 @@ async def submit_request(
         lines.append(
             RequestLineInput(
                 item_id=item_id,
-                qty_requested=qty,
+                qty_requested=qty_decimal,
                 comment=str(comment_raw or "").strip() or None,
             )
         )
 
     try:
-        await run_in_threadpool(create_request, db, user_id, branch_id, comment, lines)
-        branch = await run_in_threadpool(db.get, Branch, branch_id)
+        create_request(db, user_id, branch_id, comment, lines)
+        branch = db.get(Branch, branch_id)
         if branch:
             asyncio.create_task(manager.broadcast_to_roles(
                 ["driver", "admin"], 

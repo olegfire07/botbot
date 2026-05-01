@@ -2,5 +2,10 @@
 __pycache__/
 *.pyc
 sklad_requests.db
+sklad_requests.db-*
+*.db-shm
+*.db-wal
 sklad_requests_backup_*.db
+exports/
+*.xlsx
 .DS_Store

@@ -177,6 +177,7 @@ class DeliverySessionLine(Base):
     result_status: Mapped[DeliveryResultStatus] = mapped_column(
         Enum(DeliveryResultStatus), nullable=False
     )
+    shortage_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     delivery_session: Mapped[DeliverySession] = relationship(back_populates="lines")
     demand_line: Mapped[DemandLine] = relationship(back_populates="delivery_lines")

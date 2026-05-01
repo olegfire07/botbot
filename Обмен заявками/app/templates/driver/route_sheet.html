@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Печатный маршрут{% endblock %}
+{% block content %}
+<div class="route-print-toolbar">
+  <div>
+    <h1 class="h4 mb-1">Печатный маршрут</h1>
+    <p class="text-muted mb-0" style="font-size:.84rem">
+      {% if selected %}Водитель: {{ selected.full_name }} · {% endif %}
+      сформировано {{ generated_at|dt }}
+    </p>
+  </div>
+  <div class="route-print-actions">
+    <a class="btn btn-outline-secondary btn-sm" href="/driver{% if selected %}?driver_id={{ selected.id }}{% endif %}">Назад</a>
+    <button class="btn btn-primary btn-sm" type="button" onclick="window.print()">Печать</button>
+  </div>
+</div>
+
+<form class="toolbar route-print-filter mb-3" method="get" action="/driver/route-sheet">
+  {% if selected %}
+    <input type="hidden" name="driver_id" value="{{ selected.id }}">
+  {% endif %}
+  <div class="row g-2 align-items-end">
+    <div class="col-md-8">
+      <label class="form-label" for="q">Фильтр подразделений</label>
+      <input class="form-control" id="q" name="q" value="{{ q }}" placeholder="номер или адрес подразделения">
+    </div>
+    <div class="col-md-4">
+      <button class="btn btn-outline-primary w-100" type="submit">Обновить маршрут</button>
+    </div>
+  </div>
+</form>
+
+<section class="route-sheet">
+  <div class="route-sheet-head">
+    <div>
+      <h2 class="h5 mb-1">К доставке сегодня</h2>
+      <p class="text-muted mb-0" style="font-size:.84rem">Только активные остатки по подразделениям.</p>
+    </div>
+    <div class="route-sheet-stamp">Фианит Снаб</div>
+  </div>
+
+  <div class="route-summary route-summary-print">
+    <div>
+      <span>Филиалов</span>
+      <strong>{{ total_branches }}</strong>
+    </div>
+    <div>
+      <span>Позиций</span>
+      <strong>{{ total_positions }}</strong>
+    </div>
+    <div>
+      <span>К доставке</span>
+      <strong>{{ total_qty|qty }} ед.</strong>
+    </div>
+  </div>
+
+  <div class="route-stop-list">
+    {% for group in route_groups %}
+      <article class="route-stop">
+        <div class="route-stop-head">
+          <div>
+            <h3>{{ loop.index }}. {{ group.branch.name }}</h3>
+            <p>{{ group.branch.address or "Адрес не указан" }}</p>
+          </div>
+          <div class="route-stop-meta">
+            <strong>{{ group.qty|qty }} ед.</strong>
+            <span>{{ group.positions }} поз.</span>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-sm route-sheet-table align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Позиция</th>
+                <th class="text-end">Остаток</th>
+                <th>Ед.</th>
+                <th class="route-print-note">Отметка</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for line in group.lines %}
+                <tr>
+                  <td>{{ line.item.name }}</td>
+                  <td class="text-end"><strong>{{ line.qty_remaining|qty }}</strong></td>
+                  <td>{{ line.item.unit }}</td>
+                  <td class="route-print-note"></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="route-stop-actions">
+          <a class="btn btn-sm btn-outline-primary" href="/driver/branch/{{ group.branch.id }}{% if selected %}?driver_id={{ selected.id }}{% endif %}">
+            Открыть доставку
+          </a>
+        </div>
+      </article>
+    {% else %}
+      <div class="empty-state">Активной потребности по маршруту нет</div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

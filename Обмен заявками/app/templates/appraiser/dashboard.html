@@ -3,15 +3,36 @@
 {% block content %}
 <div class="page-header">
   <div>
-    <h1 class="h4 mb-1">📋 Товаровед</h1>
+    <h1 class="h4 mb-1">Товаровед</h1>
     <p class="text-muted mb-0" style="font-size:.84rem">Заявка увеличивает активную потребность подразделения</p>
   </div>
   {% if selected and selected_branch %}
-    <a class="btn btn-primary" href="/appraiser/requests/new{% if is_admin %}?user_id={{ selected.id }}&branch_id={{ selected_branch.id if selected_branch else '' }}&branch_q={{ branch_q }}{% endif %}">
+    <a class="btn btn-primary" href="/appraiser/requests/new{% if is_admin %}?user_id={{ selected.id }}&branch_id={{ selected_branch.id if selected_branch else '' }}&branch_q={{ branch_q|urlencode }}{% endif %}">
       ＋ Создать заявку
     </a>
   {% endif %}
 </div>
+
+<section class="role-guide" data-guide-id="appraiser-dashboard" aria-label="Подсказка для товароведа">
+  <div class="role-guide-title">
+    <strong>Как подать заявку без дублей</strong>
+    <span>Работайте только с фактической недостачей по своему подразделению.</span>
+  </div>
+  <div class="role-guide-steps">
+    <div class="role-guide-step">
+      <strong>1. Проверьте остаток</strong>
+      <span>В активной потребности уже видно, что ждёт доставки.</span>
+    </div>
+    <div class="role-guide-step">
+      <strong>2. Добавьте позиции</strong>
+      <span>Одна строка — одна позиция и нужное количество.</span>
+    </div>
+    <div class="role-guide-step">
+      <strong>3. Используйте историю</strong>
+      <span>Кнопка «Повторить» берёт строки прошлой заявки как шаблон.</span>
+    </div>
+  </div>
+</section>
 
 <!-- Фильтры -->
 <form class="toolbar" method="get" action="/appraiser">
@@ -19,20 +40,20 @@
   <div class="row g-2">
     <div class="col-lg-4">
       {% if is_admin %}
-        <label class="form-label" for="user_id">👤 Товаровед</label>
+        <label class="form-label" for="user_id">Товаровед</label>
         <select class="form-select" id="user_id" name="user_id" onchange="setMode('select'); this.form.submit()">
           {% for user in appraisers %}
             <option value="{{ user.id }}" {% if selected and user.id == selected.id %}selected{% endif %}>{{ user.full_name }}</option>
           {% endfor %}
         </select>
       {% else %}
-        <label class="form-label">👤 Товаровед</label>
+        <label class="form-label">Товаровед</label>
         <div class="form-control bg-light">{{ selected.full_name if selected else "—" }}</div>
       {% endif %}
     </div>
     <div class="col-lg-4">
       {% if is_admin %}
-        <label class="form-label" for="branch_q">🔍 Поиск подразделения</label>
+        <label class="form-label" for="branch_q">Поиск подразделения</label>
         <input class="form-control" id="branch_q" name="branch_q" value="{{ branch_q }}" placeholder="номер, улица, район" onkeydown="onEnter(event)">
       {% else %}
         <label class="form-label">Роль</label>
@@ -40,7 +61,7 @@
       {% endif %}
     </div>
     <div class="col-lg-4">
-      <label class="form-label" for="branch_id">🏢 Подразделение</label>
+      <label class="form-label" for="branch_id">Подразделение</label>
       <select class="form-select" id="branch_id" name="branch_id" onchange="setMode('select'); this.form.submit()" {% if not branches %}disabled{% endif %}>
         {% for branch in branches %}
           <option value="{{ branch.id }}" {% if selected_branch and branch.id == selected_branch.id %}selected{% endif %}>
@@ -55,7 +76,7 @@
       <button class="btn btn-outline-primary btn-sm" type="submit" onclick="setMode('search')">Найти</button>
     {% endif %}
     {% if branch_q %}
-      <a class="btn btn-outline-secondary btn-sm" href="/appraiser?user_id={{ selected.id if selected else '' }}&branch_id={{ selected_branch.id if selected_branch else '' }}">✕ Сбросить</a>
+      <a class="btn btn-outline-secondary btn-sm" href="/appraiser?user_id={{ selected.id if selected else '' }}&branch_id={{ selected_branch.id if selected_branch else '' }}">Сбросить</a>
     {% endif %}
   </div>
   {% if branch_q %}
@@ -68,19 +89,24 @@
     </div>
   {% endif %}
   {% if selected_branch %}
-    <div class="branch-pill">📍 {{ selected_branch.name }}{% if selected_branch.address %} <span class="text-muted">· {{ selected_branch.address }}</span>{% endif %}</div>
+    <div class="branch-pill">{{ selected_branch.name }}{% if selected_branch.address %} <span class="text-muted">· {{ selected_branch.address }}</span>{% endif %}</div>
   {% endif %}
 </form>
 
 <!-- Активная потребность -->
 <section class="section-block">
   <div class="section-heading">
-    <h2 class="h6 mb-0">📦 Активная потребность</h2>
+    <h2 class="h6 mb-0">Активная потребность</h2>
+    {% if active_demand %}
+      <div class="section-filter">
+        <input class="form-control form-control-sm" data-filter-target="appraiser-demand-list" placeholder="Найти позицию">
+      </div>
+    {% endif %}
   </div>
   {% if active_demand %}
-    <div class="row g-2">
+    <div id="appraiser-demand-list" class="row g-2">
       {% for line in active_demand %}
-        <div class="col-md-6 col-xl-4">
+        <div class="col-md-6 col-xl-4" data-filter-row data-search="{{ line.item.name }} {{ line.item.unit }} {{ line.status|status_label }} {{ line.qty_remaining|qty }}">
           <div class="demand-card">
             <div class="d-flex justify-content-between gap-2 align-items-start">
               <div>
@@ -97,6 +123,9 @@
           </div>
         </div>
       {% endfor %}
+      <div class="col-12 client-filter-empty" data-filter-empty hidden>
+        <div class="empty-state">По этому запросу позиций нет</div>
+      </div>
     </div>
   {% else %}
     <div class="empty-state">Потребности нет</div>
@@ -106,19 +135,29 @@
 <!-- История -->
 <section class="section-block">
   <div class="section-heading">
-    <h2 class="h6 mb-0">📜 История заявок</h2>
+    <h2 class="h6 mb-0">История заявок</h2>
+    {% if requests %}
+      <div class="section-filter">
+        <input class="form-control form-control-sm" data-filter-target="appraiser-request-history" placeholder="Найти в истории">
+      </div>
+    {% endif %}
   </div>
   {% if requests %}
-    <div class="list-group">
+    <div id="appraiser-request-history" class="list-group">
       {% for req in requests %}
-        <div class="list-group-item">
+        <div class="list-group-item" data-filter-row data-search="№{{ req.id }} {{ req.created_at|dt }} {{ req.branch.name }} {{ req.status|status_label }} {{ req.comment or '' }} {% for line in req.lines %}{{ line.item.name }} {{ line.qty_requested|qty }} {{ line.item.unit }} {% endfor %}">
           <div class="d-flex flex-column flex-md-row justify-content-between gap-1">
             <div>
               <strong style="font-size:.88rem">№{{ req.id }}</strong>
               <span class="text-muted" style="font-size:.82rem">{{ req.created_at|dt }} · {{ req.branch.name }}</span>
               {% if req.comment %}<div class="text-muted" style="font-size:.8rem">{{ req.comment }}</div>{% endif %}
             </div>
-            <span class="badge text-bg-secondary align-self-start">{{ req.status|status_label }}</span>
+            <div class="history-actions">
+              <span class="badge text-bg-secondary align-self-start">{{ req.status|status_label }}</span>
+              <a class="btn btn-outline-primary btn-sm" href="/appraiser/requests/new?{% if is_admin %}user_id={{ selected.id }}&{% endif %}branch_id={{ req.branch_id }}&repeat_request_id={{ req.id }}">
+                Повторить
+              </a>
+            </div>
           </div>
           <div class="mt-1">
             {% for line in req.lines %}
@@ -127,6 +166,9 @@
           </div>
         </div>
       {% endfor %}
+      <div class="client-filter-empty" data-filter-empty hidden>
+        <div class="empty-state">По этому запросу заявок нет</div>
+      </div>
     </div>
   {% else %}
     <div class="empty-state">Заявок пока нет</div>

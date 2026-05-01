@@ -3,17 +3,38 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-start mb-4">
   <div>
-    <h1 class="h3 mb-1">📝 Новая заявка</h1>
+    <h1 class="h3 mb-1">Новая заявка</h1>
     <p class="text-muted mb-0">{{ appraiser.full_name }}</p>
   </div>
-  <a class="btn btn-outline-secondary" href="/appraiser{% if is_admin %}?user_id={{ appraiser.id }}&branch_id={{ selected_branch_id }}&branch_q={{ branch_q }}{% endif %}">← Назад</a>
+  <a class="btn btn-outline-secondary" href="/appraiser{% if is_admin %}?user_id={{ appraiser.id }}&branch_id={{ selected_branch_id }}&branch_q={{ branch_q|urlencode }}{% endif %}">← Назад</a>
 </div>
+
+<section class="role-guide" data-guide-id="appraiser-new-request" aria-label="Инструкция по заявке">
+  <div class="role-guide-title">
+    <strong>Заполнение заявки</strong>
+    <span>Система сама прибавит строки к активной потребности подразделения.</span>
+  </div>
+  <div class="role-guide-steps">
+    <div class="role-guide-step">
+      <strong>Позиция</strong>
+      <span>Выберите товар из справочника. Повторы лучше объединять в одну строку.</span>
+    </div>
+    <div class="role-guide-step">
+      <strong>Количество</strong>
+      <span>Можно вводить дробно до 3 знаков: например 1.5 или 0.250.</span>
+    </div>
+    <div class="role-guide-step">
+      <strong>Комментарий</strong>
+      <span>Укажите уточнение, если водителю важно знать деталь по позиции.</span>
+    </div>
+  </div>
+</section>
 
 {% if is_admin %}
   <div class="toolbar mb-3">
     <div class="row g-3">
       <div class="col-lg-6">
-        <label class="form-label" for="branch_search">🔍 Поиск подразделения</label>
+        <label class="form-label" for="branch_search">Поиск подразделения</label>
         <form id="branch-filter-form" method="get" action="/appraiser/requests/new" class="input-group">
           <input type="hidden" name="user_id" value="{{ appraiser.id }}">
           <input type="hidden" name="search_mode" value="search">
@@ -41,7 +62,7 @@
   <input type="hidden" name="user_id" value="{{ appraiser.id }}">
   <input type="hidden" name="form_token" value="{{ form_token }}">
   <div class="mb-3">
-    <label class="form-label" for="branch_id">📍 Подразделение</label>
+    <label class="form-label" for="branch_id">Подразделение</label>
     <select class="form-select" id="branch_id" name="branch_id" required {% if not branches %}disabled{% endif %}>
       {% for branch in branches %}
         <option value="{{ branch.id }}" {% if branch.id == selected_branch_id %}selected{% endif %}>
@@ -51,43 +72,76 @@
     </select>
   </div>
   <div class="mb-3">
-    <label class="form-label" for="comment">💬 Общий комментарий</label>
-    <textarea class="form-control" id="comment" name="comment" rows="2" placeholder="Необязательно"></textarea>
+    <label class="form-label" for="comment">Общий комментарий</label>
+    <textarea class="form-control" id="comment" name="comment" rows="2" placeholder="Необязательно">{% if repeat_request and repeat_request.comment %}{{ repeat_request.comment }}{% endif %}</textarea>
   </div>
 
   <div class="section-heading">
-    <h2 class="h5 mb-0">📦 Строки заявки</h2>
+    <h2 class="h5 mb-0">Строки заявки</h2>
     <button class="btn btn-outline-primary btn-sm" type="button" onclick="addLine()">＋ Добавить</button>
+  </div>
+  <div class="duplicate-warning" id="duplicate-warning" hidden>
+    <span>Одна позиция выбрана несколько раз. Лучше оставить её в одной строке и указать общее количество.</span>
+    <button class="btn btn-sm btn-outline-secondary" type="button" onclick="mergeDuplicateLines()">Объединить дубли</button>
   </div>
 
   <div id="lines" class="vstack gap-3">
+    {% set initial_lines = repeat_lines if repeat_lines else [none] %}
+    {% for initial_line in initial_lines %}
     <div class="request-line">
-      <div>
+      <div class="request-line-field request-line-item">
         <label class="form-label">Позиция</label>
-        <select class="form-select item-select" name="item_id" required onchange="syncSelectedItem(this)" oninput="syncSelectedItem(this)">
+        <input class="form-control item-search" type="search" placeholder="Быстрый поиск по названию или ед. изм." autocomplete="off">
+        <select class="form-select item-select" name="item_id" required>
           <option value="">Выберите позицию</option>
           {% for item in items %}
-            <option value="{{ item.id }}">{{ item.name }} ({{ item.unit }})</option>
+            {% set demand_line = active_demand_by_item.get(item.id) %}
+            <option
+              value="{{ item.id }}"
+              data-search="{{ item.name }} {{ item.unit }}"
+              data-label="{{ item.name }}"
+              data-unit="{{ item.unit }}"
+              data-remaining="{{ demand_line.qty_remaining|qty if demand_line else '' }}"
+              data-requested="{{ demand_line.qty_total_requested|qty if demand_line else '' }}"
+              data-delivered="{{ demand_line.qty_total_delivered|qty if demand_line else '' }}"
+              {% if initial_line and item.id == initial_line.item_id %}selected{% endif %}
+            >
+              {{ item.name }} ({{ item.unit }})
+            </option>
           {% endfor %}
         </select>
+        <div class="item-search-empty text-muted small" hidden>По этому поиску позиций нет</div>
         <div class="selected-item-preview text-muted small mt-1">Позиция не выбрана</div>
       </div>
-      <div>
+      <div class="request-line-field request-line-qty">
         <label class="form-label">Кол-во</label>
-        <input class="form-control" name="qty_requested" type="number" min="0.001" step="0.001" inputmode="decimal" required>
+        {% set initial_qty = initial_line.qty_requested|qty if initial_line else "1" %}
+        <div class="request-qty-stepper">
+          <button class="btn btn-outline-secondary" type="button" data-qty-step="-1">−</button>
+          <input class="form-control" name="qty_requested" type="number" min="0.001" step="0.001" inputmode="decimal" value="{{ initial_qty }}" required>
+          <button class="btn btn-outline-secondary" type="button" data-qty-step="1">+</button>
+        </div>
+        <div class="request-qty-presets" aria-label="Быстрый выбор количества">
+          <button type="button" data-qty-value="1">1</button>
+          <button type="button" data-qty-value="5">5</button>
+          <button type="button" data-qty-value="10">10</button>
+          <button type="button" data-qty-value="20">20</button>
+          <button type="button" data-qty-value="50">50</button>
+        </div>
       </div>
-      <div>
+      <div class="request-line-field request-line-comment">
         <label class="form-label">Комментарий</label>
-        <input class="form-control" name="line_comment" type="text" placeholder="Необязательно">
+        <input class="form-control" name="line_comment" type="text" placeholder="Необязательно" value="{{ initial_line.comment or '' if initial_line else '' }}">
       </div>
-      <div style="align-self:end">
-        <button class="btn btn-outline-danger" type="button" onclick="removeLine(this)">✕</button>
+      <div class="request-line-remove">
+        <button class="btn btn-outline-danger" type="button" onclick="removeLine(this)" aria-label="Удалить строку заявки">✕</button>
       </div>
     </div>
+    {% endfor %}
   </div>
 
-  <div class="mt-4">
-    <button class="btn btn-primary btn-lg" type="submit" data-submitting-text="Отправляем заявку..." {% if not branches %}disabled{% endif %}>💾 Сохранить заявку</button>
+  <div class="request-submit-bar mt-4">
+    <button class="btn btn-primary btn-lg" type="submit" data-submitting-text="Отправляем заявку..." {% if not branches %}disabled{% endif %}>Сохранить заявку</button>
   </div>
 </form>
 {% endblock %}
@@ -96,11 +150,14 @@
   function addLine() {
     const lines = document.getElementById('lines');
     const clone = lines.querySelector('.request-line').cloneNode(true);
-    clone.querySelectorAll('input').forEach(i => i.value = '');
+    clone.querySelectorAll('input').forEach(i => {
+      i.value = i.name === 'qty_requested' ? '1' : '';
+    });
     const select = clone.querySelector('select');
     select.value = '';
-    syncSelectedItem(select);
     lines.appendChild(clone);
+    bindRequestLine(clone);
+    syncSelectedItem(select);
     clone.style.opacity = '0';
     clone.style.transform = 'translateY(8px)';
     requestAnimationFrame(() => {
@@ -116,16 +173,126 @@
       line.style.transition = 'opacity .2s ease, transform .2s ease';
       line.style.opacity = '0';
       line.style.transform = 'translateY(-8px)';
-      setTimeout(() => line.remove(), 200);
+      setTimeout(() => {
+        line.remove();
+        updateDuplicateWarning();
+      }, 200);
     }
   }
   function syncSelectedItem(select) {
     const preview = select.closest('.request-line').querySelector('.selected-item-preview');
     const selected = select.options[select.selectedIndex];
-    preview.textContent = selected && selected.value ? selected.textContent.trim() : 'Позиция не выбрана';
+    if (selected && selected.value) {
+      const unit = selected.dataset.unit || '';
+      const remaining = selected.dataset.remaining;
+      preview.textContent = remaining
+        ? `${selected.dataset.label || selected.textContent.trim()} · уже к доставке: ${remaining} ${unit}`
+        : `${selected.dataset.label || selected.textContent.trim()} · активного остатка сейчас нет`;
+    } else {
+      preview.textContent = 'Позиция не выбрана';
+    }
     preview.classList.toggle('text-muted', !selected || !selected.value);
     preview.classList.toggle('text-primary', Boolean(selected && selected.value));
+    updateDuplicateWarning();
   }
-  document.querySelectorAll('.item-select').forEach(syncSelectedItem);
+  function filterItemOptions(line) {
+    const input = line.querySelector('.item-search');
+    const select = line.querySelector('.item-select');
+    const empty = line.querySelector('.item-search-empty');
+    const query = normalizeSearchText(input.value.trim());
+    let visibleCount = 0;
+    Array.from(select.options).forEach(option => {
+      if (!option.value) {
+        option.hidden = false;
+        return;
+      }
+      const haystack = normalizeSearchText(option.dataset.search || option.textContent);
+      const matches = !query || haystack.includes(query);
+      option.hidden = !matches;
+      if (matches) visibleCount += 1;
+    });
+    if (select.value && select.options[select.selectedIndex]?.hidden) {
+      select.value = '';
+      syncSelectedItem(select);
+    }
+    empty.hidden = !query || visibleCount > 0;
+  }
+  function setQuantity(line, value) {
+    const input = line.querySelector('input[name="qty_requested"]');
+    const parsed = Number.parseFloat(String(value).replace(',', '.'));
+    const nextValue = Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
+    input.value = String(Math.round(nextValue * 1000) / 1000);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  function bindRequestLine(line) {
+    const select = line.querySelector('.item-select');
+    select.addEventListener('change', () => syncSelectedItem(select));
+    const itemSearch = line.querySelector('.item-search');
+    itemSearch.addEventListener('input', () => filterItemOptions(line));
+    filterItemOptions(line);
+    line.querySelectorAll('[data-qty-step]').forEach(button => {
+      button.addEventListener('click', () => {
+        const input = line.querySelector('input[name="qty_requested"]');
+        const currentValue = Number.parseFloat(String(input.value || '1').replace(',', '.')) || 1;
+        setQuantity(line, currentValue + Number.parseFloat(button.dataset.qtyStep));
+      });
+    });
+    line.querySelectorAll('[data-qty-value]').forEach(button => {
+      button.addEventListener('click', () => setQuantity(line, button.dataset.qtyValue));
+    });
+  }
+  function updateDuplicateWarning() {
+    const warning = document.getElementById('duplicate-warning');
+    const selectedValues = Array.from(document.querySelectorAll('.item-select'))
+      .map(select => select.value)
+      .filter(Boolean);
+    const hasDuplicate = new Set(selectedValues).size !== selectedValues.length;
+    warning.hidden = !hasDuplicate;
+    document.querySelectorAll('.item-select').forEach(select => {
+      select.closest('.request-line').classList.toggle(
+        'has-duplicate',
+        Boolean(select.value) && selectedValues.filter(value => value === select.value).length > 1,
+      );
+    });
+  }
+  function parseQty(value) {
+    const parsed = Number.parseFloat(String(value || '0').replace(',', '.'));
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+  function formatQty(value) {
+    return String(Math.round(value * 1000) / 1000);
+  }
+  function mergeDuplicateLines() {
+    const groups = new Map();
+    Array.from(document.querySelectorAll('.request-line')).forEach(line => {
+      const select = line.querySelector('.item-select');
+      if (!select.value) return;
+      if (!groups.has(select.value)) groups.set(select.value, []);
+      groups.get(select.value).push(line);
+    });
+    groups.forEach(lines => {
+      if (lines.length < 2) return;
+      const keeper = lines[0];
+      const qtyInput = keeper.querySelector('input[name="qty_requested"]');
+      const commentInput = keeper.querySelector('input[name="line_comment"]');
+      let totalQty = 0;
+      const comments = [];
+      lines.forEach(line => {
+        totalQty += parseQty(line.querySelector('input[name="qty_requested"]').value);
+        const comment = line.querySelector('input[name="line_comment"]').value.trim();
+        if (comment && !comments.includes(comment)) comments.push(comment);
+      });
+      qtyInput.value = formatQty(totalQty || 1);
+      if (comments.length) commentInput.value = comments.join(' / ');
+      lines.slice(1).forEach(line => line.remove());
+      syncSelectedItem(keeper.querySelector('.item-select'));
+    });
+    updateDuplicateWarning();
+  }
+  document.querySelectorAll('.request-line').forEach(line => {
+    bindRequestLine(line);
+    syncSelectedItem(line.querySelector('.item-select'));
+  });
+  updateDuplicateWarning();
 </script>
 {% endblock %}

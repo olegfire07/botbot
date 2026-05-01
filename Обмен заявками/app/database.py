@@ -96,6 +96,32 @@ def apply_lightweight_migrations() -> None:
             connection.execute(
                 text("ALTER TABLE delivery_sessions ADD COLUMN is_deleted BOOLEAN NOT NULL DEFAULT 0")
             )
+        delivery_session_line_columns = {
+            row[1]
+            for row in connection.execute(
+                text("PRAGMA table_info(delivery_session_lines)")
+            ).fetchall()
+        }
+        if "shortage_reason" not in delivery_session_line_columns:
+            connection.execute(
+                text("ALTER TABLE delivery_session_lines ADD COLUMN shortage_reason TEXT")
+            )
+        connection.execute(
+            text(
+                """
+                CREATE INDEX IF NOT EXISTS ix_demand_lines_branch_status_updated
+                ON demand_lines(branch_id, status, last_updated_at)
+                """
+            )
+        )
+        connection.execute(
+            text(
+                """
+                CREATE INDEX IF NOT EXISTS ix_delivery_session_lines_session_demand
+                ON delivery_session_lines(delivery_session_id, demand_line_id)
+                """
+            )
+        )
         connection.execute(
             text(
                 """

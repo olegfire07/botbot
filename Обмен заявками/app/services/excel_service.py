@@ -72,14 +72,16 @@ def build_deliveries_xlsx(rows: list[dict]) -> BytesIO:
     ws = wb.active
     ws.title = "Доставки"
     headers = ["№ визита", "Начало", "Окончание", "Водитель", "Подразделение",
-               "Позиция", "Ед.", "Было", "Доставлено", "Сумма", "Осталось", "Результат", "Статус"]
+               "Позиция", "Ед.", "Было", "Доставлено", "Сумма", "Осталось",
+               "Результат", "Причина недовоза", "Статус"]
     ws.append(headers)
     for r in rows:
         ws.append([
             r.get("session_id"), r.get("started_at"), r.get("finished_at"),
             r.get("driver"), r.get("branch"), r.get("item"), r.get("unit"),
             r.get("qty_before"), r.get("qty_delivered_now"), r.get("delivered_cost"),
-            r.get("qty_after"), r.get("result_status"), r.get("session_status"),
+            r.get("qty_after"), r.get("result_status"), r.get("shortage_reason", ""),
+            r.get("session_status"),
         ])
     _style_header(ws, len(headers))
     _auto_width(ws)

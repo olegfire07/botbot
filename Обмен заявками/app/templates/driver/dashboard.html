@@ -3,28 +3,54 @@
 {% block content %}
 <div class="page-header">
   <div>
-    <h1 class="h4 mb-1">🚛 Маршрутный лист</h1>
+    <h1 class="h4 mb-1">Маршрутный лист</h1>
     <p class="text-muted mb-0" style="font-size:.84rem">Подразделения с активной потребностью к доставке</p>
   </div>
+  {% if selected %}
+    <a class="btn btn-outline-primary btn-sm" href="/driver/route-sheet?driver_id={{ selected.id }}{% if q %}&q={{ q|urlencode }}{% endif %}" target="_blank" rel="noopener">
+      Печатный маршрут
+    </a>
+  {% endif %}
 </div>
+
+<section class="role-guide" data-guide-id="driver-dashboard" aria-label="Подсказка для водителя">
+  <div class="role-guide-title">
+    <strong>Маршрутный лист</strong>
+    <span>По умолчанию показаны только подразделения, где есть активный остаток к доставке.</span>
+  </div>
+  <div class="role-guide-steps">
+    <div class="role-guide-step">
+      <strong>1. Найдите филиал</strong>
+      <span>Ищите по номеру, улице или части адреса.</span>
+    </div>
+    <div class="role-guide-step">
+      <strong>2. Откройте визит</strong>
+      <span>У водителя может быть только один открытый визит.</span>
+    </div>
+    <div class="role-guide-step">
+      <strong>3. Закройте после доставки</strong>
+      <span>Сначала сохраните строки, затем завершите визит.</span>
+    </div>
+  </div>
+</section>
 
 <form class="toolbar mb-3" method="get" action="/driver">
   <div class="row g-2 align-items-end">
     <div class="col-lg-3">
       {% if is_admin %}
-        <label class="form-label" for="driver_id">👤 Водитель</label>
+        <label class="form-label" for="driver_id">Водитель</label>
         <select class="form-select" id="driver_id" name="driver_id" onchange="this.form.submit()">
           {% for user in drivers %}
             <option value="{{ user.id }}" {% if selected and user.id == selected.id %}selected{% endif %}>{{ user.full_name }}</option>
           {% endfor %}
         </select>
       {% else %}
-        <label class="form-label">👤 Водитель</label>
+        <label class="form-label">Водитель</label>
         <div class="form-control bg-light">{{ selected.full_name if selected else "—" }}</div>
       {% endif %}
     </div>
     <div class="col-lg-4">
-      <label class="form-label" for="q">🔍 Поиск</label>
+      <label class="form-label" for="q">Поиск</label>
       <input class="form-control" id="q" name="q" value="{{ q }}" placeholder="номер или адрес подразделения">
     </div>
     <div class="col-lg-3">
@@ -39,14 +65,13 @@
   </div>
   {% if q or show_all %}
     <div class="mt-2">
-      <a class="btn btn-outline-secondary btn-sm" href="/driver?driver_id={{ selected.id if selected else '' }}">✕ Сбросить фильтр</a>
+      <a class="btn btn-outline-secondary btn-sm" href="/driver?driver_id={{ selected.id if selected else '' }}">Сбросить фильтр</a>
     </div>
   {% endif %}
 </form>
 
 {% if open_session %}
   <div class="alert alert-warning d-flex align-items-center gap-2" style="font-size:.88rem">
-    <span>🔔</span>
     <span>Открыт визит: <strong>{{ open_session.branch.name }}</strong></span>
     <a class="btn btn-sm btn-dark ms-auto" href="/driver/branch/{{ open_session.branch_id }}?driver_id={{ selected.id }}&session_id={{ open_session.id }}">Перейти →</a>
   </div>
@@ -87,7 +112,7 @@
         </div>
         {% if selected %}
           <a class="btn {% if s.positions %}btn-dark{% else %}btn-outline-secondary{% endif %} w-100 mt-auto" href="/driver/branch/{{ branch.id }}{% if is_admin %}?driver_id={{ selected.id }}{% endif %}" style="font-size:.85rem">
-            {% if s.positions %}📦 Открыть доставку{% else %}Посмотреть{% endif %}
+            {% if s.positions %}Открыть доставку{% else %}Посмотреть{% endif %}
           </a>
         {% endif %}
       </div>

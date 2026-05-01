@@ -7,7 +7,7 @@ from urllib.parse import quote
 from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
-from sqlalchemy import func, select, text
+from sqlalchemy import func, or_, select, text
 from sqlalchemy.orm import Session, selectinload
 
 from app.auth import hash_password, require_csrf, require_roles
@@ -36,7 +36,6 @@ from app.services.excel_service import (
     build_requests_xlsx,
     build_summary_xlsx,
 )
-from starlette.concurrency import run_in_threadpool
 
 
 router = APIRouter(
@@ -58,6 +57,40 @@ def _parse_date(raw: str | None, default: datetime | None = None) -> datetime | 
         return datetime.strptime(raw.strip(), "%Y-%m-%d")
     except ValueError:
         return default
+
+
+def _clean_filter(raw: str | None, limit: int = 120) -> str:
+    return (raw or "").strip()[:limit]
+
+
+def _filter_variants(raw: str) -> list[str]:
+    clean = raw.strip()
+    variants = {
+        clean,
+        clean.lower(),
+        clean.upper(),
+        clean.capitalize(),
+        clean.title(),
+        clean.replace("ё", "е"),
+        clean.replace("е", "ё"),
+    }
+    return [value for value in variants if value]
+
+
+def _text_contains(column: object, raw: str):
+    return or_(
+        *[
+            func.coalesce(column, "").like(f"%{variant}%")
+            for variant in _filter_variants(raw)
+        ]
+    )
+
+
+def _numeric_filter(raw: str) -> int | None:
+    clean = raw.strip().lstrip("#№").strip()
+    if clean.isdigit():
+        return int(clean)
+    return None
 
 
 def _csv_response(filename: str, rows: list[dict[str, object]]) -> StreamingResponse:
@@ -138,6 +171,14 @@ def _parse_non_negative_decimal(raw: object, field_name: str) -> Decimal:
     if value < 0:
         raise ValueError(f"{field_name} не может быть меньше 0.")
     return value
+
+
+def _validate_admin_password(password: str) -> str | None:
+    if not password:
+        return "Укажите пароль."
+    if len(password) < 8:
+        return "Пароль должен быть не короче 8 символов."
+    return None
 
 
 def _request_has_delivery(db: Session, request: GoodsRequest) -> bool:
@@ -446,9 +487,24 @@ def admin_dashboard(
     request: Request,
     message: str | None = None,
     error: str | None = None,
+    demand_q: str | None = None,
+    history_q: str | None = None,
+    history_date_from: str | None = None,
+    history_date_to: str | None = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(require_roles(UserRole.admin)),
 ):
+    demand_q = _clean_filter(demand_q)
+    history_q = _clean_filter(history_q)
+    history_date_from = _clean_filter(history_date_from, 10)
+    history_date_to = _clean_filter(history_date_to, 10)
+    history_from_dt = _parse_date(history_date_from)
+    history_to_dt = _parse_date(history_date_to)
+    if history_date_from and not history_from_dt:
+        history_date_from = ""
+    if history_date_to and not history_to_dt:
+        history_date_to = ""
+
     branches = list(
         db.scalars(select(Branch).where(Branch.is_deleted.is_(False)).order_by(Branch.name)).all()
     )
@@ -463,42 +519,128 @@ def admin_dashboard(
     items = list(
         db.scalars(select(Item).where(Item.is_deleted.is_(False)).order_by(Item.name)).all()
     )
+    request_ids = (
+        select(GoodsRequest.id)
+        .select_from(GoodsRequest)
+        .join(Branch, Branch.id == GoodsRequest.branch_id)
+        .join(User, User.id == GoodsRequest.created_by_user_id)
+        .outerjoin(RequestLine, RequestLine.request_id == GoodsRequest.id)
+        .outerjoin(Item, Item.id == RequestLine.item_id)
+        .where(
+            GoodsRequest.is_deleted.is_(False),
+            Branch.is_deleted.is_(False),
+            User.is_deleted.is_(False),
+            or_(Item.id.is_(None), Item.is_deleted.is_(False)),
+        )
+        .group_by(GoodsRequest.id)
+    )
+    if history_from_dt:
+        request_ids = request_ids.where(GoodsRequest.created_at >= history_from_dt)
+    if history_to_dt:
+        request_ids = request_ids.where(GoodsRequest.created_at < history_to_dt + timedelta(days=1))
+    if history_q:
+        request_number = _numeric_filter(history_q)
+        request_conditions = [
+            _text_contains(Branch.name, history_q),
+            _text_contains(Branch.address, history_q),
+            _text_contains(User.full_name, history_q),
+            _text_contains(User.login, history_q),
+            _text_contains(GoodsRequest.comment, history_q),
+            _text_contains(Item.name, history_q),
+            _text_contains(RequestLine.comment, history_q),
+        ]
+        if request_number is not None:
+            request_conditions.append(GoodsRequest.id == request_number)
+        request_ids = request_ids.where(or_(*request_conditions))
+
     requests = list(
         db.scalars(
             select(GoodsRequest)
-            .where(GoodsRequest.is_deleted.is_(False))
+            .where(GoodsRequest.id.in_(request_ids))
             .options(
                 selectinload(GoodsRequest.branch),
                 selectinload(GoodsRequest.created_by),
                 selectinload(GoodsRequest.lines).selectinload(RequestLine.item),
             )
             .order_by(GoodsRequest.created_at.desc())
-            .limit(50)
+            .limit(100)
         ).all()
     )
+    demand_query = (
+        select(DemandLine)
+        .join(Branch)
+        .join(Item)
+        .where(DemandLine.status.in_((DemandStatus.active, DemandStatus.partially_delivered)))
+        .options(selectinload(DemandLine.branch), selectinload(DemandLine.item))
+        .where(Branch.is_deleted.is_(False), Item.is_deleted.is_(False))
+    )
+    if demand_q:
+        demand_number = _numeric_filter(demand_q)
+        demand_conditions = [
+            _text_contains(Branch.name, demand_q),
+            _text_contains(Branch.address, demand_q),
+            _text_contains(Item.name, demand_q),
+            _text_contains(Item.unit, demand_q),
+        ]
+        if demand_number is not None:
+            demand_conditions.append(DemandLine.id == demand_number)
+        demand_query = demand_query.where(or_(*demand_conditions))
+
     demand_lines = list(
         db.scalars(
-            select(DemandLine)
-            .join(Branch)
-            .join(Item)
-            .where(DemandLine.status.in_((DemandStatus.active, DemandStatus.partially_delivered)))
-            .options(selectinload(DemandLine.branch), selectinload(DemandLine.item))
-            .where(Branch.is_deleted.is_(False), Item.is_deleted.is_(False))
+            demand_query
             .order_by(DemandLine.last_updated_at.desc())
-            .limit(50)
+            .limit(100)
         ).all()
     )
+    session_ids = (
+        select(DeliverySession.id)
+        .select_from(DeliverySession)
+        .join(Branch, Branch.id == DeliverySession.branch_id)
+        .join(User, User.id == DeliverySession.driver_id)
+        .outerjoin(
+            DeliverySessionLine,
+            DeliverySessionLine.delivery_session_id == DeliverySession.id,
+        )
+        .outerjoin(Item, Item.id == DeliverySessionLine.item_id)
+        .where(
+            DeliverySession.is_deleted.is_(False),
+            Branch.is_deleted.is_(False),
+            User.is_deleted.is_(False),
+            or_(Item.id.is_(None), Item.is_deleted.is_(False)),
+        )
+        .group_by(DeliverySession.id)
+    )
+    if history_from_dt:
+        session_ids = session_ids.where(DeliverySession.started_at >= history_from_dt)
+    if history_to_dt:
+        session_ids = session_ids.where(DeliverySession.started_at < history_to_dt + timedelta(days=1))
+    if history_q:
+        session_number = _numeric_filter(history_q)
+        session_conditions = [
+            _text_contains(Branch.name, history_q),
+            _text_contains(Branch.address, history_q),
+            _text_contains(User.full_name, history_q),
+            _text_contains(User.login, history_q),
+            _text_contains(Item.name, history_q),
+            _text_contains(Item.unit, history_q),
+            _text_contains(DeliverySessionLine.shortage_reason, history_q),
+        ]
+        if session_number is not None:
+            session_conditions.append(DeliverySession.id == session_number)
+        session_ids = session_ids.where(or_(*session_conditions))
+
     sessions = list(
         db.scalars(
             select(DeliverySession)
-            .where(DeliverySession.is_deleted.is_(False))
+            .where(DeliverySession.id.in_(session_ids))
             .options(
                 selectinload(DeliverySession.branch),
                 selectinload(DeliverySession.driver),
                 selectinload(DeliverySession.lines).selectinload(DeliverySessionLine.item),
             )
             .order_by(DeliverySession.started_at.desc())
-            .limit(50)
+            .limit(100)
         ).all()
     )
     deleted_requests = []
@@ -596,6 +738,11 @@ def admin_dashboard(
             "chart_labels": chart_labels,
             "chart_requests": chart_requests,
             "chart_deliveries": chart_deliveries,
+            "demand_q": demand_q,
+            "history_q": history_q,
+            "history_date_from": history_date_from,
+            "history_date_to": history_date_to,
+            "history_filters_active": bool(history_q or history_date_from or history_date_to),
         },
     )
 
@@ -723,9 +870,14 @@ def add_user(
 ):
     login = login.strip()
     password = password.strip()
-    if not login or not password:
+    full_name = full_name.strip()
+    if not full_name or not login:
         return RedirectResponse(
-            f"/admin?error={quote('Укажите логин и пароль')}#directories", status_code=303
+            f"/admin?error={quote('Укажите ФИО и логин')}#directories", status_code=303
+        )
+    if password_error := _validate_admin_password(password):
+        return RedirectResponse(
+            f"/admin?error={quote(password_error)}#directories", status_code=303
         )
     try:
         parsed_branch_id = int(branch_id) if branch_id.strip() else None
@@ -748,7 +900,7 @@ def add_user(
             )
     existing_deleted = db.scalar(select(User).where(User.login == login, User.is_deleted.is_(True)))
     if existing_deleted:
-        existing_deleted.full_name = full_name.strip()
+        existing_deleted.full_name = full_name
         existing_deleted.password_hash = hash_password(password)
         existing_deleted.role = role
         existing_deleted.branch_id = parsed_branch_id if role == UserRole.appraiser else None
@@ -766,7 +918,7 @@ def add_user(
         )
     db.add(
         User(
-            full_name=full_name.strip(),
+            full_name=full_name,
             login=login,
             password_hash=hash_password(password),
             role=role,
@@ -824,7 +976,7 @@ def update_user(
         )
     if parsed_branch_id:
         branch = db.get(Branch, parsed_branch_id)
-        if not branch or branch.is_deleted:
+        if not branch or branch.is_deleted or (role == UserRole.appraiser and not branch.is_active):
             return RedirectResponse(
                 f"/admin?error={quote('Выбранное подразделение недоступно')}#directories",
                 status_code=303,
@@ -866,9 +1018,9 @@ def reset_user_password(
             f"/admin?error={quote('Пользователь не найден')}#directories", status_code=303
         )
     password = password.strip()
-    if not password:
+    if password_error := _validate_admin_password(password):
         return RedirectResponse(
-            f"/admin?error={quote('Укажите новый пароль')}#directories", status_code=303
+            f"/admin?error={quote(password_error)}#directories", status_code=303
         )
     user.password_hash = hash_password(password)
     db.commit()
@@ -1113,9 +1265,9 @@ async def update_request(
 
     goods_request.comment = str(form.get("comment") or "").strip() or None
     goods_request.status = RequestStatus.processed
-    await run_in_threadpool(_recalculate_all_demand, db)
-    await run_in_threadpool(_audit, db, current_user, "update", "request", request_id, "Заявка обновлена")
-    await run_in_threadpool(db.commit)
+    _recalculate_all_demand(db)
+    _audit(db, current_user, "update", "request", request_id, "Заявка обновлена")
+    db.commit()
     return RedirectResponse(
         f"/admin?message={quote('Заявка обновлена')}#history", status_code=303
     )
@@ -1187,9 +1339,10 @@ async def update_delivery_session(
 
     line_ids = form.getlist("line_id")
     qty_values = form.getlist("qty_delivered_now")
+    reason_values = form.getlist("shortage_reason")
     lines_by_id = {line.id: line for line in session.lines}
     try:
-        for line_id_raw, qty_raw in zip(line_ids, qty_values, strict=False):
+        for index, (line_id_raw, qty_raw) in enumerate(zip(line_ids, qty_values, strict=False)):
             line_id = int(line_id_raw)
             line = lines_by_id.get(line_id)
             if not line:
@@ -1201,15 +1354,21 @@ async def update_delivery_session(
             line.qty_delivered_now = qty
             line.qty_after = qty_before - qty
             line.result_status = _result_status(qty, Decimal(line.qty_after))
+            shortage_reason = str(reason_values[index] if index < len(reason_values) else "").strip()
+            if len(shortage_reason) > 500:
+                raise ValueError("Причина недовоза не должна быть длиннее 500 символов.")
+            line.shortage_reason = (
+                shortage_reason if line.result_status != DeliveryResultStatus.full else None
+            )
     except (ValueError, InvalidOperation) as exc:
         db.rollback()
         return RedirectResponse(
             f"/admin?error={quote(str(exc))}#history", status_code=303
         )
 
-    await run_in_threadpool(_recalculate_all_demand, db)
-    await run_in_threadpool(_audit, db, current_user, "update", "delivery_session", session_id, "Визит обновлён")
-    await run_in_threadpool(db.commit)
+    _recalculate_all_demand(db)
+    _audit(db, current_user, "update", "delivery_session", session_id, "Визит обновлён")
+    db.commit()
     return RedirectResponse(
         f"/admin?message={quote('Визит обновлён')}#history", status_code=303
     )
@@ -1555,6 +1714,7 @@ def _get_delivery_rows(db: Session, date_from: datetime | None, date_to: datetim
             "delivered_cost": _money(float(line.qty_delivered_now) * float(line.item.unit_cost or 0)),
             "qty_after": float(line.qty_after),
             "result_status": line.result_status.value,
+            "shortage_reason": line.shortage_reason or "",
             "session_status": session.status.value,
         }
         for session in sessions

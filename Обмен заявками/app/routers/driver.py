@@ -18,6 +18,7 @@ from app.models import (
     DemandStatus,
     User,
     UserRole,
+    utc_now,
 )
 from app.schemas import DeliveryLineInput
 from app.services.delivery_service import (
@@ -27,7 +28,6 @@ from app.services.delivery_service import (
     save_delivery_result,
 )
 from app.services.demand_service import get_active_demand_lines
-from starlette.concurrency import run_in_threadpool
 
 
 router = APIRouter(prefix="/driver", tags=["driver"])
@@ -133,6 +133,75 @@ def driver_dashboard(
             "open_session": open_session,
             "message": message,
             "error": error,
+        },
+    )
+
+
+@router.get("/route-sheet", response_class=HTMLResponse)
+def route_sheet(
+    request: Request,
+    driver_id: int | None = None,
+    q: str = "",
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles(UserRole.driver)),
+):
+    is_admin = current_user.role == UserRole.admin
+    drivers = _drivers(db) if is_admin else [current_user]
+    selected = db.get(User, driver_id) if is_admin and driver_id else (drivers[0] if drivers else None)
+    if selected and selected.role != UserRole.driver:
+        selected = drivers[0] if drivers else None
+
+    q = q.strip()
+    query = (
+        select(DemandLine)
+        .join(Branch)
+        .where(
+            DemandLine.status.in_((DemandStatus.active, DemandStatus.partially_delivered)),
+            Branch.is_active.is_(True),
+            Branch.is_deleted.is_(False),
+        )
+        .options(selectinload(DemandLine.branch), selectinload(DemandLine.item))
+        .order_by(Branch.name, DemandLine.item_id)
+    )
+    if q:
+        pattern = f"%{q}%"
+        query = query.where(or_(Branch.name.ilike(pattern), Branch.address.ilike(pattern)))
+
+    route_groups: list[dict] = []
+    groups_by_branch: dict[int, dict] = {}
+    for line in db.scalars(query).all():
+        group = groups_by_branch.get(line.branch_id)
+        if not group:
+            group = {
+                "branch": line.branch,
+                "lines": [],
+                "positions": 0,
+                "qty": 0.0,
+            }
+            groups_by_branch[line.branch_id] = group
+            route_groups.append(group)
+        group["lines"].append(line)
+        group["positions"] += 1
+        group["qty"] += float(line.qty_remaining or 0)
+
+    route_groups.sort(key=lambda group: (-group["qty"], group["branch"].name))
+    total_positions = sum(group["positions"] for group in route_groups)
+    total_qty = sum(group["qty"] for group in route_groups)
+
+    return templates.TemplateResponse(
+        "driver/route_sheet.html",
+        {
+            "request": request,
+            "current_user": current_user,
+            "is_admin": is_admin,
+            "drivers": drivers,
+            "selected": selected,
+            "q": q,
+            "route_groups": route_groups,
+            "total_branches": len(route_groups),
+            "total_positions": total_positions,
+            "total_qty": total_qty,
+            "generated_at": utc_now(),
         },
     )
 
@@ -259,18 +328,26 @@ async def save_visit_result(
         )
     demand_line_ids = form.getlist("demand_line_id")
     qty_values = form.getlist("qty_delivered_now")
+    reason_values = form.getlist("shortage_reason")
     lines = []
-    for line_id_raw, qty_raw in zip(demand_line_ids, qty_values, strict=False):
+    for index, (line_id_raw, qty_raw) in enumerate(zip(demand_line_ids, qty_values, strict=False)):
         try:
             qty_value = 0 if str(qty_raw or "").strip() == "" else float(str(qty_raw).replace(",", "."))
-            lines.append(DeliveryLineInput(demand_line_id=int(line_id_raw), qty_delivered_now=qty_value))
+            reason = str(reason_values[index] if index < len(reason_values) else "").strip()
+            lines.append(
+                DeliveryLineInput(
+                    demand_line_id=int(line_id_raw),
+                    qty_delivered_now=qty_value,
+                    shortage_reason=reason,
+                )
+            )
         except ValueError:
             return RedirectResponse(
                 f"/driver/branch/{branch_id}?driver_id={driver_id}&session_id={session_id}&error={quote('Количество должно быть числом')}",
                 status_code=303,
             )
     try:
-        await run_in_threadpool(save_delivery_result, db, session_id, lines)
+        save_delivery_result(db, session_id, lines)
     except DeliveryValidationError as exc:
         return RedirectResponse(
             f"/driver/branch/{branch_id}?driver_id={driver_id}&session_id={session_id}&error={quote(str(exc))}",

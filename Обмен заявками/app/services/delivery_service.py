@@ -114,9 +114,24 @@ def save_delivery_result(
         else:
             result_status = DeliveryResultStatus.full
 
-        validated_lines.append((demand_line, qty_before, qty_delivered_now, qty_after, result_status))
+        shortage_reason = (line.shortage_reason or "").strip()
+        if len(shortage_reason) > 500:
+            raise DeliveryValidationError("Причина недовоза не должна быть длиннее 500 символов.")
+        if result_status == DeliveryResultStatus.full:
+            shortage_reason = ""
 
-    for demand_line, qty_before, qty_delivered_now, qty_after, result_status in validated_lines:
+        validated_lines.append(
+            (demand_line, qty_before, qty_delivered_now, qty_after, result_status, shortage_reason)
+        )
+
+    for (
+        demand_line,
+        qty_before,
+        qty_delivered_now,
+        qty_after,
+        result_status,
+        shortage_reason,
+    ) in validated_lines:
         db.add(
             DeliverySessionLine(
                 delivery_session_id=session.id,
@@ -126,6 +141,7 @@ def save_delivery_result(
                 qty_delivered_now=qty_delivered_now,
                 qty_after=qty_after,
                 result_status=result_status,
+                shortage_reason=shortage_reason or None,
             )
         )
         demand_line.qty_total_delivered = demand_line.qty_total_delivered + qty_delivered_now

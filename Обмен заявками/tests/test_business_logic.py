@@ -318,6 +318,45 @@ def test_delivery_quantity_allows_decimal(db_session):
     assert float(demand.qty_remaining) == 18.5
 
 
+def test_delivery_saves_shortage_reason_only_for_not_full_lines(db_session):
+    ids = _ids(db_session)
+    create_request(
+        db_session,
+        ids["appraiser"],
+        ids["branch"],
+        None,
+        [
+            RequestLineInput(item_id=ids["packages"], qty_requested=20),
+            RequestLineInput(item_id=ids["paper"], qty_requested=2),
+        ],
+    )
+    session = get_or_open_delivery_session(db_session, ids["driver"], ids["branch"])
+    package_demand = db_session.query(DemandLine).filter_by(item_id=ids["packages"]).one()
+    paper_demand = db_session.query(DemandLine).filter_by(item_id=ids["paper"]).one()
+
+    save_delivery_result(
+        db_session,
+        session.id,
+        [
+            DeliveryLineInput(
+                demand_line_id=package_demand.id,
+                qty_delivered_now=5,
+                shortage_reason="Не было на складе",
+            ),
+            DeliveryLineInput(
+                demand_line_id=paper_demand.id,
+                qty_delivered_now=2,
+                shortage_reason="Эта причина должна очиститься",
+            ),
+        ],
+    )
+
+    package_line = db_session.query(DeliverySessionLine).filter_by(item_id=ids["packages"]).one()
+    paper_line = db_session.query(DeliverySessionLine).filter_by(item_id=ids["paper"]).one()
+    assert package_line.shortage_reason == "Не было на складе"
+    assert paper_line.shortage_reason is None
+
+
 def test_admin_request_adjustment_updates_active_demand(db_session):
     ids = _ids(db_session)
     create_request(

@@ -18,7 +18,7 @@
   {% if current_user is not defined or not current_user or current_user.role.value in ["appraiser", "admin"] %}
     <div class="col-md-4">
       <a class="role-card" href="/appraiser">
-        <span class="role-icon">📋</span>
+        <span class="role-icon" aria-hidden="true"></span>
         <span class="role-title">Товаровед</span>
         <span class="role-text">Создать заявку, посмотреть потребность и историю.</span>
       </a>
@@ -27,7 +27,7 @@
   {% if current_user is not defined or not current_user or current_user.role.value in ["driver", "admin"] %}
     <div class="col-md-4">
       <a class="role-card driver" href="/driver">
-        <span class="role-icon">🚛</span>
+        <span class="role-icon role-icon-driver" aria-hidden="true"></span>
         <span class="role-title">Водитель</span>
         <span class="role-text">Открыть визит, отметить доставку по позициям.</span>
       </a>
@@ -36,7 +36,7 @@
   {% if current_user is not defined or not current_user or current_user.role.value == "admin" %}
     <div class="col-md-4">
       <a class="role-card admin" href="/admin">
-        <span class="role-icon">⚙️</span>
+        <span class="role-icon role-icon-admin" aria-hidden="true"></span>
         <span class="role-title">Администратор</span>
         <span class="role-text">Аналитика, справочники, выгрузки Excel.</span>
       </a>

@@ -3,11 +3,32 @@
 {% block content %}
 <div class="d-flex flex-column flex-lg-row justify-content-between gap-2 mb-3">
   <div>
-    <h1 class="h4 mb-1">🏢 {{ branch.name }}</h1>
+    <h1 class="h4 mb-1">{{ branch.name }}</h1>
     <p class="text-muted mb-0" style="font-size:.84rem">Водитель: {{ driver.full_name }}</p>
   </div>
   <a class="btn btn-outline-secondary btn-sm align-self-start" href="/driver{% if is_admin %}?driver_id={{ driver.id }}{% endif %}">← Назад к списку</a>
 </div>
+
+<section class="role-guide" data-guide-id="driver-visit" aria-label="Инструкция по визиту">
+  <div class="role-guide-title">
+    <strong>Отметка доставки</strong>
+    <span>Фиксируйте только то, что реально передали подразделению.</span>
+  </div>
+  <div class="role-guide-steps">
+    <div class="role-guide-step">
+      <strong>Пусто = 0</strong>
+      <span>Если позицию не доставили, поле можно оставить пустым или поставить 0.</span>
+    </div>
+    <div class="role-guide-step">
+      <strong>Кнопка «всё»</strong>
+      <span>Подставляет весь текущий остаток по конкретной позиции.</span>
+    </div>
+    <div class="role-guide-step">
+      <strong>Сохранённые строки</strong>
+      <span>Повторно сохранить ту же позицию в этом визите нельзя.</span>
+    </div>
+  </div>
+</section>
 
 <!-- Статус визита -->
 {% if not session %}
@@ -15,7 +36,7 @@
     <p class="mb-2" style="font-size:.92rem; color:var(--ink2)">Визит ещё не начат. Откройте визит чтобы отмечать доставку.</p>
     <form method="post" action="/driver/branch/{{ branch.id }}/open">
       <input type="hidden" name="driver_id" value="{{ driver.id }}">
-      <button class="btn btn-primary btn-lg" type="submit" data-submitting-text="Открываем визит...">🚀 Начать визит</button>
+      <button class="btn btn-primary btn-lg" type="submit" data-submitting-text="Открываем визит...">Начать визит</button>
     </form>
   </div>
 {% else %}
@@ -37,7 +58,7 @@
 
 <!-- Позиции доставки -->
 {% if active_demand %}
-  <form method="post" action="/driver/sessions/{{ session.id if session else 0 }}/save">
+  <form method="post" action="/driver/sessions/{{ session.id if session else 0 }}/save" data-delivery-form="true">
     <input type="hidden" name="driver_id" value="{{ driver.id }}">
     <input type="hidden" name="branch_id" value="{{ branch.id }}">
     {% if form_token %}
@@ -65,7 +86,10 @@
           <div>
             {% if saved_line %}
               <div class="saved-delivery">
-                ✅ Сохранено: <strong>{{ saved_line.qty_delivered_now|qty }}</strong> {{ line.item.unit }}
+                Сохранено: <strong>{{ saved_line.qty_delivered_now|qty }}</strong> {{ line.item.unit }}
+                {% if saved_line.shortage_reason %}
+                  <div class="saved-delivery-reason">Причина: {{ saved_line.shortage_reason }}</div>
+                {% endif %}
               </div>
             {% else %}
               <label class="form-label" for="qty_{{ line.id }}">Доставлено сейчас</label>
@@ -77,6 +101,7 @@
                   type="number"
                   min="0"
                   max="{{ line.qty_remaining|qty }}"
+                  data-max-qty="{{ line.qty_remaining|qty }}"
                   step="0.001"
                   inputmode="decimal"
                   placeholder="0"
@@ -85,18 +110,54 @@
                 <button class="btn btn-outline-success btn-sm" type="button" onclick="setQty('qty_{{ line.id }}', '{{ line.qty_remaining|qty }}')" {% if not session or session.status.value == 'closed' %}disabled{% endif %}>всё</button>
                 <button class="btn btn-outline-secondary btn-sm" type="button" onclick="setQty('qty_{{ line.id }}', '0')" {% if not session or session.status.value == 'closed' %}disabled{% endif %}>0</button>
               </div>
+              <label class="delivery-reason" data-shortage-reason for="reason_{{ line.id }}">
+                <span>Причина недовоза</span>
+                <input
+                  class="form-control form-control-sm"
+                  id="reason_{{ line.id }}"
+                  name="shortage_reason"
+                  list="shortage-reason-options"
+                  maxlength="500"
+                  placeholder="Например: не было на складе"
+                  {% if not session or session.status.value == 'closed' %}disabled{% endif %}
+                >
+              </label>
             {% endif %}
           </div>
         </div>
       {% endfor %}
     </div>
+    <datalist id="shortage-reason-options">
+      <option value="Не было на складе">
+      <option value="Не влезло в машину">
+      <option value="Филиал отказался принять">
+      <option value="Позицию довезут позже">
+      <option value="Ошибка в заявке">
+    </datalist>
 
     <!-- Кнопки действий -->
     {% if session and session.status.value == 'open' %}
-      <div class="driver-actions d-flex gap-2 flex-wrap">
-        <button class="btn btn-primary btn-lg" type="submit" data-submitting-text="Сохраняем доставку...">
-          💾 Сохранить доставку
-        </button>
+      <div class="driver-actions">
+        <div class="driver-action-summary">
+          <span>Позиции к проверке: {{ active_demand|length }}</span>
+          <span>Визит №{{ session.id }}</span>
+        </div>
+        <div class="delivery-live-summary" id="delivery-live-summary" aria-live="polite">
+          <span>Заполнено: <strong id="delivery-filled-count">0</strong></span>
+          <span>Количество: <strong id="delivery-total-qty">0</strong></span>
+          <span>Нулевых строк: <strong id="delivery-zero-count">0</strong></span>
+        </div>
+        <div class="driver-action-buttons">
+          <button class="btn btn-outline-success btn-lg" type="button" onclick="setAllDelivered()">
+            Всё доставлено
+          </button>
+          <button class="btn btn-outline-secondary btn-lg" type="button" onclick="clearDelivered()">
+            Очистить
+          </button>
+          <button class="btn btn-primary btn-lg" type="submit" data-submitting-text="Сохраняем доставку...">
+            Сохранить доставку
+          </button>
+        </div>
       </div>
     {% endif %}
   </form>
@@ -109,14 +170,14 @@
   <div class="section-block mt-3" style="border-color:rgba(239,68,68,.2); background:rgba(239,68,68,.03)">
     <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2">
       <div>
-        <h3 class="h6 mb-1" style="color:var(--red)">🔒 Завершить визит</h3>
+        <h3 class="h6 mb-1" style="color:var(--red)">Завершить визит</h3>
         <p class="text-muted mb-0" style="font-size:.82rem">После закрытия нельзя добавлять доставку в этот визит</p>
       </div>
       <form method="post" action="/driver/sessions/{{ session.id }}/close">
         <input type="hidden" name="driver_id" value="{{ driver.id }}">
         <input type="hidden" name="branch_id" value="{{ branch.id }}">
         <button class="btn btn-danger" type="submit" data-submitting-text="Закрываем визит..." onclick="return confirm('Закрыть визит? Добавить доставку будет нельзя.')">
-          🔒 Закрыть визит
+          Закрыть визит
         </button>
       </form>
     </div>
@@ -124,7 +185,6 @@
 {% elif session and session.status.value == 'closed' %}
   <div class="section-block mt-3" style="background:rgba(100,116,139,.04)">
     <div class="d-flex align-items-center gap-2">
-      <span style="font-size:1.1rem">✅</span>
       <span style="font-size:.88rem; color:var(--ink2)"><strong>Визит завершён.</strong> Результаты сохранены.</span>
     </div>
   </div>
@@ -133,8 +193,82 @@
 
 {% block scripts %}
 <script>
+  function parseDeliveryQty(value) {
+    const parsed = Number.parseFloat(String(value || '0').replace(',', '.'));
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+  }
+  function formatDeliveryQty(value) {
+    const rounded = Math.round(value * 1000) / 1000;
+    return Number.isInteger(rounded) ? String(rounded) : String(rounded).replace(/0+$/, '').replace(/\.$/, '');
+  }
+  function deliveryInputs() {
+    return Array.from(document.querySelectorAll('input[name="qty_delivered_now"]:not(:disabled)'));
+  }
+  function toggleShortageReasons() {
+    deliveryInputs().forEach(input => {
+      const maxQty = parseDeliveryQty(input.dataset.maxQty || input.max || '0');
+      const deliveredQty = parseDeliveryQty(input.value);
+      const reason = input.closest('.delivery-line')?.querySelector('[data-shortage-reason]');
+      if (!reason) return;
+      reason.classList.toggle('is-visible', deliveredQty < maxQty);
+    });
+  }
+  function updateDeliverySummary() {
+    const inputs = deliveryInputs();
+    const filled = inputs.filter(input => input.value.trim() !== '');
+    const positive = inputs.filter(input => parseDeliveryQty(input.value) > 0);
+    const totalQty = inputs.reduce((sum, input) => sum + parseDeliveryQty(input.value), 0);
+    const zeroCount = inputs.length - positive.length;
+    const filledCount = document.getElementById('delivery-filled-count');
+    const totalQtyNode = document.getElementById('delivery-total-qty');
+    const zeroCountNode = document.getElementById('delivery-zero-count');
+    if (!filledCount || !totalQtyNode || !zeroCountNode) return;
+    filledCount.textContent = `${filled.length} из ${inputs.length}`;
+    totalQtyNode.textContent = formatDeliveryQty(totalQty);
+    zeroCountNode.textContent = String(zeroCount);
+    toggleShortageReasons();
+  }
   function setQty(id, value) {
     document.getElementById(id).value = value;
+    updateDeliverySummary();
   }
+  function setAllDelivered() {
+    document.querySelectorAll('input[name="qty_delivered_now"]:not(:disabled)').forEach(input => {
+      input.value = input.max || '0';
+    });
+    updateDeliverySummary();
+  }
+  function clearDelivered() {
+    document.querySelectorAll('input[name="qty_delivered_now"]:not(:disabled)').forEach(input => {
+      input.value = '';
+    });
+    updateDeliverySummary();
+  }
+  document.querySelectorAll('input[name="qty_delivered_now"]').forEach(input => {
+    input.addEventListener('input', updateDeliverySummary);
+  });
+  document.addEventListener('submit', (event) => {
+    const form = event.target;
+    if (!(form instanceof HTMLFormElement) || form.dataset.deliveryForm !== 'true') return;
+    const inputs = deliveryInputs();
+    const positiveCount = inputs.filter(input => parseDeliveryQty(input.value) > 0).length;
+    if (!inputs.length) return;
+    if (positiveCount === 0) {
+      const confirmed = window.confirm('Во всех строках указана нулевая доставка. Сохранить визит с нулями?');
+      if (!confirmed) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
+      return;
+    }
+    if (positiveCount < inputs.length) {
+      const confirmed = window.confirm(`Будет сохранено ${positiveCount} строк с доставкой и ${inputs.length - positiveCount} строк с нулём. Продолжить?`);
+      if (!confirmed) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
+    }
+  }, true);
+  updateDeliverySummary();
 </script>
 {% endblock %}

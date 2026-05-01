@@ -4,33 +4,41 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Фианит Снаб{% endblock %}</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', path='/favicon.svg') }}">
   <link href="{{ url_for('static', path='/bootstrap.min.css') }}?v=20260424-1" rel="stylesheet">
-  <link href="{{ url_for('static', path='/styles.css') }}?v=20260425-fix-overlap3" rel="stylesheet">
+  <link href="{{ url_for('static', path='/styles.css') }}?v=20260501-admin-history" rel="stylesheet">
 </head>
 <body>
   <nav class="navbar navbar-expand-lg app-navbar sticky-top">
     <div class="container">
+      {% set current_path = request.url.path if request is defined else "" %}
       <a class="navbar-brand brand-lockup" href="/">
         <span class="brand-mark" aria-hidden="true"></span>
         <span>Фианит Снаб</span>
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Открыть меню">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div id="nav" class="collapse navbar-collapse">
         <div class="navbar-nav ms-auto">
           {% if current_user is defined and current_user %}
             {% if current_user.role.value in ["appraiser", "admin"] %}
-              <a class="nav-link" href="/appraiser">📋 Товаровед</a>
+              <a class="nav-link app-nav-link {% if current_path.startswith('/appraiser') %}is-active{% endif %}" href="/appraiser" {% if current_path.startswith('/appraiser') %}aria-current="page"{% endif %}>
+                <span class="nav-icon nav-icon-appraiser" aria-hidden="true"></span>
+                <span>Товаровед</span>
+              </a>
             {% endif %}
             {% if current_user.role.value in ["driver", "admin"] %}
-              <a class="nav-link" href="/driver">🚛 Водитель</a>
+              <a class="nav-link app-nav-link {% if current_path.startswith('/driver') %}is-active{% endif %}" href="/driver" {% if current_path.startswith('/driver') %}aria-current="page"{% endif %}>
+                <span class="nav-icon nav-icon-driver" aria-hidden="true"></span>
+                <span>Водитель</span>
+              </a>
             {% endif %}
             {% if current_user.role.value == "admin" %}
-              <a class="nav-link" href="/admin">⚙️ Администратор</a>
+              <a class="nav-link app-nav-link {% if current_path.startswith('/admin') %}is-active{% endif %}" href="/admin" {% if current_path.startswith('/admin') %}aria-current="page"{% endif %}>
+                <span class="nav-icon nav-icon-admin" aria-hidden="true"></span>
+                <span>Администратор</span>
+              </a>
             {% endif %}
             <a class="nav-link text-muted" href="/password">{{ current_user.full_name }}</a>
             <form method="post" action="/logout" class="d-flex">
@@ -50,13 +58,13 @@
 
     {% if message %}
       <div class="alert alert-success alert-dismissible fade show" role="alert">
-        ✅ {{ message }}
+        {{ message }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
       </div>
     {% endif %}
     {% if error %}
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        ⚠️ {{ error }}
+        {{ error }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
       </div>
     {% endif %}
@@ -64,9 +72,73 @@
   </main>
 
   <script src="{{ url_for('static', path='/bootstrap.bundle.min.js') }}?v=20260424-1"></script>
-  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  <script src="{{ url_for('static', path='/vendor/htmx.min.js') }}?v=1.9.10"></script>
   <script>
     const csrfToken = {{ csrf_token(request) | tojson }};
+
+    function normalizeSearchText(value) {
+      return String(value || '').toLowerCase().replace(/ё/g, 'е');
+    }
+
+    function bindClientFilters(root=document) {
+      root.querySelectorAll('[data-filter-target]').forEach((input) => {
+        if (input.dataset.filterBound === 'true') return;
+        const target = document.getElementById(input.dataset.filterTarget);
+        if (!target) return;
+        input.dataset.filterBound = 'true';
+        const applyFilter = () => {
+          const query = normalizeSearchText(input.value.trim());
+          let visibleCount = 0;
+          target.querySelectorAll('[data-filter-row]').forEach((row) => {
+            const haystack = normalizeSearchText(row.dataset.search || row.textContent);
+            row.hidden = Boolean(query) && !haystack.includes(query);
+            if (!row.hidden) visibleCount += 1;
+          });
+          target.querySelectorAll('[data-filter-empty]').forEach((empty) => {
+            empty.hidden = !query || visibleCount > 0;
+          });
+        };
+        input.addEventListener('input', applyFilter);
+        applyFilter();
+      });
+    }
+
+    function initRoleGuides(root=document) {
+      root.querySelectorAll('.role-guide').forEach((guide, index) => {
+        if (guide.dataset.guideReady === 'true') return;
+        guide.dataset.guideReady = 'true';
+        const guideId = guide.dataset.guideId || `${window.location.pathname}-${index}`;
+        const storageKey = `sklad:role-guide:${guideId}`;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'role-guide-toggle';
+
+        const setCollapsed = (collapsed) => {
+          guide.classList.toggle('is-collapsed', collapsed);
+          button.textContent = collapsed ? 'Показать' : 'Скрыть';
+          button.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+          button.setAttribute('aria-label', collapsed ? 'Показать подсказку' : 'Скрыть подсказку');
+        };
+
+        let isCollapsed = false;
+        try {
+          isCollapsed = window.localStorage.getItem(storageKey) === 'collapsed';
+        } catch (error) {
+          isCollapsed = false;
+        }
+        setCollapsed(isCollapsed);
+        button.addEventListener('click', () => {
+          const nextState = !guide.classList.contains('is-collapsed');
+          setCollapsed(nextState);
+          try {
+            window.localStorage.setItem(storageKey, nextState ? 'collapsed' : 'open');
+          } catch (error) {
+            // Local storage can be blocked in private mode; the button still works for this page.
+          }
+        });
+        guide.appendChild(button);
+      });
+    }
     
     // Add CSRF token to all HTMX requests
     document.body.addEventListener('htmx:configRequest', function(evt) {
@@ -127,9 +199,14 @@
       const ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
       
       ws.onmessage = function(event) {
-        const data = JSON.parse(event.data);
+        let data;
+        try {
+          data = JSON.parse(event.data);
+        } catch (error) {
+          return;
+        }
         if (data.type === 'new_request') {
-          showToast('🔔 Новая заявка', data.message, 'success');
+          showToast('Новая заявка', data.message, 'success');
           // If HTMX is present, we could optionally trigger a reload of a specific div
           // document.body.dispatchEvent(new Event('refresh-dashboard'));
         }
@@ -147,17 +224,31 @@
       toastEl.setAttribute('role', 'alert');
       toastEl.setAttribute('aria-live', 'assertive');
       toastEl.setAttribute('aria-atomic', 'true');
-      toastEl.innerHTML = `
-        <div class="d-flex">
-          <div class="toast-body">
-            <strong>${title}</strong><br>${message}
-            <div class="mt-2 pt-2 border-top border-light">
-              <a href="/" class="btn btn-sm btn-light p-1 px-2">Обновить страницу</a>
-            </div>
-          </div>
-          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Закрыть"></button>
-        </div>
-      `;
+
+      const row = document.createElement('div');
+      row.className = 'd-flex';
+      const body = document.createElement('div');
+      body.className = 'toast-body';
+      const titleEl = document.createElement('strong');
+      titleEl.textContent = title;
+      const messageEl = document.createElement('div');
+      messageEl.textContent = message;
+      const actionWrap = document.createElement('div');
+      actionWrap.className = 'mt-2 pt-2 border-top border-light';
+      const reloadLink = document.createElement('a');
+      reloadLink.href = window.location.href;
+      reloadLink.className = 'btn btn-sm btn-light p-1 px-2';
+      reloadLink.textContent = 'Обновить страницу';
+      const closeButton = document.createElement('button');
+      closeButton.type = 'button';
+      closeButton.className = 'btn-close btn-close-white me-2 m-auto';
+      closeButton.dataset.bsDismiss = 'toast';
+      closeButton.setAttribute('aria-label', 'Закрыть');
+
+      actionWrap.appendChild(reloadLink);
+      body.append(titleEl, document.createElement('br'), messageEl, actionWrap);
+      row.append(body, closeButton);
+      toastEl.appendChild(row);
       container.appendChild(toastEl);
       const toast = new bootstrap.Toast(toastEl, { delay: 10000 });
       toast.show();
@@ -167,6 +258,13 @@
     {% if current_user is defined and current_user %}
       connectWebSocket();
     {% endif %}
+
+    initRoleGuides();
+    bindClientFilters();
+    document.body.addEventListener('htmx:afterSwap', function(evt) {
+      initRoleGuides(evt.detail.target);
+      bindClientFilters(evt.detail.target);
+    });
   </script>
   {% block scripts %}{% endblock %}
 </body>

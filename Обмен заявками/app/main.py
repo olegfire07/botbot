@@ -1,8 +1,9 @@
 import os
 
-from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy import text
 from starlette.middleware.sessions import SessionMiddleware
 
 from app.auth import AuthRedirect, csrf_token
@@ -11,7 +12,6 @@ from app.models import DemandStatus, DeliveryResultStatus, DeliverySessionStatus
 from app.routers import admin, appraiser, driver, home
 from app.seed import seed_data
 from app.services.websocket_service import manager
-from fastapi import WebSocket, WebSocketDisconnect
 
 
 def _session_secret() -> str:
@@ -86,6 +86,26 @@ for templates in (home.templates, appraiser.templates, driver.templates, admin.t
 @app.exception_handler(AuthRedirect)
 def auth_redirect_handler(request, exc: AuthRedirect):
     return RedirectResponse(exc.url, status_code=303)
+
+
+@app.get("/health", include_in_schema=False)
+def health_check():
+    db = SessionLocal()
+    try:
+        db.execute(text("SELECT 1"))
+    except Exception as exc:
+        return JSONResponse(
+            {"status": "error", "database": "unavailable", "detail": exc.__class__.__name__},
+            status_code=503,
+        )
+    finally:
+        db.close()
+    return {"status": "ok", "database": "ok"}
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    return RedirectResponse("/static/favicon.svg", status_code=307)
 
 
 @app.websocket("/ws")

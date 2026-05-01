@@ -4,16 +4,37 @@
 <div class="admin-hero">
   <div>
     <p class="eyebrow mb-1">Панель управления</p>
-    <h1 class="h3 mb-1">⚙️ Администратор</h1>
+    <h1 class="h3 mb-1">Администратор</h1>
     <p class="text-muted mb-0">Аналитика, выгрузки по датам, справочники и история.</p>
   </div>
 </div>
+
+<section class="role-guide" data-guide-id="admin-dashboard" aria-label="Подсказка для администратора">
+  <div class="role-guide-title">
+    <strong>Администрирование</strong>
+    <span>Изменения в истории сразу пересчитывают активные остатки и отчёты.</span>
+  </div>
+  <div class="role-guide-steps">
+    <div class="role-guide-step">
+      <strong>Сначала обзор</strong>
+      <span>Проверьте филиалы и позиции с максимальным остатком.</span>
+    </div>
+    <div class="role-guide-step">
+      <strong>Справочники</strong>
+      <span>Отключайте временно, удаляйте только когда запись больше не нужна.</span>
+    </div>
+    <div class="role-guide-step">
+      <strong>Выгрузки</strong>
+      <span>Выберите период и скачайте нужный Excel-отчёт.</span>
+    </div>
+  </div>
+</section>
 
 <!-- ═══ Date range filter + Export ═══ -->
 <div class="section-block mb-4">
   <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-end">
     <div>
-      <h2 class="h6 mb-2">📅 Период выгрузки</h2>
+      <h2 class="h6 mb-2">Период выгрузки</h2>
       <div class="d-flex flex-wrap gap-2 align-items-end">
         <div>
           <label class="form-label" for="date_from">С даты</label>
@@ -34,10 +55,10 @@
     <div>
       <p class="form-label">Скачать Excel</p>
       <div class="export-actions">
-        <button class="btn btn-outline-primary btn-sm" onclick="downloadXlsx('requests')">📋 Заявки</button>
-        <button class="btn btn-outline-primary btn-sm" onclick="downloadXlsx('deliveries')">🚛 Доставки</button>
-        <button class="btn btn-outline-primary btn-sm" onclick="downloadXlsx('active-demand')">📦 Потребность</button>
-        <button class="btn btn-outline-primary btn-sm" onclick="downloadXlsx('summary')">📊 Сводка</button>
+        <button class="btn btn-outline-primary btn-sm" onclick="downloadXlsx('requests')">Заявки</button>
+        <button class="btn btn-outline-primary btn-sm" onclick="downloadXlsx('deliveries')">Доставки</button>
+        <button class="btn btn-outline-primary btn-sm" onclick="downloadXlsx('active-demand')">Потребность</button>
+        <button class="btn btn-outline-primary btn-sm" onclick="downloadXlsx('summary')">Сводка</button>
       </div>
     </div>
   </div>
@@ -77,7 +98,7 @@
 <div class="row g-3 mb-4">
   <div class="col-lg-8">
     <div class="section-block" style="padding:1rem">
-      <h3 class="h6 mb-3">📈 Активность за 30 дней</h3>
+      <h3 class="h6 mb-3">Активность за 30 дней</h3>
       <div style="position:relative; height:240px; max-height:240px">
         <canvas id="activityChart"></canvas>
       </div>
@@ -85,7 +106,7 @@
   </div>
   <div class="col-lg-4">
     <div class="section-block" style="padding:1rem">
-      <h3 class="h6 mb-3">⚖️ Запрошено / Доставлено</h3>
+      <h3 class="h6 mb-3">Запрошено / Доставлено</h3>
       <div style="position:relative; height:240px; max-height:240px">
         <canvas id="ratioChart"></canvas>
       </div>
@@ -96,18 +117,18 @@
 <!-- ═══ Admin Workspace ═══ -->
 <div class="admin-workspace">
   <aside class="admin-sidebar" aria-label="Разделы администратора">
-    <button class="admin-nav-button is-active" type="button" data-admin-tab="overview">📊 Обзор</button>
-    <button class="admin-nav-button" type="button" data-admin-tab="items">🏷️ Позиции</button>
-    <button class="admin-nav-button" type="button" data-admin-tab="directories">📁 Справочники</button>
-    <button class="admin-nav-button" type="button" data-admin-tab="demand">📦 Потребности</button>
-    <button class="admin-nav-button" type="button" data-admin-tab="history">📜 История</button>
+    <a class="admin-nav-button is-active" href="#overview" data-admin-tab="overview" role="tab" aria-selected="true">Обзор</a>
+    <a class="admin-nav-button" href="#items" data-admin-tab="items" role="tab" aria-selected="false">Позиции</a>
+    <a class="admin-nav-button" href="#directories" data-admin-tab="directories" role="tab" aria-selected="false">Справочники</a>
+    <a class="admin-nav-button" href="#demand" data-admin-tab="demand" role="tab" aria-selected="false">Потребности</a>
+    <a class="admin-nav-button" href="#history" data-admin-tab="history" role="tab" aria-selected="false">История</a>
     {% if is_super_admin %}
-      <button class="admin-nav-button" type="button" data-admin-tab="super">🛡️ Супер</button>
+      <a class="admin-nav-button" href="#super" data-admin-tab="super" role="tab" aria-selected="false">Супер</a>
     {% endif %}
   </aside>
 
   <div class="admin-panels">
-    <section class="admin-panel is-active" data-admin-panel="overview">
+    <section id="overview" class="admin-panel is-active" data-admin-panel="overview" role="tabpanel">
       <div class="panel-title">
         <div>
           <h2 class="h5 mb-1">Обзор</h2>
@@ -117,7 +138,7 @@
       <div class="row g-3">
         <div class="col-12">
           <div class="soft-panel">
-            <h3 class="h6 mb-3">🏢 Топ подразделений</h3>
+            <h3 class="h6 mb-3">Топ подразделений</h3>
             {% for row in analytics.branch_rows %}
               <div class="bar-row">
                 <div class="bar-row-head">
@@ -134,7 +155,7 @@
         </div>
         <div class="col-12">
           <div class="soft-panel">
-            <h3 class="h6 mb-3">🏷️ Топ позиций по затратам</h3>
+            <h3 class="h6 mb-3">Топ позиций по затратам</h3>
             {% for row in analytics.item_rows %}
               <div class="bar-row">
                 <div class="bar-row-head">
@@ -152,7 +173,7 @@
       </div>
     </section>
 
-    <section class="admin-panel" data-admin-panel="items">
+    <section id="items" class="admin-panel" data-admin-panel="items" role="tabpanel">
       <div class="panel-title">
         <div>
           <h2 class="h5 mb-1">Позиции и ориентировочные цены</h2>
@@ -166,7 +187,7 @@
         <button class="btn btn-primary" type="submit">Добавить</button>
       </form>
       <div class="directory-tools">
-        <input class="form-control" data-filter-target="items-window" placeholder="🔍 Найти позицию">
+        <input class="form-control" data-filter-target="items-window" placeholder="Найти позицию">
       </div>
       <div id="items-window" class="scroll-pane item-pane">
         {% for item in items %}
@@ -193,7 +214,7 @@
       </div>
     </section>
 
-    <section class="admin-panel" data-admin-panel="directories">
+    <section id="directories" class="admin-panel" data-admin-panel="directories" role="tabpanel">
       <div class="panel-title">
         <div>
           <h2 class="h5 mb-1">Справочники</h2>
@@ -205,7 +226,7 @@
           <div class="soft-panel">
             <div class="panel-title compact">
               <div>
-                <h3 class="h6 mb-1">🏢 Подразделения</h3>
+                <h3 class="h6 mb-1">Подразделения</h3>
                 <div class="small text-muted">Всего: {{ branches|length }}</div>
               </div>
             </div>
@@ -215,7 +236,7 @@
               <button class="btn btn-primary" type="submit">Добавить</button>
             </form>
             <div class="directory-tools">
-              <input class="form-control" data-filter-target="branches-window" placeholder="🔍 Найти">
+              <input class="form-control" data-filter-target="branches-window" placeholder="Найти подразделение">
             </div>
             <div id="branches-window" class="scroll-pane directory-pane">
               {% for branch in branches %}
@@ -245,7 +266,7 @@
           <div class="soft-panel">
             <div class="panel-title compact">
               <div>
-                <h3 class="h6 mb-1">👤 Пользователи</h3>
+                <h3 class="h6 mb-1">Пользователи</h3>
                 <div class="small text-muted">Всего: {{ users|length }}</div>
               </div>
             </div>
@@ -267,7 +288,7 @@
               <button class="btn btn-primary" type="submit">Добавить</button>
             </form>
             <div class="directory-tools">
-              <input class="form-control" data-filter-target="users-window" placeholder="🔍 Найти">
+              <input class="form-control" data-filter-target="users-window" placeholder="Найти пользователя">
             </div>
             <div id="users-window" class="scroll-pane directory-pane">
               {% for user in users %}
@@ -336,12 +357,19 @@
       </div>
     </section>
 
-    <section class="admin-panel" data-admin-panel="demand">
+    <section id="demand" class="admin-panel" data-admin-panel="demand" role="tabpanel">
       <div class="panel-title">
         <div>
           <h2 class="h5 mb-1">Активные потребности</h2>
           <p class="text-muted mb-0">Сводный остаток, который видит водитель.</p>
         </div>
+        <form class="admin-filter-form" method="get" action="/admin#demand">
+          <input class="form-control form-control-sm" name="demand_q" value="{{ demand_q }}" placeholder="Филиал, адрес или позиция">
+          <button class="btn btn-sm btn-outline-primary" type="submit">Найти</button>
+          {% if demand_q %}
+            <a class="btn btn-sm btn-outline-secondary" href="/admin#demand">Сбросить</a>
+          {% endif %}
+        </form>
       </div>
       <div class="scroll-pane table-pane table-responsive">
         <table class="table align-middle compact-table">
@@ -365,57 +393,117 @@
               {% endif %}
             </tr>
           {% else %}
-            <tr><td colspan="{{ 8 if is_super_admin else 7 }}" class="text-muted">Активной потребности нет.</td></tr>
+            <tr>
+              <td colspan="{{ 8 if is_super_admin else 7 }}" class="text-muted">
+                {% if demand_q %}По запросу «{{ demand_q }}» активной потребности нет.{% else %}Активной потребности нет.{% endif %}
+              </td>
+            </tr>
           {% endfor %}
           </tbody>
         </table>
       </div>
     </section>
 
-    <section class="admin-panel" data-admin-panel="history">
+    <section id="history" class="admin-panel" data-admin-panel="history" role="tabpanel">
       <div class="panel-title">
         <div>
           <h2 class="h5 mb-1">История</h2>
-          <p class="text-muted mb-0">Последние заявки и визиты водителей.</p>
+          <p class="text-muted mb-0">Заявки и визиты водителей за выбранный период.</p>
         </div>
       </div>
+      <form class="admin-history-filter history-filter-panel" method="get" action="/admin#history">
+        <label class="history-search-field">
+          <span>Поиск</span>
+          <input class="form-control form-control-sm" name="history_q" value="{{ history_q }}" placeholder="№, филиал, пользователь, позиция или причина">
+        </label>
+        <label>
+          <span>С даты</span>
+          <input class="form-control form-control-sm" name="history_date_from" type="date" value="{{ history_date_from }}">
+        </label>
+        <label>
+          <span>По дату</span>
+          <input class="form-control form-control-sm" name="history_date_to" type="date" value="{{ history_date_to }}">
+        </label>
+        <div class="history-filter-actions">
+          <button class="btn btn-sm btn-outline-primary" type="submit">Применить</button>
+          {% if history_filters_active %}
+            <a class="btn btn-sm btn-outline-secondary" href="/admin#history">Сбросить</a>
+          {% endif %}
+        </div>
+      </form>
+      {% if history_filters_active %}
+        <div class="history-filter-summary">
+          <strong>Фильтр активен</strong>
+          {% if history_q %}<span>поиск: {{ history_q }}</span>{% endif %}
+          {% if history_date_from or history_date_to %}
+            <span>период: {{ history_date_from or "начало" }} — {{ history_date_to or "сегодня" }}</span>
+          {% endif %}
+        </div>
+      {% endif %}
       <div class="row g-3">
         <div class="col-xl-6">
           <div class="soft-panel">
             <div class="history-panel-head">
-              <h3 class="h6 mb-0">📋 Последние заявки</h3>
-              <span class="small text-muted">Редактирование и удаление исключают записи из отчётов</span>
+              <div>
+                <h3 class="h6 mb-0">Заявки</h3>
+                <span class="small text-muted">Редактирование заявки пересчитывает активные остатки.</span>
+              </div>
+              <span class="history-count">Показано: {{ requests|length }}</span>
             </div>
             <div class="scroll-pane history-pane">
-              {% for req in requests[:40] %}
-                <div class="history-row request-history-row">
-                  <form class="request-edit-form" method="post" action="/admin/requests/{{ req.id }}">
-                    <div>
-                      <strong>№{{ req.id }} · {{ req.branch.name }}</strong>
-                      <div class="small text-muted">{{ req.created_by.full_name }} · {{ req.created_at|dt }} · {{ req.status|status_label }}</div>
+              {% for req in requests %}
+                <div class="history-record history-record-request">
+                  <form class="request-edit-form history-record-main" method="post" action="/admin/requests/{{ req.id }}">
+                    <div class="history-record-head">
+                      <div>
+                        <div class="history-record-title">
+                          <strong>Заявка №{{ req.id }}</strong>
+                          <span class="status-pill">{{ req.status|status_label }}</span>
+                        </div>
+                        <div class="history-record-branch">{{ req.branch.name }}</div>
+                      </div>
+                      <div class="history-record-meta">
+                        <span>{{ req.created_by.full_name }}</span>
+                        <span>{{ req.created_at|dt }}</span>
+                        <span>{{ req.lines|length }} поз.</span>
+                      </div>
                     </div>
-                    <label class="request-comment-field">
+                    <label class="request-comment-field history-field">
                       <span>Комментарий</span>
                       <input class="form-control form-control-sm" name="comment" value="{{ req.comment or '' }}" placeholder="Комментарий заявки">
                     </label>
-                    <div class="request-lines-editor">
+                    <div class="request-lines-editor history-lines-editor">
                       {% for line in req.lines %}
-                        <div class="request-line-editor">
+                        <div class="request-line-editor history-line-editor">
                           <input type="hidden" name="line_id" value="{{ line.id }}">
-                          <div class="small">{{ line.item.name }} <span class="text-muted">{{ line.item.unit }}</span></div>
-                          <input class="form-control form-control-sm" name="qty_requested" type="number" min="0.001" step="0.001" value="{{ line.qty_requested|qty }}" required>
-                          <input class="form-control form-control-sm" name="line_comment" value="{{ line.comment or '' }}" placeholder="Комментарий строки">
+                          <div class="history-line-name">
+                            <strong>{{ line.item.name }}</strong>
+                            <span>{{ line.item.unit }}</span>
+                          </div>
+                          <label class="history-field history-qty-field">
+                            <span>Запрошено</span>
+                            <input class="form-control form-control-sm" name="qty_requested" type="number" min="0.001" step="0.001" value="{{ line.qty_requested|qty }}" required>
+                          </label>
+                          <label class="history-field history-comment-inline">
+                            <span>Комментарий строки</span>
+                            <input class="form-control form-control-sm" name="line_comment" value="{{ line.comment or '' }}" placeholder="Без комментария">
+                          </label>
                         </div>
                       {% endfor %}
                     </div>
-                    <button class="btn btn-sm btn-outline-primary" type="submit">Сохранить</button>
+                    <div class="history-record-actions">
+                      <button class="btn btn-sm btn-outline-primary" type="submit">Сохранить изменения</button>
+                    </div>
                   </form>
-                  <form method="post" action="/admin/requests/{{ req.id }}/delete">
-                    <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Удалить заявку №{{ req.id }}? Остатки будут пересчитаны.')">Удалить</button>
+                  <form class="history-record-delete" method="post" action="/admin/requests/{{ req.id }}/delete">
+                    <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Удалить заявку №{{ req.id }}? Остатки будут пересчитаны.')">Удалить заявку</button>
                   </form>
                 </div>
               {% else %}
-                <div class="empty-state">Заявок нет</div>
+                <div class="empty-state empty-state-rich">
+                  <strong>{% if history_filters_active %}Заявок по фильтру нет{% else %}Заявок пока нет{% endif %}</strong>
+                  <span>{% if history_filters_active %}Измените поиск или период.{% else %}Когда товаровед создаст заявку, она появится здесь.{% endif %}</span>
+                </div>
               {% endfor %}
             </div>
           </div>
@@ -423,35 +511,63 @@
         <div class="col-xl-6">
           <div class="soft-panel">
             <div class="history-panel-head">
-              <h3 class="h6 mb-0">🚛 Последние визиты</h3>
-              <span class="small text-muted">Можно изменить доставленное количество или удалить визит</span>
+              <div>
+                <h3 class="h6 mb-0">Визиты</h3>
+                <span class="small text-muted">Редактирование визита пересчитывает доставку и остатки.</span>
+              </div>
+              <span class="history-count">Показано: {{ sessions|length }}</span>
             </div>
             <div class="scroll-pane history-pane">
-              {% for session in sessions[:40] %}
-                <div class="history-row request-history-row">
-                  <form class="request-edit-form delivery-edit-form" method="post" action="/admin/delivery-sessions/{{ session.id }}">
-                    <div>
-                      <strong>Визит №{{ session.id }} · {{ session.branch.name }}</strong>
-                      <div class="small text-muted">{{ session.driver.full_name }} · {{ session.started_at|dt }} · {{ session.status|status_label }}</div>
+              {% for session in sessions %}
+                <div class="history-record history-record-visit">
+                  <form class="request-edit-form delivery-edit-form history-record-main" method="post" action="/admin/delivery-sessions/{{ session.id }}">
+                    <div class="history-record-head">
+                      <div>
+                        <div class="history-record-title">
+                          <strong>Визит №{{ session.id }}</strong>
+                          <span class="status-pill">{{ session.status|status_label }}</span>
+                        </div>
+                        <div class="history-record-branch">{{ session.branch.name }}</div>
+                      </div>
+                      <div class="history-record-meta">
+                        <span>{{ session.driver.full_name }}</span>
+                        <span>{{ session.started_at|dt }}</span>
+                        <span>{{ session.lines|length }} поз.</span>
+                      </div>
                     </div>
-                    <div class="request-lines-editor">
+                    <div class="request-lines-editor history-lines-editor">
                       {% for line in session.lines %}
-                        <div class="delivery-line-editor">
+                        <div class="delivery-line-editor history-line-editor">
                           <input type="hidden" name="line_id" value="{{ line.id }}">
-                          <div class="small">{{ line.item.name }} <span class="text-muted">{{ line.item.unit }}</span></div>
-                          <input class="form-control form-control-sm" name="qty_delivered_now" type="number" min="0" max="{{ line.qty_before|qty }}" step="0.001" value="{{ line.qty_delivered_now|qty }}" required>
-                          <span class="small text-muted">{{ line.result_status|status_label }}</span>
+                          <div class="history-line-name">
+                            <strong>{{ line.item.name }}</strong>
+                            <span>{{ line.item.unit }} · было {{ line.qty_before|qty }} · осталось {{ line.qty_after|qty }}</span>
+                          </div>
+                          <label class="history-field history-qty-field">
+                            <span>Доставлено</span>
+                            <input class="form-control form-control-sm" name="qty_delivered_now" type="number" min="0" max="{{ line.qty_before|qty }}" step="0.001" value="{{ line.qty_delivered_now|qty }}" required>
+                          </label>
+                          <span class="history-result-pill">{{ line.result_status|status_label }}</span>
+                          <label class="history-field history-delivery-reason">
+                            <span>Причина недовоза</span>
+                            <input class="form-control form-control-sm delivery-reason-admin" name="shortage_reason" value="{{ line.shortage_reason or '' }}" maxlength="500" placeholder="Если доставили не всё">
+                          </label>
                         </div>
                       {% endfor %}
                     </div>
-                    <button class="btn btn-sm btn-outline-primary" type="submit">Сохранить</button>
+                    <div class="history-record-actions">
+                      <button class="btn btn-sm btn-outline-primary" type="submit">Сохранить изменения</button>
+                    </div>
                   </form>
-                  <form method="post" action="/admin/delivery-sessions/{{ session.id }}/delete">
-                    <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Удалить визит №{{ session.id }} из истории и отчётов? Остатки будут пересчитаны.')">Удалить</button>
+                  <form class="history-record-delete" method="post" action="/admin/delivery-sessions/{{ session.id }}/delete">
+                    <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Удалить визит №{{ session.id }} из истории и отчётов? Остатки будут пересчитаны.')">Удалить визит</button>
                   </form>
                 </div>
               {% else %}
-                <div class="empty-state">Визитов нет</div>
+                <div class="empty-state empty-state-rich">
+                  <strong>{% if history_filters_active %}Визитов по фильтру нет{% else %}Визитов пока нет{% endif %}</strong>
+                  <span>{% if history_filters_active %}Измените поиск или период.{% else %}Когда водитель откроет визит, он появится здесь.{% endif %}</span>
+                </div>
               {% endfor %}
             </div>
           </div>
@@ -459,7 +575,7 @@
       </div>
     </section>
     {% if is_super_admin %}
-      <section class="admin-panel" data-admin-panel="super">
+      <section id="super" class="admin-panel" data-admin-panel="super" role="tabpanel">
         <div class="panel-title">
           <div>
             <h2 class="h5 mb-1">Суперадмин</h2>
@@ -470,7 +586,7 @@
         <div class="row g-3">
           <div class="col-xl-6">
             <div class="soft-panel">
-              <h3 class="h6 mb-3">🧰 Обслуживание</h3>
+              <h3 class="h6 mb-3">Обслуживание</h3>
               <div class="super-actions">
                 <a class="btn btn-outline-primary" href="/admin/super/backup">Скачать бэкап БД</a>
                 <form method="post" action="/admin/super/recalculate">
@@ -493,7 +609,7 @@
 
           <div class="col-xl-6">
             <div class="soft-panel">
-              <h3 class="h6 mb-3">🧾 Журнал действий</h3>
+              <h3 class="h6 mb-3">Журнал действий</h3>
               <div class="scroll-pane audit-pane">
                 {% for log in audit_logs %}
                   <div class="audit-row">
@@ -513,7 +629,7 @@
 
           <div class="col-xl-6">
             <div class="soft-panel">
-              <h3 class="h6 mb-3">🗂️ Удалённые заявки</h3>
+              <h3 class="h6 mb-3">Удалённые заявки</h3>
               <div class="scroll-pane history-pane">
                 {% for req in deleted_requests %}
                   <div class="deleted-row">
@@ -539,7 +655,7 @@
 
           <div class="col-xl-6">
             <div class="soft-panel">
-              <h3 class="h6 mb-3">🗂️ Удалённые визиты</h3>
+              <h3 class="h6 mb-3">Удалённые визиты</h3>
               <div class="scroll-pane history-pane">
                 {% for session in deleted_sessions %}
                   <div class="deleted-row">
@@ -569,32 +685,41 @@
 </div>
 {% endblock %}
 {% block scripts %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', path='/vendor/chart.umd.min.js') }}?v=4.4.7"></script>
 <script>
   // ─── Tab navigation ───
-  var tabButtons = document.querySelectorAll('[data-admin-tab]');
-  var tabPanels = document.querySelectorAll('[data-admin-panel]');
+  var tabButtons = Array.prototype.slice.call(document.querySelectorAll('[data-admin-tab]'));
+  var tabPanels = Array.prototype.slice.call(document.querySelectorAll('[data-admin-panel]'));
+  var knownTabs = tabButtons.reduce(function(acc, button) {
+    acc[button.dataset.adminTab] = true;
+    return acc;
+  }, {});
 
-  function activateAdminTab(name) {
-    tabButtons.forEach(b => b.classList.toggle('is-active', b.dataset.adminTab === name));
-    tabPanels.forEach(p => p.classList.toggle('is-active', p.dataset.adminPanel === name));
-    if (location.hash.replace('#', '') !== name) history.replaceState(null, '', `#${name}`);
+  function activateAdminTab(name, updateHash) {
+    if (!knownTabs[name]) name = 'overview';
+    tabButtons.forEach(function(button) {
+      var active = button.dataset.adminTab === name;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    tabPanels.forEach(function(panel) {
+      panel.classList.toggle('is-active', panel.dataset.adminPanel === name);
+    });
+    if (updateHash !== false && location.hash.replace('#', '') !== name) {
+      history.replaceState(null, '', '#' + name);
+    }
   }
-  tabButtons.forEach(b => b.addEventListener('click', () => activateAdminTab(b.dataset.adminTab)));
-  var initialTab = location.hash.replace('#', '');
-  if (initialTab && document.querySelector(`[data-admin-tab="${initialTab}"]`)) activateAdminTab(initialTab);
 
-  // ─── Filter search ───
-  document.querySelectorAll('[data-filter-target]').forEach(input => {
-    var target = document.getElementById(input.dataset.filterTarget);
-    if (!target) return;
-    input.addEventListener('input', () => {
-      var q = input.value.trim().toLowerCase();
-      target.querySelectorAll('[data-filter-row]').forEach(row => {
-        row.hidden = q && !row.dataset.search.toLowerCase().includes(q);
-      });
+  tabButtons.forEach(function(button) {
+    button.addEventListener('click', function(event) {
+      event.preventDefault();
+      activateAdminTab(button.dataset.adminTab, true);
     });
   });
+  window.addEventListener('hashchange', function() {
+    activateAdminTab(location.hash.replace('#', ''), false);
+  });
+  activateAdminTab(location.hash.replace('#', '') || 'overview', false);
 
   // ─── Date presets ───
   window.setPreset = function(days) {
@@ -627,7 +752,7 @@
 
   // Only init chart if canvas exists to avoid errors on HTMX swap
   var activityCanvas = document.getElementById('activityChart');
-  if (activityCanvas) {
+  if (activityCanvas && window.Chart) {
     var activityCtx = activityCanvas.getContext('2d');
     if (window.activityChartInstance) window.activityChartInstance.destroy();
     window.activityChartInstance = new Chart(activityCtx, {
@@ -671,7 +796,7 @@
   }
 
   var ratioCanvas = document.getElementById('ratioChart');
-  if (ratioCanvas) {
+  if (ratioCanvas && window.Chart) {
     var ratioCtx = ratioCanvas.getContext('2d');
     if (window.ratioChartInstance) window.ratioChartInstance.destroy();
     window.ratioChartInstance = new Chart(ratioCtx, {
