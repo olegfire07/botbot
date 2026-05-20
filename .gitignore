@@ -1,0 +1,37 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Caches
+.pytest_cache/
+.venv/
+venv/
+env/
+.agents/
+
+# Secret / Configuration files
+.env
+.DS_Store
+
+# SQLite Databases & WAL/SHM files
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+
+# Persistence & Locks
+*.pickle
+.bot.lock
+
+# Application Data & User Uploads
+backups/
+documents/
+documents_archive/
+logs/
+photos/
+*.log
+temp_deploy_bestbot/
+*.zip
+conclusions.xlsx

@@ -1,0 +1,27 @@
+[Unit]
+Description=Telegram Bot - Conclusion Generator
+After=network.target
+
+[Service]
+Type=simple
+User=oleg
+WorkingDirectory=/Users/oleg/Project_SKLAD/prod bot
+Environment="PATH=/Users/oleg/Project_SKLAD/prod bot/venv/bin:/usr/local/bin:/usr/bin:/bin"
+ExecStart=/Users/oleg/Project_SKLAD/prod bot/venv/bin/python /Users/oleg/Project_SKLAD/prod bot/run_modern_bot.py
+
+# Auto-restart settings
+Restart=always
+RestartSec=10
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+# Logging
+StandardOutput=append:/Users/oleg/Project_SKLAD/prod bot/logs/bot.log
+StandardError=append:/Users/oleg/Project_SKLAD/prod bot/logs/bot_error.log
+
+# Security (optional hardening)
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

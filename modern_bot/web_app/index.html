@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Создание заключения v5.4</title>
+    <!-- Version: 5.4 (Photo UX + Motion) -->
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0/dist/cleave.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Offline banner -->
+    <div id="offlineBanner" class="offline-banner" style="display:none;">
+        <span>📴</span>
+        <span id="offlineBannerText">Нет подключения — данные будут сохранены и отправлены автоматически</span>
+    </div>
+
+    <div class="header-container" id="headerContainer">
+        <div class="motivation-trigger" onclick="showMotivation()" title="Рейтинговая система">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" style="color: #FFD700;">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                <path d="M4 22h16"></path>
+                <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path>
+            </svg>
+        </div>
+        <h1 id="mainTitle">Новое заключение</h1>
+        <div class="brand-logo" aria-hidden="true">
+            <img src="fianit-logo.jpg" alt="">
+        </div>
+    </div>
+    <!-- Draft Notice -->
+    <div class="draft-notice" id="draftNotice">
+        ✅ Восстановлен черновик из предыдущей сессии
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <form id="mainForm" novalidate>
+        <div class="section">
+            <div class="form-group">
+                <label>Подразделение</label>
+                <div class="input-wrapper">
+                    <input type="tel" id="department" placeholder="Например: 385" required pattern="\d+">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Номер заключения</label>
+                <div class="input-wrapper">
+                    <input type="tel" id="issue" placeholder="Например: 12" required pattern="\d+">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Номер билета</label>
+                <div class="input-wrapper">
+                    <input type="tel" id="ticket" placeholder="03850006392" required maxlength="11" inputmode="numeric"
+                        pattern="[0-9]{11}" autocomplete="off">
+                    <div class="error-message"></div>
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 11V7a5 5 0 0 1 10 0v4"></path>
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                </div>
+                <div class="hint-text">11 цифр без пробелов (пример: 03850006392)</div>
+            </div>
+            <div class="form-group">
+                <label>Дата</label>
+                <div class="input-wrapper">
+                    <input type="date" id="date" required placeholder="Дата" title="Дата">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                </div>
+                <div class="hint-text">Дата не может быть в будущем. Сегодня или раньше.</div>
+            </div>
+            <div class="form-group">
+                <label>Регион</label>
+                <div class="input-wrapper">
+                    <select id="region" required aria-label="Регион">
+                        <option value="" disabled selected>Выберите регион</option>
+                        <option value="Санкт-Петербург">Санкт-Петербург</option>
+                        <option value="Свердловская область">Свердловская область</option>
+                        <option value="Челябинская область">Челябинская область</option>
+                        <option value="Екатеринбург">Екатеринбург</option>
+                        <option value="Башкирия">Башкирия</option>
+                        <option value="Тюмень">Тюмень</option>
+                        <option value="ХМАО-Югра">ХМАО-Югра</option>
+                        <option value="Нижний Новгород">Нижний Новгород</option>
+                        <option value="Ростовская область">Ростовская область</option>
+                        <option value="Челябинск">Челябинск</option>
+                        <option value="Магнитогорск">Магнитогорск</option>
+                        <option value="Курган">Курган</option>
+                        <option value="Краснодарский край">Краснодарский край</option>
+                    </select>
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="items-header">
+            <h3 class="section-title">
+                Предметы
+                <span id="itemCountBadge" class="items-badge">1</span>
+            </h3>
+        </div>
+
+        <!-- Items List (moved outside items-header) -->
+        <div id="itemsList"></div>
+
+        <!-- Total Banner (Real-time) -->
+        <div id="realTimeTotal" class="total-banner real-time-banner">
+            <div class="total-label">💰 Итого:</div>
+            <div class="total-amount" id="totalAmountDisplay">0 ₽</div>
+        </div>
+
+        <button type="button" class="btn btn-secondary btn-dashed" onclick="addItem()">
+            + Добавить предмет
+        </button>
+
+        <!-- Mode Toggle (Moved to Bottom) -->
+        <div class="mode-label">📤 Режим отправки</div>
+        <div class="segmented-control">
+            <input type="radio" name="mode" id="mode-final" value="final" checked>
+            <label for="mode-final">
+                <span class="segmented-title">Оригинал</span>
+                <span class="segmented-subtitle">в группу</span>
+            </label>
+
+            <input type="radio" name="mode" id="mode-test" value="test">
+            <label for="mode-test">
+                <span class="segmented-title">Черновик</span>
+                <span class="segmented-subtitle">только вам</span>
+            </label>
+        </div>
+        <div class="hint-text">Оригинал — автоматически отправляется региональному менеджеру. Черновик — только вам.
+        </div>
+
+        <div class="sticky-footer">
+            <button type="button" class="btn btn-primary" onclick="showPreview()">
+                Проверить и отправить
+            </button>
+        </div>
+
+        <div class="footer-note">
+            <div class="action-buttons-row">
+                <button type="button" class="action-trigger" onclick="showUserGuide()">
+                    📘 Инструкция пользователя
+                </button>
+                <button type="button" class="action-trigger purple-tint" onclick="openQuiz()">
+                    🧠 Проверь себя — викторина
+                    <span class="notification-dot"></span>
+                </button>
+            </div>
+            <div class="footer-author">
+                Жуков Олег
+            </div>
+            <div class="footer-version">
+                Версия 5.5 07.03.2026
+            </div>
+        </div>
+    </form>
+
+    <!-- Preview Modal -->
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <h2 class="no-margin-top">Проверка данных</h2>
+            <div id="previewContent"></div>
+            <div class="flex-gap">
+                <button class="btn btn-secondary" onclick="closePreview()">Назад</button>
+                <button class="btn btn-primary btn-no-margin" onclick="submitForm()"
+                    id="finalSubmitBtn">Отправить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox Modal -->
+    <div id="lightboxModal" class="modal lightbox-modal" onclick="closeLightbox()">
+        <div class="modal-content lightbox-content" onclick="event.stopPropagation()">
+            <button type="button" class="lightbox-close" onclick="closeLightbox()">×</button>
+            <img id="lightboxImage" alt="Фото">
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div id="quizModal" class="modal">
+        <div class="modal-content quiz-content">
+            <div class="quiz-header">
+                <h2 class="quiz-title">Проверь себя</h2>
+                <button type="button" class="quiz-close" onclick="closeQuiz()">×</button>
+            </div>
+            <div id="quizBody"></div>
+        </div>
+    </div>
+
+    <!-- Motivation Modal -->
+    <div id="motivationModal" class="modal">
+        <div class="modal-content">
+            <h2 class="no-margin-top guide-title">Рейтинги и достижения</h2>
+            <div class="motivation-container">
+                <div class="motivation-item">
+                    <div class="motivation-icon">📄</div>
+                    <div class="motivation-text">
+                        <b>+10 баллов</b>
+                        <span>За каждое оформленное заключение</span>
+                    </div>
+                </div>
+                <div class="motivation-item">
+                    <div class="motivation-icon">💰</div>
+                    <div class="motivation-text">
+                        <b>+1 балл</b>
+                        <span>За каждые 1000 ₽ суммы оценки</span>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 20px; text-align: center;">
+                <button class="btn btn-primary" style="margin-bottom: 10px; width: 100%;"
+                    onclick="closeMotivation()">Понятно</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Guide Modal -->
+    <div id="guideModal" class="modal">
+        <div class="modal-content">
+            <h2 class="no-margin-top guide-title">Как это работает</h2>
+
+            <div class="guide-steps">
+                <div class="guide-step">
+                    <div class="step-icon-wrapper">
+                        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                    </div>
+                    <div class="step-text">
+                        <h3>1. Заполните данные</h3>
+                        <p>Укажите подразделение, номер билета и дату.</p>
+                    </div>
+                </div>
+
+                <div class="guide-step">
+                    <div class="step-icon-wrapper">
+                        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                    </div>
+                    <div class="step-text">
+                        <h3>2. Добавьте предметы</h3>
+                        <p>Загрузите одно фото и укажите оценку для каждого предмета.</p>
+                    </div>
+                </div>
+
+                <div class="guide-step">
+                    <div class="step-icon-wrapper">
+                        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 11 12 14 22 4"></polyline>
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                        </svg>
+                    </div>
+                    <div class="step-text">
+                        <h3>3. Проверьте</h3>
+                        <p>Нажмите кнопку внизу, чтобы проверить введенные данные.</p>
+                    </div>
+                </div>
+
+                <div class="guide-step">
+                    <div class="step-icon-wrapper">
+                        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </div>
+                    <div class="step-text">
+                        <h3>4. Отправьте</h3>
+                        <p>Выберите режим (Оригинал/Черновик) и отправьте боту.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Antique Restriction Alert -->
+            <div class="alert-box alert-warning" style="margin-top: 15px; margin-bottom: 15px; padding: 12px; border-radius: 8px; background: rgba(255, 149, 0, 0.1); border-left: 4px solid #ff9500; font-size: 13px; color: #e67700; text-align: left; line-height: 1.45;">
+                ⚠️ <b>Важное правило:</b> изделия из драгоценных металлов (золото, серебро и др.) <b>не принимаются</b> в качестве антиквариата!
+            </div>
+
+            <button class="btn btn-primary guide-btn" onclick="closeGuide()">Всё понятно</button>
+            <div class="guide-update">
+                Если интерфейс не обновился — <a href="javascript:void(0)" onclick="forceUpdate()">обновить страницу</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="ux-improvements.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,4367 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Gold Admin v5.2 | BestBOT</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #f4f1ea;
+            --bg-alt: #eef3f7;
+            --sidebar: #0f1418;
+            --sidebar-active: #1f2a32;
+            --card: rgba(255, 255, 255, 0.78);
+            --card-solid: #ffffff;
+            --primary: #0f766e;
+            --primary-strong: #0b5f58;
+            --primary-glow: rgba(15, 118, 110, 0.28);
+            --accent: #ff8a3d;
+            --success: #16a34a;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --text-main: #111827;
+            --text-mute: #6b7280;
+            --border: rgba(15, 23, 42, 0.08);
+            --radius-lg: 22px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+            --shadow: 0 24px 60px rgba(15, 23, 42, 0.16);
+            --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image: linear-gradient(135deg, var(--bg) 0%, var(--bg-alt) 50%, #fbf8f3 100%);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: -30%;
+            background:
+                radial-gradient(500px 500px at 8% 12%, rgba(15, 118, 110, 0.22), transparent 60%),
+                radial-gradient(420px 420px at 92% 18%, rgba(255, 138, 61, 0.2), transparent 60%),
+                radial-gradient(360px 360px at 60% 88%, rgba(2, 132, 199, 0.18), transparent 60%);
+            opacity: 0.9;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image:
+                repeating-linear-gradient(135deg, rgba(15, 23, 42, 0.035) 0, rgba(15, 23, 42, 0.035) 1px, transparent 1px, transparent 7px);
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            background: linear-gradient(180deg, #0b1014 0%, #141c24 100%);
+            color: #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            padding: 26px;
+            z-index: 2;
+            box-shadow: 18px 0 40px rgba(15, 23, 42, 0.25);
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar::before {
+            content: "";
+            position: absolute;
+            top: -120px;
+            right: -80px;
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle, rgba(15, 118, 110, 0.35), transparent 70%);
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        .sidebar>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .sidebar-header {
+            margin-bottom: 36px;
+            padding-left: 6px;
+        }
+
+        .sidebar-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.6px;
+            background: linear-gradient(120deg, #ffffff 0%, #b5f3e7 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar-header span {
+            font-size: 10px;
+            color: rgba(229, 231, 235, 0.5);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 2.4px;
+        }
+
+        .nav-links {
+            list-style: none;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            color: rgba(229, 231, 235, 0.7);
+            font-weight: 600;
+            font-size: 14px;
+            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #ffffff;
+            transform: translateX(2px);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(15, 118, 110, 0.95), rgba(34, 197, 94, 0.9));
+            color: #ffffff;
+            box-shadow: 0 12px 30px rgba(15, 118, 110, 0.4);
+            border-color: rgba(255, 255, 255, 0.18);
+            transform: translateX(2px);
+        }
+
+        .nav-icon {
+            font-size: 18px;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+        }
+
+        .sidebar-footer {
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-footer p {
+            font-size: 11px;
+            color: rgba(229, 231, 235, 0.6);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 36px 40px 40px;
+            overflow-y: auto;
+            position: relative;
+            min-height: 0;
+            z-index: 1;
+        }
+
+        .pane {
+            display: none;
+        }
+
+        .pane.active {
+            display: block;
+            animation: slideIn 0.2s ease;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            gap: 16px;
+            padding: 18px 22px;
+            border-radius: var(--radius-lg);
+            background: var(--card);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-soft);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            width: 100%;
+        }
+
+        .page-title h2 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .page-title p {
+            color: var(--text-mute);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .system-status {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .status-pill {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 16px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .status-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            background: rgba(15, 23, 42, 0.08);
+            color: var(--text-mute);
+        }
+
+        .status-tag.success {
+            background: rgba(34, 197, 94, 0.12);
+            color: #15803d;
+        }
+
+        .status-tag.danger {
+            background: rgba(239, 68, 68, 0.12);
+            color: #b91c1c;
+        }
+
+        .user-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .user-meta {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .pulse {
+            width: 10px;
+            height: 10px;
+            background: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.6);
+            animation: pulse 2s infinite;
+        }
+
+        .grid-kpi {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .card-kpi {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: 18px 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-soft);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card-kpi::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, rgba(255, 255, 255, 0.28), transparent 45%);
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .card-kpi:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .kpi-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 12px;
+            background: rgba(15, 118, 110, 0.12);
+            color: var(--primary);
+        }
+
+        .kpi-val {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .kpi-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-mute);
+            margin-top: 6px;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(52, 199, 89, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(52, 199, 89, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(52, 199, 89, 0);
+            }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 900px) {
+            body {
+                flex-direction: column;
+                overflow-y: auto;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                padding: 15px;
+                flex-direction: row;
+                overflow-x: auto;
+                position: sticky;
+                top: 0;
+                gap: 10px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            }
+
+            .sidebar-header {
+                margin-bottom: 0;
+                padding-left: 0;
+                min-width: 150px;
+            }
+
+            .sidebar-header span {
+                display: none;
+            }
+
+            .nav-links {
+                display: flex;
+                gap: 8px;
+                flex: initial;
+                flex-direction: row;
+            }
+
+            .nav-item {
+                margin-bottom: 0;
+                padding: 10px 14px;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .grid-kpi {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .system-status {
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: 5px;
+            }
+
+            .theme-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .broadcast-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .monitoring-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .grid-kpi {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                padding: 10px;
+                gap: 5px;
+            }
+
+            .nav-item {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+        }
+
+        /* Loading Spinner */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(244, 241, 234, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(15, 23, 42, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Connection Status Badge */
+        .connection-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+        }
+
+        .connection-badge.online {
+            background: var(--success);
+            color: white;
+        }
+
+        .connection-badge.offline {
+            background: var(--error);
+            color: white;
+            cursor: pointer;
+        }
+
+        @media (max-width: 500px) {
+            .grid-kpi {
+                grid-template-columns: 1fr;
+            }
+
+            .card-kpi {
+                padding: 20px;
+            }
+
+            .page-title h2 {
+                font-size: 22px;
+            }
+        }
+
+        /* Immediate Theme Switching Effects */
+        body.theme-switching {
+            transition: background 0.5s ease;
+        }
+
+        body.theme-winter {
+            background: #e0f7fa;
+        }
+
+        body.theme-spring {
+            background: #fce4ec;
+        }
+
+        body.theme-summer {
+            background: #fff9c4;
+        }
+
+        body.theme-autumn {
+            background: #fff3e0;
+        }
+
+        body.theme-holiday {
+            background: #f3e5f5;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-box {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border);
+            margin-bottom: 30px;
+            -webkit-backdrop-filter: blur(14px);
+            backdrop-filter: blur(14px);
+        }
+
+        /* Theme Engine UI */
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .theme-card {
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .theme-card:hover {
+            border-color: var(--primary);
+            background: #fafafa;
+        }
+
+        .theme-card.active {
+            border-color: var(--primary);
+            background: rgba(15, 118, 110, 0.12);
+        }
+
+        .theme-preview {
+            height: 80px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .theme-name {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: transparent;
+        }
+
+        th {
+            text-align: left;
+            padding: 18px;
+            font-size: 11px;
+            color: var(--text-mute);
+            background: rgba(255, 255, 255, 0.6);
+            border-bottom: 1px solid var(--border);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 18px;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border);
+            font-weight: 500;
+        }
+
+        tbody tr:nth-child(even) td {
+            background: rgba(15, 23, 42, 0.02);
+        }
+
+        tr:hover td {
+            background: rgba(15, 118, 110, 0.06);
+        }
+
+        .table-empty td {
+            text-align: center;
+            color: var(--text-mute);
+            font-size: 13px;
+            padding: 28px 18px;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+            background: rgba(15, 118, 110, 0.12);
+            color: var(--primary-strong);
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        th.sortable {
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+        }
+
+        th.sortable::after {
+            content: "↕";
+            font-size: 10px;
+            margin-left: 6px;
+            color: var(--text-mute);
+        }
+
+        th.sortable.sort-asc::after {
+            content: "↑";
+            color: var(--primary-strong);
+        }
+
+        th.sortable.sort-desc::after {
+            content: "↓";
+            color: var(--primary-strong);
+        }
+
+        thead th {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .chip-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 10px 0 18px;
+        }
+
+        .chip {
+            padding: 6px 12px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.85);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .chip:hover {
+            transform: translateY(-1px);
+        }
+
+        .chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 10px 22px var(--primary-glow);
+        }
+
+        .table-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 14px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .page-indicator {
+            font-size: 12px;
+            color: var(--text-mute);
+            font-weight: 600;
+            padding: 0 4px;
+        }
+
+        .table-meta {
+            font-size: 12px;
+            color: var(--text-mute);
+            font-weight: 600;
+        }
+
+        .table-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .update-stamp {
+            font-size: 11px;
+            color: var(--text-mute);
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .btn-icon {
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+
+        .row-main {
+            cursor: pointer;
+        }
+
+        .row-main.expanded td {
+            background: rgba(15, 118, 110, 0.08);
+        }
+
+        .row-details {
+            display: none;
+        }
+
+        .row-details.active {
+            display: table-row;
+        }
+
+        .detail-panel {
+            padding: 16px 18px;
+            border-radius: var(--radius-md);
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .detail-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--text-mute);
+        }
+
+        .detail-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-top: 6px;
+        }
+
+        .detail-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .inline-edit {
+            display: none;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            background: rgba(15, 23, 42, 0.04);
+            border: 1px dashed rgba(15, 23, 42, 0.12);
+        }
+
+        .inline-edit.active {
+            display: block;
+        }
+
+        .inline-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .inline-field label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-mute);
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .inline-field input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.95);
+            font-weight: 600;
+            outline: none;
+        }
+
+        .inline-field input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.18);
+        }
+
+        .inline-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .broadcast-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .broadcast-field label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-mute);
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .broadcast-field textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .broadcast-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 14px;
+        }
+
+        .broadcast-hint {
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--text-mute);
+        }
+
+        .quick-actions {
+            margin-top: 24px;
+        }
+
+        .quick-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .quick-actions-note {
+            margin-top: 14px;
+            font-size: 12px;
+            color: var(--text-mute);
+            font-weight: 600;
+        }
+
+        .access-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .access-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .access-card {
+            background: rgba(255, 255, 255, 0.82);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .access-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: var(--text-mute);
+            font-weight: 700;
+        }
+
+        .access-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 260px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .access-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            background: rgba(15, 23, 42, 0.03);
+        }
+
+        .access-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .access-meta {
+            font-size: 12px;
+            color: var(--text-mute);
+        }
+
+        .access-tag {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(255, 138, 61, 0.16);
+            color: #b45309;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .access-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .access-input {
+            min-width: 160px;
+            flex: 1;
+        }
+
+        .access-hint {
+            font-size: 11px;
+            color: var(--text-mute);
+            font-weight: 600;
+        }
+
+        .access-empty {
+            font-size: 13px;
+            color: var(--text-mute);
+            padding: 8px 6px;
+        }
+
+        #live-indicator.live {
+            background: rgba(15, 118, 110, 0.12);
+            color: var(--primary-strong);
+        }
+
+        #live-indicator.offline {
+            background: rgba(239, 68, 68, 0.12);
+            color: #b91c1c;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 18px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            background: var(--card-solid);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #22c55e);
+            color: white;
+            border: none;
+            box-shadow: 0 14px 28px rgba(15, 118, 110, 0.35);
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.8);
+            color: var(--text-main);
+        }
+
+        .btn-outline:hover {
+            background: rgba(15, 118, 110, 0.08);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.12);
+            color: #b91c1c;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Form Controls */
+        .search-wrap {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .input-pro {
+            flex: 1;
+            padding: 12px 20px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.85);
+            font-weight: 600;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-pro:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.18);
+        }
+
+        /* Terminal Logs */
+        .terminal {
+            background: #0b1115;
+            color: #e5e7eb;
+            padding: 24px;
+            border-radius: var(--radius-md);
+            font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 13px;
+            height: 400px;
+            overflow-y: auto;
+            line-height: 1.5;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+        }
+
+        .log-line {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 4px 0;
+        }
+
+        .log-line.level-error {
+            background: rgba(239, 68, 68, 0.16);
+            color: #fecaca;
+        }
+
+        .log-line.level-warn {
+            background: rgba(245, 158, 11, 0.16);
+            color: #fde68a;
+        }
+
+        .log-line.level-info {
+            color: #93c5fd;
+        }
+
+        .log-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .log-controls-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .log-summary {
+            font-size: 12px;
+            color: var(--text-mute);
+            font-weight: 600;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .summary-card {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .summary-card.wide {
+            grid-column: span 2;
+        }
+
+        .summary-label {
+            font-size: 10px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--text-mute);
+            font-weight: 700;
+        }
+
+        .summary-value {
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+
+        .summary-meta {
+            font-size: 12px;
+            color: var(--text-mute);
+            margin-top: 6px;
+        }
+
+        .monitoring-chips {
+            margin-top: 12px;
+        }
+
+        .monitoring-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 18px;
+            margin-top: 18px;
+        }
+
+        .monitor-panel {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .monitor-panel h4 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--text-mute);
+            margin-bottom: 12px;
+        }
+
+        .monitor-chart {
+            height: 220px;
+        }
+
+        .region-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .region-item {
+            display: grid;
+            gap: 6px;
+        }
+
+        .region-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-mute);
+            font-weight: 600;
+        }
+
+        .region-name {
+            color: var(--text-main);
+        }
+
+        .region-sub {
+            font-size: 11px;
+            color: var(--text-mute);
+        }
+
+        .region-bar {
+            height: 6px;
+            border-radius: 999px;
+            background: rgba(15, 118, 110, 0.12);
+            overflow: hidden;
+        }
+
+        .region-bar span {
+            display: block;
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), #22c55e);
+            border-radius: 999px;
+        }
+
+        .region-empty {
+            font-size: 12px;
+            color: var(--text-mute);
+        }
+
+        .trend-positive {
+            color: var(--success);
+        }
+
+        .trend-negative {
+            color: var(--error);
+        }
+
+        .bulk-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .bulk-meta {
+            font-size: 12px;
+            color: var(--text-mute);
+            font-weight: 600;
+        }
+
+        .table-select {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        th.select-col,
+        td.select-col {
+            width: 38px;
+        }
+
+        .detail-section {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .detail-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-mute);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .timeline {
+            display: grid;
+            gap: 8px;
+        }
+
+        .timeline-item {
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: rgba(15, 23, 42, 0.03);
+        }
+
+        .timeline-meta {
+            font-size: 12px;
+            color: var(--text-mute);
+            margin-top: 4px;
+        }
+
+        .timeline-empty {
+            font-size: 12px;
+            color: var(--text-mute);
+        }
+
+        /* Telegram Broadcast Preview CSS */
+        .telegram-preview-container {
+            margin-top: 10px;
+            background: #0f172a; /* Slate 900 */
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        .telegram-preview-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .telegram-preview-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #fbbf24, #d97706); /* Fianit Amber Gold */
+            color: #ffffff;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .telegram-preview-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .telegram-preview-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .telegram-preview-subtitle {
+            font-size: 11px;
+            color: #fbbf24; /* Fianit Gold */
+            font-weight: 500;
+        }
+
+        .telegram-preview-bubble-wrapper {
+            position: relative;
+            background: #1e293b; /* Slate 800 */
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 14px 14px 14px 4px;
+            padding: 10px 14px;
+            max-width: 90%;
+            align-self: flex-start;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            word-break: break-word;
+        }
+
+        .telegram-preview-bubble {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #e2e8f0; /* Slate 200 */
+        }
+
+        .telegram-preview-placeholder {
+            color: #64748b; /* Slate 500 */
+            font-style: italic;
+        }
+
+        .telegram-preview-time {
+            font-size: 10px;
+            color: #64748b; /* Slate 500 */
+            text-align: right;
+            margin-top: 4px;
+            user-select: none;
+        }
+
+        /* Markup styles inside bubble */
+        .telegram-preview-bubble strong {
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .telegram-preview-bubble em {
+            font-style: italic;
+        }
+
+        .telegram-preview-bubble u {
+            text-decoration: underline;
+        }
+
+        .telegram-preview-bubble strike {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .telegram-preview-bubble .tg-code {
+            font-family: Consolas, Monaco, "Courier New", monospace;
+            background: rgba(0, 0, 0, 0.3);
+            color: #f43f5e; /* Premium rose color */
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 12.5px;
+        }
+
+        .telegram-preview-bubble .tg-pre {
+            font-family: Consolas, Monaco, "Courier New", monospace;
+            background: rgba(0, 0, 0, 0.3);
+            color: #e2e8f0;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 12.5px;
+            white-space: pre-wrap;
+            margin: 6px 0;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .telegram-preview-bubble .tg-link {
+            color: #38bdf8; /* Sky blue */
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .telegram-preview-bubble .tg-link:hover {
+            color: #7dd3fc;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>BestBOT Gold</h1>
+            <span>Enterprise Control</span>
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item active" data-tab="dashboard" onclick="goTab('dashboard', this)">
+                <span class="nav-icon">📊</span> Обзор
+            </li>
+            <li class="nav-item" data-tab="management" onclick="goTab('management', this)">
+                <span class="nav-icon">👮‍♂️</span> Персонал
+            </li>
+            <li class="nav-item" data-tab="tickets" onclick="goTab('tickets', this)">
+                <span class="nav-icon">🎫</span> Реестр
+            </li>
+            <li class="nav-item" data-tab="storage" onclick="goTab('storage', this)">
+                <span class="nav-icon">📂</span> Хранилище
+            </li>
+            <li class="nav-item" data-tab="system" onclick="goTab('system', this)">
+                <span class="nav-icon">⚙️</span> Система
+            </li>
+        </ul>
+        <div class="sidebar-footer">
+            <p>v5.1 Enterprise Gold Edition</p>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <div class="page-title">
+                <h2 id="current-page-title">Панель управления</h2>
+                <p id="current-page-desc">Реалтайм мониторинг и управление всеми узлами системы</p>
+            </div>
+            <div class="system-status">
+                <div class="status-pill">
+                    <div class="pulse"></div>
+                    Core: Online
+                </div>
+                <div class="status-pill">
+                    ☁️ DB: <span id="val-db-size">--</span> MB
+                </div>
+                <div class="status-pill" id="live-indicator">
+                    ⚡ Live: <span id="live-status">--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD PANE -->
+        <div id="pane-dashboard" class="pane active">
+            <div class="grid-kpi">
+                <div class="card-kpi">
+                    <div class="kpi-icon" style="background: #e1f5fe; color: #01579b;">👥</div>
+                    <div class="kpi-val" id="kpi-users">0</div>
+                    <div class="kpi-label">Пользователей</div>
+                </div>
+                <div class="card-kpi">
+                    <div class="kpi-icon" style="background: #e8f5e9; color: #1b5e20;">📄</div>
+                    <div class="kpi-val" id="kpi-tickets">0</div>
+                    <div class="kpi-label">Отчетов всего</div>
+                </div>
+                <div class="card-kpi">
+                    <div class="kpi-icon" style="background: #fff8e1; color: #f57f17;">⭐</div>
+                    <div class="kpi-val" id="kpi-avg">0</div>
+                    <div class="kpi-label">Отчетов / юзер</div>
+                </div>
+                <div class="card-kpi">
+                    <div class="kpi-icon" style="background: #f3e5f5; color: #4a148c;">⚡</div>
+                    <div class="kpi-val" id="kpi-uptime">0h 0m</div>
+                    <div class="kpi-label">Uptime Сервера</div>
+                </div>
+            </div>
+
+            <div class="content-box" id="dashboard-quiz-stats-block"
+                style="border: 2px solid rgba(175, 82, 222, 0.4); background: linear-gradient(145deg, var(--card) 0%, rgba(175, 82, 222, 0.03) 100%);">
+                <div class="quick-header">
+                    <h3>🏆 Викторина: вовлеченность</h3>
+                    <span class="update-stamp" id="quiz-last-updated">Обновлено: --</span>
+                </div>
+                <div class="chip-group monitoring-chips">
+                    <button class="chip" data-quiz-days="7">7 дней</button>
+                    <button class="chip active" data-quiz-days="30">30 дней</button>
+                    <button class="chip" data-quiz-days="90">90 дней</button>
+                </div>
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <div class="summary-label">Участников</div>
+                        <div class="summary-value" id="quiz-users" style="color: var(--primary-color);">0</div>
+                        <div class="summary-meta" id="quiz-period">—</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Попыток</div>
+                        <div class="summary-value" id="quiz-attempts" style="color: #af52de;">0</div>
+                        <div class="summary-meta" id="quiz-attempts-meta">—</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Средний результат</div>
+                        <div class="summary-value" id="quiz-score" style="color: var(--success-color);">0%</div>
+                        <div class="summary-meta" id="quiz-score-meta">—</div>
+                    </div>
+                </div>
+                <div class="monitor-panel" style="margin-top: 20px;">
+                    <h4>Топ регионов (участники)</h4>
+                    <div class="region-list" id="quiz-region-list"></div>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <div class="quick-header">
+                    <h3>Сигналы системы</h3>
+                    <span class="update-stamp" id="alerts-last-updated">Обновлено: --</span>
+                </div>
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <div class="summary-label">Ошибки в логах</div>
+                        <div class="summary-value" id="alert-errors">0</div>
+                        <div class="summary-meta">Последние 100 строк</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Предупреждения</div>
+                        <div class="summary-value" id="alert-warnings">0</div>
+                        <div class="summary-meta">Последние 100 строк</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Статус БД</div>
+                        <div class="summary-value" id="alert-db-status">--</div>
+                        <div class="summary-meta">Размер: <span id="alert-db-size">--</span> MB</div>
+                    </div>
+                    <div class="summary-card wide">
+                        <div class="summary-label">Последняя ошибка</div>
+                        <div class="summary-value" id="alert-last-error">—</div>
+                        <div class="summary-meta" id="alert-last-error-meta">Нет ошибок</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
+                <div class="content-box">
+                    <h3 style="margin-bottom: 24px;">Динамика активности</h3>
+                    <div style="height: 300px;">
+                        <canvas id="chart-activity"></canvas>
+                    </div>
+                </div>
+                <div class="content-box">
+                    <h3 style="margin-bottom: 24px;">Приток аудитории</h3>
+                    <div style="height: 300px;">
+                        <canvas id="chart-growth"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <div class="quick-header">
+                    <h3>Мониторинг заключений</h3>
+                    <span class="update-stamp" id="monitor-last-updated">Обновлено: --</span>
+                </div>
+                <div class="chip-group monitoring-chips">
+                    <button class="chip" data-monitor-days="7">7 дней</button>
+                    <button class="chip active" data-monitor-days="30">30 дней</button>
+                    <button class="chip" data-monitor-days="90">90 дней</button>
+                </div>
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <div class="summary-label">Заключений за период</div>
+                        <div class="summary-value" id="monitor-total">0</div>
+                        <div class="summary-meta" id="monitor-period">—</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Среднее / день</div>
+                        <div class="summary-value" id="monitor-avg">0</div>
+                        <div class="summary-meta" id="monitor-avg-meta">—</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Рост к прошлому периоду</div>
+                        <div class="summary-value" id="monitor-growth">—</div>
+                        <div class="summary-meta" id="monitor-growth-meta">—</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Пиковый день</div>
+                        <div class="summary-value" id="monitor-peak">—</div>
+                        <div class="summary-meta" id="monitor-peak-meta">—</div>
+                    </div>
+                </div>
+                <div class="monitoring-grid">
+                    <div class="monitor-panel">
+                        <h4>Динамика по дням</h4>
+                        <div class="monitor-chart">
+                            <canvas id="chart-monitor-daily"></canvas>
+                        </div>
+                    </div>
+                    <div class="monitor-panel">
+                        <h4>Регионы за период</h4>
+                        <div class="region-list" id="monitor-region-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box quick-actions">
+                <div class="quick-header">
+                    <h3>Быстрые действия</h3>
+                    <span class="update-stamp" id="dashboard-last-updated">Обновлено: --</span>
+                </div>
+                <div class="quick-actions-grid">
+                    <button class="btn btn-primary" onclick="refresh(currentPane)">🔄 Обновить текущую вкладку</button>
+                    <button class="btn btn-outline" onclick="exportData('user-body', 'users_export.csv')">📥 Экспорт
+                        пользователей</button>
+                    <button class="btn btn-outline" onclick="exportData('ticket-body', 'tickets_export.csv')">📊 Экспорт
+                        заключений</button>
+                    <button class="btn btn-outline"
+                        onclick="goTab('system', document.querySelector('.nav-item[data-tab=&quot;system&quot;]'))">🧾
+                        Логи системы</button>
+                    <button class="btn btn-outline" onclick="doClearCache()">🧹 Очистить кэш</button>
+                    <button class="btn btn-danger" onclick="doRestart()">⚡ Перезапуск</button>
+                </div>
+                <div class="quick-actions-note">Горячие клавиши: Alt+1..5 — вкладки, / — поиск, Alt+R — обновить.</div>
+            </div>
+        </div>
+
+        <!-- MANAGEMENT PANE (Users) -->
+        <div id="pane-management" class="pane">
+            <div class="content-box">
+                <div class="search-wrap">
+                    <input type="text" class="input-pro" id="search-users" placeholder="Поиск по имени или ID..."
+                        onkeyup="filterT('user-body', this.value)">
+                    <button class="btn btn-outline" onclick="exportData('user-body', 'users_export.csv')">📥
+                        Экспорт</button>
+                </div>
+                <div class="bulk-actions" id="users-bulk-actions">
+                    <div class="bulk-meta">Выбрано: <span id="users-selected-count">0</span></div>
+                    <button class="btn btn-outline" data-action="bulk-reset-points">Сбросить баллы</button>
+                    <button class="btn btn-danger" data-action="bulk-delete-users">Удалить выбранных</button>
+                    <button class="btn btn-outline" data-action="bulk-clear-users">Очистить выбор</button>
+                </div>
+                <div class="chip-group" id="user-filters">
+                    <button class="chip active" data-target="users" data-filter="all">Все</button>
+                    <button class="chip" data-target="users" data-filter="active">Активные</button>
+                    <button class="chip" data-target="users" data-filter="blocked">Заблокированные</button>
+                    <button class="chip" data-target="users" data-filter="top">Топ 10</button>
+                    <button class="chip" data-target="users" data-filter="zero">0 баллов</button>
+                </div>
+                <div class="table-meta-row">
+                    <span class="update-stamp" id="users-last-updated">Обновлено: --</span>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="select-col"><input type="checkbox" class="table-select"
+                                        data-select-all="users" id="select-all-users"></th>
+                                <th class="sortable" data-table="users" data-sort="user_id">TG ID</th>
+                                <th class="sortable" data-table="users" data-sort="name">Имя</th>
+                                <th class="sortable" data-table="users" data-sort="rank">Ранг</th>
+                                <th class="sortable" data-table="users" data-sort="points">Баллы</th>
+                                <th align="right">Действие</th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-body"></tbody>
+                    </table>
+                </div>
+                <div class="table-footer">
+                    <div class="pagination" data-table="users">
+                        <button class="btn btn-outline btn-ghost" data-page="prev" data-table="users">← Назад</button>
+                        <span class="page-indicator" id="users-page-info">1 / 1</span>
+                        <button class="btn btn-outline btn-ghost" data-page="next" data-table="users">Вперёд →</button>
+                    </div>
+                    <div class="table-meta" id="users-count">0 записей</div>
+                </div>
+            </div>
+            <div class="content-box">
+                <div class="quick-header">
+                    <h3>Рассылка пользователям</h3>
+                    <span class="update-stamp" id="broadcast-last-sent">Готово к отправке</span>
+                </div>
+                <div class="broadcast-grid">
+                    <div class="broadcast-field">
+                        <label for="broadcast-message">Сообщение</label>
+                        <textarea class="input-pro" id="broadcast-message"
+                            placeholder="Введите текст рассылки..."></textarea>
+                    </div>
+                    <div class="broadcast-field">
+                        <label for="broadcast-region">Регион</label>
+                        <select class="input-pro" id="broadcast-region">
+                            <option value="">Все регионы</option>
+                        </select>
+                        <div class="broadcast-hint">Отправка идет по последнему региону из заключения.</div>
+                    </div>
+                    <div class="broadcast-field" style="grid-column: 1 / -1; margin-top: 10px;">
+                        <label>Предпросмотр сообщения (Telegram)</label>
+                        <div class="telegram-preview-container">
+                            <div class="telegram-preview-header">
+                                <div class="telegram-preview-avatar">B</div>
+                                <div class="telegram-preview-meta">
+                                    <span class="telegram-preview-title">BestBOT SmartQA</span>
+                                    <span class="telegram-preview-subtitle">бот</span>
+                                </div>
+                            </div>
+                            <div class="telegram-preview-bubble-wrapper">
+                                <div class="telegram-preview-bubble" id="broadcast-preview">
+                                    <span class="telegram-preview-placeholder">Введите текст сообщения выше для предпросмотра...</span>
+                                </div>
+                                <div class="telegram-preview-time" id="broadcast-preview-time">12:34</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="broadcast-actions">
+                    <button class="btn btn-outline" data-action="clear-broadcast">Очистить</button>
+                    <button class="btn btn-primary" data-action="send-broadcast">Отправить</button>
+                </div>
+                <div class="broadcast-hint">Заблокированные пользователи автоматически исключаются.</div>
+            </div>
+        </div>
+
+        <!-- TICKETS PANE -->
+        <div id="pane-tickets" class="pane">
+            <div class="content-box">
+                <div class="search-wrap">
+                    <input type="text" class="input-pro" id="search-tickets" placeholder="Номер билета или дата..."
+                        onkeyup="filterT('ticket-body', this.value)">
+                    <button class="btn btn-outline" onclick="exportData('ticket-body', 'tickets_export.csv')">📊 Отчет
+                        CSV</button>
+                </div>
+                <div class="bulk-actions" id="tickets-bulk-actions">
+                    <div class="bulk-meta">Выбрано: <span id="tickets-selected-count">0</span></div>
+                    <button class="btn btn-danger" data-action="bulk-delete-tickets">Удалить выбранные</button>
+                    <button class="btn btn-outline" data-action="bulk-clear-tickets">Очистить выбор</button>
+                </div>
+                <div class="chip-group" id="ticket-filters">
+                    <button class="chip active" data-target="tickets" data-filter="all">Все</button>
+                    <button class="chip" data-target="tickets" data-filter="today">Сегодня</button>
+                    <button class="chip" data-target="tickets" data-filter="7d">7 дней</button>
+                    <button class="chip" data-target="tickets" data-filter="30d">30 дней</button>
+                </div>
+                <div class="table-meta-row">
+                    <span class="update-stamp" id="tickets-last-updated">Обновлено: --</span>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="select-col"><input type="checkbox" class="table-select"
+                                        data-select-all="tickets" id="select-all-tickets"></th>
+                                <th class="sortable" data-table="tickets" data-sort="ticket">Билет</th>
+                                <th class="sortable" data-table="tickets" data-sort="issue">№ Закл.</th>
+                                <th class="sortable" data-table="tickets" data-sort="date">Дата</th>
+                                <th class="sortable" data-table="tickets" data-sort="user_id">Оператор</th>
+                                <th align="right">Действие</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ticket-body"></tbody>
+                    </table>
+                </div>
+                <div class="table-footer">
+                    <div class="pagination" data-table="tickets">
+                        <button class="btn btn-outline btn-ghost" data-page="prev" data-table="tickets">← Назад</button>
+                        <span class="page-indicator" id="tickets-page-info">1 / 1</span>
+                        <button class="btn btn-outline btn-ghost" data-page="next" data-table="tickets">Вперёд
+                            →</button>
+                    </div>
+                    <div class="table-meta" id="tickets-count">0 записей</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STORAGE PANE -->
+        <div id="pane-storage" class="pane">
+            <div class="content-box">
+                <h3>Файловое облако (Реестры и Архивы)</h3>
+                <p style="color: var(--text-mute); margin-bottom: 20px;">Все сгенерированные ZIP-архивы и
+                    Excel-ведомости</p>
+                <div class="summary-grid" id="storage-summary">
+                    <div class="summary-card">
+                        <div class="summary-label">Архивов всего</div>
+                        <div class="summary-value" id="storage-count">0</div>
+                        <div class="summary-meta">Файлов в архиве</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Общий объем</div>
+                        <div class="summary-value" id="storage-total">0 MB</div>
+                        <div class="summary-meta">Суммарно по ZIP</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Крупнейший</div>
+                        <div class="summary-value" id="storage-largest">—</div>
+                        <div class="summary-meta" id="storage-largest-meta">Нет данных</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Самый свежий</div>
+                        <div class="summary-value" id="storage-newest">—</div>
+                        <div class="summary-meta" id="storage-newest-meta">Нет данных</div>
+                    </div>
+                </div>
+                <div class="search-wrap" id="archive-download-controls">
+                    <select class="input-pro" id="archive-region">
+                        <option value="">Все регионы</option>
+                    </select>
+                    <input type="text" class="input-pro" id="archive-start" placeholder="Дата с (ДД.ММ.ГГГГ)">
+                    <input type="text" class="input-pro" id="archive-end" placeholder="Дата по (ДД.ММ.ГГГГ)">
+                    <button class="btn btn-primary" data-action="download-archive-region">Скачать архив</button>
+                </div>
+                <div class="search-wrap">
+                    <input type="text" class="input-pro" id="search-archives" placeholder="Поиск по имени файла..."
+                        onkeyup="filterT('archive-body', this.value)">
+                    <button class="btn btn-outline" onclick="exportData('archive-body', 'archives_export.csv')">⬇️
+                        Экспорт</button>
+                </div>
+                <div class="chip-group" id="archive-filters">
+                    <button class="chip active" data-target="archives" data-filter="all">Все</button>
+                    <button class="chip" data-target="archives" data-filter="7d">7 дней</button>
+                    <button class="chip" data-target="archives" data-filter="30d">30 дней</button>
+                    <button class="chip" data-target="archives" data-filter="big">> 50 MB</button>
+                </div>
+                <div class="table-meta-row">
+                    <span class="update-stamp" id="archives-last-updated">Обновлено: --</span>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="sortable" data-table="archives" data-sort="name">Имя файла</th>
+                                <th class="sortable" data-table="archives" data-sort="size">Размер</th>
+                                <th class="sortable" data-table="archives" data-sort="mtime">Дата</th>
+                                <th align="right">Скачать</th>
+                            </tr>
+                        </thead>
+                        <tbody id="archive-body"></tbody>
+                    </table>
+                </div>
+                <div class="table-footer">
+                    <div class="pagination" data-table="archives">
+                        <button class="btn btn-outline btn-ghost" data-page="prev" data-table="archives">←
+                            Назад</button>
+                        <span class="page-indicator" id="archives-page-info">1 / 1</span>
+                        <button class="btn btn-outline btn-ghost" data-page="next" data-table="archives">Вперёд
+                            →</button>
+                    </div>
+                    <div class="table-meta" id="archives-count">0 записей</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SYSTEM PANE -->
+        <div id="pane-system" class="pane">
+            <div class="content-box">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <h3>Системные логи (Deep Trace)</h3>
+                    <span class="update-stamp" id="logs-last-updated">Обновлено: --</span>
+                </div>
+                <div class="log-controls">
+                    <div class="log-controls-row">
+                        <input type="text" class="input-pro" id="log-search" placeholder="Поиск по логам..."
+                            oninput="setLogSearch(this.value)">
+                        <button class="btn btn-outline" style="padding: 6px 12px; font-size: 11px;"
+                            onclick="loadLogs()">🔄 Обновить</button>
+                    </div>
+                    <div class="chip-group" id="log-filters">
+                        <button class="chip active" data-target="logs" data-filter="all">Все</button>
+                        <button class="chip" data-target="logs" data-filter="error">Ошибки</button>
+                        <button class="chip" data-target="logs" data-filter="warn">Предупреждения</button>
+                        <button class="chip" data-target="logs" data-filter="info">Инфо</button>
+                    </div>
+                    <div class="log-summary">
+                        Ошибки: <span id="log-count-error">0</span> • Предупреждения: <span id="log-count-warn">0</span>
+                        • Всего: <span id="log-count-total">0</span>
+                    </div>
+                </div>
+                <div class="terminal" id="log-console">Жду данных от сервера...</div>
+            </div>
+
+            <div class="content-box">
+                <div class="access-header">
+                    <h3>Доступ и роли</h3>
+                    <span class="update-stamp" id="access-last-updated">Обновлено: --</span>
+                </div>
+                <div class="access-grid">
+                    <div class="access-card">
+                        <div class="access-title">Администраторы</div>
+                        <div class="access-list" id="admins-list">Загрузка...</div>
+                        <div class="access-actions">
+                            <input type="text" class="input-pro access-input" id="admin-add-id"
+                                placeholder="ID администратора">
+                            <button class="btn btn-primary" data-action="add-admin">Добавить</button>
+                        </div>
+                        <div class="access-hint">Супер-админ защищен от удаления.</div>
+                    </div>
+                    <div class="access-card">
+                        <div class="access-title">Пользователи</div>
+                        <div class="access-list" id="users-list">Загрузка...</div>
+                        <div class="access-actions">
+                            <input type="text" class="input-pro access-input" id="user-add-id"
+                                placeholder="ID пользователя">
+                            <button class="btn btn-outline" data-action="add-user">Добавить</button>
+                        </div>
+                        <div class="access-hint">Удаление удаляет из реестра и статистики, но не блокирует бота.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <div class="content-box">
+                    <h3>Конфигурация Core</h3>
+                    <div style="margin-top: 20px;">
+                        <input type="password" id="cfg-token" class="input-pro"
+                            style="width: 100%; margin-bottom: 12px;" placeholder="Изменить токен бота...">
+                        <button class="btn btn-primary" style="width: 100%; justify-content: center;"
+                            onclick="saveConfig()">🛡 Обновить настройки</button>
+                    </div>
+                </div>
+                <div class="content-box" style="border-color: var(--accent);">
+                    <h3>Очистка Кэша (Hard Reset)</h3>
+                    <p style="color: var(--text-mute); font-size: 13px; margin: 10px 0 20px;">Принудительно обновит
+                        приложение у всех сотрудников (инвалидация кэша)</p>
+                    <button class="btn btn-primary"
+                        style="width: 100%; justify-content: center; background: var(--accent);"
+                        onclick="doClearCache()">🧹 Очистить всё</button>
+                </div>
+                <div class="content-box" style="border-color: var(--error);">
+                    <h3>Рестарт Системы</h3>
+                    <p style="color: var(--text-mute); font-size: 13px; margin: 10px 0 20px;">Полная перезагрузка
+                        процесса</p>
+                    <button class="btn btn-danger"
+                        style="width: 100%; height: 60px; justify-content: center; font-size: 16px;"
+                        onclick="doRestart()">⚡ Перезапустить сервер</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Connection Status Badge -->
+    <div id="conn-badge" class="connection-badge online">✅ Подключено</div>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const botUrl = urlParams.get('bot_url') || '';
+        const API_BASE = botUrl ? `${botUrl}/api/super-admin` : '/api/super-admin';
+
+        let charts = {};
+        let currentPane = 'dashboard';
+        let refreshTimer = null;
+        let liveStream = null;
+
+        const UI_STATE_KEY = 'super_admin_ui_state';
+
+        const state = {
+            users: [],
+            tickets: [],
+            archives: [],
+            search: { users: '', tickets: '', archives: '' },
+            filters: { users: 'all', tickets: 'all', archives: 'all' },
+            monitorDays: 30,
+            quizDays: 30,
+            sort: {
+                users: { key: null, dir: null },
+                tickets: { key: null, dir: null },
+                archives: { key: null, dir: null }
+            },
+            page: { users: 1, tickets: 1, archives: 1 },
+            pageSize: { users: 10, tickets: 10, archives: 10 }
+        };
+
+        const accessState = {
+            admins: [],
+            users: [],
+            superAdminId: null
+        };
+
+        const expanded = {
+            users: new Set(),
+            tickets: new Set()
+        };
+
+        const selected = {
+            users: new Set(),
+            tickets: new Set()
+        };
+
+        const logState = {
+            lines: [],
+            filter: 'all',
+            search: ''
+        };
+
+        function showLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) overlay.classList.add('active');
+        }
+
+        function hideLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) overlay.classList.remove('active');
+        }
+
+        function setLiveStatus(status) {
+            const indicator = document.getElementById('live-indicator');
+            const label = document.getElementById('live-status');
+            if (!indicator || !label) return;
+
+            indicator.classList.remove('live', 'offline');
+            if (status === 'live') {
+                indicator.classList.add('live');
+                label.textContent = 'Live';
+            } else if (status === 'polling') {
+                label.textContent = 'Polling';
+            } else {
+                indicator.classList.add('offline');
+                label.textContent = 'Offline';
+            }
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function csvEscape(value) {
+            const str = String(value ?? '');
+            if (/[",\n]/.test(str)) {
+                return `"${str.replace(/"/g, '""')}"`;
+            }
+            return str;
+        }
+
+        function formatNumber(value) {
+            const num = Number(value) || 0;
+            return num.toLocaleString('ru-RU');
+        }
+
+        function formatDateTime(value) {
+            if (!value) return '—';
+            const d = new Date(value);
+            if (Number.isNaN(d.getTime())) return value;
+            return d.toLocaleString('ru-RU');
+        }
+
+        function parseDateDDMMYYYY(value) {
+            if (!value) return null;
+            const parts = value.split('.');
+            if (parts.length !== 3) return null;
+            const day = Number(parts[0]);
+            const month = Number(parts[1]);
+            const year = Number(parts[2]);
+            if (!day || !month || !year) return null;
+            const d = new Date(year, month - 1, day);
+            if (d.getFullYear() !== year || d.getMonth() !== month - 1 || d.getDate() !== day) return null;
+            return d;
+        }
+
+        function saveUiState() {
+            try {
+                const payload = {
+                    pane: currentPane,
+                    search: state.search,
+                    filters: state.filters,
+                    sort: state.sort,
+                    monitorDays: state.monitorDays,
+                    quizDays: state.quizDays
+                };
+                localStorage.setItem(UI_STATE_KEY, JSON.stringify(payload));
+            } catch (e) { }
+        }
+
+        function restoreUiState() {
+            try {
+                const raw = localStorage.getItem(UI_STATE_KEY);
+                if (!raw) return;
+                const saved = JSON.parse(raw);
+                if (saved?.search) state.search = { ...state.search, ...saved.search };
+                if (saved?.filters) state.filters = { ...state.filters, ...saved.filters };
+                if (saved?.sort) state.sort = { ...state.sort, ...saved.sort };
+                if (saved?.monitorDays) state.monitorDays = saved.monitorDays;
+                if (saved?.quizDays) state.quizDays = saved.quizDays;
+                if (saved?.pane) currentPane = saved.pane;
+            } catch (e) { }
+
+            const userSearch = document.getElementById('search-users');
+            if (userSearch) userSearch.value = state.search.users || '';
+            const ticketSearch = document.getElementById('search-tickets');
+            if (ticketSearch) ticketSearch.value = state.search.tickets || '';
+            const archiveSearch = document.getElementById('search-archives');
+            if (archiveSearch) archiveSearch.value = state.search.archives || '';
+
+            setActiveChip('users', state.filters.users);
+            setActiveChip('tickets', state.filters.tickets);
+            setActiveChip('archives', state.filters.archives);
+            setMonitorActiveChip();
+            setQuizActiveChip();
+
+            updateSortIndicators('users');
+            updateSortIndicators('tickets');
+            updateSortIndicators('archives');
+        }
+
+        function setActiveChip(target, filter) {
+            document.querySelectorAll(`.chip[data-target="${target}"]`).forEach(chip => {
+                chip.classList.toggle('active', chip.dataset.filter === filter);
+            });
+        }
+
+        function setMonitorActiveChip() {
+            document.querySelectorAll('[data-monitor-days]').forEach(chip => {
+                const days = Number(chip.dataset.monitorDays);
+                chip.classList.toggle('active', days === Number(state.monitorDays));
+            });
+        }
+
+        function setMonitorDays(days) {
+            const normalized = Number(days) || 30;
+            state.monitorDays = normalized;
+            setMonitorActiveChip();
+            saveUiState();
+            loadMonitoring(normalized);
+        }
+
+        function setQuizActiveChip() {
+            document.querySelectorAll('[data-quiz-days]').forEach(chip => {
+                const days = Number(chip.dataset.quizDays);
+                chip.classList.toggle('active', days === Number(state.quizDays));
+            });
+        }
+
+        function setQuizDays(days) {
+            const normalized = Number(days) || 30;
+            state.quizDays = normalized;
+            setQuizActiveChip();
+            saveUiState();
+            loadQuizStats(normalized);
+        }
+
+        async function goTab(pane, el) {
+            currentPane = pane;
+            saveUiState();
+            document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.getElementById('pane-' + pane).classList.add('active');
+            if (el) el.classList.add('active');
+
+            const titles = {
+                'dashboard': ['Панель управления', 'Реалтайм мониторинг'],
+                'management': ['Управление персоналом', 'Статистика и достижения сотрудников'],
+                'tickets': ['Реестр заключений', 'Поиск и коррекция данных'],
+                'storage': ['Хранилище данных', 'Доступ к архивам'],
+                'system': ['Настройки системы', 'Логи и конфигурация']
+            };
+            document.getElementById('current-page-title').innerText = titles[pane][0];
+            document.getElementById('current-page-desc').innerText = titles[pane][1];
+
+            await refresh(pane);
+        }
+
+        async function refresh(pane, opts = {}) {
+            const silent = Boolean(opts.silent);
+            if (!silent) showLoading();
+            try {
+                if (pane === 'dashboard') {
+                    const [stats, act, grow, monitoring, quizStats] = await Promise.all([
+                        fFetch(`${API_BASE}/stats`),
+                        fFetch(`${API_BASE}/charts/activity`),
+                        fFetch(`${API_BASE}/charts/growth`),
+                        fFetch(`${API_BASE}/monitoring?days=${state.monitorDays}`),
+                        fFetch(`${API_BASE}/quiz-stats?days=${state.quizDays}`)
+                    ]);
+                    if (stats) {
+                        renderKPI(stats);
+                        markUpdated('dashboard');
+                    }
+                    if (act && grow) {
+                        renderCharts(act, grow);
+                        markUpdated('dashboard');
+                    }
+                    if (monitoring) {
+                        renderMonitoring(monitoring);
+                    }
+                    if (quizStats) {
+                        renderQuizStats(quizStats);
+                    }
+                    await loadLogs({ updateConsole: false });
+                } else if (pane === 'management') {
+                    const [users, tickets] = await Promise.all([
+                        fFetch(`${API_BASE}/users`),
+                        state.tickets.length ? Promise.resolve(null) : fFetch(`${API_BASE}/tickets`)
+                    ]);
+                    if (Array.isArray(tickets)) state.tickets = tickets;
+                    if (users) renderUsers(users);
+                    await loadBroadcastRegions();
+                } else if (pane === 'tickets') {
+                    const t = await fFetch(`${API_BASE}/tickets`);
+                    if (t) renderTickets(t);
+                } else if (pane === 'storage') {
+                    const a = await fFetch(`${API_BASE}/archives`);
+                    if (a) renderArchives(a);
+                    await loadArchiveRegions();
+                } else if (pane === 'system') {
+                    await Promise.all([
+                        loadLogs(),
+                        loadAccessLists()
+                    ]);
+                }
+            } finally {
+                if (!silent) hideLoading();
+            }
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function fFetch(url, opts = {}) {
+            const timeoutMs = opts.timeoutMs ?? 15000;
+            const retries = opts.retries ?? 1;
+            const backoffMs = opts.backoffMs ?? 600;
+            const fetchOpts = { ...opts };
+            delete fetchOpts.timeoutMs;
+            delete fetchOpts.retries;
+            delete fetchOpts.backoffMs;
+
+            for (let attempt = 0; attempt <= retries; attempt += 1) {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), timeoutMs);
+                try {
+                    const res = await fetch(url, { ...fetchOpts, signal: controller.signal });
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    updateConnectionStatus(true);
+                    const contentType = res.headers.get('content-type') || '';
+                    if (contentType.includes('application/json')) {
+                        return await res.json();
+                    }
+                    return null;
+                } catch (e) {
+                    if (attempt < retries) {
+                        await sleep(backoffMs * (attempt + 1));
+                        continue;
+                    }
+                    console.error('Fetch error:', e);
+                    updateConnectionStatus(false);
+                    return null;
+                } finally {
+                    clearTimeout(timer);
+                }
+            }
+        }
+
+        function updateConnectionStatus(online) {
+            const badge = document.getElementById('conn-badge');
+            if (!badge) return;
+            if (online) {
+                badge.className = 'connection-badge online';
+                badge.innerHTML = '✅ Подключено';
+                badge.onclick = null;
+            } else {
+                badge.className = 'connection-badge offline';
+                badge.innerHTML = '❌ Нет связи - Нажмите для повтора';
+                badge.onclick = () => refresh(currentPane);
+            }
+        }
+
+        function renderKPI(d) {
+            if (!d) return;
+            document.getElementById('kpi-users').innerText = d.total_users || 0;
+            document.getElementById('kpi-tickets').innerText = d.total_tickets || 0;
+            document.getElementById('kpi-avg').innerText = d.avg_tickets || 0;
+        }
+
+        function renderUsers(d) {
+            state.users = Array.isArray(d) ? d : [];
+            pruneSelection('users', state.users.map(u => u.user_id));
+            applyUsers();
+        }
+
+        function renderTickets(d) {
+            state.tickets = Array.isArray(d) ? d : [];
+            pruneSelection('tickets', state.tickets.map(t => t.ticket));
+            applyTickets();
+        }
+
+        function renderArchives(d) {
+            state.archives = Array.isArray(d) ? d : [];
+            applyArchives();
+            renderArchiveSummary(state.archives);
+        }
+
+        function getUserSortValue(u, key) {
+            switch (key) {
+                case 'user_id':
+                    return Number(u.user_id) || 0;
+                case 'points':
+                    return Number(u.points) || 0;
+                case 'rank':
+                    return String(u.rank || '');
+                case 'name':
+                    return String(u.first_name || '');
+                default:
+                    return '';
+            }
+        }
+
+        function getTicketSortValue(t, key) {
+            switch (key) {
+                case 'ticket':
+                    return String(t.ticket || '');
+                case 'issue':
+                    return String(t.issue || '');
+                case 'user_id':
+                    return Number(t.user_id) || 0;
+                case 'date': {
+                    const d = parseDateDDMMYYYY(t.date) || (t.created_at ? new Date(t.created_at) : null);
+                    return d ? d.getTime() : 0;
+                }
+                default:
+                    return '';
+            }
+        }
+
+        function getArchiveSortValue(a, key) {
+            switch (key) {
+                case 'name':
+                    return String(a.name || '');
+                case 'size':
+                    return Number(a.size) || 0;
+                case 'mtime':
+                    return Number(a.mtime) || 0;
+                default:
+                    return '';
+            }
+        }
+
+        function sortList(list, key, dir, valueFn) {
+            const order = dir === 'desc' ? -1 : 1;
+            return list.sort((a, b) => {
+                const av = valueFn(a, key);
+                const bv = valueFn(b, key);
+                const aNum = typeof av === 'number' && !Number.isNaN(av);
+                const bNum = typeof bv === 'number' && !Number.isNaN(bv);
+                if (aNum && bNum) return (av - bv) * order;
+                return String(av).localeCompare(String(bv), 'ru', { numeric: true, sensitivity: 'base' }) * order;
+            });
+        }
+
+        function paginateList(list, type) {
+            const size = state.pageSize[type] || 10;
+            const totalPages = Math.max(1, Math.ceil(list.length / size));
+            if (state.page[type] > totalPages) state.page[type] = totalPages;
+            if (state.page[type] < 1) state.page[type] = 1;
+            const start = (state.page[type] - 1) * size;
+            return { list: list.slice(start, start + size), totalPages };
+        }
+
+        function buildUsersView({ paginate = true } = {}) {
+            let list = [...state.users];
+            const query = (state.search.users || '').toLowerCase().trim();
+            if (query) {
+                list = list.filter(u => {
+                    const hay = `${u.user_id} ${u.first_name || ''} ${u.last_name || ''} ${u.username || ''} ${u.rank || ''} ${u.points || 0} ${u.last_region || ''}`.toLowerCase();
+                    return hay.includes(query);
+                });
+            }
+
+            const filter = state.filters.users;
+            if (filter === 'zero') {
+                list = list.filter(u => Number(u.points) === 0);
+            }
+
+            if (filter === 'blocked') {
+                list = list.filter(u => Number(u.is_blocked) === 1);
+            }
+
+            if (filter === 'active') {
+                list = list.filter(u => !Number(u.is_blocked));
+            }
+
+            if (filter === 'top') {
+                list = list.sort((a, b) => (Number(b.points) || 0) - (Number(a.points) || 0)).slice(0, 10);
+            } else if (state.sort.users.key) {
+                list = sortList(list, state.sort.users.key, state.sort.users.dir || 'asc', getUserSortValue);
+            }
+
+            const total = list.length;
+            let totalPages = 1;
+            if (paginate) {
+                const paged = paginateList(list, 'users');
+                list = paged.list;
+                totalPages = paged.totalPages;
+            }
+            return { list, total, totalPages };
+        }
+
+        function buildTicketsView({ paginate = true } = {}) {
+            let list = [...state.tickets];
+            const query = (state.search.tickets || '').toLowerCase().trim();
+            if (query) {
+                list = list.filter(t => {
+                    const hay = `${t.ticket || ''} ${t.issue || ''} ${t.date || ''} ${t.user_id || ''}`.toLowerCase();
+                    return hay.includes(query);
+                });
+            }
+
+            const filter = state.filters.tickets;
+            if (filter !== 'all') {
+                const now = new Date();
+                now.setHours(0, 0, 0, 0);
+                let days = 0;
+                if (filter === 'today') days = 1;
+                if (filter === '7d') days = 7;
+                if (filter === '30d') days = 30;
+                const cutoff = new Date(now);
+                cutoff.setDate(now.getDate() - (days - 1));
+                list = list.filter(t => {
+                    const dt = parseDateDDMMYYYY(t.date) || (t.created_at ? new Date(t.created_at) : null);
+                    if (!dt || Number.isNaN(dt.getTime())) return false;
+                    dt.setHours(0, 0, 0, 0);
+                    return dt >= cutoff && dt <= now;
+                });
+            }
+
+            if (state.sort.tickets.key) {
+                list = sortList(list, state.sort.tickets.key, state.sort.tickets.dir || 'asc', getTicketSortValue);
+            }
+
+            const total = list.length;
+            let totalPages = 1;
+            if (paginate) {
+                const paged = paginateList(list, 'tickets');
+                list = paged.list;
+                totalPages = paged.totalPages;
+            }
+            return { list, total, totalPages };
+        }
+
+        function buildArchivesView({ paginate = true } = {}) {
+            let list = [...state.archives];
+            const query = (state.search.archives || '').toLowerCase().trim();
+            if (query) {
+                list = list.filter(a => String(a.name || '').toLowerCase().includes(query));
+            }
+
+            const filter = state.filters.archives;
+            if (filter === 'big') {
+                list = list.filter(a => (a.size || 0) / (1024 * 1024) > 50);
+            } else if (filter === '7d' || filter === '30d') {
+                const days = filter === '7d' ? 7 : 30;
+                const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
+                list = list.filter(a => (a.mtime || 0) * 1000 >= cutoff);
+            }
+
+            if (state.sort.archives.key) {
+                list = sortList(list, state.sort.archives.key, state.sort.archives.dir || 'asc', getArchiveSortValue);
+            }
+
+            const total = list.length;
+            let totalPages = 1;
+            if (paginate) {
+                const paged = paginateList(list, 'archives');
+                list = paged.list;
+                totalPages = paged.totalPages;
+            }
+            return { list, total, totalPages };
+        }
+
+        function applyUsers() {
+            const view = buildUsersView();
+            renderUsersTable(view.list);
+            updateSelectionUI('users');
+            updatePagination('users', view.total, view.totalPages);
+            markUpdated('users');
+        }
+
+        function applyTickets() {
+            const view = buildTicketsView();
+            renderTicketsTable(view.list);
+            updateSelectionUI('tickets');
+            updatePagination('tickets', view.total, view.totalPages);
+            markUpdated('tickets');
+        }
+
+        function applyArchives() {
+            const view = buildArchivesView();
+            renderArchivesTable(view.list);
+            updatePagination('archives', view.total, view.totalPages);
+            markUpdated('archives');
+        }
+
+        function pruneSelection(type, ids) {
+            const set = new Set((ids || []).map(id => String(id)));
+            const bucket = selected[type];
+            if (!bucket) return;
+            Array.from(bucket).forEach(id => {
+                if (!set.has(String(id))) bucket.delete(id);
+            });
+            updateSelectionUI(type);
+        }
+
+        function updateSelectionUI(type) {
+            const countEl = document.getElementById(`${type}-selected-count`);
+            if (countEl) countEl.innerText = selected[type].size;
+
+            const list = type === 'users'
+                ? buildUsersView().list
+                : type === 'tickets'
+                    ? buildTicketsView().list
+                    : [];
+
+            const selectAll = document.querySelector(`input[data-select-all="${type}"]`);
+            if (selectAll) {
+                if (!list.length) {
+                    selectAll.checked = false;
+                    selectAll.indeterminate = false;
+                } else {
+                    const visibleIds = list.map(item => String(type === 'users' ? item.user_id : item.ticket));
+                    const selectedVisible = visibleIds.filter(id => selected[type].has(id));
+                    selectAll.checked = selectedVisible.length === visibleIds.length;
+                    selectAll.indeterminate = selectedVisible.length > 0 && selectedVisible.length < visibleIds.length;
+                }
+            }
+
+            const resetBtn = document.querySelector('[data-action="bulk-reset-points"]');
+            const delUsersBtn = document.querySelector('[data-action="bulk-delete-users"]');
+            const delTicketsBtn = document.querySelector('[data-action="bulk-delete-tickets"]');
+            if (type === 'users') {
+                if (resetBtn) resetBtn.disabled = selected.users.size === 0;
+                if (delUsersBtn) delUsersBtn.disabled = selected.users.size === 0;
+            }
+            if (type === 'tickets') {
+                if (delTicketsBtn) delTicketsBtn.disabled = selected.tickets.size === 0;
+            }
+        }
+
+        function toggleSelection(type, id, checked) {
+            const bucket = selected[type];
+            if (!bucket) return;
+            const key = String(id);
+            if (checked) {
+                bucket.add(key);
+            } else {
+                bucket.delete(key);
+            }
+            updateSelectionUI(type);
+        }
+
+        function toggleSelectAll(type, checked) {
+            const list = type === 'users'
+                ? buildUsersView().list
+                : type === 'tickets'
+                    ? buildTicketsView().list
+                    : [];
+
+            const bucket = selected[type];
+            list.forEach(item => {
+                const id = String(type === 'users' ? item.user_id : item.ticket);
+                if (checked) bucket.add(id);
+                else bucket.delete(id);
+            });
+            applyType(type);
+        }
+
+        function clearSelection(type) {
+            selected[type].clear();
+            applyType(type);
+        }
+
+        function renderArchiveSummary(list) {
+            const totalEl = document.getElementById('storage-total');
+            const countEl = document.getElementById('storage-count');
+            const largestEl = document.getElementById('storage-largest');
+            const largestMeta = document.getElementById('storage-largest-meta');
+            const newestEl = document.getElementById('storage-newest');
+            const newestMeta = document.getElementById('storage-newest-meta');
+            if (!countEl || !totalEl || !largestEl || !newestEl) return;
+
+            const archives = Array.isArray(list) ? list : [];
+            countEl.innerText = archives.length;
+            const totalSize = archives.reduce((acc, item) => acc + (item.size || 0), 0);
+            totalEl.innerText = `${(totalSize / 1024 / 1024).toFixed(2)} MB`;
+
+            if (!archives.length) {
+                largestEl.innerText = '—';
+                newestEl.innerText = '—';
+                if (largestMeta) largestMeta.innerText = 'Нет данных';
+                if (newestMeta) newestMeta.innerText = 'Нет данных';
+                return;
+            }
+
+            const largest = archives.reduce((a, b) => (a.size || 0) > (b.size || 0) ? a : b, archives[0]);
+            const newest = archives.reduce((a, b) => (a.mtime || 0) > (b.mtime || 0) ? a : b, archives[0]);
+            largestEl.innerText = escapeHtml(largest.name || '—');
+            newestEl.innerText = escapeHtml(newest.name || '—');
+            if (largestMeta) largestMeta.innerText = `${(largest.size / 1024 / 1024).toFixed(2)} MB`;
+            if (newestMeta) newestMeta.innerText = new Date(newest.mtime * 1000).toLocaleDateString('ru-RU');
+        }
+
+        function renderUserTimeline(userId) {
+            if (!state.tickets.length) {
+                return '<div class="timeline-empty">Нет данных. Обновите реестр заключений.</div>';
+            }
+            const items = state.tickets
+                .filter(t => String(t.user_id) === String(userId))
+                .sort((a, b) => {
+                    const ta = a.created_at ? new Date(a.created_at).getTime() : 0;
+                    const tb = b.created_at ? new Date(b.created_at).getTime() : 0;
+                    return tb - ta;
+                })
+                .slice(0, 5);
+
+            if (!items.length) {
+                return '<div class="timeline-empty">Заключений пока нет.</div>';
+            }
+
+            return items.map(item => {
+                const ticket = escapeHtml(item.ticket || '—');
+                const issue = escapeHtml(item.issue || '—');
+                const date = escapeHtml(item.date || '');
+                const createdAt = item.created_at ? formatDateTime(item.created_at) : '';
+                const meta = [date, createdAt].filter(Boolean).join(' • ');
+                return `
+                    <div class="timeline-item">
+                        <div><b>#${issue}</b> — билет <code>${ticket}</code></div>
+                        <div class="timeline-meta">${escapeHtml(meta || 'Без даты')}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderUsersTable(list) {
+            const body = document.getElementById('user-body');
+            if (!body) return;
+            if (!list.length) {
+                body.innerHTML = '<tr class="table-empty"><td colspan="6">Нет данных</td></tr>';
+                return;
+            }
+            body.innerHTML = list.map(u => {
+                const userId = u.user_id;
+                const fullName = [u.first_name, u.last_name].filter(Boolean).join(' ');
+                const name = escapeHtml(fullName || (u.username ? `@${u.username}` : 'Сотрудник'));
+                const rank = escapeHtml(u.rank || 'Новичок');
+                const points = Number(u.points) || 0;
+                const totalTickets = Number(u.total_tickets) || 0;
+                const totalValue = Number(u.total_value) || 0;
+                const highestValue = Number(u.highest_single_value) || 0;
+                const weeklyTickets = Number(u.weekly_tickets) || 0;
+                const weeklyPoints = Number(u.weekly_points) || 0;
+                const lastUpdated = u.last_updated ? formatDateTime(u.last_updated) : '—';
+                const lastRegion = escapeHtml(u.last_region || '—');
+                const lastActive = u.last_active ? formatDateTime(u.last_active) : '—';
+                const isBlocked = Number(u.is_blocked) === 1;
+                const blockedAt = u.blocked_at ? formatDateTime(u.blocked_at) : '—';
+                const blockedReason = escapeHtml(u.blocked_reason || '—');
+                const statusLabel = isBlocked ? '⛔ Заблокирован' : '✅ Активен';
+                const statusTag = isBlocked ? '<span class="status-tag danger">Блок</span>' : '';
+                const nameCell = statusTag
+                    ? `<div class="user-cell"><div><b>${name}</b></div><div class="user-meta">${statusTag}</div></div>`
+                    : `<div class="user-cell"><div><b>${name}</b></div></div>`;
+                const isSelected = selected.users.has(String(userId));
+                return `
+                    <tr class="row-main" data-type="users" data-id="${userId}" data-row-id="users-${userId}">
+                        <td class="select-col">
+                            <input type="checkbox" class="table-select" data-select="users" data-id="${userId}"
+                                ${isSelected ? 'checked' : ''}>
+                        </td>
+                        <td><code>${userId}</code></td>
+                        <td>${nameCell}</td>
+                        <td><span class="status-pill">${rank}</span></td>
+                        <td>${points} баллов</td>
+                        <td align="right">
+                            <button class="btn btn-outline btn-icon" data-action="toggle-row" data-type="users" data-id="${userId}">⌄</button>
+                            <button class="btn btn-danger btn-icon" data-action="delete-user" data-user-id="${userId}">🗑️</button>
+                        </td>
+                    </tr>
+                    <tr class="row-details" data-detail-for="users-${userId}">
+                        <td colspan="6">
+                            <div class="detail-panel">
+                                <div class="detail-grid">
+                                    <div>
+                                        <div class="detail-label">ID</div>
+                                        <div class="detail-value">${userId}</div>
+                                    </div>
+                                    <div>
+                                        <div class="detail-label">Регион</div>
+                                        <div class="detail-value">${lastRegion}</div>
+                                    </div>
+                                    <div>
+                                        <div class="detail-label">Статус</div>
+                                        <div class="detail-value">${statusLabel}</div>
+                                    </div>
+                                    <div>
+                                        <div class="detail-label">Ранг</div>
+                                        <div class="detail-value">${rank}</div>
+                                    </div>
+                                    <div>
+                                        <div class="detail-label">Баллы</div>
+                                        <div class="detail-value">${points}</div>
+                                    </div>
+                                    <div>
+                                        <div class="detail-label">Всего заключений</div>
+                                        <div class="detail-value">${formatNumber(totalTickets)}</div>
+                                    </div>
+                                    <div>
+                                        <div class="detail-label">Сумма</div>
+                                        <div class="detail-value">${formatNumber(totalValue)} ₽</div>
+                                    </div>
+                                    <div>
+                                        <div class="detail-label">Лучшее</div>
+                                        <div class="detail-value">${formatNumber(highestValue)} ₽</div>
+                                    </div>
+                                    <div>
+                                        <div class="detail-label">Неделя</div>
+                                        <div class="detail-value">${formatNumber(weeklyTickets)} / ${formatNumber(weeklyPoints)}</div>
+                                    </div>
+                                    <div>
+                                        <div class="detail-label">Активен</div>
+                                        <div class="detail-value">${lastActive}</div>
+                                    </div>
+                                    <div>
+                                        <div class="detail-label">Обновлено</div>
+                                        <div class="detail-value">${lastUpdated}</div>
+                                    </div>
+                                    <div>
+                                        <div class="detail-label">Блокировка</div>
+                                        <div class="detail-value">${blockedAt}</div>
+                                    </div>
+                                    <div>
+                                        <div class="detail-label">Причина</div>
+                                        <div class="detail-value">${blockedReason}</div>
+                                    </div>
+                                </div>
+                                <div class="detail-actions">
+                                    <button class="btn btn-outline btn-icon" data-action="edit-user" data-user-id="${userId}">✏️</button>
+                                    <button class="btn btn-outline" data-action="copy-user" data-user-id="${userId}">📋 Скопировать ID</button>
+                                    <button class="${isBlocked ? 'btn btn-outline' : 'btn btn-danger'}" data-action="toggle-block" data-user-id="${userId}" data-blocked="${isBlocked ? '1' : '0'}">
+                                        ${isBlocked ? '🔓 Разблокировать' : '⛔ Заблокировать'}
+                                    </button>
+                                </div>
+                                <div class="detail-section">
+                                    <div class="detail-section-title">Последние заключения</div>
+                                    <div class="timeline" id="user-timeline-${userId}">
+                                        ${renderUserTimeline(userId)}
+                                    </div>
+                                </div>
+                                <div class="inline-edit" data-edit-for="users-${userId}">
+                                    <div class="inline-form">
+                                        <div class="inline-field">
+                                            <label>Ранг</label>
+                                            <input type="text" data-field="rank_title" value="${rank}">
+                                        </div>
+                                        <div class="inline-field">
+                                            <label>Баллы</label>
+                                            <input type="number" min="0" step="1" data-field="points" value="${points}">
+                                        </div>
+                                    </div>
+                                    <div class="inline-actions">
+                                        <button class="btn btn-primary" data-action="save-user" data-user-id="${userId}">Сохранить</button>
+                                        <button class="btn btn-outline" data-action="cancel-edit" data-type="users" data-id="${userId}">Отмена</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            restoreExpandedRows('users');
+        }
+
+        function renderTicketsTable(list) {
+            const body = document.getElementById('ticket-body');
+            if (!body) return;
+            if (!list.length) {
+                body.innerHTML = '<tr class="table-empty"><td colspan="6">Нет данных</td></tr>';
+                return;
+            }
+            body.innerHTML = list.map(t => {
+                const rawTicket = String(t.ticket || '');
+                const ticket = escapeHtml(rawTicket);
+                const issue = escapeHtml(t.issue || '???');
+                const date = escapeHtml(t.date || '---');
+                const userId = t.user_id || '---';
+                const createdAt = t.created_at ? formatDateTime(t.created_at) : '—';
+                const isSelected = selected.tickets.has(rawTicket);
+                return `
+                    <tr class="row-main" data-type="tickets" data-id="${ticket}" data-row-id="tickets-${ticket}">
+                        <td class="select-col">
+                            <input type="checkbox" class="table-select" data-select="tickets" data-id="${ticket}"
+                                ${isSelected ? 'checked' : ''}>
+                        </td>
+                        <td><code>${ticket}</code></td>
+                        <td><b>#${issue}</b></td>
+                        <td>${date}</td>
+                        <td>${userId}</td>
+                        <td align="right">
+                            <button class="btn btn-outline btn-icon" data-action="toggle-row" data-type="tickets" data-id="${ticket}">⌄</button>
+                            <button class="btn btn-danger btn-icon" data-action="delete-ticket" data-ticket="${ticket}">🗑️</button>
+                        </td>
+                    </tr>
+                    <tr class="row-details" data-detail-for="tickets-${ticket}">
+                        <td colspan="6">
+                            <div class="detail-panel">
+                                <div class="detail-grid">
+                                    <div>
+                                        <div class="detail-label">Билет</div>
+                                        <div class="detail-value">${ticket}</div>
+                                    </div>
+                                    <div>
+                                        <div class="detail-label">№ Закл.</div>
+                                        <div class="detail-value">${issue}</div>
+                                    </div>
+                                    <div>
+                                        <div class="detail-label">Дата</div>
+                                        <div class="detail-value">${date}</div>
+                                    </div>
+                                    <div>
+                                        <div class="detail-label">Создано</div>
+                                        <div class="detail-value">${createdAt}</div>
+                                    </div>
+                                    <div>
+                                        <div class="detail-label">Оператор</div>
+                                        <div class="detail-value">${userId}</div>
+                                    </div>
+                                </div>
+                                <div class="detail-actions">
+                                    <button class="btn btn-outline btn-icon" data-action="edit-ticket" data-ticket="${ticket}">✏️</button>
+                                    <button class="btn btn-outline" data-action="copy-ticket" data-ticket="${ticket}">📋 Скопировать</button>
+                                </div>
+                                <div class="inline-edit" data-edit-for="tickets-${ticket}">
+                                    <div class="inline-form">
+                                        <div class="inline-field">
+                                            <label>№ Закл.</label>
+                                            <input type="text" data-field="issue_number" value="${issue}">
+                                        </div>
+                                        <div class="inline-field">
+                                            <label>Дата (ДД.ММ.ГГГГ)</label>
+                                            <input type="text" data-field="date" value="${date}">
+                                        </div>
+                                    </div>
+                                    <div class="inline-actions">
+                                        <button class="btn btn-primary" data-action="save-ticket" data-ticket="${ticket}">Сохранить</button>
+                                        <button class="btn btn-outline" data-action="cancel-edit" data-type="tickets" data-id="${ticket}">Отмена</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            restoreExpandedRows('tickets');
+        }
+
+        function renderArchivesTable(list) {
+            const body = document.getElementById('archive-body');
+            if (!body) return;
+            if (!list.length) {
+                body.innerHTML = '<tr class="table-empty"><td colspan="4">Нет данных</td></tr>';
+                return;
+            }
+            body.innerHTML = list.map(a => {
+                const sizeMb = (a.size / 1024 / 1024).toFixed(2);
+                const date = new Date(a.mtime * 1000).toLocaleDateString('ru-RU');
+                return `
+                    <tr>
+                        <td><b>${escapeHtml(a.name)}</b></td>
+                        <td>${sizeMb} MB</td>
+                        <td>${date}</td>
+                        <td align="right"><a href="${API_BASE}/archives/download?file=${encodeURIComponent(a.path)}" class="btn btn-outline" style="text-decoration:none">⬇️</a></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function loadAccessLists() {
+            const [adminsPayload, usersPayload] = await Promise.all([
+                fFetch(`${API_BASE}/admins`),
+                fFetch(`${API_BASE}/users/list`)
+            ]);
+
+            if (adminsPayload) renderAdminsList(adminsPayload);
+            if (usersPayload) renderUsersList(usersPayload);
+            markUpdated('access');
+        }
+
+        async function loadBroadcastRegions() {
+            const select = document.getElementById('broadcast-region');
+            if (!select) return;
+            const payload = await fFetch(`${API_BASE}/regions`);
+            const regions = payload?.regions || [];
+            if (!regions.length) return;
+            const current = select.value || '';
+            select.innerHTML = '<option value="">Все регионы</option>' +
+                regions.map(r => `<option value="${escapeHtml(r)}">${escapeHtml(r)}</option>`).join('');
+            select.value = current;
+        }
+
+        async function loadArchiveRegions() {
+            const select = document.getElementById('archive-region');
+            if (!select) return;
+            const payload = await fFetch(`${API_BASE}/regions`);
+            const regions = payload?.regions || [];
+            if (!regions.length) return;
+            const current = select.value || '';
+            select.innerHTML = '<option value="">Все регионы</option>' +
+                regions.map(r => `<option value="${escapeHtml(r)}">${escapeHtml(r)}</option>`).join('');
+            select.value = current;
+        }
+
+        function downloadRegionArchive() {
+            const regionEl = document.getElementById('archive-region');
+            const startEl = document.getElementById('archive-start');
+            const endEl = document.getElementById('archive-end');
+            if (!regionEl || !startEl || !endEl) return;
+
+            const start = startEl.value.trim();
+            const end = endEl.value.trim();
+            const startDt = parseDateDDMMYYYY(start);
+            const endDt = parseDateDDMMYYYY(end);
+
+            if (!start || !end || !startDt || !endDt) {
+                notify('Укажите даты в формате ДД.ММ.ГГГГ', 'error');
+                return;
+            }
+            if (endDt < startDt) {
+                notify('Дата "по" должна быть позже даты "с"', 'error');
+                return;
+            }
+
+            const params = new URLSearchParams({ start, end });
+            const region = regionEl.value.trim();
+            if (region) params.set('region', region);
+
+            const url = `${API_BASE}/archives/export?${params.toString()}`;
+            window.open(url, '_blank');
+        }
+
+        function renderAdminsList(payload) {
+            const list = payload?.admins || [];
+            accessState.admins = list;
+            accessState.superAdminId = payload?.super_admin_id;
+
+            const container = document.getElementById('admins-list');
+            if (!container) return;
+            if (!list.length) {
+                container.innerHTML = '<div class="access-empty">Нет администраторов</div>';
+                return;
+            }
+
+            container.innerHTML = list.map(admin => {
+                const fullName = [admin.first_name, admin.last_name].filter(Boolean).join(' ');
+                const name = fullName || (admin.username ? `@${admin.username}` : `ID ${admin.user_id}`);
+                const metaParts = [];
+                if (admin.username) metaParts.push(`@${admin.username}`);
+                metaParts.push(`ID ${admin.user_id}`);
+                const meta = metaParts.join(' • ');
+                const isSuper = admin.is_super || admin.user_id === accessState.superAdminId;
+                const removeBtn = isSuper
+                    ? `<span class="access-tag">Super</span>`
+                    : `<button class="btn btn-danger btn-icon" data-action="remove-admin" data-admin-id="${admin.user_id}">🗑️</button>`;
+                return `
+                    <div class="access-item">
+                        <div>
+                            <div class="access-name">${escapeHtml(name)}</div>
+                            <div class="access-meta">${escapeHtml(meta)}</div>
+                        </div>
+                        ${removeBtn}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderUsersList(list) {
+            accessState.users = Array.isArray(list) ? list : [];
+            const container = document.getElementById('users-list');
+            if (!container) return;
+            if (!accessState.users.length) {
+                container.innerHTML = '<div class="access-empty">Нет пользователей</div>';
+                return;
+            }
+
+            container.innerHTML = accessState.users.map(user => {
+                const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ');
+                const name = fullName || (user.username ? `@${user.username}` : `ID ${user.user_id}`);
+                const metaParts = [];
+                if (user.username) metaParts.push(`@${user.username}`);
+                metaParts.push(`ID ${user.user_id}`);
+                if (user.last_active) metaParts.push(`Активен: ${formatDateTime(user.last_active)}`);
+                if (user.last_region) metaParts.push(`Регион: ${user.last_region}`);
+                if (Number(user.is_blocked) === 1) metaParts.push('⛔ Заблокирован');
+                const meta = metaParts.join(' • ');
+                return `
+                    <div class="access-item">
+                        <div>
+                            <div class="access-name">${escapeHtml(name)}</div>
+                            <div class="access-meta">${escapeHtml(meta)}</div>
+                        </div>
+                        <button class="btn btn-danger btn-icon" data-action="remove-user" data-user-id="${user.user_id}">🗑️</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updatePagination(type, total, totalPages) {
+            const info = document.getElementById(`${type}-page-info`);
+            if (info) info.textContent = `${state.page[type]} / ${totalPages}`;
+            const count = document.getElementById(`${type}-count`);
+            if (count) count.textContent = `${total} записей`;
+            document.querySelectorAll(`.pagination button[data-table="${type}"]`).forEach(btn => {
+                if (btn.dataset.page === 'prev') btn.disabled = state.page[type] <= 1;
+                if (btn.dataset.page === 'next') btn.disabled = state.page[type] >= totalPages;
+            });
+        }
+
+        function markUpdated(type) {
+            const stamp = document.getElementById(`${type}-last-updated`);
+            if (!stamp) return;
+            const time = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+            stamp.textContent = `Обновлено: ${time}`;
+        }
+
+        function updateSortIndicators(type) {
+            document.querySelectorAll(`th.sortable[data-table="${type}"]`).forEach(th => {
+                th.classList.remove('sort-asc', 'sort-desc');
+                const active = state.sort[type];
+                if (active.key && th.dataset.sort === active.key) {
+                    th.classList.add(active.dir === 'desc' ? 'sort-desc' : 'sort-asc');
+                }
+            });
+        }
+
+        function applyType(type) {
+            if (type === 'users') return applyUsers();
+            if (type === 'tickets') return applyTickets();
+            if (type === 'archives') return applyArchives();
+        }
+
+        function setFilter(type, value) {
+            if (type === 'logs') {
+                logState.filter = value;
+                setActiveChip(type, value);
+                applyLogFilters(true);
+                return;
+            }
+            state.filters[type] = value;
+            state.page[type] = 1;
+            setActiveChip(type, value);
+            saveUiState();
+            applyType(type);
+        }
+
+        function setSearch(type, value) {
+            state.search[type] = value || '';
+            state.page[type] = 1;
+            saveUiState();
+            applyType(type);
+        }
+
+        function setSort(type, key) {
+            const current = state.sort[type];
+            if (current.key === key) {
+                current.dir = current.dir === 'asc' ? 'desc' : 'asc';
+            } else {
+                current.key = key;
+                current.dir = 'asc';
+            }
+            state.page[type] = 1;
+            saveUiState();
+            updateSortIndicators(type);
+            applyType(type);
+        }
+
+        function setPage(type, direction) {
+            const view = type === 'users'
+                ? buildUsersView({ paginate: false })
+                : type === 'tickets'
+                    ? buildTicketsView({ paginate: false })
+                    : buildArchivesView({ paginate: false });
+            const totalPages = Math.max(1, Math.ceil(view.list.length / (state.pageSize[type] || 10)));
+            if (direction === 'prev') state.page[type] = Math.max(1, state.page[type] - 1);
+            if (direction === 'next') state.page[type] = Math.min(totalPages, state.page[type] + 1);
+            applyType(type);
+        }
+
+        function toggleRow(type, id) {
+            const key = `${type}-${id}`;
+            const main = document.querySelector(`tr.row-main[data-row-id="${key}"]`);
+            const detail = document.querySelector(`tr.row-details[data-detail-for="${key}"]`);
+            if (!main || !detail) return;
+            const isOpen = detail.classList.contains('active');
+            detail.classList.toggle('active', !isOpen);
+            main.classList.toggle('expanded', !isOpen);
+            if (type === 'users') {
+                if (!isOpen) expanded.users.add(id); else expanded.users.delete(id);
+            } else if (type === 'tickets') {
+                if (!isOpen) expanded.tickets.add(id); else expanded.tickets.delete(id);
+            }
+        }
+
+        function restoreExpandedRows(type) {
+            const set = type === 'users' ? expanded.users : expanded.tickets;
+            set.forEach(id => {
+                const key = `${type}-${id}`;
+                const main = document.querySelector(`tr.row-main[data-row-id="${key}"]`);
+                const detail = document.querySelector(`tr.row-details[data-detail-for="${key}"]`);
+                if (main && detail) {
+                    main.classList.add('expanded');
+                    detail.classList.add('active');
+                }
+            });
+        }
+
+        function openInlineEdit(type, id) {
+            const detail = document.querySelector(`tr.row-details[data-detail-for="${type}-${id}"]`);
+            if (!detail) return;
+            const edit = detail.querySelector('.inline-edit');
+            if (edit) edit.classList.add('active');
+        }
+
+        function closeInlineEdit(type, id) {
+            const detail = document.querySelector(`tr.row-details[data-detail-for="${type}-${id}"]`);
+            if (!detail) return;
+            const edit = detail.querySelector('.inline-edit');
+            if (edit) edit.classList.remove('active');
+        }
+
+        async function copyText(text) {
+            const safeText = String(text ?? '');
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(safeText);
+                return;
+            }
+            const area = document.createElement('textarea');
+            area.value = safeText;
+            area.style.position = 'fixed';
+            area.style.opacity = '0';
+            document.body.appendChild(area);
+            area.select();
+            document.execCommand('copy');
+            document.body.removeChild(area);
+        }
+
+        async function addAdmin() {
+            const input = document.getElementById('admin-add-id');
+            if (!input) return;
+            const raw = input.value.trim();
+            const id = Number(raw);
+            if (!raw || !Number.isInteger(id)) {
+                notify('Введите корректный ID администратора', 'error');
+                return;
+            }
+
+            const res = await fFetch(`${API_BASE}/admins`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'add', user_id: id })
+            });
+
+            if (res?.admins) {
+                renderAdminsList(res);
+                input.value = '';
+                notify('Администратор добавлен', 'success');
+            } else {
+                notify('Не удалось добавить администратора', 'error');
+            }
+        }
+
+        async function removeAdmin(adminId) {
+            if (!confirm('Удалить администратора?')) return;
+            const res = await fFetch(`${API_BASE}/admins`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'remove', user_id: adminId })
+            });
+
+            if (res?.admins) {
+                renderAdminsList(res);
+                notify('Администратор удален', 'success');
+            } else {
+                notify('Не удалось удалить администратора', 'error');
+            }
+        }
+
+        async function addUser() {
+            const input = document.getElementById('user-add-id');
+            if (!input) return;
+            const raw = input.value.trim();
+            const id = Number(raw);
+            if (!raw || !Number.isInteger(id)) {
+                notify('Введите корректный ID пользователя', 'error');
+                return;
+            }
+
+            const res = await fFetch(`${API_BASE}/user/add`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: id })
+            });
+
+            if (res?.status === 'ok') {
+                input.value = '';
+                notify('Пользователь добавлен', 'success');
+                await loadAccessLists();
+                refresh('management', { silent: true });
+            } else {
+                notify('Не удалось добавить пользователя', 'error');
+            }
+        }
+
+        async function removeUser(userId) {
+            if (!confirm('Удалить пользователя?')) return;
+            const res = await fFetch(`${API_BASE}/user/remove`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: userId })
+            });
+
+            if (res?.status === 'ok') {
+                notify('Пользователь удалён', 'success');
+                await loadAccessLists();
+                refresh('management', { silent: true });
+            } else {
+                notify('Не удалось удалить пользователя', 'error');
+            }
+        }
+
+        async function toggleBlock(userId, isBlocked) {
+            const actionText = isBlocked ? 'Разблокировать' : 'Заблокировать';
+            if (!confirm(`${actionText} пользователя ${userId}?`)) return;
+            const reason = !isBlocked ? (prompt('Причина блокировки (необязательно):', '') || '').trim() : '';
+            showLoading();
+            try {
+                const res = await fFetch(`${API_BASE}/user/block`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId, blocked: !isBlocked, reason })
+                });
+                if (res?.status === 'ok') {
+                    notify(isBlocked ? 'Пользователь разблокирован' : 'Пользователь заблокирован', 'success');
+                    await loadAccessLists();
+                    refresh('management', { silent: true });
+                } else {
+                    notify('Не удалось обновить блокировку', 'error');
+                }
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function clearBroadcast() {
+            const message = document.getElementById('broadcast-message');
+            if (message) {
+                message.value = '';
+                message.dispatchEvent(new Event('input'));
+            }
+        }
+
+        async function sendBroadcast() {
+            const messageEl = document.getElementById('broadcast-message');
+            if (!messageEl) return;
+            const message = messageEl.value.trim();
+            if (!message) {
+                notify('Введите текст рассылки', 'error');
+                return;
+            }
+            const regionEl = document.getElementById('broadcast-region');
+            const region = regionEl ? regionEl.value : '';
+            const target = region ? `регион: ${region}` : 'все регионы';
+            if (!confirm(`Отправить рассылку (${target})?`)) return;
+            showLoading();
+            try {
+                const res = await fFetch(`${API_BASE}/broadcast`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message, region })
+                });
+                if (res?.status === 'ok') {
+                    const time = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+                    const stamp = document.getElementById('broadcast-last-sent');
+                    if (stamp) {
+                        stamp.textContent = `Отправлено: ${time} • ${res.sent || 0} ok / ${res.failed || 0} err`;
+                    }
+                    notify(`Рассылка отправлена: ${res.sent || 0}`, 'success');
+                    messageEl.value = '';
+                    messageEl.dispatchEvent(new Event('input'));
+                } else {
+                    notify('Ошибка рассылки', 'error');
+                }
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function bindAccessInputs() {
+            const adminInput = document.getElementById('admin-add-id');
+            if (adminInput) {
+                adminInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') addAdmin();
+                });
+            }
+            const userInput = document.getElementById('user-add-id');
+            if (userInput) {
+                userInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') addUser();
+                });
+            }
+        }
+
+        async function saveUserEdit(userId, actionEl) {
+            const detail = actionEl.closest('tr.row-details');
+            if (!detail) return;
+            const rankInput = detail.querySelector('input[data-field="rank_title"]');
+            const pointsInput = detail.querySelector('input[data-field="points"]');
+            const rank = rankInput ? rankInput.value.trim() : '';
+            const points = pointsInput ? Math.max(0, Number(pointsInput.value || 0)) : 0;
+
+            if (!rank) {
+                notify('Укажите ранг', 'error');
+                return;
+            }
+
+            const payload = { user_id: Number(userId), rank_title: rank, points: points };
+            const res = await fFetch(`${API_BASE}/user/update`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res && res.status === 'ok') {
+                const user = state.users.find(u => Number(u.user_id) === Number(userId));
+                if (user) {
+                    user.rank = rank;
+                    user.points = points;
+                }
+                expanded.users.add(String(userId));
+                notify('Данные пользователя обновлены', 'success');
+                closeInlineEdit('users', userId);
+                applyUsers();
+            } else {
+                notify('Не удалось сохранить пользователя', 'error');
+            }
+        }
+
+        async function saveTicketEdit(ticket, actionEl) {
+            const detail = actionEl.closest('tr.row-details');
+            if (!detail) return;
+            const issueInput = detail.querySelector('input[data-field="issue_number"]');
+            const dateInput = detail.querySelector('input[data-field="date"]');
+            const issue = issueInput ? issueInput.value.trim() : '';
+            const date = dateInput ? dateInput.value.trim() : '';
+
+            if (date && !/^\d{2}\.\d{2}\.\d{4}$/.test(date)) {
+                notify('Дата должна быть в формате ДД.ММ.ГГГГ', 'error');
+                return;
+            }
+
+            const payload = { ticket_number: ticket, issue_number: issue, date: date };
+            const res = await fFetch(`${API_BASE}/ticket/update`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res && res.status === 'ok') {
+                const item = state.tickets.find(t => String(t.ticket) === String(ticket));
+                if (item) {
+                    item.issue = issue || item.issue;
+                    item.date = date || item.date;
+                }
+                expanded.tickets.add(String(ticket));
+                notify('Билет обновлен', 'success');
+                closeInlineEdit('tickets', ticket);
+                applyTickets();
+            } else {
+                notify('Не удалось обновить билет', 'error');
+            }
+        }
+
+        function getLogLevel(line) {
+            const upper = String(line || '').toUpperCase();
+            if (upper.includes('ERROR') || upper.includes('EXCEPTION') || upper.includes('TRACEBACK')) return 'error';
+            if (upper.includes('WARN')) return 'warn';
+            if (upper.includes('INFO')) return 'info';
+            return 'other';
+        }
+
+        function applyLogFilters(updateConsole = true) {
+            if (!updateConsole) return;
+            const con = document.getElementById('log-console');
+            if (!con) return;
+
+            const query = (logState.search || '').toLowerCase();
+            const filtered = logState.lines.filter(line => {
+                if (query && !String(line).toLowerCase().includes(query)) return false;
+                const level = getLogLevel(line);
+                if (logState.filter === 'all') return true;
+                return level === logState.filter;
+            });
+            if (!filtered.length) {
+                con.innerHTML = '<div class="log-line">Нет данных</div>';
+            } else {
+                con.innerHTML = filtered.map(line => {
+                    const level = getLogLevel(line);
+                    return `<div class="log-line level-${level}">${escapeHtml(line)}</div>`;
+                }).join('');
+            }
+            con.scrollTop = con.scrollHeight;
+        }
+
+        function updateLogSummary() {
+            let errors = 0;
+            let warns = 0;
+            let lastError = '';
+            logState.lines.forEach(line => {
+                const level = getLogLevel(line);
+                if (level === 'error') {
+                    errors += 1;
+                    lastError = line;
+                } else if (level === 'warn') {
+                    warns += 1;
+                }
+            });
+
+            const total = logState.lines.length;
+            const errorEl = document.getElementById('log-count-error');
+            const warnEl = document.getElementById('log-count-warn');
+            const totalEl = document.getElementById('log-count-total');
+            if (errorEl) errorEl.innerText = errors;
+            if (warnEl) warnEl.innerText = warns;
+            if (totalEl) totalEl.innerText = total;
+
+            const alertErrors = document.getElementById('alert-errors');
+            const alertWarns = document.getElementById('alert-warnings');
+            const alertLast = document.getElementById('alert-last-error');
+            const alertLastMeta = document.getElementById('alert-last-error-meta');
+
+            if (alertErrors) alertErrors.innerText = errors;
+            if (alertWarns) alertWarns.innerText = warns;
+            if (alertLast) {
+                const trimmed = lastError ? (lastError.length > 120 ? `${lastError.slice(0, 117)}...` : lastError) : '—';
+                alertLast.innerText = trimmed;
+            }
+            if (alertLastMeta) {
+                alertLastMeta.innerText = lastError ? 'Последняя строка с ошибкой' : 'Нет ошибок';
+            }
+            markUpdated('alerts');
+        }
+
+        function setLogSearch(value) {
+            logState.search = value || '';
+            applyLogFilters(true);
+        }
+
+        async function loadLogs(opts = {}) {
+            const d = await fFetch(`${API_BASE}/logs`);
+            if (d) {
+                const raw = d.logs || '';
+                logState.lines = raw.split('\n').filter(Boolean);
+                updateLogSummary();
+                applyLogFilters(opts.updateConsole !== false);
+                markUpdated('logs');
+            }
+        }
+
+        function renderCharts(act, grow) {
+            // Premium Chart.js Tooltip & Styling Options
+            const premiumOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: 'rgba(15, 23, 42, 0.95)', // slate-900 with high opacity
+                        titleFont: { family: "'Inter', 'Helvetica Neue', 'Arial', sans-serif", size: 12, weight: '600' },
+                        bodyFont: { family: "'Inter', 'Helvetica Neue', 'Arial', sans-serif", size: 12 },
+                        padding: { top: 8, bottom: 8, left: 12, right: 12 },
+                        borderColor: 'rgba(251, 191, 36, 0.25)', // Elegant gold border accent
+                        borderWidth: 1,
+                        borderRadius: 8,
+                        displayColors: false,
+                        caretSize: 6,
+                        callbacks: {
+                            label: function(context) {
+                                return `📈 Значение: ${context.parsed.y.toLocaleString('ru-RU')}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(255, 255, 255, 0.05)', drawOnChartArea: true, drawTicks: false },
+                        border: { display: false },
+                        ticks: { color: 'rgba(255, 255, 255, 0.4)', font: { family: "'Inter', sans-serif", size: 10 } }
+                    },
+                    y: {
+                        grid: { color: 'rgba(255, 255, 255, 0.05)', drawOnChartArea: true, drawTicks: false },
+                        border: { display: false },
+                        ticks: { color: 'rgba(255, 255, 255, 0.4)', font: { family: "'Inter', sans-serif", size: 10 } }
+                    }
+                }
+            };
+
+            // 1. Activity Bar Chart (Gold to Amber linear gradient matching the Fianit brand)
+            const actCanvas = document.getElementById('chart-activity');
+            let actBg = '#fbbf24';
+            if (actCanvas) {
+                const ctx = actCanvas.getContext('2d');
+                const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+                gradient.addColorStop(0, '#fbbf24'); // gold
+                gradient.addColorStop(1, '#d97706'); // amber
+                actBg = gradient;
+            }
+
+            if (charts.act) charts.act.destroy();
+            charts.act = new Chart(actCanvas, {
+                type: 'bar',
+                data: {
+                    labels: act.map(i => i.day),
+                    datasets: [{ data: act.map(i => i.count), backgroundColor: actBg, borderRadius: 6 }]
+                },
+                options: premiumOptions
+            });
+
+            // 2. Growth Line Chart (emerald fading line)
+            const growCanvas = document.getElementById('chart-growth');
+            let growBg = 'rgba(16, 185, 129, 0.08)';
+            if (growCanvas) {
+                const ctx = growCanvas.getContext('2d');
+                const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+                gradient.addColorStop(0, 'rgba(16, 185, 129, 0.25)'); // emerald
+                gradient.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
+                growBg = gradient;
+            }
+
+            if (charts.grow) charts.grow.destroy();
+            charts.grow = new Chart(growCanvas, {
+                type: 'line',
+                data: {
+                    labels: grow.map(i => i.day),
+                    datasets: [{
+                        data: grow.map(i => i.total),
+                        borderColor: '#10b981', // emerald border
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true,
+                        backgroundColor: growBg,
+                        pointRadius: 2,
+                        pointHoverRadius: 5
+                    }]
+                },
+                options: premiumOptions
+            });
+        }
+
+        function formatIsoShort(iso) {
+            if (!iso) return '—';
+            const parts = String(iso).split('-');
+            if (parts.length !== 3) return iso;
+            return `${parts[2]}.${parts[1]}`;
+        }
+
+        function renderMonitoring(payload) {
+            if (!payload) return;
+            const total = Number(payload.total) || 0;
+            const avg = payload.avg_per_day ?? 0;
+            const prevTotal = Number(payload.prev_total) || 0;
+            const growth = payload.growth_pct;
+            const period = payload.period || {};
+            const peak = payload.peak_day || null;
+
+            const totalEl = document.getElementById('monitor-total');
+            const periodEl = document.getElementById('monitor-period');
+            const avgEl = document.getElementById('monitor-avg');
+            const avgMetaEl = document.getElementById('monitor-avg-meta');
+            const growthEl = document.getElementById('monitor-growth');
+            const growthMetaEl = document.getElementById('monitor-growth-meta');
+            const peakEl = document.getElementById('monitor-peak');
+            const peakMetaEl = document.getElementById('monitor-peak-meta');
+
+            if (totalEl) totalEl.innerText = total.toLocaleString('ru-RU');
+            if (periodEl) {
+                periodEl.innerText = period.start && period.end
+                    ? `${formatIsoShort(period.start)} — ${formatIsoShort(period.end)}`
+                    : '—';
+            }
+            if (avgEl) avgEl.innerText = Number(avg).toLocaleString('ru-RU');
+            if (avgMetaEl) avgMetaEl.innerText = `за ${payload.days || state.monitorDays} дн.`;
+
+            if (growthEl) {
+                growthEl.classList.remove('trend-positive', 'trend-negative');
+                if (typeof growth === 'number') {
+                    const sign = growth > 0 ? '+' : '';
+                    growthEl.innerText = `${sign}${growth}%`;
+                    growthEl.classList.add(growth >= 0 ? 'trend-positive' : 'trend-negative');
+                } else {
+                    growthEl.innerText = '—';
+                }
+            }
+            if (growthMetaEl) {
+                growthMetaEl.innerText = prevTotal ? `пред. период: ${prevTotal}` : 'нет базы сравнения';
+            }
+
+            if (peakEl) peakEl.innerText = peak?.count ? String(peak.count) : '—';
+            if (peakMetaEl) peakMetaEl.innerText = peak?.day ? formatIsoShort(peak.day) : '—';
+
+            const daily = Array.isArray(payload.daily) ? payload.daily : [];
+            const monitorCanvas = document.getElementById('chart-monitor-daily');
+            let monitorBg = 'rgba(20, 184, 166, 0.08)';
+            if (monitorCanvas) {
+                const ctx = monitorCanvas.getContext('2d');
+                const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+                gradient.addColorStop(0, 'rgba(20, 184, 166, 0.25)'); // teal
+                gradient.addColorStop(1, 'rgba(20, 184, 166, 0.0)');
+                monitorBg = gradient;
+            }
+
+            const premiumMonitorOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                        titleFont: { family: "'Inter', 'Helvetica Neue', 'Arial', sans-serif", size: 12, weight: '600' },
+                        bodyFont: { family: "'Inter', 'Helvetica Neue', 'Arial', sans-serif", size: 12 },
+                        padding: { top: 8, bottom: 8, left: 12, right: 12 },
+                        borderColor: 'rgba(20, 184, 166, 0.25)', // teal accent border
+                        borderWidth: 1,
+                        borderRadius: 8,
+                        displayColors: false,
+                        caretSize: 6,
+                        callbacks: {
+                            label: function(context) {
+                                return `📈 Заключений: ${context.parsed.y.toLocaleString('ru-RU')}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(255, 255, 255, 0.05)', drawOnChartArea: true, drawTicks: false },
+                        border: { display: false },
+                        ticks: { color: 'rgba(255, 255, 255, 0.4)', font: { family: "'Inter', sans-serif", size: 10 } }
+                    },
+                    y: {
+                        grid: { color: 'rgba(255, 255, 255, 0.05)', drawOnChartArea: true, drawTicks: false },
+                        border: { display: false },
+                        ticks: { color: 'rgba(255, 255, 255, 0.4)', font: { family: "'Inter', sans-serif", size: 10 } }
+                    }
+                }
+            };
+
+            if (charts.monitor) charts.monitor.destroy();
+            charts.monitor = new Chart(monitorCanvas, {
+                type: 'line',
+                data: {
+                    labels: daily.map(d => formatIsoShort(d.day)),
+                    datasets: [{
+                        data: daily.map(d => d.count),
+                        borderColor: '#14b8a6', // beautiful teal
+                        borderWidth: 2,
+                        backgroundColor: monitorBg,
+                        fill: true,
+                        tension: 0.35,
+                        pointRadius: 2,
+                        pointHoverRadius: 5
+                    }]
+                },
+                options: premiumMonitorOptions
+            });
+
+            const regionList = document.getElementById('monitor-region-list');
+            if (regionList) {
+                const regions = Array.isArray(payload.regions) ? payload.regions : [];
+                if (!regions.length) {
+                    regionList.innerHTML = '<div class="region-empty">Нет данных за период</div>';
+                } else {
+                    const max = Math.max(...regions.map(r => r.count || 0), 1);
+                    const limit = 8;
+                    const items = regions.slice(0, limit).map(r => {
+                        const pct = Math.round((Number(r.count || 0) / max) * 100);
+                        return `
+                            <div class="region-item">
+                                <div class="region-meta">
+                                    <span class="region-name">${escapeHtml(r.region || '—')}</span>
+                                    <span>${Number(r.count || 0)}</span>
+                                </div>
+                                <div class="region-bar"><span style="width: ${pct}%"></span></div>
+                            </div>
+                        `;
+                    }).join('');
+                    const tail = regions.length > limit
+                        ? `<div class="region-empty">+${regions.length - limit} регионов</div>`
+                        : '';
+                    regionList.innerHTML = items + tail;
+                }
+            }
+
+            markUpdated('monitor');
+        }
+
+        async function loadMonitoring(days = state.monitorDays) {
+            const data = await fFetch(`${API_BASE}/monitoring?days=${days}`);
+            if (data) renderMonitoring(data);
+        }
+
+        function renderQuizStats(payload) {
+            if (!payload) return;
+            const attempts = Number(payload.total_attempts || 0);
+            const users = Number(payload.unique_users || 0);
+            const avgScore = payload.avg_score_pct ?? 0;
+            const avgCorrect = payload.avg_correct ?? 0;
+            const avgTotal = payload.avg_total ?? 0;
+            const period = payload.period || {};
+
+            const usersEl = document.getElementById('quiz-users');
+            const attemptsEl = document.getElementById('quiz-attempts');
+            const attemptsMetaEl = document.getElementById('quiz-attempts-meta');
+            const scoreEl = document.getElementById('quiz-score');
+            const scoreMetaEl = document.getElementById('quiz-score-meta');
+            const periodEl = document.getElementById('quiz-period');
+
+            if (usersEl) usersEl.innerText = users.toLocaleString('ru-RU');
+            if (attemptsEl) attemptsEl.innerText = attempts.toLocaleString('ru-RU');
+            if (attemptsMetaEl) attemptsMetaEl.innerText = `за ${payload.days || state.quizDays} дн.`;
+            if (scoreEl) scoreEl.innerText = `${avgScore}%`;
+            if (scoreMetaEl) scoreMetaEl.innerText = `среднее верных: ${avgCorrect} из ${avgTotal}`;
+            if (periodEl) {
+                periodEl.innerText = period.start && period.end
+                    ? `${formatIsoShort(period.start)} — ${formatIsoShort(period.end)}`
+                    : '—';
+            }
+
+            const regionList = document.getElementById('quiz-region-list');
+            if (regionList) {
+                const regions = Array.isArray(payload.regions) ? payload.regions : [];
+                if (!regions.length) {
+                    regionList.innerHTML = '<div class="region-empty">Нет данных за период</div>';
+                } else {
+                    const metric = regions.map(r => Number(r.users || r.attempts || 0));
+                    const max = Math.max(...metric, 1);
+                    const limit = 10;
+                    const items = regions.slice(0, limit).map(r => {
+                        const usersCount = Number(r.users || 0);
+                        const attemptsCount = Number(r.attempts || 0);
+                        const display = usersCount > 0 ? `${usersCount} чел.` : `${attemptsCount} попыток`;
+                        const pct = Math.round((Number(r.users || r.attempts || 0) / max) * 100);
+                        return `
+                            <div class="region-item">
+                                <div class="region-meta">
+                                    <span class="region-name">${escapeHtml(r.region || '—')}</span>
+                                    <span>${display}</span>
+                                </div>
+                                <div class="region-sub">Попыток: ${attemptsCount}</div>
+                                <div class="region-bar"><span style="width: ${pct}%"></span></div>
+                            </div>
+                        `;
+                    }).join('');
+                    const tail = regions.length > limit
+                        ? `<div class="region-empty">+${regions.length - limit} регионов</div>`
+                        : '';
+                    regionList.innerHTML = items + tail;
+                }
+            }
+
+            markUpdated('quiz');
+        }
+
+        async function loadQuizStats(days = state.quizDays) {
+            const data = await fFetch(`${API_BASE}/quiz-stats?days=${days}`);
+            if (data) renderQuizStats(data);
+        }
+
+        function applyHealth(h) {
+            if (!h) return;
+            document.getElementById('val-db-size').innerText = h.db_size ?? '--';
+            const hh = Math.floor(h.uptime / 3600);
+            const mm = Math.floor((h.uptime % 3600) / 60);
+            document.getElementById('kpi-uptime').innerText = `${hh}h ${mm}m`;
+
+            const dbStatusEl = document.getElementById('alert-db-status');
+            const dbSizeEl = document.getElementById('alert-db-size');
+            if (dbStatusEl) dbStatusEl.innerText = h.database === 'ok' ? 'OK' : 'Ошибка';
+            if (dbSizeEl) dbSizeEl.innerText = h.db_size ?? '--';
+            markUpdated('alerts');
+        }
+
+        function startPollingHealth() {
+            stopPollingHealth();
+            refreshTimer = setInterval(async () => {
+                const h = await fFetch(`${API_BASE}/health`);
+                if (h) applyHealth(h);
+            }, 8000);
+            setLiveStatus('polling');
+        }
+
+        function stopPollingHealth() {
+            if (refreshTimer) clearInterval(refreshTimer);
+            refreshTimer = null;
+        }
+
+        function stopLiveStream() {
+            if (liveStream) liveStream.close();
+            liveStream = null;
+        }
+
+        function startLiveStream() {
+            if (!window.EventSource) {
+                startPollingHealth();
+                return;
+            }
+            stopLiveStream();
+            try {
+                liveStream = new EventSource(`${API_BASE}/stream`);
+            } catch (e) {
+                startPollingHealth();
+                return;
+            }
+            liveStream.onopen = () => {
+                setLiveStatus('live');
+                stopPollingHealth();
+            };
+            liveStream.onerror = () => {
+                setLiveStatus('offline');
+                stopLiveStream();
+                startPollingHealth();
+            };
+            liveStream.addEventListener('health', (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    applyHealth(data);
+                    updateConnectionStatus(true);
+                } catch (e) { }
+            });
+            liveStream.addEventListener('stats', (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    renderKPI(data);
+                    markUpdated('dashboard');
+                } catch (e) { }
+            });
+        }
+
+        function notify(msg, type) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `position:fixed;bottom:20px;right:20px;padding:12px 24px;background:${type === 'error' ? '#ef4444' : '#22c55e'};color:white;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.2);z-index:9999;font-weight:700;animation:slideIn 0.3s ease;`;
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function filterT(id, q) {
+            const query = q || '';
+            if (id === 'user-body') setSearch('users', query);
+            if (id === 'ticket-body') setSearch('tickets', query);
+            if (id === 'archive-body') setSearch('archives', query);
+        }
+
+        function exportData(id, file) {
+            let rows = [];
+            let headers = [];
+
+            if (id === 'user-body') {
+                const view = buildUsersView({ paginate: false });
+                headers = ['user_id', 'name', 'rank', 'points', 'total_tickets', 'total_value', 'highest_single_value', 'weekly_tickets', 'weekly_points', 'last_region', 'is_blocked', 'last_active', 'blocked_at', 'blocked_reason'];
+                rows = view.list.map(u => [
+                    u.user_id,
+                    u.first_name || '',
+                    u.rank || '',
+                    u.points || 0,
+                    u.total_tickets || 0,
+                    u.total_value || 0,
+                    u.highest_single_value || 0,
+                    u.weekly_tickets || 0,
+                    u.weekly_points || 0,
+                    u.last_region || '',
+                    u.is_blocked ? 1 : 0,
+                    u.last_active || '',
+                    u.blocked_at || '',
+                    u.blocked_reason || ''
+                ]);
+            } else if (id === 'ticket-body') {
+                const view = buildTicketsView({ paginate: false });
+                headers = ['ticket', 'issue', 'date', 'user_id', 'created_at'];
+                rows = view.list.map(t => [
+                    t.ticket || '',
+                    t.issue || '',
+                    t.date || '',
+                    t.user_id || '',
+                    t.created_at || ''
+                ]);
+            } else if (id === 'archive-body') {
+                const view = buildArchivesView({ paginate: false });
+                headers = ['name', 'size_mb', 'mtime'];
+                rows = view.list.map(a => [
+                    a.name || '',
+                    (a.size / 1024 / 1024).toFixed(2),
+                    new Date(a.mtime * 1000).toLocaleDateString('ru-RU')
+                ]);
+            } else {
+                const domRows = Array.from(document.getElementById(id).querySelectorAll('tr'));
+                const csvRaw = domRows
+                    .map(r => Array.from(r.querySelectorAll('td')).map(td => td.innerText.replace(/,/g, '')).join(','))
+                    .join('\n');
+                const blob = new Blob([csvRaw], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = file;
+                a.click();
+                return;
+            }
+
+            const csv = rows.length
+                ? [headers.map(csvEscape).join(','), ...rows.map(r => r.map(csvEscape).join(','))].join('\n')
+                : headers.map(csvEscape).join(',');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = file;
+            a.click();
+        }
+
+        async function killUser(id) {
+            if (!confirm('Удалить?')) return;
+            await fFetch(`${API_BASE}/user/delete`, {
+                method: 'POST',
+                body: JSON.stringify({ user_id: id }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+            refresh('management');
+        }
+
+        async function killTicket(n) {
+            if (!confirm('Сбросить метку?')) return;
+            await fFetch(`${API_BASE}/ticket/delete`, {
+                method: 'POST',
+                body: JSON.stringify({ ticket_number: n }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+            refresh('tickets');
+        }
+
+        async function bulkResetPoints() {
+            const ids = Array.from(selected.users);
+            if (!ids.length) return;
+            if (!confirm(`Сбросить баллы у ${ids.length} пользователей?`)) return;
+            showLoading();
+            try {
+                for (const id of ids) {
+                    await fFetch(`${API_BASE}/user/update`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ user_id: id, points: 0 })
+                    });
+                }
+                notify('Баллы сброшены', 'success');
+                selected.users.clear();
+                refresh('management', { silent: true });
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function bulkDeleteUsers() {
+            const ids = Array.from(selected.users);
+            if (!ids.length) return;
+            if (!confirm(`Удалить ${ids.length} пользователей из статистики?`)) return;
+            showLoading();
+            try {
+                for (const id of ids) {
+                    await fFetch(`${API_BASE}/user/delete`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ user_id: id })
+                    });
+                }
+                notify('Пользователи удалены', 'success');
+                selected.users.clear();
+                refresh('management', { silent: true });
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function bulkDeleteTickets() {
+            const ids = Array.from(selected.tickets);
+            if (!ids.length) return;
+            if (!confirm(`Удалить ${ids.length} билетов?`)) return;
+            showLoading();
+            try {
+                for (const id of ids) {
+                    await fFetch(`${API_BASE}/ticket/delete`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ticket_number: id })
+                    });
+                }
+                notify('Билеты удалены', 'success');
+                selected.tickets.clear();
+                refresh('tickets', { silent: true });
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function doRestart() {
+            if (!confirm('Перезапустить сервер?')) return;
+            const res = await fFetch(`${API_BASE}/system/restart`, { method: 'POST' });
+            if (res) notify('Сервер перезагружается...', 'success');
+        }
+
+        async function doClearCache() {
+            if (!confirm('Принудительно обновить приложение у всех пользователей?')) return;
+            const res = await fFetch(`${API_BASE}/system/clear-cache`, { method: 'POST' });
+            if (res && res.status === 'ok') {
+                notify('Кэш сброшен. Версия: ' + res.new_cv, 'success');
+            } else {
+                notify('Ошибка сброса кэша', 'error');
+            }
+        }
+
+        async function saveConfig() {
+            const tokenInput = document.getElementById('cfg-token');
+            if (!tokenInput) return;
+            const token = tokenInput.value.trim();
+            if (!token) {
+                notify('Введите токен', 'error');
+                return;
+            }
+            const res = await fFetch(`${API_BASE}/config`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ BOT_TOKEN: token })
+            });
+            if (res && res.status === 'ok') {
+                notify('Токен обновлен', 'success');
+                tokenInput.value = '';
+            } else {
+                notify('Не удалось обновить токен', 'error');
+            }
+        }
+
+        function handleAction(el) {
+            const action = el.dataset.action;
+            if (action === 'toggle-row') {
+                toggleRow(el.dataset.type, el.dataset.id);
+                return;
+            }
+            if (action === 'delete-user') return killUser(el.dataset.userId);
+            if (action === 'delete-ticket') return killTicket(el.dataset.ticket);
+            if (action === 'bulk-reset-points') return bulkResetPoints();
+            if (action === 'bulk-delete-users') return bulkDeleteUsers();
+            if (action === 'bulk-delete-tickets') return bulkDeleteTickets();
+            if (action === 'bulk-clear-users') return clearSelection('users');
+            if (action === 'bulk-clear-tickets') return clearSelection('tickets');
+            if (action === 'add-admin') return addAdmin();
+            if (action === 'remove-admin') return removeAdmin(el.dataset.adminId);
+            if (action === 'add-user') return addUser();
+            if (action === 'remove-user') return removeUser(el.dataset.userId);
+            if (action === 'toggle-block') return toggleBlock(el.dataset.userId, el.dataset.blocked === '1');
+            if (action === 'edit-user') return openInlineEdit('users', el.dataset.userId);
+            if (action === 'edit-ticket') return openInlineEdit('tickets', el.dataset.ticket);
+            if (action === 'save-user') return saveUserEdit(el.dataset.userId, el);
+            if (action === 'save-ticket') return saveTicketEdit(el.dataset.ticket, el);
+            if (action === 'cancel-edit') return closeInlineEdit(el.dataset.type, el.dataset.id);
+            if (action === 'clear-broadcast') return clearBroadcast();
+            if (action === 'send-broadcast') return sendBroadcast();
+            if (action === 'download-archive-region') return downloadRegionArchive();
+            if (action === 'copy-user') {
+                return copyText(el.dataset.userId).then(() => notify('ID скопирован', 'success'));
+            }
+            if (action === 'copy-ticket') {
+                return copyText(el.dataset.ticket).then(() => notify('Билет скопирован', 'success'));
+            }
+        }
+
+        function focusSearchForPane(pane) {
+            if (pane === 'management') return document.getElementById('search-users')?.focus();
+            if (pane === 'tickets') return document.getElementById('search-tickets')?.focus();
+            if (pane === 'storage') return document.getElementById('search-archives')?.focus();
+        }
+
+        function setupHotkeys() {
+            document.addEventListener('keydown', (e) => {
+                const target = e.target;
+                if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) {
+                    return;
+                }
+                if (e.altKey && ['1', '2', '3', '4', '5'].includes(e.key)) {
+                    const map = ['dashboard', 'management', 'tickets', 'storage', 'system'];
+                    const pane = map[Number(e.key) - 1];
+                    const el = document.querySelector(`.nav-item[data-tab="${pane}"]`);
+                    if (pane) goTab(pane, el);
+                    return;
+                }
+                if (e.altKey && (e.key === 'r' || e.key === 'R')) {
+                    refresh(currentPane);
+                    return;
+                }
+                if (e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                    e.preventDefault();
+                    focusSearchForPane(currentPane);
+                }
+            });
+        }
+
+        function bindInteractions() {
+            document.addEventListener('click', (e) => {
+                const actionEl = e.target.closest('[data-action]');
+                if (actionEl) {
+                    e.preventDefault();
+                    handleAction(actionEl);
+                    return;
+                }
+
+                const chip = e.target.closest('.chip');
+                if (chip) {
+                    const monitorDays = chip.dataset.monitorDays;
+                    if (monitorDays) {
+                        setMonitorDays(monitorDays);
+                        return;
+                    }
+                    const quizDays = chip.dataset.quizDays;
+                    if (quizDays) {
+                        setQuizDays(quizDays);
+                        return;
+                    }
+                    const target = chip.dataset.target;
+                    const filter = chip.dataset.filter;
+                    if (target && filter) setFilter(target, filter);
+                    return;
+                }
+
+                const th = e.target.closest('th.sortable');
+                if (th) {
+                    setSort(th.dataset.table, th.dataset.sort);
+                    return;
+                }
+
+                const pager = e.target.closest('button[data-page]');
+                if (pager) {
+                    setPage(pager.dataset.table, pager.dataset.page);
+                    return;
+                }
+
+                const row = e.target.closest('tr.row-main');
+                if (row) {
+                    if (e.target.closest('input.table-select')) return;
+                    toggleRow(row.dataset.type, row.dataset.id);
+                }
+            });
+        }
+
+        function bindSelection() {
+            document.addEventListener('change', (e) => {
+                const target = e.target;
+                if (target && target.matches('input[data-select]')) {
+                    toggleSelection(target.dataset.select, target.dataset.id, target.checked);
+                }
+                if (target && target.matches('input[data-select-all]')) {
+                    toggleSelectAll(target.dataset.selectAll, target.checked);
+                }
+            });
+        }
+
+        function parseTelegramMarkup(text) {
+            if (!text) return '<span class="telegram-preview-placeholder">Введите текст сообщения выше для предпросмотра...</span>';
+            let html = escapeHtml(text);
+            html = html.replace(/\r?\n/g, '<br>');
+            html = html.replace(/&lt;b&gt;([\s\S]*?)&lt;\/b&gt;/gi, '<strong>$1</strong>');
+            html = html.replace(/&lt;strong&gt;([\s\S]*?)&lt;\/strong&gt;/gi, '<strong>$1</strong>');
+            html = html.replace(/&lt;i&gt;([\s\S]*?)&lt;\/i&gt;/gi, '<em>$1</em>');
+            html = html.replace(/&lt;em&gt;([\s\S]*?)&lt;\/em&gt;/gi, '<em>$1</em>');
+            html = html.replace(/&lt;u&gt;([\s\S]*?)&lt;\/u&gt;/gi, '<u>$1</u>');
+            html = html.replace(/&lt;s&gt;([\s\S]*?)&lt;\/s&gt;/gi, '<strike>$1</strike>');
+            html = html.replace(/&lt;strike&gt;([\s\S]*?)&lt;\/strike&gt;/gi, '<strike>$1</strike>');
+            html = html.replace(/&lt;del&gt;([\s\S]*?)&lt;\/del&gt;/gi, '<strike>$1</strike>');
+            html = html.replace(/&lt;code&gt;([\s\S]*?)&lt;\/code&gt;/gi, '<code class="tg-code">$1</code>');
+            html = html.replace(/&lt;pre&gt;([\s\S]*?)&lt;\/pre&gt;/gi, '<pre class="tg-pre">$1</pre>');
+            html = html.replace(/&lt;a\s+href=(?:&quot;|&#039;)?(https?:\/\/[^\s&"<>]+?)(?:&quot;|&#039;)?&gt;([\s\S]*?)&lt;\/a&gt;/gi, function(match, url, linkText) {
+                return `<a class="tg-link" href="${url}" target="_blank" rel="noopener noreferrer">${linkText}</a>`;
+            });
+            html = html.replace(/```([\s\S]+?)```/g, '<pre class="tg-pre">$1</pre>');
+            html = html.replace(/`([^`\n]+?)`/g, '<code class="tg-code">$1</code>');
+            html = html.replace(/__([^_]+?)__/g, '<u>$1</u>');
+            html = html.replace(/\b_([^_]+?)_\b/g, '<em>$1</em>');
+            html = html.replace(/\*([^\*]+?)\*/g, '<strong>$1</strong>');
+            html = html.replace(/~([^~]+?)~/g, '<strike>$1</strike>');
+            return html;
+        }
+
+        function bindBroadcastPreview() {
+            const messageEl = document.getElementById('broadcast-message');
+            const previewEl = document.getElementById('broadcast-preview');
+            const timeEl = document.getElementById('broadcast-preview-time');
+            if (!messageEl || !previewEl || !timeEl) return;
+
+            const updateTime = () => {
+                const now = new Date();
+                timeEl.textContent = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+            };
+
+            const updatePreview = () => {
+                const text = messageEl.value;
+                previewEl.innerHTML = parseTelegramMarkup(text);
+                updateTime();
+            };
+
+            messageEl.addEventListener('input', updatePreview);
+            messageEl.addEventListener('change', updatePreview);
+            updatePreview();
+        }
+
+        // Init
+        restoreUiState();
+        bindInteractions();
+        bindSelection();
+        bindAccessInputs();
+        setupHotkeys();
+        startLiveStream();
+        if (!liveStream) startPollingHealth();
+        bindBroadcastPreview();
+
+        const navEl = document.querySelector(`.nav-item[data-tab="${currentPane}"]`) || document.querySelector('.nav-item');
+        goTab(currentPane, navEl);
+    </script>
+</body>
+
+</html>

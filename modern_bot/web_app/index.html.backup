@@ -1,0 +1,3922 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Создание заключения v5.4</title>
+    <!-- Version: 5.4 (Photo UX + Motion) -->
+    <style>
+        /* Motivation Modal Styles */
+        .motivation-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            padding: 10px 0;
+        }
+
+        .motivation-item {
+            background: rgba(0, 122, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid rgba(0, 122, 255, 0.1);
+        }
+
+        .motivation-icon {
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .motivation-text b {
+            display: block;
+            color: var(--primary-color);
+            margin-bottom: 2px;
+        }
+
+        .motivation-text span {
+            font-size: 13px;
+            color: #666;
+        }
+    </style>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0/dist/cleave.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #007AFF;
+            --primary-hover: #0062cc;
+            --text-color: #1d1d1f;
+            --secondary-text: #86868b;
+            --card-bg: rgba(255, 255, 255, 0.65);
+            --input-bg: rgba(255, 255, 255, 0.5);
+            --border-color: rgba(0, 0, 0, 0.05);
+            --danger-color: #ff3b30;
+            --success-color: #34c759;
+            --error-color: #ff3b30;
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 12px 24px rgba(0, 0, 0, 0.06);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.5);
+            --radius-lg: 24px;
+            --radius-md: 16px;
+        }
+
+        html,
+        body {
+            height: 100%;
+            -webkit-text-size-adjust: 100%;
+            touch-action: manipulation;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 20px;
+            padding-top: calc(20px + env(safe-area-inset-top));
+            padding-right: calc(20px + env(safe-area-inset-right));
+            padding-left: calc(20px + env(safe-area-inset-left));
+            padding-bottom: calc(140px + env(safe-area-inset-bottom));
+            /* Fix sticky footer overlap */
+            min-height: 100%;
+            color: var(--text-color);
+            background-color: #fdfdfd;
+            background-image:
+                radial-gradient(1200px circle at 0% 100%, rgba(255, 86, 86, 0.35), transparent 60%),
+                radial-gradient(900px circle at 100% 0%, rgba(88, 220, 230, 0.45), transparent 55%),
+                radial-gradient(800px circle at 70% 10%, rgba(180, 240, 255, 0.35), transparent 60%);
+            background-size: 120% 120%;
+            animation: gradient-animation 20s ease-in-out infinite;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        @keyframes gradient-animation {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Light Theme Override for Mesh */
+        @media (prefers-color-scheme: light) {
+            body {
+                background-color: #fdfdfd;
+                background-image:
+                    radial-gradient(1200px circle at 0% 100%, rgba(255, 86, 86, 0.35), transparent 60%),
+                    radial-gradient(900px circle at 100% 0%, rgba(88, 220, 230, 0.45), transparent 55%),
+                    radial-gradient(800px circle at 70% 10%, rgba(180, 240, 255, 0.35), transparent 60%);
+            }
+        }
+
+        /* Dark Mode Override if needed, but keeping light for now as requested */
+
+        h1 {
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: #1d1d1f;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .header-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            padding-top: 6px;
+        }
+
+        .motivation-trigger {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: rgba(255, 215, 0, 0.12);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .brand-logo {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.45;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .brand-logo img {
+            height: 20px;
+            width: auto;
+            max-width: 120px;
+            border-radius: 6px;
+            display: block;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .section {
+            background: var(--card-bg);
+            -webkit-backdrop-filter: blur(30px);
+            backdrop-filter: blur(30px);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-md);
+            border: var(--glass-border);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 0.6s ease-out 0.1s backwards;
+        }
+
+        /* Guide Modal Styles */
+        .guide-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .guide-title {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .guide-btn {
+            margin-top: 24px;
+        }
+
+        .guide-update {
+            margin-top: 12px;
+            text-align: center;
+            font-size: 11px;
+            color: var(--secondary-text);
+        }
+
+        .guide-update a {
+            color: inherit;
+            text-decoration: underline;
+        }
+
+        .real-time-banner {
+            margin: 20px 0;
+            display: none;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .guide-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .step-icon-wrapper {
+            background: rgba(0, 122, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .step-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--primary-color);
+        }
+
+        .step-text h3 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .step-text p {
+            margin: 0;
+            font-size: 14px;
+            color: var(--secondary-text);
+            line-height: 1.4;
+        }
+
+        /* Interactive Section Hover */
+        .section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        /* Staggered Animation Delays */
+        .form-group:nth-child(1) {
+            animation-delay: 0.15s;
+        }
+
+        .form-group:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .form-group:nth-child(3) {
+            animation-delay: 0.25s;
+        }
+
+        .form-group:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .form-group:nth-child(5) {
+            animation-delay: 0.35s;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--secondary-text);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-left: 4px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 18px 18px 18px 50px;
+            /* Increased padding for icon */
+            border: 1px solid transparent;
+            background: #F5F5F7;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--radius-md);
+            font-size: 17px;
+            font-family: inherit;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--text-color);
+            box-shadow: none;
+            -webkit-appearance: none;
+            appearance: none;
+            /* Mobile fixes */
+            box-sizing: border-box;
+            max-width: 100%;
+        }
+
+        /* Hide spin buttons */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+
+        /* Fix for Select Icon Overlap */
+        select {
+            padding-right: 50px;
+            /* Increased right padding */
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .input-wrapper {
+            position: relative;
+            transition: transform 0.2s ease;
+        }
+
+        .input-wrapper:hover {
+            transform: translateY(-1px);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 22px;
+            height: 22px;
+            color: var(--secondary-text);
+            pointer-events: none;
+            transition: color 0.2s;
+        }
+
+        input:focus+.input-icon,
+        input:focus~.input-icon,
+        select:focus+.input-icon,
+        .input-wrapper input:focus+.input-icon {
+            color: var(--primary-color);
+            opacity: 1;
+        }
+
+        .item-card {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: var(--radius-lg);
+            padding: 0;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: fadeInUp 0.6s ease-out;
+            position: relative;
+            overflow: hidden;
+            opacity: 1;
+        }
+
+        .item-card:hover {
+            transform: scale(1.01);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: var(--shadow-md);
+            z-index: 2;
+        }
+
+        .item-card:focus-within {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .item-header {
+            background: rgba(255, 255, 255, 0.5);
+            padding: 16px 24px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .item-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .item-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 999px;
+            color: var(--secondary-text);
+            background: rgba(0, 0, 0, 0.03);
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+
+        .item-card.collapsed .item-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .item-card:hover .item-toggle {
+            color: var(--text-color);
+        }
+
+        .item-card.collapsed .item-body {
+            display: none;
+        }
+
+        .item-card.collapsed .item-header {
+            border-bottom: none;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .item-header-info {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .item-summary {
+            font-size: 13px;
+            color: var(--secondary-text);
+            margin-top: 4px;
+            display: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 220px;
+        }
+
+        .item-card.collapsed .item-summary {
+            display: block;
+        }
+
+        .item-body {
+            padding: 24px;
+        }
+
+        .item-title {
+            font-weight: 700;
+            font-size: 17px;
+            color: var(--text-color);
+            /* Removed background pill style for cleaner look */
+            /* Mobile text handling */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-width: 100%;
+        }
+
+        .btn {
+            padding: 18px;
+            border-radius: var(--radius-lg);
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        /* Glass Button Style for Submit */
+        .btn-primary {
+            background: rgba(0, 122, 255, 0.85);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            color: white;
+            box-shadow: 0 8px 20px rgba(0, 122, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-primary:hover {
+            background: rgba(0, 122, 255, 0.95);
+            box-shadow: 0 12px 28px rgba(0, 122, 255, 0.35);
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .section,
+            .form-group,
+            .item-card {
+                animation: none !important;
+                transform: none !important;
+                opacity: 1 !important;
+            }
+        }
+
+        /* Validation Error */
+        .invalid {
+            border-color: var(--danger-color) !important;
+            animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
+            background: rgba(255, 59, 48, 0.05) !important;
+        }
+
+        @keyframes shake {
+
+            10%,
+            90% {
+                transform: translate3d(-1px, 0, 0);
+            }
+
+            20%,
+            80% {
+                transform: translate3d(2px, 0, 0);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translate3d(-4px, 0, 0);
+            }
+
+            40%,
+            60% {
+                transform: translate3d(4px, 0, 0);
+            }
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.5);
+            color: var(--primary-color);
+            border: 1px solid rgba(0, 122, 255, 0.1);
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .quiz-trigger-row {
+            display: flex;
+            justify-content: center;
+            margin: 12px 0 6px;
+        }
+
+        .quiz-trigger {
+            border: 1px solid rgba(0, 122, 255, 0.35);
+            background: rgba(0, 122, 255, 0.08);
+            color: var(--text-color);
+            font-size: 14px;
+            font-weight: 700;
+            padding: 10px 18px;
+            border-radius: 999px;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(0, 122, 255, 0.12);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .quiz-trigger:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 24px rgba(0, 122, 255, 0.18);
+        }
+
+        .quiz-content {
+            max-width: 460px;
+        }
+
+        #quizBody {
+            overflow-y: auto;
+            flex: 1;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+        }
+
+        #guideModal .modal-content,
+        #motivationModal .modal-content {
+            overflow-y: auto;
+        }
+
+        .quiz-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .quiz-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .quiz-close {
+            background: rgba(0, 0, 0, 0.05);
+            border: none;
+            border-radius: 12px;
+            width: 32px;
+            height: 32px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .quiz-progress {
+            font-size: 12px;
+            color: var(--secondary-text);
+            margin-bottom: 8px;
+        }
+
+        .quiz-question {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 12px 0 14px;
+            line-height: 1.4;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            text-align: left;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            background: #f7f8fb;
+            padding: 12px 14px;
+            border-radius: 14px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .quiz-option:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .quiz-option.correct {
+            border-color: rgba(52, 199, 89, 0.5);
+            background: rgba(52, 199, 89, 0.12);
+        }
+
+        .quiz-option.incorrect {
+            border-color: rgba(255, 59, 48, 0.4);
+            background: rgba(255, 59, 48, 0.08);
+        }
+
+        .quiz-footer {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .quiz-result {
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 14px;
+            background: rgba(0, 122, 255, 0.08);
+            font-size: 14px;
+        }
+
+        .quiz-fact {
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 14px;
+            background: rgba(255, 149, 0, 0.12);
+            font-size: 13px;
+            color: #6b4a00;
+        }
+
+        .btn-remove {
+            color: var(--danger-color);
+            background: rgba(255, 59, 48, 0.1);
+            border: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 10px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-remove:hover {
+            background: rgba(255, 59, 48, 0.2);
+            transform: scale(1.02);
+        }
+
+        .photo-preview-container {
+            margin-top: 16px;
+            border-radius: 16px;
+            overflow: hidden;
+            background: rgba(0, 122, 255, 0.03);
+            border: 2px dashed rgba(0, 0, 0, 0.1);
+            position: relative;
+            height: 200px;
+            /* Increased height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .photo-preview-container:hover {
+            border-color: var(--primary-color);
+            background: rgba(0, 122, 255, 0.03);
+        }
+
+        .photo-preview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: none;
+            z-index: 1;
+            border-radius: 14px;
+        }
+
+        .photo-actions {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: flex;
+            gap: 8px;
+            z-index: 20;
+            opacity: 0;
+            transform: translateY(-6px);
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .photo-action-btn {
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.92);
+            color: var(--text-color);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .photo-action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .photo-action-btn.danger {
+            color: var(--danger-color);
+            border-color: rgba(255, 59, 48, 0.3);
+            background: rgba(255, 59, 48, 0.08);
+        }
+
+        .photo-preview-container.has-photo .photo-actions {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .photo-preview-container.loading .photo-actions {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .upload-progress {
+            position: absolute;
+            left: 12px;
+            right: 12px;
+            bottom: 12px;
+            height: 6px;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 20;
+        }
+
+        .upload-progress.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .upload-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            transition: width 0.2s ease;
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+            opacity: 0.8;
+            transition: transform 0.3s ease;
+        }
+
+        .photo-preview-container:hover .upload-icon {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+
+        .upload-label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            transition: opacity 0.3s;
+        }
+
+        /* When preview is shown, hide label content but keep input clickable?
+           Actually, we want to see "Change photo" text.
+           Let's add a background to label when preview is active? */
+
+        .btn-text {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 4px;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+        }
+
+        .hint {
+            font-size: 13px;
+            color: var(--secondary-text);
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+            color: #86868b;
+            font-size: 12px;
+            text-align: center;
+            margin-top: 4px;
+            /* Better contrast for mobile */
+            color: #666;
+            font-size: 13px;
+        }
+
+        /* Tooltip Hint */
+        .input-hint {
+            /* Improved contrast */
+            color: #666;
+            font-size: 13px;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            opacity: 0.8;
+        }
+
+        .input-hint svg {
+            width: 14px;
+            height: 14px;
+            opacity: 0.7;
+        }
+
+        /* Segmented Control Redesign */
+        .segmented-control {
+            display: flex;
+            background: rgba(0, 0, 0, 0.06);
+            /* iOS Segmented Control BG */
+            border-radius: 9px;
+            padding: 2px;
+            margin-bottom: 24px;
+            position: relative;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .segmented-control label {
+            flex: 1;
+            padding: 10px 12px;
+            color: #1d1d1f;
+            cursor: pointer;
+            border-radius: 7px;
+            transition: all 0.2s ease;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            text-align: center;
+            line-height: 1.1;
+            min-height: 44px;
+        }
+
+        .segmented-title {
+            font-size: 14px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .segmented-subtitle {
+            font-size: 11px;
+            font-weight: 600;
+            color: #6b7280;
+            white-space: nowrap;
+        }
+
+        .segmented-control input[type="radio"] {
+            display: none;
+        }
+
+        .segmented-control input[type="radio"]:checked+label {
+            background-color: #ffffff;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16), 0 2px 4px rgba(0, 0, 0, 0.06);
+            font-weight: 700;
+            color: #1d1d1f;
+            transform: scale(1.02);
+            border: 0.5px solid rgba(0, 0, 0, 0.04);
+            z-index: 2;
+        }
+
+        .segmented-control input[type="radio"]:checked+label .segmented-subtitle {
+            color: rgba(0, 0, 0, 0.7);
+        }
+
+        /* Pulse Animation for Main Button */
+        @keyframes pulse-blue {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(0, 122, 255, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 122, 255, 0);
+            }
+        }
+
+        .btn-pulse {
+            animation: pulse-blue 2s infinite;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            margin: calc(6vh + env(safe-area-inset-top)) auto;
+            padding: 18px;
+            padding-bottom: calc(18px + env(safe-area-inset-bottom));
+            border-radius: 24px;
+            width: 85%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.3s;
+            max-height: calc(88vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+            overflow: hidden;
+            /* Disable container scroll */
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+
+        .lightbox-modal {
+            background-color: rgba(0, 0, 0, 0.85);
+            -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+        }
+
+        .lightbox-content {
+            background: transparent;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            max-width: none;
+            height: 100%;
+            max-height: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: none;
+            border-radius: 0;
+        }
+
+        #lightboxImage {
+            max-width: 94vw;
+            max-height: 86vh;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+            background: #fff;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: calc(14px + env(safe-area-inset-top));
+            right: calc(14px + env(safe-area-inset-right));
+            width: 36px;
+            height: 36px;
+            border-radius: 999px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 22px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .lightbox-close:active {
+            transform: scale(0.96);
+        }
+
+        #previewModal {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+
+        #previewModal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #previewModal .modal-content {
+            opacity: 0;
+            transform: translateY(18px) scale(0.98);
+            transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+
+        #previewModal.show .modal-content {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        #previewContent {
+            overflow-y: auto;
+            flex: 1;
+            margin-bottom: 10px;
+            padding-right: 0;
+            /* Prevent scrollbar overlap */
+        }
+
+        /* Prevent iOS Zoom on inputs */
+        input,
+        select,
+        textarea {
+            font-size: 16px !important;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Error states */
+        .input-error {
+            border: 2px solid var(--danger-color) !important;
+            animation: shake 0.3s;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        .error-message {
+            color: var(--danger-color);
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Sticky submit button */
+        /* Sticky footer container */
+        .sticky-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 12px 20px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+            padding-left: calc(20px + env(safe-area-inset-left));
+            padding-right: calc(20px + env(safe-area-inset-right));
+            background: rgba(255, 255, 255, 0.95);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            z-index: 100;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: center;
+        }
+
+        .hint-text {
+            font-size: 12px;
+            color: var(--secondary-text);
+            margin-top: 4px;
+            margin-left: 4px;
+        }
+
+        .upload-status {
+            text-align: center;
+            font-size: 13px;
+            margin-top: 8px;
+            color: var(--secondary-text);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(0, 122, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .photo-preview-container.loading {
+            pointer-events: none;
+            opacity: 0.7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-status.success {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 16px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .draft-notice {
+            background: rgba(52, 199, 89, 0.1);
+            border-left: 3px solid var(--success-color);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: var(--text-color);
+            display: none;
+        }
+
+        .info-icon {
+            border: 1.5px solid currentColor;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .info-icon:hover {
+            opacity: 1;
+        }
+
+        @keyframes skeleton-loading {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.06) 25%, rgba(0, 0, 0, 0.12) 50%, rgba(0, 0, 0, 0.06) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            border-radius: 6px;
+            display: inline-block;
+            height: 14px;
+            width: 140px;
+            vertical-align: middle;
+        }
+
+        .skeleton-loader {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            z-index: 10;
+            border-radius: inherit;
+            display: none;
+        }
+
+        .stats-counter {
+            text-align: center;
+            color: var(--secondary-text);
+            font-size: 13px;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .title-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .title-header h1 {
+            margin: 0;
+        }
+
+        /* Items Header Styles */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+            /* For floating label */
+        }
+
+        .form-group label:not(.floating-label) {
+            /* Legacy support for non-floating labels if any */
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-color);
+            margin-left: 4px;
+        }
+
+        .item-field {
+            width: 100%;
+            padding: 24px 16px 8px;
+            /* Increased top padding for label */
+            border: 2px solid transparent;
+            background: #f2f2f7;
+            border-radius: 14px;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            color: var(--text-color);
+            height: 56px;
+            /* Fixed height for consistency */
+        }
+
+        /* Floating Label Styles */
+        .floating-label {
+            position: absolute;
+            left: 16px;
+            top: 18px;
+            font-size: 16px;
+            color: var(--secondary-text);
+            pointer-events: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: left top;
+            z-index: 1;
+        }
+
+        /* Float State */
+        .item-field:focus~.floating-label,
+        .item-field:not(:placeholder-shown)~.floating-label {
+            transform: translateY(-10px) scale(0.75);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Error State Color */
+        .item-field.invalid~.floating-label {
+            color: var(--error-color);
+        }
+
+        /* Hide placeholder when not focused (optional, cleaner look) */
+        .item-field:not(:focus)::placeholder {
+            opacity: 0;
+        }
+
+        .item-field::placeholder {
+            transition: opacity 0.2s;
+            color: #999;
+        }
+
+        .item-field:focus {
+            background: #fff;
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.1);
+        }
+
+        .items-header {
+            margin-bottom: 16px;
+        }
+
+        .flex-space {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .items-badge {
+            background: var(--primary-color);
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 12px;
+            margin-left: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 24px;
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.25);
+        }
+
+        .badge {
+            background: var(--primary-color);
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 12px;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .footer-author {
+            opacity: 0.5;
+            font-size: 10px;
+            margin-bottom: 2px;
+        }
+
+        .footer-version {
+            font-size: 11px;
+        }
+
+        .footer-note {
+            margin-top: 16px;
+            margin-bottom: calc(16px + env(safe-area-inset-bottom));
+            text-align: center;
+        }
+
+        .photo-preview-container.photo-invalid {
+            border-color: var(--danger-color);
+            box-shadow: 0 0 0 2px rgba(255, 59, 48, 0.12);
+        }
+
+        #mainForm::after {
+            content: "";
+            display: block;
+            height: calc(80px + env(safe-area-inset-bottom));
+        }
+
+        /* Premium Preview Modal Styles - Compact Version */
+        .preview-card {
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 14px;
+            margin-bottom: 8px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            border: none;
+        }
+
+        .preview-card.mode-test {
+            background: linear-gradient(135deg, rgba(255, 165, 0, 0.1) 0%, rgba(255, 140, 0, 0.05) 100%);
+            border: 1px solid rgba(255, 165, 0, 0.2);
+        }
+
+        .preview-card.mode-final {
+            background: linear-gradient(135deg, rgba(52, 199, 89, 0.1) 0%, rgba(40, 167, 69, 0.05) 100%);
+            border: 1px solid rgba(52, 199, 89, 0.2);
+        }
+
+        .preview-section-title {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--secondary-text);
+            margin-bottom: 6px;
+            opacity: 0.7;
+        }
+
+        /* Grid Layout for Data */
+        .preview-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 6px 12px;
+            align-items: baseline;
+        }
+
+        .preview-label {
+            color: var(--secondary-text);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .preview-value {
+            color: var(--text-color);
+            font-weight: 700;
+            font-size: 13px;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+
+        }
+
+        /* Items List */
+        .preview-item {
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+
+        /* Button Press Effect */
+        .main-button:active,
+        .btn-add:active,
+        .btn-remove:active {
+            transform: scale(0.96);
+        }
+
+        /* Input Focus Effect */
+        .item-field {
+            transition: all 0.2s ease;
+        }
+
+        .item-field:focus {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.15);
+            border-color: var(--primary-color);
+        }
+
+
+
+
+        .preview-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .preview-image {
+            width: 34px;
+            height: 34px;
+            border-radius: 7px;
+            object-fit: cover;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .preview-item-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .preview-item-desc {
+            font-weight: 700;
+            color: var(--text-color);
+            font-size: 13px;
+            margin-bottom: 0;
+            line-height: 1.3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .preview-item-price {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 12px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* Total Cost Banner */
+        .total-banner {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 18px;
+            /* Reduced padding */
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+        }
+
+        .total-label {
+            font-size: 16px;
+            color: var(--text-color);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .total-amount {
+            font-size: 24px;
+            /* Smaller font */
+            font-weight: 800;
+            color: var(--primary-color);
+            letter-spacing: -0.5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header-container" id="headerContainer">
+        <div class="motivation-trigger" onclick="showMotivation()" title="Рейтинговая система">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" style="color: #FFD700;">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                <path d="M4 22h16"></path>
+                <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path>
+            </svg>
+        </div>
+        <h1 id="mainTitle">Новое заключение</h1>
+        <div class="brand-logo" aria-hidden="true">
+            <img src="fianit-logo.jpg" alt="">
+        </div>
+    </div>
+    <!-- Draft Notice -->
+    <div class="draft-notice" id="draftNotice">
+        ✅ Восстановлен черновик из предыдущей сессии
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <form id="mainForm">
+        <div class="section">
+            <div class="form-group">
+                <label>Подразделение</label>
+                <div class="input-wrapper">
+                    <input type="tel" id="department" placeholder="Например: 385" required pattern="\d+">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Номер заключения</label>
+                <div class="input-wrapper">
+                    <input type="tel" id="issue" placeholder="Например: 12" required pattern="\d+">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Номер билета</label>
+                <div class="input-wrapper">
+                    <input type="tel" id="ticket" placeholder="03850006392" required maxlength="11" inputmode="numeric"
+                        pattern="[0-9]{11}" autocomplete="off">
+                    <div class="error-message"></div>
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 11V7a5 5 0 0 1 10 0v4"></path>
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                </div>
+                <div class="hint-text">11 цифр без пробелов (пример: 03850006392)</div>
+            </div>
+            <div class="form-group">
+                <label>Дата</label>
+                <div class="input-wrapper">
+                    <input type="date" id="date" required placeholder="Дата" title="Дата">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                </div>
+                <div class="hint-text">Дата не может быть в будущем. Сегодня или раньше.</div>
+            </div>
+            <div class="form-group">
+                <label>Регион</label>
+                <div class="input-wrapper">
+                    <select id="region" required aria-label="Регион">
+                        <option value="" disabled selected>Выберите регион</option>
+                        <option value="Санкт-Петербург">Санкт-Петербург</option>
+                        <option value="Свердловская область">Свердловская область</option>
+                        <option value="Челябинская область">Челябинская область</option>
+                        <option value="Екатеринбург">Екатеринбург</option>
+                        <option value="Башкирия">Башкирия</option>
+                        <option value="Тюмень">Тюмень</option>
+                        <option value="ХМАО-Югра">ХМАО-Югра</option>
+                        <option value="Нижний Новгород">Нижний Новгород</option>
+                        <option value="Ростовская область">Ростовская область</option>
+                        <option value="Челябинск">Челябинск</option>
+                        <option value="Магнитогорск">Магнитогорск</option>
+                        <option value="Курган">Курган</option>
+                        <option value="Краснодарский край">Краснодарский край</option>
+                    </select>
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="items-header">
+            <h3 class="section-title">
+                Предметы
+                <span id="itemCountBadge" class="items-badge">1</span>
+            </h3>
+        </div>
+
+        <!-- Items List (moved outside items-header) -->
+        <div id="itemsList"></div>
+
+        <!-- Total Banner (Real-time) -->
+        <div id="realTimeTotal" class="total-banner real-time-banner">
+            <div class="total-label">💰 Итого:</div>
+            <div class="total-amount" id="totalAmountDisplay">0 ₽</div>
+        </div>
+
+        <button type="button" class="btn btn-secondary btn-dashed" onclick="addItem()">
+            + Добавить предмет
+        </button>
+
+        <!-- Mode Toggle (Moved to Bottom) -->
+        <label class="mode-label">Режим отправки</label>
+        <div class="segmented-control">
+            <input type="radio" name="mode" id="mode-final" value="final" checked>
+            <label for="mode-final">
+                <span class="segmented-title">Оригинал</span>
+                <span class="segmented-subtitle">в группу</span>
+            </label>
+
+            <input type="radio" name="mode" id="mode-test" value="test">
+            <label for="mode-test">
+                <span class="segmented-title">Черновик</span>
+                <span class="segmented-subtitle">только вам</span>
+            </label>
+        </div>
+        <div class="hint-text">Оригинал — автомитически отправляется региональному менеджеру. Черновик — только вам.</div>
+
+        <div class="sticky-footer">
+            <button type="button" class="btn btn-primary" onclick="showPreview()">
+                Проверить и отправить
+            </button>
+        </div>
+
+        <div class="footer-note">
+            <div class="footer-author" onclick="showUserGuide()" style="cursor:pointer; text-decoration: underline;">
+                📘 Инструкция пользователя
+            </div>
+            <div class="quiz-trigger-row">
+                <button type="button" class="quiz-trigger" onclick="openQuiz()">🧠 Проверь себя — мини‑викторина (необязательно)</button>
+            </div>
+            <div class="footer-author">
+                 Жуков Олег
+            </div>
+            <div class="footer-version">
+                Версия 2.1 21.12.2025
+            </div>
+        </div>
+    </form>
+
+    <!-- Preview Modal -->
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <h2 class="no-margin-top">Проверка данных</h2>
+            <div id="previewContent"></div>
+            <div class="flex-gap">
+                <button class="btn btn-secondary" onclick="closePreview()">Назад</button>
+                <button class="btn btn-primary btn-no-margin" onclick="submitForm()"
+                    id="finalSubmitBtn">Отправить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox Modal -->
+    <div id="lightboxModal" class="modal lightbox-modal" onclick="closeLightbox()">
+        <div class="modal-content lightbox-content" onclick="event.stopPropagation()">
+            <button type="button" class="lightbox-close" onclick="closeLightbox()">×</button>
+            <img id="lightboxImage" alt="Фото">
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div id="quizModal" class="modal">
+        <div class="modal-content quiz-content">
+            <div class="quiz-header">
+                <h2 class="quiz-title">Проверь себя</h2>
+                <button type="button" class="quiz-close" onclick="closeQuiz()">×</button>
+            </div>
+            <div id="quizBody"></div>
+        </div>
+    </div>
+
+    <!-- Motivation Modal -->
+    <div id="motivationModal" class="modal">
+        <div class="modal-content">
+            <h2 class="no-margin-top guide-title">Рейтинги и достижения</h2>
+            <div class="motivation-container">
+                <div class="motivation-item">
+                    <div class="motivation-icon">📄</div>
+                    <div class="motivation-text">
+                        <b>+10 баллов</b>
+                        <span>За каждое оформленное заключение</span>
+                    </div>
+                </div>
+                <div class="motivation-item">
+                    <div class="motivation-icon">💰</div>
+                    <div class="motivation-text">
+                        <b>+1 балл</b>
+                        <span>За каждые 1000 ₽ суммы оценки</span>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 20px; text-align: center;">
+                <button class="btn btn-primary" style="margin-bottom: 10px; width: 100%;"
+                    onclick="closeMotivation()">Понятно</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Guide Modal -->
+    <div id="guideModal" class="modal">
+        <div class="modal-content">
+            <h2 class="no-margin-top guide-title">Как это работает</h2>
+
+            <div class="guide-steps">
+                <div class="guide-step">
+                    <div class="step-icon-wrapper">
+                        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                    </div>
+                    <div class="step-text">
+                        <h3>1. Заполните данные</h3>
+                        <p>Укажите подразделение, номер билета и дату.</p>
+                    </div>
+                </div>
+
+                <div class="guide-step">
+                    <div class="step-icon-wrapper">
+                        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                    </div>
+                    <div class="step-text">
+                        <h3>2. Добавьте предметы</h3>
+                        <p>Загрузите одно фото и укажите оценку для каждого предмета.</p>
+                    </div>
+                </div>
+
+                <div class="guide-step">
+                    <div class="step-icon-wrapper">
+                        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 11 12 14 22 4"></polyline>
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                        </svg>
+                    </div>
+                    <div class="step-text">
+                        <h3>3. Проверьте</h3>
+                        <p>Нажмите кнопку внизу, чтобы проверить введенные данные.</p>
+                    </div>
+                </div>
+
+                <div class="guide-step">
+                    <div class="step-icon-wrapper">
+                        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </div>
+                    <div class="step-text">
+                        <h3>4. Отправьте</h3>
+                        <p>Выберите режим (Оригинал/Черновик) и отправьте боту.</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary guide-btn" onclick="closeGuide()">Всё понятно</button>
+            <div class="guide-update">
+                Если интерфейс не обновился — <a href="javascript:void(0)" onclick="forceUpdate()">обновить страницу</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : {
+            initDataUnsafe: {},
+            platform: '',
+            version: '',
+            initData: '',
+            ready: () => { },
+            expand: () => { },
+            requestFullscreen: () => { },
+            showAlert: (message) => alert(message),
+            showPopup: ({ message }) => alert(message),
+            sendData: () => { },
+            close: () => { },
+            MainButton: {
+                setText: () => { },
+                show: () => { },
+                hide: () => { },
+                enable: () => { },
+                disable: () => { },
+                onClick: () => { },
+                offClick: () => { },
+                showProgress: () => { },
+                hideProgress: () => { }
+            },
+            HapticFeedback: {
+                impactOccurred: () => { },
+                notificationOccurred: () => { },
+                selectionChanged: () => { }
+            }
+        };
+
+        let audioCtx = null;
+        let audioUnlocked = false;
+        let fullScreenRequested = false;
+
+        function getAudioContext() {
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            if (!Ctx) return null;
+            if (!audioCtx) audioCtx = new Ctx();
+            return audioCtx;
+        }
+
+        function unlockAudio() {
+            const ctx = getAudioContext();
+            if (!ctx || audioUnlocked) return;
+            const resume = ctx.state === 'suspended' ? ctx.resume() : Promise.resolve();
+            resume.then(() => {
+                const buffer = ctx.createBuffer(1, 1, 22050);
+                const source = ctx.createBufferSource();
+                source.buffer = buffer;
+                source.connect(ctx.destination);
+                source.start(0);
+                audioUnlocked = true;
+            }).catch(() => { });
+        }
+
+        function playTone(kind = 'success') {
+            const ctx = getAudioContext();
+            if (!ctx) return;
+            if (ctx.state === 'suspended') {
+                ctx.resume().catch(() => { });
+            }
+
+            let freq = 660;
+            let duration = 0.08;
+            if (kind === 'error') {
+                freq = 220;
+                duration = 0.12;
+            } else if (kind === 'tap') {
+                freq = 520;
+                duration = 0.05;
+            }
+
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now);
+            gain.gain.setValueAtTime(0.0001, now);
+            gain.gain.exponentialRampToValueAtTime(0.12, now + 0.01);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + duration + 0.02);
+        }
+
+        function requestFullScreen(force = false) {
+            if (fullScreenRequested && !force) return;
+            fullScreenRequested = true;
+            try {
+                tg.expand();
+                if (tg.requestFullscreen) tg.requestFullscreen();
+            } catch (e) { }
+        }
+
+        // --- CONFIGURATION ---
+        // WARNING: These are default values for local/demo use.
+        // For production, consider injecting these via environment variables or a build step.
+        // --- SECURITY: XSS PROTECTION ---
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return String(unsafe)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        const APP_CONFIG = {
+            DEFAULT_BOT_URL: window.APP_DEFAULT_BOT_URL || "",
+            IMAGEBAN_CLIENT_ID: window.APP_IMAGEBAN_CLIENT_ID || "wlbeebCGLMGRtwNpk5YS"
+        };
+
+        // Initialize
+        tg.expand();
+        if (tg.ready) tg.ready();
+        requestFullScreen();
+        const firstGesture = () => {
+            requestFullScreen(true);
+            unlockAudio();
+        };
+        document.addEventListener('click', firstGesture, { once: true });
+        document.addEventListener('touchstart', firstGesture, { once: true });
+        // Assuming restoreDraft() exists elsewhere or will be added.
+        // restoreDraft();
+
+        // URL params allow setting shared config for all users (e.g. from bot WebApp URL).
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlBotUrl = (urlParams.get('bot_url') || '').trim();
+        const isInTelegram = Boolean(tg.initDataUnsafe && tg.initDataUnsafe.user);
+        const imagebanClientId = (urlParams.get('imageban_client') || APP_CONFIG.IMAGEBAN_CLIENT_ID || '').trim();
+
+        // Load Bot URL (for standalone mode)
+        let botUrl = urlBotUrl || APP_CONFIG.DEFAULT_BOT_URL;
+        if (!isInTelegram) {
+            try {
+                botUrl = localStorage.getItem('bot_url') || botUrl;
+            } catch (e) { }
+        } else if (botUrl) {
+            try {
+                localStorage.setItem('bot_url', botUrl);
+            } catch (e) { }
+        }
+
+
+        function showUserGuide() {
+            document.getElementById('guideModal').style.display = 'flex';
+            haptic('light');
+        }
+
+        function closeGuide() {
+            document.getElementById('guideModal').style.display = 'none';
+            haptic('light');
+        }
+
+        function showMotivation() {
+            document.getElementById('motivationModal').style.display = 'flex';
+            haptic('light');
+        }
+
+        function closeMotivation() {
+            document.getElementById('motivationModal').style.display = 'none';
+            haptic('light');
+        }
+
+        let quizQuestions = [];
+        let quizState = null;
+        const QUIZ_SIZE = 5;
+        const QUIZ_VERSION = '2328';
+        const QUIZ_FACTS = [
+            'Самые ценные предметы обычно сопровождаются четкой историей происхождения.',
+            'Бережная чистка ценится выше агрессивной полировки.',
+            'Наличие клейм и маркировок повышает доверие к предмету.',
+            'Даже небольшие повреждения стоит фиксировать в описании.',
+            'Фотография в хорошем свете экономит время на проверке.',
+            'Редкость модели зачастую важнее возраста.',
+            'Комплектность (коробка, документы) добавляет ценность.',
+            'Следы реставрации нужно указывать отдельно.',
+            'Качественное описание помогает быстрее согласовать оценку.',
+            'Одинаковый формат описания упрощает работу всей команды.'
+        ];
+
+        function getQuizRegion() {
+            const regionEl = document.getElementById('region');
+            const current = regionEl ? regionEl.value.trim() : '';
+            if (current) {
+                try {
+                    localStorage.setItem('last_region', current);
+                } catch (e) { }
+                return current;
+            }
+            try {
+                return localStorage.getItem('last_region') || '';
+            } catch (e) {
+                return '';
+            }
+        }
+
+        function getQuizUserMeta() {
+            const user = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
+            if (!user) return {};
+            return {
+                user_id: user.id,
+                username: user.username,
+                first_name: user.first_name,
+                last_name: user.last_name
+            };
+        }
+
+        function sendQuizStats(payload) {
+            const base = (botUrl || '').trim();
+            if (!base) return;
+            const cleanBase = base.replace(/\/$/, "");
+            fetch(`${cleanBase}/api/quiz/submit`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+                keepalive: true
+            }).catch(() => { });
+        }
+
+        function reportQuizAttempt() {
+            if (!quizState) return;
+            const total = quizState.questions ? quizState.questions.length : 0;
+            const payload = {
+                correct: quizState.correct || 0,
+                wrong: quizState.wrong || 0,
+                total: total,
+                region: getQuizRegion(),
+                quiz_version: QUIZ_VERSION
+            };
+            Object.assign(payload, getQuizUserMeta());
+            sendQuizStats(payload);
+        }
+
+        async function loadQuizQuestions() {
+            if (quizQuestions.length > 0) return;
+            const response = await fetch(`quiz_questions.json?v=${QUIZ_VERSION}`, { cache: 'no-store' });
+            if (!response.ok) {
+                throw new Error(`Ошибка загрузки вопросов (${response.status})`);
+            }
+            const data = await response.json();
+            if (!Array.isArray(data) || data.length === 0) {
+                throw new Error('Нет доступных вопросов');
+            }
+            quizQuestions = data;
+        }
+
+        function shuffleArray(source) {
+            const array = source.slice();
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        async function openQuiz() {
+            if (quizOpen || quizLoading) return;
+            quizOpen = true;
+            quizLoading = true;
+            const modal = document.getElementById('quizModal');
+            const body = document.getElementById('quizBody');
+            modal.style.display = 'flex';
+            body.innerHTML = `<div class="quiz-progress">⏱ 1 минута • Загрузка вопросов...</div>`;
+
+            try {
+                await loadQuizQuestions();
+                startQuiz();
+            } catch (err) {
+                body.innerHTML = `
+                    <div class="quiz-result">Не удалось загрузить викторину. Попробуйте позже.</div>
+                    <div class="quiz-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeQuiz()">Закрыть</button>
+                    </div>
+                `;
+            } finally {
+                quizLoading = false;
+            }
+        }
+
+        function closeQuiz() {
+            const modal = document.getElementById('quizModal');
+            modal.style.display = 'none';
+            quizOpen = false;
+            quizLoading = false;
+        }
+
+        function startQuiz() {
+            const pool = shuffleArray(quizQuestions);
+            const selected = pool.slice(0, Math.min(QUIZ_SIZE, pool.length));
+            quizState = {
+                questions: selected,
+                current: 0,
+                correct: 0,
+                wrong: 0,
+                answered: false
+            };
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            const body = document.getElementById('quizBody');
+            const q = quizState.questions[quizState.current];
+            const optionsHtml = q.options.map((opt, idx) => (
+                `<button type="button" class="quiz-option" onclick="selectQuizOption(${idx})">${escapeHtml(opt)}</button>`
+            )).join('');
+
+            body.innerHTML = `
+                <div class="quiz-progress">⏱ 1 минута • Вопрос ${quizState.current + 1} из ${quizState.questions.length}</div>
+                <div class="quiz-question">${escapeHtml(q.question)}</div>
+                <div class="quiz-options">${optionsHtml}</div>
+                <div class="quiz-footer" id="quizNext" style="display:none;">
+                    <button type="button" class="btn btn-primary" onclick="goToNextQuestion()" id="quizNextBtn">Дальше</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeQuiz()">Отмена</button>
+                </div>
+            `;
+        }
+
+        function selectQuizOption(index) {
+            if (!quizState || quizState.answered) return;
+            quizState.answered = true;
+
+            const q = quizState.questions[quizState.current];
+            const buttons = document.querySelectorAll('.quiz-option');
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx === q.answer) {
+                    btn.classList.add('correct');
+                } else if (idx === index) {
+                    btn.classList.add('incorrect');
+                }
+            });
+
+            if (index === q.answer) {
+                quizState.correct += 1;
+            } else {
+                quizState.wrong += 1;
+            }
+
+            const nextWrap = document.getElementById('quizNext');
+            const nextBtn = document.getElementById('quizNextBtn');
+            if (nextBtn) {
+                nextBtn.textContent = quizState.current + 1 >= quizState.questions.length ? 'Результат' : 'Дальше';
+            }
+            if (nextWrap) {
+                nextWrap.style.display = 'flex';
+            }
+        }
+
+        function goToNextQuestion() {
+            if (!quizState) return;
+            if (quizState.current + 1 >= quizState.questions.length) {
+                showQuizResult();
+                return;
+            }
+            quizState.current += 1;
+            quizState.answered = false;
+            renderQuizQuestion();
+        }
+
+        function showQuizResult() {
+            reportQuizAttempt();
+            const body = document.getElementById('quizBody');
+            const fact = QUIZ_FACTS.length
+                ? QUIZ_FACTS[Math.floor(Math.random() * QUIZ_FACTS.length)]
+                : '';
+            body.innerHTML = `
+                <div class="quiz-result">
+                    ✅ Верно: <b>${quizState.correct}</b><br>
+                    ❌ Неверно: <b>${quizState.wrong}</b>
+                </div>
+                ${fact ? `<div class="quiz-fact">💡 ${escapeHtml(fact)}</div>` : ''}
+                <div class="quiz-footer">
+                    <button type="button" class="btn btn-secondary" onclick="startQuiz()">Ещё раз</button>
+                    <button type="button" class="btn btn-primary" onclick="closeQuiz()">Закрыть</button>
+                </div>
+            `;
+        }
+
+        function forceUpdate() {
+            haptic('medium');
+            const url = new URL(window.location.href);
+            url.searchParams.set('v', Date.now());
+            window.location.href = url.toString();
+        }
+
+        // Theme handling
+        if (tg.themeParams) {
+            const r = document.documentElement.style;
+        }
+
+        // Set today's date and max date (prevent future dates)
+        const today = new Date().toISOString().split('T')[0];
+        const dateInput = document.getElementById('date');
+        dateInput.valueAsDate = new Date();
+        dateInput.setAttribute('max', today);
+
+        // Additional validation on change (for iOS compatibility)
+        dateInput.addEventListener('change', function () {
+            const selectedDate = new Date(this.value);
+            const todayDate = new Date(today);
+
+            if (selectedDate > todayDate) {
+                tg.showAlert('⚠️ Нельзя выбрать будущую дату! Выберите сегодня или прошедшую дату.');
+                this.value = today; // Reset to today
+            }
+        });
+
+        const regionInput = document.getElementById('region');
+        if (regionInput) {
+            regionInput.addEventListener('change', () => {
+                const value = regionInput.value.trim();
+                if (!value) return;
+                try {
+                    localStorage.setItem('last_region', value);
+                } catch (e) { }
+            });
+        }
+
+        let itemCount = 0;
+        let appState = 'editing'; // State: 'editing' or 'preview'
+        let autosaveTimeout; // For debounced autosave
+        let previewOpen = false;
+        let submitInProgress = false;
+        let quizOpen = false;
+        let quizLoading = false;
+
+        // Swipe gesture support
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let currentCard = null;
+
+        function handleTouchStart(e) {
+            const card = e.currentTarget.closest('.item-card');
+            if (!card) return;
+            currentCard = card;
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            currentCard.style.transition = 'none';
+        }
+
+        function handleTouchMove(e) {
+            if (!currentCard) return;
+            const touchX = e.touches[0].clientX;
+            const touchY = e.touches[0].clientY;
+            const diffX = touchX - touchStartX;
+            const diffY = touchY - touchStartY;
+
+            // Only horizontal swipe to the left
+            if (Math.abs(diffX) > Math.abs(diffY) && diffX < 0) {
+                currentCard.style.transform = `translateX(${diffX}px)`;
+                currentCard.style.opacity = 1 + diffX / 200;
+            }
+        }
+
+        function handleTouchEnd(e) {
+            if (!currentCard) return;
+
+            const touchX = e.changedTouches[0].clientX;
+            const diffX = touchX - touchStartX;
+
+            if (diffX < -100) {
+                // Swipe threshold reached - delete
+                currentCard.style.transition = 'transform 0.3s, opacity 0.3s';
+                currentCard.style.transform = 'translateX(-100%)';
+                currentCard.style.opacity = '0';
+
+                setTimeout(() => {
+                    currentCard.remove();
+                    updateBadge();
+                    haptic('medium');
+                }, 300);
+            } else {
+                // Reset position
+                currentCard.style.transition = 'transform 0.3s, opacity 0.3s';
+                currentCard.style.transform = 'translateX(0)';
+                currentCard.style.opacity = '1';
+            }
+
+            currentCard = null;
+        }
+
+        // Real-time Total Calculation
+        function updateTotalCost() {
+            let total = 0;
+            document.querySelectorAll('.eval').forEach(input => {
+                const val = input.value.replace(/\s/g, ''); // Remove spaces
+                total += parseInt(val) || 0;
+            });
+
+            const banner = document.getElementById('realTimeTotal');
+            const display = document.getElementById('totalAmountDisplay');
+
+            if (total > 0) {
+                banner.style.display = 'flex';
+                display.textContent = total.toLocaleString('ru-RU') + ' ₽';
+            } else {
+                banner.style.display = 'none';
+            }
+        }
+
+        function addItem() {
+            // Collapse existing items
+            collapseAllItems();
+
+            // Create new item
+            const div = document.createElement('div');
+            div.className = 'item-card';
+            // ID and Title will be fixed by renumberItems()
+            div.innerHTML = `
+                <div class="item-header" onclick="toggleItem(this)">
+                    <div class="item-header-info">
+                        <span class="item-title">Предмет</span>
+                        <span class="item-summary"></span>
+                    </div>
+                    <div class="item-header-actions">
+                        <span class="item-toggle" aria-hidden="true">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </span>
+                        <!-- Remove button will be added by renumberItems if needed -->
+                    </div>
+                </div>
+                <div class="item-body">
+                    <div class="form-group">
+                        <input type="text" class="desc item-field" placeholder="Кольцо, металл желтого цвета" required id="desc-${itemCount}">
+                        <label class="floating-label" for="desc-${itemCount}">Описание</label>
+                        <div class="error-message"></div>
+                        <div class="input-hint">
+                            Добавьте краткое описание предмета
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" class="eval item-field" placeholder="Сумма" required inputmode="numeric" id="eval-${itemCount}">
+                        <label class="floating-label" for="eval-${itemCount}">Оценка (руб.)</label>
+                        <div class="error-message"></div>
+                        <div class="input-hint">Только цифры, без пробелов</div>
+                    </div>
+                    <div class="photo-preview-container" 
+                         ondragover="handleDragOver(event)" 
+                         ondragleave="handleDragLeave(event)" 
+                         ondrop="handleDrop(event, this)"
+                         ontouchstart="handleTouchStart(event)"
+                         ontouchmove="handleTouchMove(event)"
+                         ontouchend="handleTouchEnd(event)">
+                        <div class="photo-preview"></div>
+                        <label class="upload-label">
+                            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                            <input type="file" class="file-input" accept="image/*" onchange="handleFileSelect(this)" style="display:none">
+                            <span class="btn-text">Добавить фото</span>
+                            <span class="hint">Нажмите для выбора или перетащите</span>
+                        </label>
+                        <div class="photo-actions">
+                            <button type="button" class="photo-action-btn" onclick="handleReplacePhoto(this, event)">Заменить</button>
+                            <button type="button" class="photo-action-btn danger" onclick="handleRemovePhoto(this, event)">Удалить</button>
+                        </div>
+                        <div class="upload-progress">
+                            <div class="upload-progress-bar"></div>
+                        </div>
+                    </div>
+                    <div class="upload-status">Добавьте одно фото предмета</div>
+                </div>
+            `;
+            // --- ADDED EVENT LISTENERS ---
+            // 1. Input Mask for Evaluation (Cleave.js)
+            const evalInput = div.querySelector('.eval');
+            if (window.Cleave) {
+                new Cleave(evalInput, {
+                    numeral: true,
+                    numeralThousandsGroupStyle: 'thousand',
+                    delimiter: ' '
+                });
+            } else {
+                evalInput.addEventListener('input', () => {
+                    evalInput.value = evalInput.value.replace(/\D/g, '');
+                });
+            }
+
+            // Real-time total update
+            evalInput.addEventListener('input', updateTotalCost);
+
+            // 2. File Input Trigger
+            const fileInput = div.querySelector('.file-input');
+            const previewContainer = div.querySelector('.photo-preview-container');
+
+            // Handle click on container to trigger file input
+            previewContainer.onclick = (e) => {
+                // Prevent double trigger if clicking on label/input directly
+                if (e.target !== fileInput && !e.target.closest('.upload-label')) {
+                    fileInput.click();
+                }
+            };
+
+            // 3. Validation clearing
+            const inputs = div.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    input.classList.remove('invalid');
+                    const errorMsg = input.closest('.form-group')?.querySelector('.error-message');
+                    if (errorMsg) errorMsg.classList.remove('show');
+                });
+            });
+
+
+            // Fix numbering
+            document.getElementById('itemsList').appendChild(div);
+            renumberItems();
+        }
+
+        function removeItem(btn, event) {
+            if (event) event.stopPropagation();
+            btn.closest('.item-card').remove();
+            renumberItems();
+        }
+
+        function renumberItems() {
+            const items = document.querySelectorAll('.item-card');
+            items.forEach((card, index) => {
+                const num = index + 1;
+                card.id = `item-${num}`;
+
+                // Update Title
+                const title = card.querySelector('.item-title');
+                if (title) title.textContent = `Предмет #${num}`;
+
+                // Update Remove Button visibility
+                const headerBtnContainer = card.querySelector('.item-header-actions');
+                if (headerBtnContainer) {
+                    const removeBtn = headerBtnContainer.querySelector('.btn-remove');
+                    if (num > 1) {
+                        if (!removeBtn) {
+                            headerBtnContainer.insertAdjacentHTML(
+                                'beforeend',
+                                `<button type="button" class="btn-remove" onclick="removeItem(this, event)">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                    Удалить
+                                </button>`
+                            );
+                        }
+                    } else if (removeBtn) {
+                        removeBtn.remove();
+                    }
+                }
+            });
+
+            // Update global counter
+            itemCount = items.length;
+            updateBadge();
+        }
+
+        function collapseAllItems() {
+            document.querySelectorAll('.item-card').forEach(card => {
+                card.classList.add('collapsed');
+                updateItemSummary(card);
+            });
+        }
+
+        function updateItemSummary(card) {
+            const desc = card.querySelector('.desc').value;
+            const price = card.querySelector('.eval').value;
+            const hasPhoto = card.querySelector('.file-input').files.length > 0;
+
+            let summary = [];
+            if (desc) summary.push(desc);
+            if (price) {
+                // Check if formatNumberWithSpaces exists (might not be loaded yet on initial load)
+                if (typeof formatNumberWithSpaces === 'function') {
+                    summary.push(formatNumberWithSpaces(price) + ' ₽');
+                } else {
+                    summary.push(price + ' ₽');
+                }
+            }
+            if (hasPhoto) summary.push('📷 Фото');
+
+            const summaryText = summary.join(', ') || 'Нет данных';
+            card.querySelector('.item-summary').textContent = summaryText;
+        }
+
+        function toggleItem(header) {
+            const card = header.closest('.item-card');
+            if (card.classList.contains('collapsed')) {
+                card.classList.remove('collapsed');
+            } else {
+                card.classList.add('collapsed');
+                updateItemSummary(card);
+            }
+        }
+
+        function updateBadge() {
+            const count = document.getElementById('itemsList').children.length;
+            const badge = document.getElementById('itemCountBadge');
+            if (badge) {
+                badge.textContent = count;
+                // Optional: Hide badge if 0 (though we always have 1 item)
+                // badge.style.display = count > 0 ? 'inline-block' : 'none';
+            }
+        }
+
+        // --- UX Features ---
+
+        // Helper for formatting numbers
+        function formatNumberWithSpaces(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        }
+
+        // 1. Drag & Drop
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.currentTarget.style.borderColor = 'var(--primary-color)';
+            e.currentTarget.style.background = 'rgba(0, 122, 255, 0.05)';
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.1)';
+            e.currentTarget.style.background = 'rgba(0, 0, 0, 0.03)';
+        }
+
+        function handleDrop(e, container) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            container.style.borderColor = 'rgba(0, 0, 0, 0.1)';
+            container.style.background = 'rgba(0, 0, 0, 0.03)';
+
+            const dt = e.dataTransfer;
+            const files = dt.files;
+
+            if (files && files[0]) {
+                const fileInput = container.querySelector('.file-input');
+                fileInput.files = files;
+                handleFileSelect(fileInput);
+            }
+        }
+
+        // 3. Input Mask for Ticket (Digits only, max 11) + Auto-focus
+        document.getElementById('ticket').addEventListener('input', function (e) {
+            e.target.value = e.target.value.replace(/\D/g, '').substring(0, 11);
+
+            // \u2705 UX: Auto-focus to date field when 11 digits entered
+            if (e.target.value.length === 11) {
+                document.getElementById('date').focus();
+            }
+        });
+
+        // Input Mask for Department and Issue (Digits only)
+        ['department', 'issue'].forEach(id => {
+            document.getElementById(id).addEventListener('input', function (e) {
+                e.target.value = e.target.value.replace(/\D/g, '');
+            });
+        });
+
+        // Smart focus: move to next field on Enter
+        const focusOrder = ['department', 'issue', 'ticket', 'date', 'region'];
+        focusOrder.forEach((id, index) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.setAttribute('enterkeyhint', index < focusOrder.length - 1 ? 'next' : 'done');
+            el.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    const nextId = focusOrder[index + 1];
+                    if (nextId) {
+                        document.getElementById(nextId)?.focus();
+                    }
+                }
+            });
+        });
+
+        // Input Mask for Evaluation (Thousands Separator)
+        // Dynamically attached in addItem() but also need utility function
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        }
+
+        function cleanNumber(str) {
+            return str.replace(/\s/g, '');
+        }
+
+        // Auto-save on input
+        ['department', 'issue', 'ticket', 'date', 'region'].forEach(id => {
+            document.getElementById(id)?.addEventListener('change', saveDraft);
+        });
+
+        // Restore draft on load
+        restoreDraft();
+
+        // ============================================
+        // SERVICE WORKER & OFFLINE MODE
+        // ============================================
+        if ('serviceWorker' in navigator) {
+            const swVersion = '2350'; // Add lightbox modal
+            const basePath = location.pathname.endsWith('/') ? location.pathname : `${location.pathname}/`;
+            const swUrl = `${basePath}service-worker.js?v=${swVersion}`;
+            navigator.serviceWorker.register(swUrl)
+                .then(reg => console.log('Service Worker registered:', reg.scope))
+                .catch(err => console.error('Service Worker registration failed:', err));
+        }
+
+        // Offline queue using IndexedDB
+        async function openOfflineDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open('ReportsDB', 1);
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => resolve(request.result);
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains('pending')) {
+                        db.createObjectStore('pending', { keyPath: 'id', autoIncrement: true });
+                    }
+                };
+            });
+        }
+
+        async function savePendingReport(data) {
+            try {
+                const db = await openOfflineDB();
+                const tx = db.transaction('pending', 'readwrite');
+                const store = tx.objectStore('pending');
+                await store.add({ data, timestamp: Date.now() });
+                console.log('Report saved to offline queue');
+                return true;
+            } catch (error) {
+                console.error('Failed to save to offline queue:', error);
+                return false;
+            }
+        }
+
+        // Online event - sync pending reports
+        window.addEventListener('online', async () => {
+            console.log('Connection restored, syncing...');
+            tg.showAlert('✅ Соединение восстановлено! Отправляем данные...');
+
+            try {
+                const db = await openOfflineDB();
+                const tx = db.transaction('pending', 'readonly');
+                const store = tx.objectStore('pending');
+                const pending = await store.getAll();
+
+                if (pending.length > 0) {
+                    for (const item of pending) {
+                        try {
+                            await submitData(item.data);
+                            // Remove from queue after successful send
+                            const deleteTx = db.transaction('pending', 'readwrite');
+                            await deleteTx.objectStore('pending').delete(item.id);
+                        } catch (error) {
+                            console.error('Failed to sync report:', error);
+                        }
+                    }
+                    tg.showAlert(`🎉 Отправлено ${pending.length} сохраненных заключений!`);
+                }
+            } catch (error) {
+                console.error('Failed to sync:', error);
+            }
+        });
+
+        // Offline event notification
+        window.addEventListener('offline', () => {
+            console.log('Connection lost');
+            tg.showAlert('⚠️ Соединение потеряно. Данные будут сохранены и отправлены автоматически.');
+        });
+
+        // 4. Smart Memory (Department & Region)
+        const deptInput = document.getElementById('department');
+
+        // Load defaults if not draft
+        if (deptInput && regionInput && !localStorage.getItem('formDraft')) {
+            const savedDept = localStorage.getItem('default_department');
+            const savedRegion = localStorage.getItem('default_region');
+            if (savedDept) deptInput.value = savedDept;
+            if (savedRegion) regionInput.value = savedRegion;
+        }
+
+        // Save on change
+        if (deptInput) {
+            deptInput.addEventListener('change', (e) => {
+                localStorage.setItem('default_department', e.target.value);
+            });
+        }
+
+        if (regionInput) {
+            regionInput.addEventListener('change', (e) => {
+                localStorage.setItem('default_region', e.target.value);
+            });
+        }
+
+        function setUploadProgress(previewContainer, percent) {
+            const progress = previewContainer.querySelector('.upload-progress');
+            const bar = previewContainer.querySelector('.upload-progress-bar');
+            if (!progress || !bar) return;
+
+            if (percent === null) {
+                progress.classList.remove('visible');
+                bar.style.width = '0%';
+                return;
+            }
+
+            const safePercent = Math.max(0, Math.min(100, percent));
+            progress.classList.add('visible');
+            bar.style.width = `${safePercent}%`;
+
+            if (safePercent >= 100) {
+                setTimeout(() => {
+                    progress.classList.remove('visible');
+                    bar.style.width = '0%';
+                }, 400);
+            }
+        }
+
+        function handleReplacePhoto(button, event) {
+            if (event) event.stopPropagation();
+            const container = button.closest('.item-card');
+            const input = container?.querySelector('.file-input');
+            if (input) {
+                input.click();
+            }
+        }
+
+        function handleRemovePhoto(button, event) {
+            if (event) event.stopPropagation();
+            const container = button.closest('.item-card');
+            if (!container) return;
+
+            const input = container.querySelector('.file-input');
+            const previewContainer = container.querySelector('.photo-preview-container');
+            const status = container.querySelector('.upload-status');
+            const btnText = container.querySelector('.btn-text');
+
+            if (input) {
+                input.value = '';
+            }
+
+            const img = previewContainer.querySelector('.photo-preview-img');
+            if (img) img.remove();
+
+            const label = previewContainer.querySelector('.upload-label');
+            if (label) label.style.opacity = '1';
+
+            previewContainer.classList.remove('loading');
+            previewContainer.classList.remove('has-photo');
+            delete container.dataset.photoUrl;
+
+            setUploadProgress(previewContainer, null);
+
+            if (btnText) btnText.textContent = "Добавить фото";
+            if (status) {
+                status.textContent = "Добавьте одно фото предмета";
+                status.className = "upload-status";
+            }
+        }
+
+        async function handleFileSelect(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const container = input.closest('.item-card');
+            const previewContainer = container.querySelector('.photo-preview-container');
+            const btnText = container.querySelector('.btn-text');
+            const status = container.querySelector('.upload-status');
+
+            previewContainer.classList.remove('photo-invalid');
+            previewContainer.style.borderColor = '';
+            previewContainer.style.animation = 'none';
+
+            // Show loading state
+            previewContainer.classList.add('loading');
+            const compressionAvailable = typeof imageCompression === 'function';
+            btnText.textContent = compressionAvailable ? "Сжатие..." : "Подготовка...";
+            status.textContent = "⏳ Обработка фото...";
+            status.className = "upload-status";
+            delete container.dataset.photoUrl;
+            setUploadProgress(previewContainer, null);
+
+            try {
+                // Compression options
+                const options = {
+                    maxSizeMB: 1,
+                    maxWidthOrHeight: 1280, // Optimized for speed
+                    useWebWorker: true,
+                    fileType: 'image/jpeg'
+                };
+
+                if (compressionAvailable) {
+                    console.log(`Original: ${(file.size / 1024 / 1024).toFixed(2)} MB`);
+                }
+
+                // Compress (fallback to original if library is unavailable)
+                const compressedFile = compressionAvailable ? await imageCompression(file, options) : file;
+
+                if (compressionAvailable) {
+                    console.log(`Compressed: ${(compressedFile.size / 1024 / 1024).toFixed(2)} MB`);
+                }
+
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    // Create or get IMG element
+                    let img = previewContainer.querySelector('.photo-preview-img');
+                    if (!img) {
+                        img = document.createElement('img');
+                        img.className = 'photo-preview-img';
+                        img.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 10; border-radius: 16px;';
+                        previewContainer.appendChild(img);
+                    }
+
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+
+                    // Hide placeholder elements
+                    const label = previewContainer.querySelector('.upload-label');
+                    if (label) label.style.opacity = '0';
+
+                    previewContainer.classList.add('has-photo');
+
+                    // Lightbox trigger
+                    img.onclick = (evt) => {
+                        evt.stopPropagation();
+                        openLightbox(e.target.result);
+                    };
+                };
+                reader.readAsDataURL(compressedFile);
+
+                // 🚀 BACKGROUND UPLOAD with Compressed File
+                btnText.textContent = "Загрузка...";
+                status.textContent = "⏳ Загрузка: 0%";
+                setUploadProgress(previewContainer, 0);
+
+                const uploadedUrl = await uploadImageToBot(compressedFile, (percent) => {
+                    const safePercent = Math.max(0, Math.min(100, percent));
+                    setUploadProgress(previewContainer, safePercent);
+                    if (safePercent > 0 && safePercent < 100) {
+                        status.textContent = `⏳ Загрузка: ${safePercent}%`;
+                    }
+                });
+
+                // Store URL
+                container.dataset.photoUrl = uploadedUrl;
+
+                // Success UI
+                previewContainer.classList.remove('loading');
+                setUploadProgress(previewContainer, 100);
+                btnText.textContent = "✓ Загружено";
+                status.textContent = "✅ Готово к отправке";
+                status.className = "upload-status success";
+                haptic('success', { sound: true, vibrate: true });
+
+            } catch (error) {
+                console.error('Processing failed:', error);
+                btnText.textContent = "❌ Ошибка";
+                status.textContent = `⚠️ ${error.message || 'Ошибка обработки'}`;
+                status.className = "upload-status";
+                haptic('error');
+
+                // Reset UI
+                input.value = '';
+                const previewDiv = previewContainer.querySelector('.photo-preview');
+                previewDiv.style.backgroundImage = ''; // Clear background image
+                previewDiv.innerHTML = ''; // Clear any content
+
+                // Restore default upload label content if it was removed/hidden
+                const uploadLabel = previewContainer.querySelector('.upload-label');
+                if (uploadLabel) {
+                    uploadLabel.style.display = 'flex'; // Ensure it's visible
+                    btnText.textContent = "Добавить фото"; // Reset text
+                    previewContainer.querySelector('.hint').style.display = 'block'; // Show hint
+                }
+
+                previewContainer.classList.remove('loading');
+                previewContainer.classList.remove('has-photo');
+                delete container.dataset.photoUrl;
+                setUploadProgress(previewContainer, null);
+
+                // Re-attach click handler for upload
+                previewContainer.onclick = (e) => {
+                    if (e.target !== input && !e.target.closest('.upload-label')) {
+                        input.click();
+                    }
+                };
+            }
+        }
+
+        // New function to handle Bot API upload
+        async function uploadImageToBot(file, onProgress) {
+            if (imagebanClientId) {
+                return await uploadImageToImageBan(file, onProgress);
+            }
+
+            const compressedBlob = file;
+            const formData = new FormData();
+            formData.append('image', compressedBlob, 'image.jpg');
+
+            const baseUrl = typeof botUrl !== 'undefined' ? botUrl : '';
+            const cleanBase = baseUrl.replace(/\/$/, "");
+            const uploadUrl = `${cleanBase}/api/upload-photo`;
+
+            const result = await uploadWithRetry(
+                () => uploadWithProgress(uploadUrl, formData, {}, onProgress),
+                1
+            );
+            if (result && result.data && result.data.url) {
+                return result.data.url;
+            }
+            throw new Error(result?.error || "Неизвестная ошибка загрузки");
+        }
+
+        async function uploadImageToImageBan(file, onProgress) {
+            const formData = new FormData();
+            formData.append('image', file, file.name || 'image.jpg');
+            const result = await uploadWithRetry(
+                () => uploadWithProgress(
+                    'https://api.imageban.ru/v1',
+                    formData,
+                    { 'Authorization': `TOKEN ${imagebanClientId}` },
+                    onProgress
+                ),
+                1
+            );
+            const link = result?.data?.[0]?.link || result?.data?.link;
+            if (result?.success && link) {
+                return link;
+            }
+
+            const message = result?.message || result?.error || "Ошибка загрузки в ImageBan";
+            throw new Error(message);
+        }
+
+        function shouldRetryUpload(error) {
+            const msg = (error && error.message) ? error.message : '';
+            if (msg.startsWith('HTTP 4')) return false;
+            return true;
+        }
+
+        async function uploadWithRetry(fn, retries = 1) {
+            let lastErr;
+            for (let attempt = 0; attempt <= retries; attempt += 1) {
+                try {
+                    return await fn();
+                } catch (err) {
+                    lastErr = err;
+                    if (attempt >= retries || !shouldRetryUpload(err)) {
+                        break;
+                    }
+                    await new Promise(resolve => setTimeout(resolve, 800 * (attempt + 1)));
+                }
+            }
+            throw lastErr;
+        }
+
+        function uploadWithProgress(url, formData, headers, onProgress) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.timeout = 45000;
+                xhr.open('POST', url, true);
+                if (headers) {
+                    Object.entries(headers).forEach(([key, value]) => {
+                        xhr.setRequestHeader(key, value);
+                    });
+                }
+
+                if (xhr.upload && onProgress) {
+                    xhr.upload.onprogress = (event) => {
+                        if (!event.lengthComputable) return;
+                        const percent = Math.round((event.loaded / event.total) * 100);
+                        onProgress(percent);
+                    };
+                }
+
+                xhr.onload = () => {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        try {
+                            resolve(JSON.parse(xhr.responseText));
+                        } catch (err) {
+                            reject(new Error('Ошибка ответа сервера'));
+                        }
+                    } else {
+                        reject(new Error(`HTTP ${xhr.status}`));
+                    }
+                };
+
+                xhr.onerror = () => reject(new Error('Ошибка сети'));
+                xhr.ontimeout = () => reject(new Error('Превышено время ожидания'));
+                xhr.send(formData);
+            });
+        }
+
+        // Lightbox Functions
+        function openLightbox(src) {
+            const modal = document.getElementById('lightboxModal');
+            const img = document.getElementById('lightboxImage');
+            img.src = src;
+            modal.style.display = 'flex'; // Flex to center
+            modal.style.alignItems = 'center';
+            modal.style.justifyContent = 'center';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightboxModal').style.display = 'none';
+        }
+
+        // Confetti Trigger
+        function fireConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        // 5. Telegram Native UI & Haptic Feedback
+        const mainButton = tg.MainButton;
+
+        // State Machine Button Handler
+        function handleMainButton() {
+            if (appState === 'editing') {
+                showPreview();
+            } else if (appState === 'preview') {
+                submitForm();
+            }
+        }
+
+        function updateMainButton() {
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                // We are in Telegram
+                document.getElementById('finalSubmitBtn').style.display = 'none'; // Hide HTML button in modal
+                document.querySelector('.btn-primary[onclick="showPreview()"]').style.display = 'none'; // Hide main form button
+
+                mainButton.setText("ПРОВЕРИТЬ И ОТПРАВИТЬ");
+                mainButton.show();
+                // Use single state-based handler
+                mainButton.onClick(handleMainButton);
+            }
+        }
+
+        // Call on load
+        updateMainButton();
+
+        // Haptic Feedback Helper
+        function haptic(type = 'light', opts = {}) {
+            const sound = opts && opts.sound === true;
+            const vibrate = opts && opts.vibrate === true;
+
+            if (tg.HapticFeedback) {
+                switch (type) {
+                    case 'light':
+                    case 'medium':
+                    case 'heavy':
+                    case 'rigid':
+                    case 'soft':
+                        tg.HapticFeedback.impactOccurred(type);
+                        break;
+                    case 'error':
+                    case 'success':
+                    case 'warning':
+                        tg.HapticFeedback.notificationOccurred(type);
+                        break;
+                    case 'selection':
+                        tg.HapticFeedback.selectionChanged();
+                        break;
+                    default:
+                        tg.HapticFeedback.impactOccurred('light');
+                }
+            } else if (vibrate && navigator.vibrate) {
+                const pattern = type === 'error' ? [30, 40, 30] : 20;
+                navigator.vibrate(pattern);
+            }
+
+            if (sound) {
+                const soundKind = type === 'error' ? 'error' : (type === 'success' ? 'success' : 'tap');
+                playTone(soundKind);
+            }
+        }
+
+        // Add haptic to interactive elements
+        document.querySelectorAll('input, select').forEach(el => {
+            el.addEventListener('focus', () => haptic('light'));
+        });
+
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', () => haptic('medium'));
+        });
+
+        function validateForm() {
+            let isValid = true;
+            let firstInvalidField = null; // Track first invalid for auto-scroll
+            const requiredIds = ['department', 'issue', 'ticket', 'date', 'region'];
+
+            requiredIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el.value.trim()) {
+                    isValid = false;
+                    el.classList.add('invalid');
+                    if (!firstInvalidField) firstInvalidField = el;
+                    // Add listener to remove invalid class on input
+                    el.addEventListener('input', () => el.classList.remove('invalid'), { once: true });
+                } else {
+                    // Specific checks
+                    if (id === 'ticket' && el.value.length !== 11) {
+                        isValid = false;
+                        el.classList.add('invalid');
+                        if (!firstInvalidField) firstInvalidField = el;
+                        el.addEventListener('input', () => el.classList.remove('invalid'), { once: true });
+                    }
+                }
+            });
+
+            // Validate item fields (description and evaluation)
+            document.querySelectorAll('.item-card').forEach((card) => {
+                const desc = card.querySelector('.desc');
+                const evalInput = card.querySelector('.eval');
+
+                if (desc && !desc.value.trim()) {
+                    isValid = false;
+                    desc.classList.add('invalid');
+                    card.classList.remove('collapsed');
+                    if (!firstInvalidField) firstInvalidField = desc;
+                    desc.addEventListener('input', () => desc.classList.remove('invalid'), { once: true });
+                }
+
+                if (evalInput && !evalInput.value.trim()) {
+                    isValid = false;
+                    evalInput.classList.add('invalid');
+                    card.classList.remove('collapsed');
+                    if (!firstInvalidField) firstInvalidField = evalInput;
+                    evalInput.addEventListener('input', () => evalInput.classList.remove('invalid'), { once: true });
+                }
+            });
+
+            if (!isValid) {
+                // Auto-scroll to first invalid field
+                if (firstInvalidField) {
+                    firstInvalidField.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+
+                    // Focus after scroll animation
+                    setTimeout(() => {
+                        firstInvalidField.focus();
+                    }, 500);
+                }
+
+                tg.showAlert("Пожалуйста, заполните все обязательные поля корректно.");
+                haptic('error');
+            }
+
+            return isValid;
+        }
+
+        function showPreview() {
+            if (previewOpen || appState === 'preview') return;
+            previewOpen = true;
+            haptic('medium');
+            // Centralized validation
+            if (!validateForm()) {
+                previewOpen = false;
+                return;
+            }
+
+            // Check photos
+            let allPhotosSelected = true;
+            let firstMissingPhoto = null;
+            document.querySelectorAll('.item-card').forEach(div => {
+                const input = div.querySelector('.file-input');
+                if (!input.files || !input.files[0]) {
+                    allPhotosSelected = false;
+                    const container = div.querySelector('.photo-preview-container');
+                    div.classList.remove('collapsed');
+                    container.classList.add('photo-invalid');
+                    container.style.borderColor = 'var(--danger-color)';
+                    container.style.animation = 'shake 0.4s cubic-bezier(.36, .07, .19, .97) both';
+                    if (!firstMissingPhoto) {
+                        firstMissingPhoto = container;
+                    }
+                    haptic('error');
+
+                    // Remove error on click/drop
+                    input.addEventListener('change', () => {
+                        container.style.borderColor = 'rgba(0, 0, 0, 0.1)';
+                        container.style.animation = 'none';
+                        container.classList.remove('photo-invalid');
+                    }, { once: true });
+                }
+            });
+
+            if (!allPhotosSelected) {
+                if (firstMissingPhoto) {
+                    firstMissingPhoto.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                tg.showAlert("Пожалуйста, выберите фото для всех предметов!");
+                previewOpen = false;
+                return;
+            }
+
+            const isTest = document.getElementById('mode-test').checked;
+            const modeText = isTest ? "Черновик (Тест)" : "Оригинал (В группу)";
+            const modeExplanation = isTest
+                ? "Сообщение будет отправлено только вам для проверки."
+                : "Сообщение будет отправлено в рабочий чат. Изменить после отправки нельзя.";
+
+            // Calculate total cost (remove spaces before parsing)
+            let totalCost = 0;
+            const items = [];
+            document.querySelectorAll('.item-card').forEach(div => {
+                const evalInput = div.querySelector('.eval');
+                const descInput = div.querySelector('.desc');
+                if (evalInput && evalInput.value) {
+                    // Remove spaces and parse
+                    const cleanValue = evalInput.value.replace(/\s/g, '');
+                    const price = parseInt(cleanValue) || 0;
+                    totalCost += price;
+                    items.push({
+                        desc: descInput.value,
+                        price: price
+                    });
+                }
+            });
+
+            // Get ticket value
+            const ticketValue = document.getElementById('ticket').value;
+
+            // Build items list
+            let itemsList = '';
+            items.forEach((item, idx) => {
+                // Get image preview URL
+                const fileInput = document.querySelectorAll('.item-card')[idx].querySelector('.file-input');
+                const file = fileInput.files[0];
+                const imgUrl = file ? URL.createObjectURL(file) : '';
+                const imgTag = imgUrl ? `<img src="${imgUrl}" class="preview-image">` : '<div class="preview-image"></div>';
+
+                itemsList += `
+                    <div class="preview-item">
+                        ${imgTag}
+                        <div class="preview-item-content">
+                            <div class="preview-item-desc">#${idx + 1} ${escapeHtml(item.desc)}</div>
+                            <div class="preview-item-price">${item.price.toLocaleString('ru-RU')} ₽</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Format Date
+            const dateValue = document.getElementById('date').value;
+            const dateParts = dateValue.split('-');
+            const formattedDate = dateParts.length === 3 ? `${dateParts[2]}.${dateParts[1]}.${dateParts[0]}` : dateValue;
+
+            // Build preview with premium structure
+            const content = document.getElementById('previewContent');
+            content.innerHTML = `
+                <!-- Mode Section -->
+                <div class="preview-card ${isTest ? 'mode-test' : 'mode-final'}">
+                    <div class="preview-section-title" style="color: ${isTest ? '#FF8C00' : '#28a745'}; margin-bottom: 6px;">
+                        ${isTest ? '🧪' : '🚀'} Режим: ${modeText}
+                    </div>
+                    <div style="font-size: 13px; color: var(--secondary-text); line-height: 1.4;">${modeExplanation}</div>
+                </div>
+
+                <!-- Main Data Section -->
+                <div class="preview-card">
+                    <div class="preview-section-title">📋 Основные данные</div>
+                    <div class="preview-grid">
+                        <span class="preview-label">Подразделение:</span>
+                        <span class="preview-value">${escapeHtml(document.getElementById('department').value)}</span>
+                        
+                        <span class="preview-label">Регион:</span>
+                        <span class="preview-value">${escapeHtml(document.getElementById('region').value)}</span>
+                        
+                        <span class="preview-label">Дата:</span>
+                        <span class="preview-value">${formattedDate}</span>
+                        
+                        <span class="preview-label">№ заключения:</span>
+                        <span class="preview-value">${escapeHtml(document.getElementById('issue').value)}</span>
+                        
+                        <span class="preview-label">№ билета:</span>
+                        <span class="preview-value">${escapeHtml(document.getElementById('ticket').value)}</span>
+                    </div>
+                </div>
+
+                <!-- Items Section -->
+                <div class="preview-card">
+                    <div class="preview-section-title">📦 Предметы (${items.length})</div>
+                    ${itemsList}
+
+                    <!-- SMART GUARD: Price Warning -->
+                    ${totalCost > 100000 ? `
+                        <div style="margin-top: 12px; padding: 10px; background: rgba(255, 152, 0, 0.1); border-left: 3px solid #FF9800; border-radius: 8px;">
+                            <div style="color: #FF9800; font-weight: 600; font-size: 13px; margin-bottom: 4px;">💰 Крупная сумма</div>
+                            <div style="color: var(--secondary-text); font-size: 12px;">Убедитесь, что оценка произведена корректно.</div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+
+            const previewModal = document.getElementById('previewModal');
+            previewModal.style.display = 'block';
+            requestAnimationFrame(() => previewModal.classList.add('show'));
+
+            // Update state to preview mode
+            appState = 'preview';
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                mainButton.setText("ОТПРАВИТЬ");
+            }
+            haptic('success', { sound: true, vibrate: true });
+        }
+
+        function closePreview() {
+            haptic('light');
+            const previewModal = document.getElementById('previewModal');
+            previewModal.classList.remove('show');
+            setTimeout(() => {
+                if (!previewModal.classList.contains('show')) {
+                    previewModal.style.display = 'none';
+                }
+            }, 250);
+
+            // Revert state to editing
+            appState = 'editing';
+            previewOpen = false;
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                mainButton.setText("ПРОВЕРИТЬ И ОТПРАВИТЬ");
+            }
+        }
+
+        // Image Compression Helper
+        function compressImage(file) {
+            return new Promise((resolve, reject) => {
+                const maxWidth = 1280;
+                const maxHeight = 1280;
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function (event) {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = function () {
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > maxWidth) {
+                                height *= maxWidth / width;
+                                width = maxWidth;
+                            }
+                        } else {
+                            if (height > maxHeight) {
+                                width *= maxHeight / height;
+                                height = maxHeight;
+                            }
+                        }
+
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        canvas.toBlob(function (blob) {
+                            resolve(blob);
+                        }, 'image/jpeg', 0.8); // 80% quality
+                    };
+                    img.onerror = reject;
+                };
+                reader.onerror = reject;
+            });
+        }
+
+        async function submitForm() {
+            if (submitInProgress) return;
+            submitInProgress = true;
+            // Disable button
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                mainButton.showProgress();
+                mainButton.disable();
+            }
+
+            const btn = document.getElementById('finalSubmitBtn');
+            btn.disabled = true;
+            btn.textContent = "Подготовка данных...";
+
+            const items = [];
+            const cards = document.querySelectorAll('.item-card');
+
+            // 🚀 NEW: Use pre-uploaded URLs instead of uploading again
+            let allUploaded = true;
+            for (let i = 0; i < cards.length; i++) {
+                const div = cards[i];
+                const photoUrl = div.dataset.photoUrl;
+
+                // Check if photo was uploaded
+                if (!photoUrl) {
+                    const fileInput = div.querySelector('.file-input');
+                    if (fileInput.files && fileInput.files[0]) {
+                        // Photo selected but not uploaded yet (shouldn't happen with background upload)
+                        allUploaded = false;
+                        tg.showAlert('⏳ Дождитесь загрузки всех фотографий');
+                        btn.disabled = false;
+                        btn.textContent = "Отправить";
+
+                        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                            mainButton.hideProgress();
+                            mainButton.enable();
+                        }
+                        submitInProgress = false;
+                        return;
+                    }
+                    continue; // Skip items without photos
+                }
+
+                // Use pre-uploaded URL
+                items.push({
+                    description: div.querySelector('.desc').value,
+                    evaluation: div.querySelector('.eval').value,
+                    photo_url: photoUrl
+                });
+            }
+
+            if (items.length === 0) {
+                tg.showAlert('❌ Нет загруженных фотографий');
+                btn.disabled = false;
+                btn.textContent = "Отправить";
+                if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                    mainButton.hideProgress();
+                    mainButton.enable();
+                }
+                submitInProgress = false;
+                return;
+            }
+
+            btn.textContent = "Отправка данных...";
+
+            try {
+                const isTest = document.getElementById('mode-test').checked;
+
+                const data = {
+                    department_number: document.getElementById('department').value,
+                    issue_number: document.getElementById('issue').value,
+                    ticket_number: document.getElementById('ticket').value,
+                    date: document.getElementById('date').value.split('-').reverse().join('.'),
+                    region: document.getElementById('region').value,
+                    items: items,
+                    is_test: isTest
+                };
+
+                // CRITICAL: Validate date is not in the future (after formatting)
+                const dateValue = document.getElementById('date').value; // YYYY-MM-DD
+                const selectedDate = new Date(dateValue);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                selectedDate.setHours(0, 0, 0, 0);
+
+                if (selectedDate > today) {
+                    tg.showAlert('⚠️ Ошибка: Нельзя выбрать будущую дату!\n\nВыберите сегодняшнюю или прошедшую дату.');
+                    btn.disabled = false;
+                    btn.textContent = "Отправить";
+                    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                        mainButton.hideProgress();
+                        mainButton.enable();
+                    }
+                    haptic('error');
+                    submitInProgress = false;
+                    return;
+                }
+
+                // Check if running in Telegram
+                // iOS Telegram 9.x bug: initData may be empty even in WebApp
+                // Instead, check for platform/version which are always present in Telegram
+                console.log('tg.platform:', tg.platform);
+                console.log('tg.version:', tg.version);
+                console.log('tg.initData:', tg.initData);
+                console.log('tg.initDataUnsafe:', tg.initDataUnsafe);
+
+                // Check if we're in Telegram by platform/version presence
+                const isInTelegram = (tg.platform && tg.platform.length > 0) ||
+                    (tg.version && tg.version.length > 0) ||
+                    (tg.initData && tg.initData.length > 0);
+
+                if (isInTelegram) {
+                    console.log('Detected Telegram WebApp - sending via tg.sendData()');
+                    btn.textContent = "Отправка в Telegram...";
+                    tg.sendData(JSON.stringify(data));
+                    haptic('success', { sound: true, vibrate: true });
+
+                    // ✅ UX: Clear ticket for next form (always unique)
+                    document.getElementById('ticket').value = '';
+                    clearDraft();
+
+                    fireConfetti(); // 🎉 Celebration!
+
+                    // Close WebApp after sending data
+                    setTimeout(() => tg.close(), 1000);
+                } else {
+                    // Standalone Mode
+                    btn.textContent = "Подключение к серверу...";
+
+                    // Add timeout to fetch
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+
+                    const response = await fetch(botUrl + '/api/generate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data),
+                        signal: controller.signal
+                    });
+
+                    clearTimeout(timeoutId);
+
+                    if (!response.ok) {
+                        btn.textContent = "Ошибка сервера...";
+                        const err = await response.json().catch(() => ({}));
+                        throw new Error(err.error || `Server Error: ${response.status}`);
+                    }
+
+                    btn.textContent = "Скачивание файла...";
+
+                    // Download File
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `Conclusion_${data.ticket_number}.docx`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+
+                    clearDraft();
+
+                    // ✅ UX: Clear ticket for next form (always unique)
+                    document.getElementById('ticket').value = '';
+
+                    fireConfetti(); // 🎉 Celebration!
+                    haptic('success', { sound: true, vibrate: true });
+
+                    if (tg.showPopup) {
+                        tg.showPopup({ message: "✅ Документ готов и скачан!" });
+                    } else {
+                        alert("✅ Документ готов и скачан!");
+                    }
+                    closePreview();
+                    btn.disabled = false;
+                    btn.textContent = "Отправить";
+                    submitInProgress = false;
+                }
+            } catch (e) {
+                console.error("Submission Error", e);
+                haptic('error');
+
+                if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                    mainButton.hideProgress();
+                    mainButton.enable();
+                }
+
+                if (e.name === 'AbortError') {
+                    if (tg.showPopup) {
+                        tg.showPopup({ message: "Ошибка: Превышено время ожидания (30с). Проверьте интернет или URL бота." });
+                    } else {
+                        alert("Ошибка: Превышено время ожидания (30с). Проверьте интернет или URL бота.");
+                    }
+                } else {
+                    if (tg.showPopup) {
+                        tg.showPopup({ message: `Ошибка при отправке: ${e.message}` });
+                    } else {
+                        alert(`Ошибка при отправке: ${e.message}`);
+                    }
+                }
+                btn.disabled = false;
+                btn.textContent = "Отправить";
+                submitInProgress = false;
+            }
+        }
+
+        // Initial item
+        addItem();
+
+        // ============================================
+        // AUTO-SAVE DRAFT & RESTORE
+        // ============================================
+        function saveDraft() {
+            const draft = {
+                department: document.getElementById('department').value,
+                issue: document.getElementById('issue').value,
+                // ticket: excluded - always unique per form
+                date: document.getElementById('date').value,
+                region: document.getElementById('region').value,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('formDraft', JSON.stringify(draft));
+        }
+
+        function restoreDraft() {
+            const draftStr = localStorage.getItem('formDraft');
+            if (!draftStr) return;
+
+            const draft = JSON.parse(draftStr);
+            // Only restore if draft is less than 24 hours old
+            const hoursSinceLastSave = (Date.now() - draft.timestamp) / (1000 * 60 * 60);
+            if (hoursSinceLastSave > 24) {
+                localStorage.removeItem('formDraft');
+                return;
+            }
+
+            // Restore values (ticket excluded - always unique)
+            if (draft.department) document.getElementById('department').value = draft.department;
+            if (draft.issue) document.getElementById('issue').value = draft.issue;
+            // if (draft.ticket) document.getElementById('ticket').value = draft.ticket;  // ❌ Never restore
+            if (draft.date) document.getElementById('date').value = draft.date;
+
+            // Smart Auto-fill for Region
+            const regionSelect = document.getElementById('region');
+            if (draft.region) {
+                regionSelect.value = draft.region;
+            } else {
+                // Check smart history
+                const history = JSON.parse(localStorage.getItem('region_history') || '{}');
+                // Find region with > 5 consecutive uses
+                const smartRegion = Object.keys(history).find(r => history[r] >= 5);
+                if (smartRegion) {
+                    regionSelect.value = smartRegion;
+                    // Optional: Visual cue that it was auto-selected?
+                }
+            }
+
+            // Show notice
+            const notice = document.getElementById('draftNotice');
+            notice.style.display = 'block';
+            setTimeout(() => {
+                notice.style.opacity = '0';
+                notice.style.transition = 'opacity 1s';
+                setTimeout(() => notice.style.display = 'none', 1000);
+            }, 3000);
+        }
+
+        // Track Region Selection
+        document.getElementById('region').addEventListener('change', (e) => {
+            const region = e.target.value;
+            if (!region) return;
+
+            const history = JSON.parse(localStorage.getItem('region_history') || '{}');
+
+            // Reset others, increment selected
+            Object.keys(history).forEach(key => {
+                if (key !== region) history[key] = 0;
+            });
+
+            history[region] = (history[region] || 0) + 1;
+            localStorage.setItem('region_history', JSON.stringify(history));
+        });
+
+        function clearDraft() {
+            localStorage.removeItem('formDraft');
+        }
+
+        // Update progress bar
+        function updateProgress(current, total) {
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            const percent = (current / total) * 100;
+
+            progressContainer.style.display = 'block';
+            progressBar.style.width = percent + '%';
+
+            if (current === total) {
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                    progressBar.style.width = '0%';
+                }, 1000);
+            }
+        }
+
+        // Debounced auto-save (saves 1s after last input)
+        function debouncedAutosave() {
+            clearTimeout(autosaveTimeout);
+            autosaveTimeout = setTimeout(() => {
+                saveDraft();
+            }, 1000); // Save 1 second after last change
+        }
+
+        // Attach to all input/change events
+        document.getElementById('mainForm').addEventListener('input', debouncedAutosave);
+        document.getElementById('mainForm').addEventListener('change', debouncedAutosave);
+
+        // Smart Region: Load saved region
+        const savedRegion = localStorage.getItem('last_region');
+        if (savedRegion) {
+            const regionSelect = document.getElementById('region');
+            if (regionSelect) {
+                regionSelect.value = savedRegion;
+            }
+        }
+
+        // Save region on change
+        document.getElementById('region').addEventListener('change', (e) => {
+            localStorage.setItem('last_region', e.target.value);
+        });
+
+        // Restore draft on page load
+        restoreDraft();
+    </script>
+</body>
+
+</html>

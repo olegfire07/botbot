@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    container_name: modern_bot
+    restart: unless-stopped
+    expose:
+      - "8080"
+    volumes:
+      - ./user_data.db:/app/user_data.db
+      - ./bot_persistence.pickle:/app/bot_persistence.pickle
+      - ./logs:/app/logs
+      - ./backups:/app/backups
+      - ./config:/app/config
+      - ./documents:/app/documents
+      - ./documents_archive:/app/documents_archive
+      - ./photos:/app/photos
+    env_file:
+      - .env
+    environment:
+      - TZ=Europe/Moscow
+      - API_ENABLED=True
+      - API_PORT=8080
+
+  caddy:
+    image: caddy:2
+    container_name: modern_bot_caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - bot
+
+volumes:
+  caddy_data:
+  caddy_config:
