@@ -160,3 +160,155 @@ def test_clean_reply_markup_fallback():
     assert btn2.callback_data == "test_normal"
 
 
+def test_cors_smart_validation():
+    # 1. Null Origin (file:// protocol local launches)
+    url = f"{BASE_URL}/api/health"
+    with httpx.Client() as client:
+        resp = client.get(url, headers={"Origin": "null"})
+        assert resp.status_code == 200
+        assert resp.headers.get("Access-Control-Allow-Origin") == "null"
+
+    # 2. Localhost dynamic Origin
+    with httpx.Client() as client:
+        resp = client.get(url, headers={"Origin": "http://localhost:12345"})
+        assert resp.status_code == 200
+        assert resp.headers.get("Access-Control-Allow-Origin") == "http://localhost:12345"
+
+    # 3. 127.0.0.1 dynamic Origin
+    with httpx.Client() as client:
+        resp = client.get(url, headers={"Origin": "http://127.0.0.1:9999"})
+        assert resp.status_code == 200
+        assert resp.headers.get("Access-Control-Allow-Origin") == "http://127.0.0.1:9999"
+
+    # 4. Unauthorized domain -> falls back to first allowed origin
+    with httpx.Client() as client:
+        resp = client.get(url, headers={"Origin": "https://unauthorized-domain.com"})
+        assert resp.status_code == 200
+        assert resp.headers.get("Access-Control-Allow-Origin") == "https://olegfire07.github.io"
+
+
+def test_generate_validation():
+    url = f"{BASE_URL}/api/generate"
+    # 1. Missing required fields
+    with httpx.Client() as client:
+        resp = client.post(url, json={"department_number": "123"})
+        assert resp.status_code == 400
+        assert "Missing field" in resp.json()["error"]
+
+    # 2. Future date rejection
+    future_payload = {
+        "department_number": "123",
+        "issue_number": "456",
+        "ticket_number": "789",
+        "date": "25.12.2030", # Future date
+        "region": "Москва",
+        "items": []
+    }
+    with httpx.Client() as client:
+        resp = client.post(url, json=future_payload)
+        assert resp.status_code == 400
+        assert "будущую дату" in resp.json()["error"]
+
+    # 3. Invalid date format
+    invalid_date_payload = {
+        "department_number": "123",
+        "issue_number": "456",
+        "ticket_number": "789",
+        "date": "2030-12-25", # Wrong format
+        "region": "Москва",
+        "items": []
+    }
+    with httpx.Client() as client:
+        resp = client.post(url, json=invalid_date_payload)
+        assert resp.status_code == 400
+        assert "формат даты" in resp.json()["error"]
+
+
+def test_api_authorization():
+    import modern_bot.api
+    url = f"{BASE_URL}/api/stats"
+    
+    # Enable auth token for test
+    original_token = modern_bot.api.API_AUTH_TOKEN
+    modern_bot.api.API_AUTH_TOKEN = "TEST_SECRET_TOKEN"
+    
+    try:
+        # 1. Request without token -> expect 401
+        with httpx.Client() as client:
+            resp = client.get(url)
+            assert resp.status_code == 401
+            assert resp.json()["error"] == "Unauthorized"
+
+        # 2. Request with invalid token -> expect 401
+        with httpx.Client() as client:
+            resp = client.get(url, headers={"X-API-KEY": "WRONG_TOKEN"})
+            assert resp.status_code == 401
+
+        # 3. Request with valid token -> expect 200 (or other status if month dir is empty, but not 401)
+        with httpx.Client() as client:
+            resp = client.get(url, headers={"X-API-KEY": "TEST_SECRET_TOKEN"})
+            assert resp.status_code in (200, 500) # Directory empty might return 200 or 500
+            assert resp.status_code != 401
+            
+    finally:
+        # Restore token
+        modern_bot.api.API_AUTH_TOKEN = original_token
+
+
+def test_quiz_submission():
+    import sqlite3
+    from modern_bot.config import DATABASE_FILE
+    
+    url = f"{BASE_URL}/api/quiz/submit"
+    
+    # 1. Invalid JSON
+    with httpx.Client() as client:
+        resp = client.post(url, content="invalid-json")
+        assert resp.status_code == 400
+        assert "JSON" in resp.json()["error"]
+
+    # 2. Invalid user_id
+    with httpx.Client() as client:
+        resp = client.post(url, json={"user_id": "abc"})
+        assert resp.status_code == 400
+        assert "user_id" in resp.json()["error"]
+
+    # 3. Invalid statistics (non-integer correct)
+    with httpx.Client() as client:
+        resp = client.post(url, json={"user_id": 9999, "correct": "abc"})
+        assert resp.status_code == 400
+        assert "stats" in resp.json()["error"]
+
+    # 4. Valid quiz submission
+    test_user_id = 999999
+    test_region = "ТестРегион"
+    payload = {
+        "user_id": test_user_id,
+        "region": test_region,
+        "correct": 7,
+        "wrong": 3,
+        "total": 10
+    }
+    
+    with httpx.Client() as client:
+        resp = client.post(url, json=payload)
+        assert resp.status_code == 200
+        
+    # Verify in SQLite database
+    conn = sqlite3.connect(DATABASE_FILE)
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT correct, wrong, total FROM quiz_attempts WHERE user_id = ? AND region = ?", (test_user_id, test_region))
+        row = cursor.fetchone()
+        assert row is not None
+        assert row[0] == 7
+        assert row[1] == 3
+        assert row[2] == 10
+    finally:
+        # Clean up database
+        cursor.execute("DELETE FROM quiz_attempts WHERE user_id = ?", (test_user_id,))
+        conn.commit()
+        conn.close()
+
+
+

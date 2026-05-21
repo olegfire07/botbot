@@ -232,9 +232,11 @@
 
     <!-- Motivation Modal -->
     <div id="motivationModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" style="max-width: 480px;">
             <h2 class="no-margin-top guide-title">Рейтинги и достижения</h2>
-            <div class="motivation-container">
+            
+            <h3 style="margin-top: 0; margin-bottom: 10px; font-size: 15px; font-weight: 700; color: var(--text-color);">Как начисляются баллы:</h3>
+            <div class="motivation-container" style="margin-bottom: 20px;">
                 <div class="motivation-item">
                     <div class="motivation-icon">📄</div>
                     <div class="motivation-text">
@@ -250,8 +252,69 @@
                     </div>
                 </div>
             </div>
-            <div style="margin-top: 20px; text-align: center;">
-                <button class="btn btn-primary" style="margin-bottom: 10px; width: 100%;"
+
+            <h3 style="margin-top: 15px; margin-bottom: 10px; font-size: 15px; font-weight: 700; color: var(--text-color);">Таблица рангов:</h3>
+            <div class="ranks-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+                <div class="rank-badge-item" style="display: flex; align-items: center; gap: 10px; background: rgba(0, 122, 255, 0.04); border: 1px solid rgba(0, 122, 255, 0.05); padding: 10px 12px; border-radius: 14px;">
+                    <span style="font-size: 22px;">🥉</span>
+                    <div>
+                        <div style="font-weight: 700; font-size: 13px;">Новичок</div>
+                        <div style="font-size: 11px; color: var(--secondary-text);">0+ баллов</div>
+                    </div>
+                </div>
+                <div class="rank-badge-item" style="display: flex; align-items: center; gap: 10px; background: rgba(0, 122, 255, 0.04); border: 1px solid rgba(0, 122, 255, 0.05); padding: 10px 12px; border-radius: 14px;">
+                    <span style="font-size: 22px;">🥈</span>
+                    <div>
+                        <div style="font-weight: 700; font-size: 13px;">Ученик</div>
+                        <div style="font-size: 11px; color: var(--secondary-text);">50+ баллов</div>
+                    </div>
+                </div>
+                <div class="rank-badge-item" style="display: flex; align-items: center; gap: 10px; background: rgba(0, 122, 255, 0.04); border: 1px solid rgba(0, 122, 255, 0.05); padding: 10px 12px; border-radius: 14px;">
+                    <span style="font-size: 22px;">🥇</span>
+                    <div>
+                        <div style="font-weight: 700; font-size: 13px;">Стажер</div>
+                        <div style="font-size: 11px; color: var(--secondary-text);">150+ баллов</div>
+                    </div>
+                </div>
+                <div class="rank-badge-item" style="display: flex; align-items: center; gap: 10px; background: rgba(0, 122, 255, 0.04); border: 1px solid rgba(0, 122, 255, 0.05); padding: 10px 12px; border-radius: 14px;">
+                    <span style="font-size: 22px;">🎖</span>
+                    <div>
+                        <div style="font-weight: 700; font-size: 13px;">Специалист</div>
+                        <div style="font-size: 11px; color: var(--secondary-text);">400+ баллов</div>
+                    </div>
+                </div>
+                <div class="rank-badge-item" style="display: flex; align-items: center; gap: 10px; background: rgba(0, 122, 255, 0.04); border: 1px solid rgba(0, 122, 255, 0.05); padding: 10px 12px; border-radius: 14px;">
+                    <span style="font-size: 22px;">🏆</span>
+                    <div>
+                        <div style="font-weight: 700; font-size: 13px;">Мастер</div>
+                        <div style="font-size: 11px; color: var(--secondary-text);">1000+ баллов</div>
+                    </div>
+                </div>
+                <div class="rank-badge-item" style="display: flex; align-items: center; gap: 10px; background: rgba(0, 122, 255, 0.04); border: 1px solid rgba(0, 122, 255, 0.05); padding: 10px 12px; border-radius: 14px;">
+                    <span style="font-size: 22px;">🚀</span>
+                    <div>
+                        <div style="font-weight: 700; font-size: 13px;">Профи</div>
+                        <div style="font-size: 11px; color: var(--secondary-text);">2500+ баллов</div>
+                    </div>
+                </div>
+                <div class="rank-badge-item" style="display: flex; align-items: center; gap: 10px; background: rgba(0, 122, 255, 0.04); border: 1px solid rgba(0, 122, 255, 0.05); padding: 10px 12px; border-radius: 14px;">
+                    <span style="font-size: 22px;">💎</span>
+                    <div>
+                        <div style="font-weight: 700; font-size: 13px;">Эксперт</div>
+                        <div style="font-size: 11px; color: var(--secondary-text);">5000+ баллов</div>
+                    </div>
+                </div>
+                <div class="rank-badge-item" style="display: flex; align-items: center; gap: 10px; background: rgba(0, 122, 255, 0.04); border: 1px solid rgba(0, 122, 255, 0.05); padding: 10px 12px; border-radius: 14px;">
+                    <span style="font-size: 22px;">👑</span>
+                    <div>
+                        <div style="font-weight: 700; font-size: 13px;">Легенда</div>
+                        <div style="font-size: 11px; color: var(--secondary-text);">10000+ баллов</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn btn-primary" style="margin-bottom: 5px; width: 100%;"
                     onclick="closeMotivation()">Понятно</button>
             </div>
         </div>

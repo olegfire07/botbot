@@ -391,9 +391,36 @@ function forceUpdate() {
 }
 
 // Theme handling
-if (tg.themeParams) {
-    const r = document.documentElement.style;
+function applyTelegramTheme() {
+    if (tg.colorScheme === 'dark') {
+        document.body.classList.add('dark-mode');
+    } else {
+        document.body.classList.remove('dark-mode');
+    }
+
+    if (tg.themeParams) {
+        const root = document.documentElement.style;
+        if (tg.themeParams.button_color) {
+            root.setProperty('--primary-color', tg.themeParams.button_color);
+            root.setProperty('--primary-hover', tg.themeParams.button_color);
+        }
+        if (tg.themeParams.text_color) {
+            root.setProperty('--text-color', tg.themeParams.text_color);
+        }
+        if (tg.themeParams.hint_color) {
+            root.setProperty('--secondary-text', tg.themeParams.hint_color);
+        }
+        if (tg.colorScheme === 'dark' && tg.themeParams.secondary_bg_color) {
+            root.setProperty('--input-bg-field', tg.themeParams.secondary_bg_color);
+            root.setProperty('--input-bg-field-main', tg.themeParams.secondary_bg_color);
+        }
+    }
 }
+
+// Apply theme initially and listen for dynamic changes
+applyTelegramTheme();
+tg.onEvent('themeChanged', applyTelegramTheme);
+
 
 // Set today's date and max date (prevent future dates)
 const today = new Date().toISOString().split('T')[0];
@@ -631,6 +658,7 @@ function addItem() {
                          ontouchstart="handleTouchStart(event)"
                          ontouchmove="handleTouchMove(event)"
                          ontouchend="handleTouchEnd(event)">
+                        <div class="skeleton-loader"></div>
                         <div class="photo-preview"></div>
                         <label class="upload-label">
                             <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -1186,6 +1214,8 @@ async function handleFileSelect(input) {
 
     // Show loading state
     previewContainer.classList.add('loading');
+    const skeleton = previewContainer.querySelector('.skeleton-loader');
+    if (skeleton) skeleton.style.display = 'block';
     const compressionAvailable = typeof imageCompression === 'function';
     btnText.textContent = compressionAvailable ? "Сжатие..." : "Подготовка...";
     status.textContent = "⏳ Обработка фото...";
@@ -1228,6 +1258,8 @@ async function handleFileSelect(input) {
             img.src = e.target.result;
             img.style.display = 'block';
 
+            if (skeleton) skeleton.style.display = 'none';
+
             // Hide placeholder elements
             const label = previewContainer.querySelector('.upload-label');
             if (label) label.style.opacity = '0';
@@ -1267,6 +1299,8 @@ async function handleFileSelect(input) {
         haptic('success', { sound: true, vibrate: true });
 
     } catch (error) {
+        const skeleton = previewContainer.querySelector('.skeleton-loader');
+        if (skeleton) skeleton.style.display = 'none';
         console.error('Processing failed:', error);
         btnText.textContent = "❌ Ошибка";
         status.textContent = `⚠️ ${error.message || 'Ошибка обработки'}`;
@@ -2199,3 +2233,55 @@ function startSpeechRecognition(btn, inputId) {
 
     recognition.start();
 }
+
+// Global Clipboard Paste Support for Images
+window.addEventListener('paste', async (e) => {
+    if (appState !== 'editing') return;
+
+    // Check if any modal is open
+    const isModalOpen = ['guideModal', 'motivationModal', 'quizModal', 'lightboxModal', 'previewModal'].some(id => {
+        const el = document.getElementById(id);
+        return el && (el.style.display === 'flex' || el.style.display === 'block' || el.classList.contains('show'));
+    });
+    if (isModalOpen) return;
+
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+            const file = items[i].getAsFile();
+            if (!file) continue;
+
+            // Find target card
+            const activeCard = document.activeElement ? document.activeElement.closest('.item-card') : null;
+            const targetCard = activeCard || document.querySelector('.item-card:not(.collapsed)') || document.querySelector('.item-card');
+
+            if (targetCard) {
+                const fileInput = targetCard.querySelector('.file-input');
+                if (fileInput) {
+                    try {
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        fileInput.files = dataTransfer.files;
+
+                        // Highlight the target card's photo container briefly
+                        const previewContainer = targetCard.querySelector('.photo-preview-container');
+                        if (previewContainer) {
+                            previewContainer.style.outline = '2px dashed var(--primary-color)';
+                            setTimeout(() => {
+                                previewContainer.style.outline = '';
+                            }, 1000);
+                        }
+
+                        await handleFileSelect(fileInput);
+                    } catch (err) {
+                        console.error('Failed to paste image:', err);
+                    }
+                }
+            }
+            e.preventDefault();
+            break;
+        }
+    }
+});

@@ -173,7 +173,7 @@ def _run_polling_resilient(application: Application):
     application.run_polling(**supported_kwargs)
 
 async def clean_temp_files_job(context):
-    await asyncio.to_thread(clean_temp_files, 3600)
+    await asyncio.to_thread(clean_temp_files, 7 * 24 * 3600)
 
 async def clean_archives_job(context):
     from modern_bot.services.retention import run_retention_cleanup

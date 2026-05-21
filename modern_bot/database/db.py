@@ -96,6 +96,11 @@ async def init_db() -> None:
         await db.execute("INSERT OR IGNORE INTO settings (key, value) VALUES ('current_theme', 'default')")
         await db.execute("INSERT OR IGNORE INTO settings (key, value) VALUES ('cache_version', '1')")
         
+        # Performance optimization indexes
+        await db.execute("CREATE INDEX IF NOT EXISTS idx_user_stats_points ON user_stats(points DESC)")
+        await db.execute("CREATE INDEX IF NOT EXISTS idx_processed_tickets_created ON processed_tickets(created_at)")
+        await db.execute("CREATE INDEX IF NOT EXISTS idx_quiz_attempts_created ON quiz_attempts(created_at)")
+        
         # Migration: Ensure columns exist
         migrations = [
             "ALTER TABLE user_stats ADD COLUMN achievements TEXT DEFAULT '[]'",

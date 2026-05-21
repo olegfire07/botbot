@@ -25,19 +25,28 @@ _api_port = None
 _api_lock = asyncio.Lock()
 
 # CORS allowed origins (load from environment for security)
-ALLOWED_ORIGINS = os.getenv(
-    "ALLOWED_ORIGINS", 
-    "https://olegfire07.github.io"
-).split(",")
+ALLOWED_ORIGINS = [
+    x.strip() for x in os.getenv(
+        "ALLOWED_ORIGINS", 
+        "https://olegfire07.github.io,http://localhost:8000,http://localhost:3000,http://localhost:5000,http://localhost:5173,http://127.0.0.1:8000,http://127.0.0.1:3000,http://127.0.0.1:5000,http://127.0.0.1:5173"
+    ).split(",")
+]
 
 def _get_cors_headers(request):
     """Get CORS headers with proper Origin validation against ALLOWED_ORIGINS."""
     origin = request.headers.get("Origin", "")
-    # Only allow listed origins; fall back to first allowed origin for safety
-    if origin in ALLOWED_ORIGINS:
+    
+    # Smart validation for local development and file protocol
+    if origin == "null" or origin == "file://":
+        allowed_origin = origin
+    elif origin.startswith("http://localhost:") or origin.startswith("http://127.0.0.1:"):
+        allowed_origin = origin
+    elif origin in ALLOWED_ORIGINS:
         allowed_origin = origin
     else:
+        # Fall back to first allowed origin for safety
         allowed_origin = ALLOWED_ORIGINS[0] if ALLOWED_ORIGINS else ""
+        
     return {
         "Access-Control-Allow-Origin": allowed_origin,
         "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
@@ -786,21 +795,54 @@ async def api_super_admin_remove_user(request):
     return web.json_response({"status": "ok"})
 
 async def api_super_admin_logs(request):
-    """Return last 100 lines of logs"""
+    """Return last 100-120 lines of logs using smart log-file detection"""
     if not _is_authorized(request):
         return _unauthorized(request)
     from pathlib import Path
-    log_file = Path(__file__).resolve().parent.parent / 'debug_launch_v6.log'
+    from datetime import datetime
+    
+    root_dir = Path(__file__).resolve().parent.parent
+    
+    # Try out.log first (stdout/stderr of nohup process)
+    log_file = root_dir / 'out.log'
+    
+    # If out.log is missing or empty, try today's structured log file in logs/
+    if not log_file.exists() or log_file.stat().st_size == 0:
+        today_str = datetime.now().strftime('%Y-%m-%d')
+        today_log = root_dir / 'logs' / f"bot_{today_str}.log"
+        if today_log.exists():
+            log_file = today_log
+            
+    # If today's log doesn't exist either, try to find the newest bot_*.log file
+    if not log_file.exists() or log_file.stat().st_size == 0:
+        logs_dir = root_dir / 'logs'
+        if logs_dir.exists():
+            bot_logs = list(logs_dir.glob('bot_*.log'))
+            if bot_logs:
+                bot_logs.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+                log_file = bot_logs[0]
+                
+    # Fallback to the legacy debug_launch_v6.log
+    if not log_file.exists() or log_file.stat().st_size == 0:
+        log_file = root_dir / 'debug_launch_v6.log'
+        
     if not log_file.exists():
-        return web.json_response({"logs": "Log file not found."})
+        return web.json_response({"logs": "Log file not found (tried out.log, logs/bot_*.log, debug_launch_v6.log)."})
         
     try:
-        with open(log_file, 'r', encoding='utf-8') as f:
-            lines = f.readlines()
-            last_lines = lines[-100:]
-        return web.json_response({"logs": "".join(last_lines)})
+        # Read the file with fallback encoding in case of issues
+        try:
+            with open(log_file, 'r', encoding='utf-8') as f:
+                lines = f.readlines()
+        except UnicodeDecodeError:
+            with open(log_file, 'r', encoding='latin-1') as f:
+                lines = f.readlines()
+                
+        last_lines = lines[-120:]  # increase lines count for better diagnostics
+        header = f"--- Active log file: {log_file.name} --- (Last {len(last_lines)} lines)\n\n"
+        return web.json_response({"logs": header + "".join(last_lines)})
     except Exception as e:
-        return web.json_response({"logs": f"Error reading logs: {e}"})
+        return web.json_response({"logs": f"Error reading log file {log_file.name}: {e}"})
 
 async def api_super_admin_tickets(request):
     """Return list of recent processed tickets"""
