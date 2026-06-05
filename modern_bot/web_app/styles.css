@@ -1191,6 +1191,18 @@ select:focus+.input-icon,
     /* Prevent scrollbar overlap */
 }
 
+.flex-gap {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+
+.flex-gap .btn {
+    flex: 1;
+    margin: 0;
+}
+
+
 /* Prevent iOS Zoom on inputs */
 input,
 select,

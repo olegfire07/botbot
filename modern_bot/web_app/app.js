@@ -1477,11 +1477,18 @@ function handleMainButton() {
 }
 
 function updateMainButton() {
-    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-        // We are in Telegram
-        document.getElementById('finalSubmitBtn').style.display = 'none'; // Hide HTML button in modal
-        document.querySelector('.btn-primary[onclick="showPreview()"]').style.display = 'none'; // Hide main form button
+    // Keep HTML buttons visible
+    const mainFormBtn = document.querySelector('.btn-primary[onclick="showPreview()"]');
+    if (mainFormBtn) {
+        mainFormBtn.style.display = 'block';
+    }
+    const finalBtn = document.getElementById('finalSubmitBtn');
+    if (finalBtn) {
+        finalBtn.style.display = 'block';
+    }
 
+    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        // We are in Telegram, configure the native MainButton too
         mainButton.setText("ПРОВЕРИТЬ И ОТПРАВИТЬ");
         mainButton.show();
         // Use single state-based handler and clear existing to prevent duplicates
